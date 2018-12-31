@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 public class ComicScanner {
 
-	private final static String COMICS_PATH = "sample";
+	private final static String COMICS_PATH = "../sample";
 	
 	public static List<String> run() throws IOException {
 		Path root = Paths.get(COMICS_PATH);

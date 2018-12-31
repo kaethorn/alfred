@@ -1,0 +1,9 @@
+<button (click)="scan()">Scan for comics</button>
+<div>
+  <h3>Comics found:</h3>
+  <ul>
+    <li *ngFor="let comic of comics">
+      {{ comic }}
+    </li>
+  </ul>
+</div>
