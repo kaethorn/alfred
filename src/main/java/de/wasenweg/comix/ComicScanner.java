@@ -10,12 +10,10 @@ import java.util.stream.Stream;
 
 public class ComicScanner {
 
-	public static String run() throws IOException {
-        return "Found comics: " + collectFiles("sample");
-	}
+	private final static String COMICS_PATH = "sample";
 	
-	private static List<String> collectFiles(String path) throws IOException {
-		Path root = Paths.get(path);
+	public static List<String> run() throws IOException {
+		Path root = Paths.get(COMICS_PATH);
 	    try (Stream<Path> files = Files.walk(root)) {
 	        return files.filter(p -> Files.isRegularFile(p))
 	                    .filter(p -> p.getFileName().toString().endsWith(".cbz"))

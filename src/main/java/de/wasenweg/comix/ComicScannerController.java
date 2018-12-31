@@ -3,6 +3,7 @@ package de.wasenweg.comix;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ComicScannerController {
 
     @RequestMapping("/scan")
-    public String scan() throws IOException {
+    public List<String> scan() throws IOException {
     	return ComicScanner.run();
     }
 }
