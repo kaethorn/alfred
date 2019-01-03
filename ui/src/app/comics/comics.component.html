@@ -3,7 +3,15 @@
   <h3>Comics found:</h3>
   <ul>
     <li *ngFor="let comic of comics">
-      {{ comic }}
+      <ul>
+        <li>Title: {{ comic.title }}</li>
+        <li>Path: {{ comic.path }}</li>
+        <li>Series: {{ comic.series }}</li>
+        <li>#: {{ comic.number }}</li>
+        <li>Volume: {{ comic.volume }}</li>
+        <li>Date: {{ comic.year }}/{{ comic.month }}</li>
+        <li>Publisher: {{ comic.publisher }}</li>
+      </ul>
     </li>
   </ul>
 </div>

@@ -10,12 +10,24 @@ import { Comic } from './comic';
 export class ComicsComponent {
   constructor (
     private comicsService: ComicsService
-  ) {}
+  ) {
+    this.list();
+  }
 
-  comics = [];
+  comics: Array<Comic> = [];
+  scanStatus: boolean = null;
 
   scan () {
-    this.comicsService.getComics()
-      .subscribe((data: Array<Comic>) => this.comics = data);
+    this.comicsService.scan()
+      .subscribe((data: Array<Comic>, foo?, bar?) => {
+        this.scanStatus = foo;
+      });
+  }
+
+  list () {
+    this.comicsService.list()
+      .subscribe((data: any) => {
+        this.comics = data._embedded.comics as Comic[];
+      });
   }
 }

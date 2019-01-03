@@ -8,5 +8,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(collectionResourceRel = "comics", path = "comics")
 public interface ComicRepository extends PagingAndSortingRepository<Comic, Long> {
-	List<Comic> findByName(@Param("name") String name);
+	// List<Comic> findByTitle(@Param("title") String title);
 }

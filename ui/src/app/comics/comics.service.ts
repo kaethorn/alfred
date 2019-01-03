@@ -7,9 +7,16 @@ import { HttpClient } from '@angular/common/http';
 export class ComicsService {
   constructor(private http: HttpClient) {}
 
-  scanUrl = 'api/scan';
+  private API_PREFIX: String = 'api';
 
-  getComics() {
+  private scanUrl: string = `${ this.API_PREFIX }/scan`;
+  private listUrl: string = `${ this.API_PREFIX }/comics`;
+
+  list () {
+    return this.http.get(this.listUrl);
+  }
+
+  scan () {
     return this.http.get(this.scanUrl);
   }
 }
