@@ -30,8 +30,9 @@ public class Comic {
 	@Size(max = 255)
     private String series;
 	
-	@NotNull
-	private Short number;
+	@NotBlank
+	@Size(max = 10)
+	private String number;
 	
 	@Size(max = 255)
 	private String volume;
@@ -86,7 +87,7 @@ public class Comic {
 	
 	public Comic() {}
 
-	public Comic(String path, String title, String series, Short number, Short year, Short month, String publisher) {
+	public Comic(String path, String title, String series, String number, Short year, Short month, String publisher) {
 		this.path = path;
 		this.title = title;
 		this.series = series;
@@ -128,11 +129,11 @@ public class Comic {
 		this.series = series;
 	}
 
-	public Short getNumber() {
+	public String getNumber() {
 		return number;
 	}
 
-	public void setNumber(Short number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 
@@ -248,11 +249,11 @@ public class Comic {
 		this.web = web;
 	}
 
-	public Short getPage_count() {
+	public Short getPageCount() {
 		return page_count;
 	}
 
-	public void setPage_count(Short page_count) {
+	public void setPageCount(Short page_count) {
 		this.page_count = page_count;
 	}
 

@@ -3,7 +3,7 @@ CREATE TABLE COMICS (
   path CLOB NOT NULL,
   title VARCHAR(255) NOT NULL,
   series VARCHAR(255) NOT NULL,
-  number SMALLINT NOT NULL,
+  number VARCHAR(10) NOT NULL,
   volume VARCHAR(255),
   summary CLOB,
   notes CLOB,
