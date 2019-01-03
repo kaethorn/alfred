@@ -19,8 +19,12 @@ export class ComicsComponent {
 
   scan () {
     this.comicsService.scan()
-      .subscribe((data: Array<Comic>, foo?, bar?) => {
-        this.scanStatus = foo;
+      .subscribe(() => {
+        this.scanStatus = true;
+        this.list();
+      },
+      error => {
+        this.scanStatus = false;
       });
   }
 

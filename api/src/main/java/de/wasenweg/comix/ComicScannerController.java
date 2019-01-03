@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,22 +18,8 @@ public class ComicScannerController {
 	
     @RequestMapping("/scan")
     @ResponseBody
-    public List<String> scan() throws IOException {
-    	List<String> comicFiles = ComicScanner.run();
-    	List<Comic> comics = comicFiles.stream()
-    			.map(path -> {
-    				return new Comic(
-    						path,
-    						"FakeTitle",
-    						"FakeSeries",
-    						(short) 0,
-    						(short) 2000,
-    						(short) 10,
-    						"FakePublisher"
-    						);
-    			})
-    			.collect(Collectors.toList());
+    public void scan() throws IOException {
+    	List<Comic> comics = ComicScanner.run();
     	comicRepository.saveAll(comics);
-    	return comicFiles;
     }
 }
