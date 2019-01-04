@@ -26,7 +26,7 @@ export class ComicsComponent implements OnInit, OnDestroy {
 
   ngOnInit () {
     this.topicSubscription = this.rxStompService.watch('/progress/scanner').subscribe((message: Message) => {
-      this.receivedMessages.push(message.body);
+      this.receivedMessages.push(JSON.parse(message.body).file);
     });
   }
 

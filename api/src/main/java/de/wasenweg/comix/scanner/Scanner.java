@@ -33,7 +33,7 @@ public class Scanner {
 	private final String COMICS_PATH = "../sample";
 	
 	private void reportProgress(final String path) {
-	    messagingTemplate.convertAndSend("/progress/scanner", path);
+	    messagingTemplate.convertAndSend("/progress/scanner", new ProgressMessage(path));
 	}
 
 	private String readElement(Document document, String elementName) {
@@ -59,8 +59,8 @@ public class Scanner {
         DocumentBuilder docBuilder = null;
 		try {
 			docBuilder = docBuilderFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e1) {
-			e1.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
 		}
 
 		Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", (short) 0, (short) 0, "");
