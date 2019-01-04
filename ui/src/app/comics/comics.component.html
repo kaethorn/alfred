@@ -1,8 +1,8 @@
 <button (click)="scan()">Scan for comics</button>
-<ol>
-  <li class="message" *ngFor="let message of receivedMessages">{{ message }}</li>
-</ol>
-<div>
+<div *ngIf="total">
+  <h3>Scanning file file {{ counter }} of {{ total }} ({{ file }})</h3>
+</div>
+<div *ngIf="comics.length">
   <h3>Comics found:</h3>
   <ul>
     <li *ngFor="let comic of comics">

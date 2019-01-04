@@ -13,9 +13,10 @@ import { Comic } from './comic';
 })
 export class ComicsComponent implements OnInit, OnDestroy {
   private topicSubscription: Subscription;
-  public receivedMessages: string[] = [];
+  public total: number = 0;
+  public file: string;
+  public counter: number = 0;
   comics: Array<Comic> = [];
-  scanStatus: boolean = null;
 
   constructor (
     private comicsService: ComicsService,
@@ -26,7 +27,17 @@ export class ComicsComponent implements OnInit, OnDestroy {
 
   ngOnInit () {
     this.topicSubscription = this.rxStompService.watch('/progress/scanner').subscribe((message: Message) => {
-      this.receivedMessages.push(JSON.parse(message.body).file);
+      const response = JSON.parse(message.body);
+      if (response.file) {
+        this.file = response.file;
+        this.counter += 1;
+      }
+      this.total = this.total || response.total;
+      if (this.counter >= this.total) {
+        this.counter = 0;
+        this.total = 0;
+        this.list();
+      }
     });
   }
 
@@ -35,19 +46,9 @@ export class ComicsComponent implements OnInit, OnDestroy {
   }
 
   scan () {
-    this.comicsService.scan()
-      .subscribe(() => {
-        this.scanStatus = true;
-        this.list();
-      },
-      error => {
-        this.scanStatus = false;
-      });
-  }
-
-  onSendMessage () {
-    const message = `Message generated at ${new Date}`;
-    this.rxStompService.publish({ destination: '/progress/scanner', body: message });
+    this.comicsService.scan().subscribe(() => {
+      // Nothing returned here as the progress will be transmitted via websocket.
+    });
   }
 
   list () {

@@ -29,11 +29,19 @@ public class Scanner {
 	public Scanner(SimpMessageSendingOperations messagingTemplate) {
 		this.messagingTemplate = messagingTemplate;
 	}
-	
+
 	private final String COMICS_PATH = "../sample";
-	
+
 	private void reportProgress(final String path) {
-	    messagingTemplate.convertAndSend("/progress/scanner", new ProgressMessage(path));
+		ProgressMessage message = new ProgressMessage();
+		message.setFile(path);
+		messagingTemplate.convertAndSend("/progress/scanner", message);
+	}
+
+	private void reportTotal(final int total) {
+		ProgressMessage message = new ProgressMessage();
+		message.setTotal(total);
+		messagingTemplate.convertAndSend("/progress/scanner", message);
 	}
 
 	private String readElement(Document document, String elementName) {
@@ -50,13 +58,13 @@ public class Scanner {
 
 		// FIXME simulated delay
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(300);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = null;
+		DocumentBuilder docBuilder = null;
 		try {
 			docBuilder = docBuilderFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
@@ -64,66 +72,78 @@ public class Scanner {
 		}
 
 		Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", (short) 0, (short) 0, "");
-		
+
 		ZipFile file = null;
 		try {
 			file = new ZipFile(path.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        try {
-            final Enumeration<? extends ZipEntry> entries = file.entries();
-            while (entries.hasMoreElements()) {
-                final ZipEntry entry = entries.nextElement();
-                if (entry.getName().equals("ComicInfo.xml")) {
-            		Document document = docBuilder.parse(file.getInputStream(entry));
-            		document.getDocumentElement().normalize();
-            		comic.setTitle(readElement(document, "Title"));
-            		comic.setSeries(readElement(document, "Series"));
-            		comic.setPublisher(readElement(document, "Publisher"));
-            		comic.setNumber(readElement(document, "Number"));
-            		comic.setVolume(readElement(document, "Volume"));
-            		comic.setSummary(readElement(document, "Summary"));
-            		comic.setNotes(readElement(document, "Notes"));
-            		comic.setYear(Short.parseShort(readElement(document, "Year")));
-            		comic.setMonth(Short.parseShort(readElement(document, "Month")));
-            		comic.setWriter(readElement(document, "Writer"));
-            		comic.setPenciller(readElement(document, "Penciller"));
-            		comic.setInker(readElement(document, "Inker"));
-            		comic.setColorist(readElement(document, "Colorist"));
-            		comic.setLetterer(readElement(document, "Letterer"));
-            		comic.setEditor(readElement(document, "Editor"));
-            		comic.setWeb(readElement(document, "Web"));
-            		comic.setPageCount(Short.parseShort(readElement(document, "PageCount")));
-            		comic.setManga(readElement(document, "Manga").equals("Yes"));
-            		comic.setCharacters(readElement(document, "Characters"));
-            		comic.setTeams(readElement(document, "Teams"));
-                }
-            }
-        } catch (SAXException e) {
+		try {
+			final Enumeration<? extends ZipEntry> entries = file.entries();
+			while (entries.hasMoreElements()) {
+				final ZipEntry entry = entries.nextElement();
+				if (entry.getName().equals("ComicInfo.xml")) {
+					Document document = docBuilder.parse(file.getInputStream(entry));
+					document.getDocumentElement().normalize();
+					comic.setTitle(readElement(document, "Title"));
+					comic.setSeries(readElement(document, "Series"));
+					comic.setPublisher(readElement(document, "Publisher"));
+					comic.setNumber(readElement(document, "Number"));
+					comic.setVolume(readElement(document, "Volume"));
+					comic.setSummary(readElement(document, "Summary"));
+					comic.setNotes(readElement(document, "Notes"));
+					comic.setYear(Short.parseShort(readElement(document, "Year")));
+					comic.setMonth(Short.parseShort(readElement(document, "Month")));
+					comic.setWriter(readElement(document, "Writer"));
+					comic.setPenciller(readElement(document, "Penciller"));
+					comic.setInker(readElement(document, "Inker"));
+					comic.setColorist(readElement(document, "Colorist"));
+					comic.setLetterer(readElement(document, "Letterer"));
+					comic.setEditor(readElement(document, "Editor"));
+					comic.setWeb(readElement(document, "Web"));
+					comic.setPageCount(Short.parseShort(readElement(document, "PageCount")));
+					comic.setManga(readElement(document, "Manga").equals("Yes"));
+					comic.setCharacters(readElement(document, "Characters"));
+					comic.setTeams(readElement(document, "Teams"));
+				}
+			}
+		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-            try {
+			try {
 				file.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-        }
+		}
 
 		return comic;
 	}
 
-	public List<Comic> run() throws IOException {
+	public List<Comic> run() {
+		List<Comic> list = null;
 		Path root = Paths.get(COMICS_PATH);
-    	// TODO send a message with the file total amount.
-	    try (Stream<Path> files = Files.walk(root)) {
-	        return files.filter(path -> Files.isRegularFile(path))
-	                    .filter(path -> path.getFileName().toString().endsWith(".cbz"))
-	                    .map(path -> readMetadata(path))
-	                    .filter(path -> !path.getTitle().isEmpty())
-	                    .collect(Collectors.toList());
-	    }
+		
+		List<Path> comicFiles = null;
+
+		try (Stream<Path> files = Files.walk(root)) {
+			comicFiles = files.filter(path -> Files.isRegularFile(path))
+					.filter(path -> path.getFileName().toString().endsWith(".cbz"))
+					.collect(Collectors.toList());
+			
+			reportTotal(comicFiles.size());
+			
+			list = comicFiles.stream()
+					.map(path -> readMetadata(path))
+					.filter(path -> !path.getTitle().isEmpty())
+					.collect(Collectors.toList());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 }
