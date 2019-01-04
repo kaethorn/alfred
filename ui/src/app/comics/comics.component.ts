@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { RxStompService } from '@stomp/ng2-stompjs';
+import { Message } from '@stomp/stompjs';
+import { Subscription } from 'rxjs';
+
 import { ComicsService } from './comics.service';
 import { Comic } from './comic';
 
@@ -7,15 +11,28 @@ import { Comic } from './comic';
   templateUrl: './comics.component.html',
   styleUrls: ['./comics.component.css']
 })
-export class ComicsComponent {
+export class ComicsComponent implements OnInit, OnDestroy {
+  private topicSubscription: Subscription;
+  public receivedMessages: string[] = [];
+  comics: Array<Comic> = [];
+  scanStatus: boolean = null;
+
   constructor (
-    private comicsService: ComicsService
+    private comicsService: ComicsService,
+    private rxStompService: RxStompService
   ) {
     this.list();
   }
 
-  comics: Array<Comic> = [];
-  scanStatus: boolean = null;
+  ngOnInit () {
+    this.topicSubscription = this.rxStompService.watch('/progress/scanner').subscribe((message: Message) => {
+      this.receivedMessages.push(message.body);
+    });
+  }
+
+  ngOnDestroy() {
+    this.topicSubscription.unsubscribe();
+  }
 
   scan () {
     this.comicsService.scan()
@@ -26,6 +43,11 @@ export class ComicsComponent {
       error => {
         this.scanStatus = false;
       });
+  }
+
+  onSendMessage () {
+    const message = `Message generated at ${new Date}`;
+    this.rxStompService.publish({ destination: '/progress/scanner', body: message });
   }
 
   list () {

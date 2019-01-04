@@ -1,4 +1,7 @@
 <button (click)="scan()">Scan for comics</button>
+<ol>
+  <li class="message" *ngFor="let message of receivedMessages">{{ message }}</li>
+</ol>
 <div>
   <h3>Comics found:</h3>
   <ul>
