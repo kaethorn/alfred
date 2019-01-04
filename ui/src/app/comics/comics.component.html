@@ -1,21 +1,37 @@
-<button (click)="scan()">Scan for comics</button>
-<div *ngIf="total">
-  <h4>Scanning file file {{ counter }} of {{ total }}: {{ file }}</h4>
-</div>
-<div *ngIf="comics?.length > 0">
-  <h3>Comics found:</h3>
-  <ul>
-    <li *ngFor="let comic of comics">
-      <ul>
-        <li>Title: {{ comic.title }}</li>
-        <li>Path: {{ comic.path }}</li>
-        <li>Series: {{ comic.series }}</li>
-        <li>#: {{ comic.number }}</li>
-        <li>Volume: {{ comic.volume }}</li>
-        <li>Date: {{ comic.year }}/{{ comic.month }}</li>
-        <li>Publisher: {{ comic.publisher }}</li>
-        <li>Summary: {{ comic.summary }}</li>
-      </ul>
-    </li>
-  </ul>
-</div>
+<mat-card>
+  <div *ngIf="total">
+    <mat-card-content>
+      <mat-progress-bar mode="determinate" [value]="counter/total*100"></mat-progress-bar>
+    </mat-card-content>
+    <mat-card-content>
+      <mat-chip-list>
+        <mat-chip color="accent">{{ file }}</mat-chip>
+      </mat-chip-list>
+    </mat-card-content>
+  </div>
+
+  <mat-accordion *ngIf="comics?.length > 0">
+    <mat-expansion-panel *ngFor="let comic of comics">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ comic.series }} #{{ comic.number }}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ comic.title }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-list>
+        <mat-list-item>Path: {{ comic.path }}</mat-list-item>
+        <mat-list-item>Volume: {{ comic.volume }}</mat-list-item>
+        <mat-list-item>Date: {{ comic.year }}/{{ comic.month }}</mat-list-item>
+        <mat-list-item>Publisher: {{ comic.publisher }}</mat-list-item>
+        <mat-list-item>Summary: {{ comic.summary }}</mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-card-actions>
+    <button (click)="scan()" color="primary" mat-button>Scan</button>
+  </mat-card-actions>
+</mat-card>
