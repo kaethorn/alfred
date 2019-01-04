@@ -1,8 +1,8 @@
 <button (click)="scan()">Scan for comics</button>
 <div *ngIf="total">
-  <h3>Scanning file file {{ counter }} of {{ total }} ({{ file }})</h3>
+  <h4>Scanning file file {{ counter }} of {{ total }}: {{ file }}</h4>
 </div>
-<div *ngIf="comics.length">
+<div *ngIf="comics?.length > 0">
   <h3>Comics found:</h3>
   <ul>
     <li *ngFor="let comic of comics">

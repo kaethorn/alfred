@@ -30,6 +30,7 @@ public class ScannerController {
 			Scanner scanner = new Scanner(messagingTemplate);
 			List<Comic> comics = scanner.run();
 			comicRepository.saveAll(comics);
+			scanner.reportFinish();
     	});
     }
 }

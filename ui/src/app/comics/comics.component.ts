@@ -13,9 +13,9 @@ import { Comic } from './comic';
 })
 export class ComicsComponent implements OnInit, OnDestroy {
   private topicSubscription: Subscription;
-  public total: number = 0;
-  public file: string;
-  public counter: number = 0;
+  total: number = 0;
+  file: string;
+  counter: number = 0;
   comics: Array<Comic> = [];
 
   constructor (
@@ -27,22 +27,25 @@ export class ComicsComponent implements OnInit, OnDestroy {
 
   ngOnInit () {
     this.topicSubscription = this.rxStompService.watch('/progress/scanner').subscribe((message: Message) => {
-      const response = JSON.parse(message.body);
-      if (response.file) {
-        this.file = response.file;
-        this.counter += 1;
-      }
-      this.total = this.total || response.total;
-      if (this.counter >= this.total) {
-        this.counter = 0;
-        this.total = 0;
-        this.list();
-      }
+      this.onMessage(JSON.parse(message.body));
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.topicSubscription.unsubscribe();
+  }
+
+  private onMessage (message) {
+    if (message.file) {
+      this.file = message.file;
+      this.counter += 1;
+    }
+    this.total = this.total || message.total;
+    if (message.done) {
+      this.counter = 0;
+      this.total = 0;
+      this.list();
+    }
   }
 
   scan () {
@@ -51,7 +54,7 @@ export class ComicsComponent implements OnInit, OnDestroy {
     });
   }
 
-  list () {
+  private list () {
     this.comicsService.list()
       .subscribe((data: any) => {
         this.comics = data._embedded.comics as Comic[];

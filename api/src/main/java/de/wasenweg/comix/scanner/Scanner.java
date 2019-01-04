@@ -44,6 +44,12 @@ public class Scanner {
 		messagingTemplate.convertAndSend("/progress/scanner", message);
 	}
 
+	public void reportFinish() {
+		ProgressMessage message = new ProgressMessage();
+		message.setDone(true);
+		messagingTemplate.convertAndSend("/progress/scanner", message);
+	}
+
 	private String readElement(Document document, String elementName) {
 		NodeList element = document.getElementsByTagName(elementName);
 		if (element.getLength() > 0) {

@@ -4,8 +4,10 @@ public class ProgressMessage {
 
     private String file;
     private int total;
+    private Boolean done;
 
-    public ProgressMessage() {
+	public ProgressMessage() {
+    	this.done = false;
     }
 
     public String getFile() {
@@ -23,4 +25,12 @@ public class ProgressMessage {
     public void setTotal(int total) {
     	this.total = total;
     }
+
+    public Boolean getDone() {
+		return done;
+	}
+
+	public void setDone(Boolean done) {
+		this.done = done;
+	}
 }
