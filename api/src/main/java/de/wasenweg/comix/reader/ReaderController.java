@@ -13,7 +13,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,9 +23,6 @@ public class ReaderController {
 
 	@Autowired
 	private ComicRepository comicRepository;
-	
-	@Autowired
-	private SimpMessageSendingOperations messagingTemplate;
 	
 	// TODO figure out a caching strategy:
 	/// * in memory, self handled and capped

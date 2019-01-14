@@ -3,7 +3,7 @@
     "secure": false,
     "target": "http://localhost:8080"
   },
-  "/scanner": {
+  "/api/scan-progress": {
     "secure": false,
     "ws": true,
     "target": "ws://localhost:8080"

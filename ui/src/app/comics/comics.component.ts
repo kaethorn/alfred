@@ -1,6 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RxStompService } from '@stomp/ng2-stompjs';
-import { Message } from '@stomp/stompjs';
 import { Subscription } from 'rxjs';
 
 import { ComicsService } from './comics.service';
@@ -19,16 +17,16 @@ export class ComicsComponent implements OnInit, OnDestroy {
   comics: Array<Comic> = [];
 
   constructor (
-    private comicsService: ComicsService,
-    private rxStompService: RxStompService
+    private comicsService: ComicsService
   ) {
     this.list();
   }
 
   ngOnInit () {
-    this.topicSubscription = this.rxStompService.watch('/progress/scanner').subscribe((message: Message) => {
-      this.onMessage(JSON.parse(message.body));
-    });
+    const evtSource = new EventSource('/api/scan-progress');
+    evtSource.onmessage = event => {
+      this.onMessage(event.data);
+    }
   }
 
   ngOnDestroy () {
