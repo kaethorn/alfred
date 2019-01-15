@@ -11,12 +11,13 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import de.wasenweg.comix.Comic;
-import reactor.core.publisher.FluxSink;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,16 +25,24 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class Scanner {
 
-	private FluxSink<String> sink;
+	private SseEmitter emitter;
 	
-	public Scanner(FluxSink<String> fluxSink) {
-		this.sink = fluxSink;
+	public Scanner(SseEmitter emitter) {
+		this.emitter = emitter;
 	}
 
 	private final String COMICS_PATH = "../sample";
 	
 	private void sendEvent(String data, String name) {
-		sink.next(name + ":" + data);
+		SseEventBuilder event = SseEmitter.event()
+	      .data(data)
+		  .id(String.valueOf(this.hashCode()))
+		  .name(name);
+		try {
+			emitter.send(event);
+		} catch (IOException e) {
+			emitter.completeWithError(e);
+		}
 	}
 
 	public void reportProgress(final String path) {
@@ -41,7 +50,7 @@ public class Scanner {
 	}
 
 	public void reportTotal(final int total) {
-		this.sendEvent(String.format("%i", total), "total");
+		this.sendEvent(String.valueOf(total), "total");
 	}
 
 	public void reportFinish() {

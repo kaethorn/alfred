@@ -23,32 +23,30 @@ export class ComicsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit () {
-    const evtSource = new EventSource('/api/scan-progress');
-    evtSource.onmessage = event => {
-      this.onMessage(event.data);
-    }
+    const scanProgress = new EventSource('/api/scan-progress');
+
+    scanProgress.addEventListener('total', (event: any) => {
+      this.total = this.total || event.data;
+    });
+
+    scanProgress.addEventListener('current-file', (event: any) => {
+      this.file = event.data;
+      this.counter += 1;
+    });
+
+    scanProgress.addEventListener('done', () => {
+      this.counter = 0;
+      this.total = 0;
+      this.list();
+    });
   }
 
   ngOnDestroy () {
     this.topicSubscription.unsubscribe();
   }
 
-  private onMessage (message) {
-    if (message.file) {
-      this.file = message.file;
-      this.counter += 1;
-    }
-    this.total = this.total || message.total;
-    if (message.done) {
-      this.counter = 0;
-      this.total = 0;
-      this.list();
-    }
-  }
-
   scan () {
     this.comicsService.scan().subscribe(() => {
-      // Nothing returned here as the progress will be transmitted via websocket.
     });
   }
 
