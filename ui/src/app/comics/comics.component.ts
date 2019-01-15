@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { ComicsService } from './comics.service';
@@ -9,8 +9,7 @@ import { Comic } from './comic';
   templateUrl: './comics.component.html',
   styleUrls: ['./comics.component.css']
 })
-export class ComicsComponent implements OnInit, OnDestroy {
-  private topicSubscription: Subscription;
+export class ComicsComponent {
   total: number = 0;
   file: string;
   counter: number = 0;
@@ -22,7 +21,7 @@ export class ComicsComponent implements OnInit, OnDestroy {
     this.list();
   }
 
-  ngOnInit () {
+  scan () {
     const scanProgress = new EventSource('/api/scan-progress');
 
     scanProgress.addEventListener('total', (event: any) => {
@@ -38,14 +37,9 @@ export class ComicsComponent implements OnInit, OnDestroy {
       this.counter = 0;
       this.total = 0;
       this.list();
+      scanProgress.close();
     });
-  }
 
-  ngOnDestroy () {
-    this.topicSubscription.unsubscribe();
-  }
-
-  scan () {
     this.comicsService.scan().subscribe(() => {
     });
   }
