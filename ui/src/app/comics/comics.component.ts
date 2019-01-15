@@ -46,8 +46,8 @@ export class ComicsComponent {
 
   private list () {
     this.comicsService.list()
-      .subscribe((data: any) => {
-        this.comics = data._embedded.comics as Comic[];
+      .subscribe((data: Comic[]) => {
+        this.comics = data;
       });
   }
 }

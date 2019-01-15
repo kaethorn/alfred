@@ -16,11 +16,14 @@ import { MatExpansionModule } from '@angular/material/expansion';
 // Own
 import { AppComponent } from './app.component';
 import { ComicsComponent } from './comics/comics.component';
+import { ReaderComponent } from './reader/reader.component';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ComicsComponent
+    ComicsComponent,
+    ReaderComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +35,8 @@ import { ComicsComponent } from './comics/comics.component';
     MatListModule,
     MatToolbarModule,
     MatExpansionModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    AppRoutingModule
   ],
   bootstrap: [AppComponent]
 })
