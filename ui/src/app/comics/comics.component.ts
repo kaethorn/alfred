@@ -1,6 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RxStompService } from '@stomp/ng2-stompjs';
-import { Message } from '@stomp/stompjs';
+import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { ComicsService } from './comics.service';
@@ -11,53 +9,45 @@ import { Comic } from './comic';
   templateUrl: './comics.component.html',
   styleUrls: ['./comics.component.css']
 })
-export class ComicsComponent implements OnInit, OnDestroy {
-  private topicSubscription: Subscription;
+export class ComicsComponent {
   total: number = 0;
   file: string;
   counter: number = 0;
   comics: Array<Comic> = [];
 
   constructor (
-    private comicsService: ComicsService,
-    private rxStompService: RxStompService
+    private comicsService: ComicsService
   ) {
     this.list();
   }
 
-  ngOnInit () {
-    this.topicSubscription = this.rxStompService.watch('/progress/scanner').subscribe((message: Message) => {
-      this.onMessage(JSON.parse(message.body));
+  scan () {
+    const scanProgress = new EventSource('/api/scan-progress');
+
+    scanProgress.addEventListener('total', (event: any) => {
+      this.total = this.total || event.data;
     });
-  }
 
-  ngOnDestroy () {
-    this.topicSubscription.unsubscribe();
-  }
-
-  private onMessage (message) {
-    if (message.file) {
-      this.file = message.file;
+    scanProgress.addEventListener('current-file', (event: any) => {
+      this.file = event.data;
       this.counter += 1;
-    }
-    this.total = this.total || message.total;
-    if (message.done) {
+    });
+
+    scanProgress.addEventListener('done', () => {
       this.counter = 0;
       this.total = 0;
       this.list();
-    }
-  }
+      scanProgress.close();
+    });
 
-  scan () {
     this.comicsService.scan().subscribe(() => {
-      // Nothing returned here as the progress will be transmitted via websocket.
     });
   }
 
   private list () {
     this.comicsService.list()
-      .subscribe((data: any) => {
-        this.comics = data._embedded.comics as Comic[];
+      .subscribe((data: Comic[]) => {
+        this.comics = data;
       });
   }
 }

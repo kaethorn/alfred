@@ -11,7 +11,8 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -24,30 +25,36 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class Scanner {
 
-	private SimpMessageSendingOperations messagingTemplate;
-
-	public Scanner(SimpMessageSendingOperations messagingTemplate) {
-		this.messagingTemplate = messagingTemplate;
+	private SseEmitter emitter;
+	
+	public Scanner(SseEmitter emitter) {
+		this.emitter = emitter;
 	}
 
 	private final String COMICS_PATH = "../sample";
-
-	private void reportProgress(final String path) {
-		ProgressMessage message = new ProgressMessage();
-		message.setFile(path);
-		messagingTemplate.convertAndSend("/progress/scanner", message);
+	
+	private void sendEvent(String data, String name) {
+		SseEventBuilder event = SseEmitter.event()
+	      .data(data)
+		  .id(String.valueOf(this.hashCode()))
+		  .name(name);
+		try {
+			emitter.send(event);
+		} catch (IOException e) {
+			emitter.completeWithError(e);
+		}
 	}
 
-	private void reportTotal(final int total) {
-		ProgressMessage message = new ProgressMessage();
-		message.setTotal(total);
-		messagingTemplate.convertAndSend("/progress/scanner", message);
+	public void reportProgress(final String path) {
+		this.sendEvent(path, "current-file");
+	}
+
+	public void reportTotal(final int total) {
+		this.sendEvent(String.valueOf(total), "total");
 	}
 
 	public void reportFinish() {
-		ProgressMessage message = new ProgressMessage();
-		message.setDone(true);
-		messagingTemplate.convertAndSend("/progress/scanner", message);
+		this.sendEvent("", "done");
 	}
 
 	private String readElement(Document document, String elementName) {
