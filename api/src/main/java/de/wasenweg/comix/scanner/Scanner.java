@@ -69,13 +69,6 @@ public class Scanner {
 	private Comic readMetadata(Path path) {
 		reportProgress(path.toString());
 
-		// FIXME simulated delay
-		try {
-			Thread.sleep(300);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = null;
 		try {
