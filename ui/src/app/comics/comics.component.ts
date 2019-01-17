@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { ComicsService } from './comics.service';
-import { Comic } from './comic';
+import { ComicsService } from './../comics.service';
+import { Comic } from './../comic';
 
 @Component({
   selector: 'app-comics',

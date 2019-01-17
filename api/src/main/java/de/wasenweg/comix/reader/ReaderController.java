@@ -1,15 +1,15 @@
 package de.wasenweg.comix.reader;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.support.ServletContextResource;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import de.wasenweg.comix.Comic;
 import de.wasenweg.comix.ComicRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,10 +17,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,7 +55,8 @@ public class ReaderController {
 	
 	private final Pattern pageNumberPattern = Pattern.compile("(\\d+)\\.\\w+$");
 	
-	private InputStream extractPage(Comic comic, Short page) {
+	private ComicPage extractPage(Comic comic, Short page) {
+		ComicPage result = new ComicPage();
 		ZipFile file = null;
 		try {
 			file = new ZipFile(comic.getPath());
@@ -73,26 +72,23 @@ public class ReaderController {
 				if (m.find()) {
 					String pageNumber = m.group(1);
 					if (Short.valueOf(pageNumber) == page) {
-						return file.getInputStream(entry);
+						result.stream = file.getInputStream(entry);
+						result.size = entry.getSize();
+						result.type = URLConnection.guessContentTypeFromName(fileName);
+						result.name = fileName;
 					}
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				file.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 		
-		return null;
+		return result;
 	}
 
     @RequestMapping("/read/{id}")
     @ResponseBody
-    public Object readFromBeginning(@PathVariable("id") Long id) {
+    public ResponseEntity<StreamingResponseBody> readFromBeginning(@PathVariable("id") Long id) {
     	return read(id, (short) 0);
     }
 
@@ -105,24 +101,29 @@ public class ReaderController {
 	 */
     @RequestMapping("/read/{id}/{page}")
     @ResponseBody
-    public ResponseEntity<InputStreamResource> read(@PathVariable("id") Long id, @PathVariable("page") Short page) {
+    public ResponseEntity<StreamingResponseBody> read(@PathVariable("id") Long id, @PathVariable("page") Short page) {
 		Optional<Comic> comicQuery = comicRepository.findById(id);
 		
-		Comic comic = null;
-
-		if (!comicQuery.isPresent()) {
+		if (!comicQuery.isPresent() || id == null || page == null) {
 			return null;
 		}
-		
-		comic = comicQuery.get();
 
-		InputStreamResource inputStreamResource = new InputStreamResource(extractPage(comic, page));
+		final Comic comic = comicQuery.get();
+		ComicPage comicPage = extractPage(comic, page);
+
+		StreamingResponseBody responseBody = outputStream -> {
+	        int numberOfBytesToWrite;
+	        byte[] data = new byte[1024];
+	        while ((numberOfBytesToWrite = comicPage.stream.read(data, 0, data.length)) != -1) {
+	            outputStream.write(data, 0, numberOfBytesToWrite);
+	        }
+	        comicPage.stream.close();
+	    };
 		
 		return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                		"attachment;filename=" + comic.getPath() + "/page" + page)
-                // .contentType(mediaType)
-                // .contentLength(resource.contentLength())
-                .body(inputStreamResource);
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + comicPage.name)
+                .contentLength(comicPage.size)
+                .contentType(MediaType.parseMediaType(comicPage.type))
+                .body(responseBody);
     }
 }

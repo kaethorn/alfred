@@ -16,7 +16,7 @@ export class ComicsService {
   private scanUrl: string = `${ this.API_PREFIX }/scan`;
   private listUrl: string = `${ this.API_PREFIX }/comics`;
 
-  list() : Observable<Comic[]> {
+  list () : Observable<Comic[]> {
     return this.http.get(this.listUrl).pipe(
       map((data: any) => data._embedded.comics),
       map((data: any) => {
@@ -24,6 +24,15 @@ export class ComicsService {
           comic.id = comic._links.self.href.split('/').pop();
           return comic;
         });
+      })
+    );
+  }
+
+  get (id: number) : Observable<Comic> {
+    return this.http.get<Comic>(`${ this.listUrl }/${ id }`).pipe(
+      map((comic: any) => {
+        comic.id = comic._links.self.href.split('/').pop();
+        return comic;
       })
     );
   }
