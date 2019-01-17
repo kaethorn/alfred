@@ -7,7 +7,7 @@ import { ReaderComponent } from './reader/reader.component';
 const routes: Routes = [
   { path: '', redirectTo: '/comics', pathMatch: 'full' },
   { path: 'comics', component: ComicsComponent },
-  { path: 'read/:id', component: ReaderComponent }
+  { path: 'read/:id/:page', component: ReaderComponent }
 ];
 
 @NgModule({

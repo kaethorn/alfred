@@ -27,18 +27,12 @@ export class ReaderComponent implements OnInit {
   }
 
   public prevPage () : void {
-    this.currentPage -= 1;
-    if (this.currentPage <= 0) {
-      this.currentPage = 1;
-    }
+    this.currentPage -= (this.currentPage > 1 ? 1 : 0);
     this.setImagePath(this.comic.id, this.currentPage);
   }
 
   public nextPage () : void {
-    this.currentPage += 1;
-    if (this.currentPage > this.comic.page_count) {
-      this.currentPage -= 1;
-    }
+    this.currentPage += (this.currentPage < this.comic.pageCount ? 1 : 0);
     this.setImagePath(this.comic.id, this.currentPage);
   }
 

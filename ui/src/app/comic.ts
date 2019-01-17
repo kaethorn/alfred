@@ -18,7 +18,7 @@ export interface Comic {
 	editor: string;
 	publisher: string;
 	web: string;
-	page_count: number;
+	pageCount: number;
 	manga: boolean;
 	characters: string;
 	teams: string;
