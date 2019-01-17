@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 import { ComicsService } from './../comics.service';
 import { Comic } from './../comic';
@@ -17,26 +17,29 @@ export class ReaderComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private comicsService: ComicsService
   ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params: ParamMap) => {
+      this.currentPage = Number.parseInt(params.get('page'));
       this.getComic(Number.parseInt(params.get('id')));
     });
   }
 
   public prevPage () : void {
     this.currentPage -= (this.currentPage > 1 ? 1 : 0);
-    this.setImagePath(this.comic.id, this.currentPage);
+    this.navigate(this.comic.id, this.currentPage);
   }
 
   public nextPage () : void {
     this.currentPage += (this.currentPage < this.comic.pageCount ? 1 : 0);
-    this.setImagePath(this.comic.id, this.currentPage);
+    this.navigate(this.comic.id, this.currentPage);
   }
 
-  private setImagePath (id: number, page: number) : void {
+  private navigate(id: number, page: number) : void {
+    this.router.navigate(['/read/', id, page]);
     this.imagePath = `/api/read/${ id }/${ page }`;
   }
 
@@ -44,7 +47,7 @@ export class ReaderComponent implements OnInit {
     this.comicsService.get(id)
       .subscribe((data: Comic) => {
         this.comic = data;
-        this.setImagePath(this.comic.id, this.currentPage);
+        this.navigate(this.comic.id, this.currentPage);
       });
   }
 }
