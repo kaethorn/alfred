@@ -13,270 +13,272 @@ import javax.validation.constraints.Size;
 @Table(name = "COMICS")
 public class Comic {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-	@NotBlank
-	@Lob
+    @NotBlank
+    @Lob
     private String path;
 
-	@NotBlank
-	@Size(max = 255)
+    @NotBlank
+    @Size(max = 255)
     private String title;
 
-	@NotBlank
-	@Size(max = 255)
+    @NotBlank
+    @Size(max = 255)
     private String series;
-	
-	@NotBlank
-	@Size(max = 10)
-	private String number;
-	
-	@Size(max = 255)
-	private String volume;
 
-	@Lob
+    @NotBlank
+    @Size(max = 10)
+    private String number;
+
+    @Size(max = 255)
+    private String volume;
+
+    @Lob
     private String summary;
 
-	@Lob
+    @Lob
     private String notes;
-	
-	private Short year;
 
-	private Short month;
-	
-	@Lob
-	private String writer;
-	
-	@Lob
-	private String penciller;
-	
-	@Lob
-	private String inker;
-	
-	@Lob
-	private String colorist;
-	
-	@Lob
-	private String letterer;
-	
-	@Lob
-	private String cover_artist;
-	
-	@Lob
-	private String editor;
-	
-	@NotBlank
-	@Size(max = 255)
-	private String publisher;
+    private Short year;
 
-	@Lob
-	private String web;
-	
-	private Short page_count;
-	
-	private boolean manga;
+    private Short month;
 
-	@Lob
-	private String characters;
+    @Lob
+    private String writer;
 
-	@Lob
-	private String teams;
-	
-	public Comic() {}
+    @Lob
+    private String penciller;
 
-	public Comic(String path, String title, String series, String number, Short year, Short month, String publisher) {
-		this.path = path;
-		this.title = title;
-		this.series = series;
-		this.number = number;
-		this.year = year;
-		this.month = month;
-		this.publisher = publisher;
-	}
+    @Lob
+    private String inker;
 
-	public Long getId() {
-		return id;
-	}
+    @Lob
+    private String colorist;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Lob
+    private String letterer;
 
-	public String getPath() {
-		return path;
-	}
+    @Lob
+    private String coverArtist;
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    @Lob
+    private String editor;
 
-	public String getTitle() {
-		return title;
-	}
+    @NotBlank
+    @Size(max = 255)
+    private String publisher;
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    @Lob
+    private String web;
 
-	public String getSeries() {
-		return series;
-	}
+    private Short pageCount;
 
-	public void setSeries(String series) {
-		this.series = series;
-	}
+    private boolean manga;
 
-	public String getNumber() {
-		return number;
-	}
+    @Lob
+    private String characters;
 
-	public void setNumber(String number) {
-		this.number = number;
-	}
+    @Lob
+    private String teams;
 
-	public String getVolume() {
-		return volume;
-	}
+    public Comic() {
+    }
 
-	public void setVolume(String volume) {
-		this.volume = volume;
-	}
+    public Comic(final String path, final String title, final String series, final String number, final Short year,
+            final Short month, final String publisher) {
+        this.path = path;
+        this.title = title;
+        this.series = series;
+        this.number = number;
+        this.year = year;
+        this.month = month;
+        this.publisher = publisher;
+    }
 
-	public String getSummary() {
-		return summary;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setSummary(String summary) {
-		this.summary = summary;
-	}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-	public String getNotes() {
-		return notes;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+    public void setPath(final String path) {
+        this.path = path;
+    }
 
-	public Short getYear() {
-		return year;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setYear(Short year) {
-		this.year = year;
-	}
+    public void setTitle(final String title) {
+        this.title = title;
+    }
 
-	public Short getMonth() {
-		return month;
-	}
+    public String getSeries() {
+        return series;
+    }
 
-	public void setMonth(Short month) {
-		this.month = month;
-	}
+    public void setSeries(final String series) {
+        this.series = series;
+    }
 
-	public String getWriter() {
-		return writer;
-	}
+    public String getNumber() {
+        return number;
+    }
 
-	public void setWriter(String writer) {
-		this.writer = writer;
-	}
+    public void setNumber(final String number) {
+        this.number = number;
+    }
 
-	public String getPenciller() {
-		return penciller;
-	}
+    public String getVolume() {
+        return volume;
+    }
 
-	public void setPenciller(String penciller) {
-		this.penciller = penciller;
-	}
+    public void setVolume(final String volume) {
+        this.volume = volume;
+    }
 
-	public String getInker() {
-		return inker;
-	}
+    public String getSummary() {
+        return summary;
+    }
 
-	public void setInker(String inker) {
-		this.inker = inker;
-	}
+    public void setSummary(final String summary) {
+        this.summary = summary;
+    }
 
-	public String getColorist() {
-		return colorist;
-	}
+    public String getNotes() {
+        return notes;
+    }
 
-	public void setColorist(String colorist) {
-		this.colorist = colorist;
-	}
+    public void setNotes(final String notes) {
+        this.notes = notes;
+    }
 
-	public String getLetterer() {
-		return letterer;
-	}
+    public Short getYear() {
+        return year;
+    }
 
-	public void setLetterer(String letterer) {
-		this.letterer = letterer;
-	}
+    public void setYear(final Short year) {
+        this.year = year;
+    }
 
-	public String getCover_artist() {
-		return cover_artist;
-	}
+    public Short getMonth() {
+        return month;
+    }
 
-	public void setCover_artist(String cover_artist) {
-		this.cover_artist = cover_artist;
-	}
+    public void setMonth(final Short month) {
+        this.month = month;
+    }
 
-	public String getEditor() {
-		return editor;
-	}
+    public String getWriter() {
+        return writer;
+    }
 
-	public void setEditor(String editor) {
-		this.editor = editor;
-	}
+    public void setWriter(final String writer) {
+        this.writer = writer;
+    }
 
-	public String getPublisher() {
-		return publisher;
-	}
+    public String getPenciller() {
+        return penciller;
+    }
 
-	public void setPublisher(String publisher) {
-		this.publisher = publisher;
-	}
+    public void setPenciller(final String penciller) {
+        this.penciller = penciller;
+    }
 
-	public String getWeb() {
-		return web;
-	}
+    public String getInker() {
+        return inker;
+    }
 
-	public void setWeb(String web) {
-		this.web = web;
-	}
+    public void setInker(final String inker) {
+        this.inker = inker;
+    }
 
-	public Short getPageCount() {
-		return page_count;
-	}
+    public String getColorist() {
+        return colorist;
+    }
 
-	public void setPageCount(Short page_count) {
-		this.page_count = page_count;
-	}
+    public void setColorist(final String colorist) {
+        this.colorist = colorist;
+    }
 
-	public boolean isManga() {
-		return manga;
-	}
+    public String getLetterer() {
+        return letterer;
+    }
 
-	public void setManga(boolean manga) {
-		this.manga = manga;
-	}
+    public void setLetterer(final String letterer) {
+        this.letterer = letterer;
+    }
 
-	public String getCharacters() {
-		return characters;
-	}
+    public String getCoverArtist() {
+        return coverArtist;
+    }
 
-	public void setCharacters(String characters) {
-		this.characters = characters;
-	}
+    public void setCoverArtist(final String coverArtist) {
+        this.coverArtist = coverArtist;
+    }
 
-	public String getTeams() {
-		return teams;
-	}
+    public String getEditor() {
+        return editor;
+    }
 
-	public void setTeams(String teams) {
-		this.teams = teams;
-	}
+    public void setEditor(final String editor) {
+        this.editor = editor;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(final String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getWeb() {
+        return web;
+    }
+
+    public void setWeb(final String web) {
+        this.web = web;
+    }
+
+    public Short getPageCount() {
+        return pageCount;
+    }
+
+    public void setPageCount(final Short pageCount) {
+        this.pageCount = pageCount;
+    }
+
+    public boolean isManga() {
+        return manga;
+    }
+
+    public void setManga(final boolean manga) {
+        this.manga = manga;
+    }
+
+    public String getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(final String characters) {
+        this.characters = characters;
+    }
+
+    public String getTeams() {
+        return teams;
+    }
+
+    public void setTeams(final String teams) {
+        this.teams = teams;
+    }
 }

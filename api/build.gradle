@@ -14,6 +14,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'checkstyle'
 
 bootJar {
   baseName = 'gs-spring-boot'
@@ -27,6 +28,10 @@ targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+}
+
+checkstyle {
+	toolVersion '8.11'
 }
 
 dependencies {

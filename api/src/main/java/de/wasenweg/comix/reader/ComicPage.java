@@ -3,8 +3,8 @@ package de.wasenweg.comix.reader;
 import java.io.InputStream;
 
 public class ComicPage {
-	public InputStream stream;
-	public String name;
-	public long size;
-	public String type;
+    public InputStream stream;
+    public String name;
+    public long size;
+    public String type;
 }
