@@ -4,6 +4,7 @@ CREATE TABLE COMICS (
   title VARCHAR(255) NOT NULL,
   series VARCHAR(255) NOT NULL,
   number VARCHAR(10) NOT NULL,
+  position VARCHAR(6) NOT NULL,
   volume VARCHAR(255),
   summary CLOB,
   notes CLOB,

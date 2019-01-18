@@ -11,9 +11,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,6 +63,12 @@ public class Scanner {
         }
     }
 
+    private String mapPosition(final String number) {
+        final BigDecimal position = new BigDecimal(number.equals("½") ? "0.5" : number);
+        final String result = new DecimalFormat("0000.0").format(position);
+        return result;
+    }
+
     private Comic readMetadata(final Path path) {
         reportProgress(path.toString());
 
@@ -72,7 +80,7 @@ public class Scanner {
             e.printStackTrace();
         }
 
-        final Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", (short) 0, (short) 0, "");
+        final Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", "0.0", (short) 0, (short) 0, "");
 
         ZipFile file = null;
         try {
@@ -91,6 +99,7 @@ public class Scanner {
                     comic.setSeries(readElement(document, "Series"));
                     comic.setPublisher(readElement(document, "Publisher"));
                     comic.setNumber(readElement(document, "Number"));
+                    comic.setPosition(mapPosition(comic.getNumber()));
                     comic.setVolume(readElement(document, "Volume"));
                     comic.setSummary(readElement(document, "Summary"));
                     comic.setNotes(readElement(document, "Notes"));
@@ -136,7 +145,9 @@ public class Scanner {
 
             reportTotal(comicFiles.size());
 
-            list = comicFiles.stream().map(path -> readMetadata(path)).filter(path -> !path.getTitle().isEmpty())
+            list = comicFiles.stream()
+                    .map(path -> readMetadata(path))
+                    .filter(path -> !path.getTitle().isEmpty())
                     .collect(Collectors.toList());
         } catch (final IOException e) {
             e.printStackTrace();

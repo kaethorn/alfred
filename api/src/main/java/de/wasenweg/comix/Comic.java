@@ -33,6 +33,10 @@ public class Comic {
     @Size(max = 10)
     private String number;
 
+    @NotBlank
+    @Size(max = 6)
+    private String position;
+
     @Size(max = 255)
     private String volume;
 
@@ -87,12 +91,15 @@ public class Comic {
     public Comic() {
     }
 
-    public Comic(final String path, final String title, final String series, final String number, final Short year,
+    public Comic(final String path, final String title,
+            final String series, final String number,
+            final String position, final Short year,
             final Short month, final String publisher) {
         this.path = path;
         this.title = title;
         this.series = series;
         this.number = number;
+        this.position = position;
         this.year = year;
         this.month = month;
         this.publisher = publisher;
@@ -136,6 +143,14 @@ public class Comic {
 
     public void setNumber(final String number) {
         this.number = number;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(final String position) {
+        this.position = position;
     }
 
     public String getVolume() {
