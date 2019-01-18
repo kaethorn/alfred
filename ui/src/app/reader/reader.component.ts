@@ -7,7 +7,7 @@ import { Comic } from './../comic';
 @Component({
   selector: 'app-reader',
   templateUrl: './reader.component.html',
-  styleUrls: ['./reader.component.css']
+  styleUrls: ['./reader.component.sass']
 })
 export class ReaderComponent implements OnInit {
 

@@ -7,7 +7,7 @@ import { Comic } from './../comic';
 @Component({
   selector: 'app-comics',
   templateUrl: './comics.component.html',
-  styleUrls: ['./comics.component.css']
+  styleUrls: ['./comics.component.sass']
 })
 export class ComicsComponent {
   total: number = 0;
