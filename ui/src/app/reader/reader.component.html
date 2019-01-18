@@ -10,7 +10,9 @@
     <button mat-button (click)="prevPage()"><mat-icon>skip_previous</mat-icon></button>
     <button mat-button (click)="nextPage()"><mat-icon>skip_next</mat-icon></button>
   </mat-card-actions>
-  <img *ngIf="imagePath" [src]="imagePath" alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
+  <div class="image-container">
+    <img *ngIf="imagePath" [src]="imagePath" alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
+  </div>
   <mat-card-actions>
     <button mat-button (click)="prevPage()"><mat-icon>skip_previous</mat-icon></button>
     <button mat-button (click)="nextPage()"><mat-icon>skip_next</mat-icon></button>

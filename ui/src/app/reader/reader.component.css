@@ -1,4 +1,13 @@
-.page img {
-  max-width: 100%;
-  height: auto;
+.page .image-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.page .image-container img {
+  height: 100vh;
+  width: auto;
+  margin: auto;
+  overflow: auto;
 }
