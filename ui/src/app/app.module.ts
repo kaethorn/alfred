@@ -1,4 +1,4 @@
-// Third party
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
@@ -13,22 +13,28 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatDividerModule } from '@angular/material/divider';
 
 // Own
 import { AppComponent } from './app.component';
 import { ComicsComponent } from './comics/comics.component';
 import { ReaderComponent } from './reader/reader.component';
 import { AppRoutingModule } from './app-routing.module';
+import { PreferencesComponent } from './preferences/preferences.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ComicsComponent,
-    ReaderComponent
+    ReaderComponent,
+    PreferencesComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
+
     MatButtonModule,
     MatProgressBarModule,
     MatChipsModule,
@@ -37,6 +43,9 @@ import { AppRoutingModule } from './app-routing.module';
     MatToolbarModule,
     MatExpansionModule,
     MatIconModule,
+    MatInputModule,
+    MatDividerModule,
+
     BrowserAnimationsModule,
     AppRoutingModule
   ],

@@ -2,6 +2,8 @@ package de.wasenweg.comix.scanner;
 
 import de.wasenweg.comix.Comic;
 import de.wasenweg.comix.ComicRepository;
+import de.wasenweg.comix.preferences.PreferenceRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,9 @@ public class ScannerController {
     @Autowired
     private ComicRepository comicRepository;
 
+    @Autowired
+    private PreferenceRepository preferenceRepository;
+
     @GetMapping("/scan-progress")
     public SseEmitter streamScanProgress() {
         emitter = new SseEmitter();
@@ -39,6 +44,7 @@ public class ScannerController {
     @RequestMapping("/scan")
     @ResponseBody
     public void scan() {
+        final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
         Executors.newScheduledThreadPool(1).execute(() -> {
             final Scanner scanner = new Scanner(emitter);
             final List<Comic> comics = scanner.run();

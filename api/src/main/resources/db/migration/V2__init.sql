@@ -24,3 +24,14 @@ CREATE TABLE COMICS (
   characters CLOB,
   teams CLOB
 );
+
+CREATE TABLE PREFERENCES (
+  id IDENTITY NOT NULL PRIMARY KEY,
+  key VARCHAR(100) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  value VARCHAR(255),
+  comment CLOB
+);
+
+INSERT INTO PREFERENCES (key, name, value, comment) VALUES
+  ('comics.path', 'Path', '../sample', 'Path to you comic library');
