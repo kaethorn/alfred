@@ -12,7 +12,8 @@ import { Comic } from './../comic';
 export class FullScreenReaderComponent implements OnInit {
 
   comic: Comic = {} as Comic;
-  imagePath: string;
+  imagePathLeft: string;
+  imagePathRight: string;
   private currentPage: number = 1;
 
   constructor(
@@ -29,7 +30,7 @@ export class FullScreenReaderComponent implements OnInit {
   }
 
   private rightHalf(event: MouseEvent) {
-    return (event.offsetX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ? true : false;
+    return (event.clientX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ? true : false;
   }
 
   public onClick (event: MouseEvent) : void {
@@ -52,7 +53,12 @@ export class FullScreenReaderComponent implements OnInit {
 
   private navigate(id: number, page: number) : void {
     this.router.navigate(['/read-full-screen/', id, page]);
-    this.imagePath = `/api/read/${ id }/${ page }`;
+    this.imagePathLeft = `/api/read/${ id }/${ page }`;
+    if (page > 1) {
+      this.imagePathRight = `/api/read/${ id }/${ page + 1 }`;
+    } else {
+      this.imagePathRight = null;
+    }
   }
 
   private getComic (id: number) : void {
