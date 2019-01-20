@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from './../comics.service';
@@ -23,10 +23,11 @@ export class FullScreenReaderComponent implements OnInit {
     private comicsService: ComicsService
   ) { }
 
-  ngOnInit() {
-    // TODO Determine wide screen display to decide whether to use two page
-    // rendering.
-    this.sideBySide = true;
+  @ViewChild('layer') layer: ElementRef;
+
+  ngOnInit () {
+    const parentElement = this.layer.nativeElement.parentElement;
+    this.sideBySide = (parentElement.clientWidth > parentElement.clientHeight) ? true : false;
 
     this.currentPage = Number.parseInt(this.route.snapshot.params.page);
     this.getComic(Number.parseInt(this.route.snapshot.params.id));

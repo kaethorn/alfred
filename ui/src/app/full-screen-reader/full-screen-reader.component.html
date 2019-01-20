@@ -1,4 +1,4 @@
-<div class="layer" (click)="onClick($event)">
+<div class="layer" (click)="onClick($event)" #layer>
   <img *ngIf="imagePathLeft" [src]="imagePathLeft" class="left"
        alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
   <img *ngIf="imagePathRight" [src]="imagePathRight" class="right"
