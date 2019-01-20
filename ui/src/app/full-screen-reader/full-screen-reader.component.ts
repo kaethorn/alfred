@@ -66,7 +66,7 @@ export class FullScreenReaderComponent implements OnInit {
   }
 
   private navigate(id: number, page: number) : void {
-    const sideBySide = this.sideBySide && page > 1 && page <= this.comic.pageCount;
+    const sideBySide = this.sideBySide && page > 1 && page < this.comic.pageCount;
     this.router.navigate(['/read-full-screen/', id, page ]);
     this.imagePathLeft = `/api/read/${ id }/${ page }`;
     this.imagePathRight = sideBySide ? `/api/read/${ id }/${ page + 1 }` : null;
