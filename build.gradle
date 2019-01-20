@@ -18,11 +18,9 @@ apply plugin: 'checkstyle'
 
 bootJar {
   baseName = 'komix'
-  version =  '0.1.0'
 }
 
 group = 'de.wasenweg'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
