@@ -46,7 +46,7 @@ public class ScannerController {
     public void scan() {
         final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
         Executors.newScheduledThreadPool(1).execute(() -> {
-            final Scanner scanner = new Scanner(emitter);
+            final Scanner scanner = new Scanner(emitter, comicsPath);
             final List<Comic> comics = scanner.run();
             comicRepository.saveAll(comics);
             scanner.reportFinish();

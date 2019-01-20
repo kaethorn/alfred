@@ -27,11 +27,12 @@ public class Scanner {
 
     private final SseEmitter emitter;
 
-    public Scanner(final SseEmitter emitter) {
+    public Scanner(final SseEmitter emitter, final String comicsPath) {
         this.emitter = emitter;
+        this.comicsPath = comicsPath;
     }
 
-    private final String comicsPath = "../sample";
+    private final String comicsPath;
 
     private void sendEvent(final String data, final String name) {
         final SseEventBuilder event = SseEmitter.event().data(data).id(String.valueOf(this.hashCode())).name(name);
