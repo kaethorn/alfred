@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { ComicsService } from './comics.service';
-import { Comic } from './comic';
+import { ComicsService } from './../comics.service';
+import { Comic } from './../comic';
 
 @Component({
   selector: 'app-comics',
   templateUrl: './comics.component.html',
-  styleUrls: ['./comics.component.css']
+  styleUrls: ['./comics.component.sass']
 })
 export class ComicsComponent {
   total: number = 0;

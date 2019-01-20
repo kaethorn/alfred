@@ -1,6 +1,13 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <span>Welcome to {{ title }}</span>
+    <span class="spacer"></span>
+    <button mat-button [routerLink]="['/comics']">
+      <mat-icon>library_books</mat-icon>
+    </button>
+    <button mat-button [routerLink]="['/preferences']">
+      <mat-icon>settings</mat-icon>
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
 <router-outlet></router-outlet>

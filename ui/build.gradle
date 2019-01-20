@@ -1,16 +1,16 @@
 plugins {
   id 'java'
-  id "com.moowork.node" version "1.2.0"
+  id 'com.moowork.node' version '1.2.0'
 }
 
 node {
-  version = '9.2.0'
-  npmVersion = '6.4.1'
+  version = '10.9.0'
+  npmVersion = '6.2.0'
   download = true
 }
 
 jar.dependsOn 'npm_run_build'
 
 jar {
-  from 'dist/comix' into 'static'
+  from 'dist/komix' into 'static'
 }
