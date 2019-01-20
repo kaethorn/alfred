@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from './../comics.service';
 import { Comic } from './../comic';
@@ -14,7 +14,8 @@ export class FullScreenReaderComponent implements OnInit {
   comic: Comic = {} as Comic;
   imagePathLeft: string;
   imagePathRight: string;
-  private currentPage: number = 1;
+  sideBySide: boolean;
+  currentPage: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -23,10 +24,12 @@ export class FullScreenReaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.currentPage = Number.parseInt(params.get('page'));
-      this.getComic(Number.parseInt(params.get('id')));
-    });
+    // TODO Determine wide screen display to decide whether to use two page
+    // rendering.
+    this.sideBySide = true;
+
+    this.currentPage = Number.parseInt(this.route.snapshot.params.page);
+    this.getComic(Number.parseInt(this.route.snapshot.params.id));
   }
 
   private rightHalf(event: MouseEvent) {
@@ -42,23 +45,22 @@ export class FullScreenReaderComponent implements OnInit {
   }
 
   private prevPage () : void {
-    this.currentPage -= (this.currentPage > 1 ? 1 : 0);
+    this.currentPage -= this.currentPage > 1 ? 1 : 0;
+    this.currentPage -= (this.sideBySide && this.currentPage > 1) ? 1 : 0;
     this.navigate(this.comic.id, this.currentPage);
   }
 
   private nextPage () : void {
-    this.currentPage += (this.currentPage < this.comic.pageCount ? 1 : 0);
+    this.currentPage += this.currentPage < this.comic.pageCount ? 1 : 0;
+    this.currentPage += (this.sideBySide && this.currentPage > 2) ? 1 : 0;
     this.navigate(this.comic.id, this.currentPage);
   }
 
   private navigate(id: number, page: number) : void {
-    this.router.navigate(['/read-full-screen/', id, page]);
+    const sideBySide = this.sideBySide && page > 1;
+    this.router.navigate(['/read-full-screen/', id, page ]);
     this.imagePathLeft = `/api/read/${ id }/${ page }`;
-    if (page > 1) {
-      this.imagePathRight = `/api/read/${ id }/${ page + 1 }`;
-    } else {
-      this.imagePathRight = null;
-    }
+    this.imagePathRight = sideBySide ? `/api/read/${ id }/${ page + 1 }` : null;
   }
 
   private getComic (id: number) : void {

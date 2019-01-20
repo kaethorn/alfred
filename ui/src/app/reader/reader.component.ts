@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from './../comics.service';
 import { Comic } from './../comic';
@@ -22,10 +22,8 @@ export class ReaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.currentPage = Number.parseInt(params.get('page'));
-      this.getComic(Number.parseInt(params.get('id')));
-    });
+    this.currentPage = Number.parseInt(this.route.snapshot.params.page);
+    this.getComic(Number.parseInt(this.route.snapshot.params.id));
   }
 
   public prevPage () : void {
