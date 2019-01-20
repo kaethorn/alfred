@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kaethorn/comix.svg?branch=master)](https://travis-ci.org/kaethorn/comix)
+
 # KomiX
 
 A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
