@@ -1,7 +1,7 @@
-package de.wasenweg.comix.reader;
+package de.wasenweg.komix.reader;
 
-import de.wasenweg.comix.Comic;
-import de.wasenweg.comix.ComicRepository;
+import de.wasenweg.komix.Comic;
+import de.wasenweg.komix.ComicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

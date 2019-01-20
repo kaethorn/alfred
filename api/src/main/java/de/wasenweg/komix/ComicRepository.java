@@ -1,4 +1,4 @@
-package de.wasenweg.comix;
+package de.wasenweg.komix;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;

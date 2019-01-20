@@ -1,6 +1,6 @@
-package de.wasenweg.comix.scanner;
+package de.wasenweg.komix.scanner;
 
-import de.wasenweg.comix.Comic;
+import de.wasenweg.komix.Comic;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 import org.w3c.dom.Document;

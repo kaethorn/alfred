@@ -17,7 +17,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'checkstyle'
 
 bootJar {
-  baseName = 'gs-spring-boot'
+  baseName = 'komix'
   version =  '0.1.0'
 }
 

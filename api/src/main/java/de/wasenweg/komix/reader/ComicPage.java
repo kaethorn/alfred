@@ -1,4 +1,4 @@
-package de.wasenweg.comix.reader;
+package de.wasenweg.komix.reader;
 
 import java.io.InputStream;
 

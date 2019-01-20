@@ -1,4 +1,4 @@
-package de.wasenweg.comix.preferences;
+package de.wasenweg.komix.preferences;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

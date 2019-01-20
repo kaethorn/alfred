@@ -1,4 +1,4 @@
-package de.wasenweg.comix.preferences;
+package de.wasenweg.komix.preferences;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

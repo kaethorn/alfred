@@ -1,8 +1,8 @@
-package de.wasenweg.comix.scanner;
+package de.wasenweg.komix.scanner;
 
-import de.wasenweg.comix.Comic;
-import de.wasenweg.comix.ComicRepository;
-import de.wasenweg.comix.preferences.PreferenceRepository;
+import de.wasenweg.komix.Comic;
+import de.wasenweg.komix.ComicRepository;
+import de.wasenweg.komix.preferences.PreferenceRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
