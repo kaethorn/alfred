@@ -6,7 +6,7 @@ import { Preference } from '../preference';
 @Component({
   selector: 'app-preferences',
   templateUrl: './preferences.component.html',
-  styleUrls: ['./preferences.component.scss']
+  styleUrls: ['./preferences.component.sass']
 })
 export class PreferencesComponent implements OnInit {
 

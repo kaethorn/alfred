@@ -1,0 +1,4 @@
+<div class="layer" (click)="onClick($event)">
+  <img *ngIf="imagePath" [src]="imagePath"
+       alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
+</div>

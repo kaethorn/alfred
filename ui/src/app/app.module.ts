@@ -22,13 +22,15 @@ import { ComicsComponent } from './comics/comics.component';
 import { ReaderComponent } from './reader/reader.component';
 import { AppRoutingModule } from './app-routing.module';
 import { PreferencesComponent } from './preferences/preferences.component';
+import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ComicsComponent,
     ReaderComponent,
-    PreferencesComponent
+    PreferencesComponent,
+    FullScreenReaderComponent
   ],
   imports: [
     BrowserModule,
