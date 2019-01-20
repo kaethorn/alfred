@@ -1,4 +1,8 @@
 <mat-card>
+  <mat-card-header>
+    <mat-card-title>Settings</mat-card-title>
+  </mat-card-header>
+
   <form (ngSubmit)="onSubmit()" #preferencesForm="ngForm">
     <mat-card-content>
       <p *ngFor="let preference of preferences">
