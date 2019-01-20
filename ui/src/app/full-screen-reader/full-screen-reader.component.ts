@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from './../comics.service';
@@ -25,16 +25,17 @@ export class FullScreenReaderComponent implements OnInit {
 
   @ViewChild('layer') layer: ElementRef;
 
+  @HostListener('document:keyup.esc', ['$event'])
+  handleEscape() {
+    this.exitFullScreen(this.comic.id, this.currentPage);
+  }
+
   ngOnInit () {
     const parentElement = this.layer.nativeElement.parentElement;
     this.sideBySide = (parentElement.clientWidth > parentElement.clientHeight) ? true : false;
 
     this.currentPage = Number.parseInt(this.route.snapshot.params.page);
     this.getComic(Number.parseInt(this.route.snapshot.params.id));
-  }
-
-  private rightHalf(event: MouseEvent) {
-    return (event.clientX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ? true : false;
   }
 
   public onClick (event: MouseEvent) : void {
@@ -45,6 +46,13 @@ export class FullScreenReaderComponent implements OnInit {
     }
   }
 
+  // FIXME
+  // Clean up all these methods. They are tightly coupled and have business logic
+  // shared between each other.
+  private rightHalf(event: MouseEvent) {
+    return (event.clientX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ? true : false;
+  }
+
   private prevPage () : void {
     this.currentPage -= this.currentPage > 1 ? 1 : 0;
     this.currentPage -= (this.sideBySide && this.currentPage > 1) ? 1 : 0;
@@ -52,13 +60,13 @@ export class FullScreenReaderComponent implements OnInit {
   }
 
   private nextPage () : void {
-    this.currentPage += this.currentPage < this.comic.pageCount ? 1 : 0;
-    this.currentPage += (this.sideBySide && this.currentPage > 2) ? 1 : 0;
+    let increment = this.sideBySide ? 2 : 1;
+    this.currentPage += (this.currentPage + increment) <= this.comic.pageCount ? increment : 0;
     this.navigate(this.comic.id, this.currentPage);
   }
 
   private navigate(id: number, page: number) : void {
-    const sideBySide = this.sideBySide && page > 1;
+    const sideBySide = this.sideBySide && page > 1 && page <= this.comic.pageCount;
     this.router.navigate(['/read-full-screen/', id, page ]);
     this.imagePathLeft = `/api/read/${ id }/${ page }`;
     this.imagePathRight = sideBySide ? `/api/read/${ id }/${ page + 1 }` : null;
@@ -70,5 +78,9 @@ export class FullScreenReaderComponent implements OnInit {
         this.comic = data;
         this.navigate(this.comic.id, this.currentPage);
       });
+  }
+
+  private exitFullScreen (id: number, page: number) : void {
+    this.router.navigate(['/read/', id, page ]);
   }
 }
