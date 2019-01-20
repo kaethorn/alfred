@@ -31,35 +31,35 @@ public class Preference {
     @Lob
     private String comment;
 
-    public final String getKey() {
+    public String getKey() {
         return key;
     }
 
-    public final void setKey(final String key) {
+    public void setKey(final String key) {
         this.key = key;
     }
 
-    public final String getName() {
+    public String getName() {
         return name;
     }
 
-    public final void setName(final String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public final String getValue() {
+    public String getValue() {
         return value;
     }
 
-    public final void setValue(final String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
-    public final String getComment() {
+    public String getComment() {
         return comment;
     }
 
-    public final void setComment(final String comment) {
+    public void setComment(final String comment) {
         this.comment = comment;
     }
 }
