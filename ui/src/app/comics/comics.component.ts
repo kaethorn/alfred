@@ -39,9 +39,6 @@ export class ComicsComponent {
       this.list();
       scanProgress.close();
     });
-
-    this.comicsService.scan().subscribe(() => {
-    });
   }
 
   private list () {
