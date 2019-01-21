@@ -34,4 +34,4 @@ CREATE TABLE PREFERENCES (
 );
 
 INSERT INTO PREFERENCES (key, name, value, comment) VALUES
-  ('comics.path', 'Path', '../sample', 'Path to you comic library');
+  ('comics.path', 'Path', 'sample', 'Path to you comic library');

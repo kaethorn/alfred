@@ -31,7 +31,7 @@ public class ScannerController {
 
     @GetMapping("/scan-progress")
     public SseEmitter streamScanProgress() {
-        emitter = new SseEmitter();
+        emitter = new SseEmitter(Long.MAX_VALUE);
         this.emitters.add(emitter);
         emitter.onCompletion(() -> this.emitters.remove(emitter));
         emitter.onTimeout(() -> {
