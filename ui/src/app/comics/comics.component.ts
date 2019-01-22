@@ -4,6 +4,11 @@ import { Subscription } from 'rxjs';
 import { ComicsService } from './../comics.service';
 import { Comic } from './../comic';
 
+interface Error {
+  message: string;
+  date: Date;
+}
+
 @Component({
   selector: 'app-comics',
   templateUrl: './comics.component.html',
@@ -13,6 +18,8 @@ export class ComicsComponent {
   total: number = 0;
   file: string;
   counter: number = 0;
+  errors: any[] = [];
+
   comics: Array<Comic> = [];
 
   constructor (
@@ -31,6 +38,10 @@ export class ComicsComponent {
     scanProgress.addEventListener('current-file', (event: any) => {
       this.file = event.data;
       this.counter += 1;
+    });
+
+    scanProgress.addEventListener('error', (event: any) => {
+      this.errors.push({ message: event.data, date: new Date().toISOString() });
     });
 
     scanProgress.addEventListener('done', () => {

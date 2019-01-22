@@ -40,6 +40,7 @@ public class Scanner {
             try {
                 emitter.send(event);
             } catch (final IOException e) {
+                reportError(e.getMessage());
                 emitter.completeWithError(e);
             }
         });
@@ -55,6 +56,10 @@ public class Scanner {
 
     public void reportFinish() {
         this.sendEvent("", "done");
+    }
+
+    public void reportError(final String error) {
+        this.sendEvent(error, "error");
     }
 
     private String readElement(final Document document, final String elementName) {
@@ -81,6 +86,7 @@ public class Scanner {
             docBuilder = docBuilderFactory.newDocumentBuilder();
         } catch (final ParserConfigurationException e) {
             e.printStackTrace();
+            reportError(e.getMessage());
         }
 
         final Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", "0.0", (short) 0, (short) 0, "");
@@ -123,13 +129,19 @@ public class Scanner {
             }
         } catch (final SAXException e) {
             e.printStackTrace();
+            reportError(e.getMessage());
         } catch (final IOException e) {
             e.printStackTrace();
+            reportError(e.getMessage());
+        } catch (final Exception e) {
+            e.printStackTrace();
+            reportError(e.getMessage());
         } finally {
             try {
                 file.close();
             } catch (final IOException e) {
                 e.printStackTrace();
+                reportError(e.getMessage());
             }
         }
 
@@ -154,6 +166,7 @@ public class Scanner {
                     .collect(Collectors.toList());
         } catch (final IOException e) {
             e.printStackTrace();
+            reportError(e.getMessage());
         }
 
         return list;
