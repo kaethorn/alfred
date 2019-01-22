@@ -39,7 +39,7 @@ public class ScannerController {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
-            final Scanner scanner = new Scanner(emitter, comicsPath);
+            final Scanner scanner = new Scanner(emitters, comicsPath);
             final List<Comic> comics = scanner.run();
             comicRepository.deleteAll();
             comicRepository.saveAll(comics);

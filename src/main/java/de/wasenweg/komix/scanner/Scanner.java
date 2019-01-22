@@ -25,10 +25,10 @@ import java.util.zip.ZipFile;
 
 public class Scanner {
 
-    private final SseEmitter emitter;
+    private final List<SseEmitter> emitters;
 
-    public Scanner(final SseEmitter emitter, final String comicsPath) {
-        this.emitter = emitter;
+    public Scanner(final List<SseEmitter> emitters, final String comicsPath) {
+        this.emitters = emitters;
         this.comicsPath = comicsPath;
     }
 
@@ -36,11 +36,13 @@ public class Scanner {
 
     private void sendEvent(final String data, final String name) {
         final SseEventBuilder event = SseEmitter.event().data(data).id(String.valueOf(this.hashCode())).name(name);
-        try {
-            emitter.send(event);
-        } catch (final IOException e) {
-            emitter.completeWithError(e);
-        }
+        emitters.forEach(emitter -> {
+            try {
+                emitter.send(event);
+            } catch (final IOException e) {
+                emitter.completeWithError(e);
+            }
+        });
     }
 
     public void reportProgress(final String path) {
