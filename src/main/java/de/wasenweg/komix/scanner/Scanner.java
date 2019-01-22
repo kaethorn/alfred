@@ -71,6 +71,14 @@ public class Scanner {
         }
     }
 
+    private Short getPageCount(final Document document) {
+        final String pageCount = readElement(document, "PageCount");
+        if (pageCount.isEmpty()) {
+            return (short) document.getElementsByTagName("Page").getLength();
+        }
+        return Short.parseShort(pageCount);
+    }
+
     private String mapPosition(final String number) {
         final BigDecimal position = new BigDecimal(number.equals("½") ? "0.5" : number);
         final String result = new DecimalFormat("0000.0").format(position);
@@ -121,7 +129,7 @@ public class Scanner {
                     comic.setLetterer(readElement(document, "Letterer"));
                     comic.setEditor(readElement(document, "Editor"));
                     comic.setWeb(readElement(document, "Web"));
-                    comic.setPageCount(Short.parseShort(readElement(document, "PageCount")));
+                    comic.setPageCount(getPageCount(document));
                     comic.setManga(readElement(document, "Manga").equals("Yes"));
                     comic.setCharacters(readElement(document, "Characters"));
                     comic.setTeams(readElement(document, "Teams"));
