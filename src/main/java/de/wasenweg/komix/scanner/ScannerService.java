@@ -1,6 +1,7 @@
 package de.wasenweg.komix.scanner;
 
 import de.wasenweg.komix.Comic;
+
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 import org.w3c.dom.Document;
@@ -23,11 +24,13 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class Scanner {
+// FIXME
+//@Service
+public class ScannerService {
 
     private final List<SseEmitter> emitters;
 
-    public Scanner(final List<SseEmitter> emitters, final String comicsPath) {
+    public ScannerService(final List<SseEmitter> emitters, final String comicsPath) {
         this.emitters = emitters;
         this.comicsPath = comicsPath;
     }

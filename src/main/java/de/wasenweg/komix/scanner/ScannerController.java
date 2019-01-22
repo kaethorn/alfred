@@ -37,9 +37,12 @@ public class ScannerController {
             this.emitters.remove(emitter);
         });
 
+        // TODO
+        // * Make sure no new task is started if one is already running. Might be
+        //   working out of the box. Write a test?
         Executors.newSingleThreadExecutor().execute(() -> {
             final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
-            final Scanner scanner = new Scanner(emitters, comicsPath);
+            final ScannerService scanner = new ScannerService(emitters, comicsPath);
             final List<Comic> comics = scanner.run();
             comicRepository.deleteAll();
             comicRepository.saveAll(comics);
