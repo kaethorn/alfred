@@ -11,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.MediaTypes;
@@ -32,9 +31,6 @@ public class ComicsIntegrationTest {
 
     @LocalServerPort
     private int port;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @Autowired
     private ComicRepository comicRepository;

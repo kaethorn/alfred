@@ -9,16 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@RequestMapping("${spring.data.rest.base-path}")
 @RestController
+@RequestMapping("/api")
 public class ScannerController {
 
     private final List<SseEmitter> emitters = new ArrayList<>();
 
-    private ScannerService scannerService;
+    private final ScannerService scannerService;
+
+    public ScannerController(final ScannerService scannerService) {
+        this.scannerService = scannerService;
+    }
 
     @GetMapping("/scan-progress")
-    public SseEmitter streamScanProgress() {
+    SseEmitter streamScanProgress() {
         final SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         this.emitters.add(emitter);
 

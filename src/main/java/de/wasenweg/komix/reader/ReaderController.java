@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-@RequestMapping("${spring.data.rest.base-path}")
+@RequestMapping("/api")
 @RestController
 public class ReaderController {
 
