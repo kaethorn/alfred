@@ -1,10 +1,5 @@
 package de.wasenweg.komix.scanner;
 
-import de.wasenweg.komix.Comic;
-import de.wasenweg.komix.ComicRepository;
-import de.wasenweg.komix.preferences.PreferenceRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +15,7 @@ public class ScannerController {
 
     private final List<SseEmitter> emitters = new ArrayList<>();
 
-    @Autowired
-    private ComicRepository comicRepository;
-
-    @Autowired
-    private PreferenceRepository preferenceRepository;
+    private ScannerService scannerService;
 
     @GetMapping("/scan-progress")
     public SseEmitter streamScanProgress() {
@@ -41,12 +32,7 @@ public class ScannerController {
         // * Make sure no new task is started if one is already running. Might be
         //   working out of the box. Write a test?
         Executors.newSingleThreadExecutor().execute(() -> {
-            final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
-            final ScannerService scanner = new ScannerService(emitters, comicsPath);
-            final List<Comic> comics = scanner.run();
-            comicRepository.deleteAll();
-            comicRepository.saveAll(comics);
-            scanner.reportFinish();
+            scannerService.scanComics(emitters);
         });
 
         return emitter;

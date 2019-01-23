@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = KomixApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
-public class ScannerControllerIntegrationTest {
+public class ComicsIntegrationTest {
 
 
     @LocalServerPort

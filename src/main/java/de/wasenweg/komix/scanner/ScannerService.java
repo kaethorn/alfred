@@ -1,7 +1,11 @@
 package de.wasenweg.komix.scanner;
 
 import de.wasenweg.komix.Comic;
+import de.wasenweg.komix.ComicRepository;
+import de.wasenweg.komix.preferences.PreferenceRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 import org.w3c.dom.Document;
@@ -17,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,18 +29,20 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-// FIXME
-//@Service
+@Service
 public class ScannerService {
 
-    private final List<SseEmitter> emitters;
+    private List<SseEmitter> emitters = new ArrayList<>();
 
-    public ScannerService(final List<SseEmitter> emitters, final String comicsPath) {
-        this.emitters = emitters;
-        this.comicsPath = comicsPath;
+    private final PreferenceRepository preferenceRepository;
+
+    private final ComicRepository comicRepository;
+
+    @Autowired
+    public ScannerService(final ComicRepository comicRepository, final PreferenceRepository preferenceRepository) {
+        this.comicRepository = comicRepository;
+        this.preferenceRepository = preferenceRepository;
     }
-
-    private final String comicsPath;
 
     private void sendEvent(final String data, final String name) {
         final SseEventBuilder event = SseEmitter.event().data(data).id(String.valueOf(this.hashCode())).name(name);
@@ -49,11 +56,11 @@ public class ScannerService {
         });
     }
 
-    public void reportProgress(final String path) {
+    private void reportProgress(final String path) {
         this.sendEvent(path, "current-file");
     }
 
-    public void reportTotal(final int total) {
+    private void reportTotal(final int total) {
         this.sendEvent(String.valueOf(total), "total");
     }
 
@@ -159,8 +166,12 @@ public class ScannerService {
         return comic;
     }
 
-    public List<Comic> run() {
-        List<Comic> list = null;
+    public void scanComics(final List<SseEmitter> emitters) {
+        this.emitters = emitters;
+
+        List<Comic> comics = null;
+
+        final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
         final Path root = Paths.get(comicsPath);
 
         List<Path> comicFiles = null;
@@ -171,7 +182,7 @@ public class ScannerService {
 
             reportTotal(comicFiles.size());
 
-            list = comicFiles.stream()
+            comics = comicFiles.stream()
                     .map(path -> readMetadata(path))
                     .filter(path -> !path.getTitle().isEmpty())
                     .collect(Collectors.toList());
@@ -180,6 +191,8 @@ public class ScannerService {
             reportError(e.getMessage());
         }
 
-        return list;
+        comicRepository.deleteAll();
+        comicRepository.saveAll(comics);
+        reportFinish();
     }
 }
