@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = KomixApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ComicsIntegrationTest {
 
-
     @LocalServerPort
     private int port;
 

@@ -1,8 +1,6 @@
 package de.wasenweg.komix.preferences;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -13,11 +11,8 @@ import javax.validation.constraints.Size;
 @Table(name = "PREFERENCES")
 public class Preference {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @NotBlank
+    @Id
     @Size(max = 100)
     private String key;
 
@@ -30,6 +25,15 @@ public class Preference {
 
     @Lob
     private String comment;
+
+    public Preference() { }
+
+    public Preference(final String key, final String name, final String value, final String comment) {
+        this.key = key;
+        this.name = name;
+        this.value = value;
+        this.comment = comment;
+    }
 
     public String getKey() {
         return key;

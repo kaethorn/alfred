@@ -194,5 +194,8 @@ public class ScannerService {
         comicRepository.deleteAll();
         comicRepository.saveAll(comics);
         reportFinish();
+        emitters.forEach(emitter -> {
+            emitter.complete();
+        });
     }
 }
