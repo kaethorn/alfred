@@ -44,8 +44,7 @@ public class ScannerIngrationTest {
 
     @Before
     public void setUp() {
-        final Preference comicsPath = preferenceRepository
-                .findByKey("comics.path");
+        final Preference comicsPath = preferenceRepository.findByKey("comics.path").get();
         comicsPath.setValue("src/test/resources/fixtures/simple");
         preferenceRepository.save(comicsPath);
     }

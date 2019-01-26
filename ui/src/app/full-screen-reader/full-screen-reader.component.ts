@@ -35,7 +35,7 @@ export class FullScreenReaderComponent implements OnInit {
     this.sideBySide = (parentElement.clientWidth > parentElement.clientHeight) ? true : false;
 
     this.currentPage = Number.parseInt(this.route.snapshot.params.page);
-    this.getComic(Number.parseInt(this.route.snapshot.params.id));
+    this.getComic(this.route.snapshot.params.id);
   }
 
   public onClick (event: MouseEvent) : void {
@@ -72,7 +72,7 @@ export class FullScreenReaderComponent implements OnInit {
     this.imagePathRight = sideBySide ? `/api/read/${ id }/${ page + 1 }` : null;
   }
 
-  private getComic (id: number) : void {
+  private getComic (id: string) : void {
     this.comicsService.get(id)
       .subscribe((data: Comic) => {
         this.comic = data;

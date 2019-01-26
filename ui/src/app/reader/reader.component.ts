@@ -23,7 +23,7 @@ export class ReaderComponent implements OnInit {
 
   ngOnInit() {
     this.currentPage = Number.parseInt(this.route.snapshot.params.page);
-    this.getComic(Number.parseInt(this.route.snapshot.params.id));
+    this.getComic(this.route.snapshot.params.id);
   }
 
   public prevPage () : void {
@@ -41,7 +41,7 @@ export class ReaderComponent implements OnInit {
     this.imagePath = `/api/read/${ id }/${ page }`;
   }
 
-  private getComic (id: number) : void {
+  private getComic (id: string) : void {
     this.comicsService.get(id)
       .subscribe((data: Comic) => {
         this.comic = data;

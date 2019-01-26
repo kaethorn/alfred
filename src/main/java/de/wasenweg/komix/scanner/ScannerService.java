@@ -2,7 +2,7 @@ package de.wasenweg.komix.scanner;
 
 import de.wasenweg.komix.comics.Comic;
 import de.wasenweg.komix.comics.ComicRepository;
-import de.wasenweg.komix.preferences.PreferenceRepository;
+import de.wasenweg.komix.preferences.PreferencesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,14 +24,14 @@ public class ScannerService {
 
     private List<SseEmitter> emitters = new ArrayList<>();
 
-    private final PreferenceRepository preferenceRepository;
-
     private final ComicRepository comicRepository;
 
+    private final PreferencesService preferencesService;
+
     @Autowired
-    public ScannerService(final ComicRepository comicRepository, final PreferenceRepository preferenceRepository) {
+    public ScannerService(final ComicRepository comicRepository, final PreferencesService preferencesService) {
         this.comicRepository = comicRepository;
-        this.preferenceRepository = preferenceRepository;
+        this.preferencesService = preferencesService;
     }
 
     private void sendEvent(final String data, final String name) {
@@ -65,7 +65,8 @@ public class ScannerService {
     private Comic createComic(final Path path) {
         reportProgress(path.toString());
 
-        final Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", "0.0", (short) 0, (short) 0, "");
+        final Comic comic = new Comic();
+        comic.setPath(path.toAbsolutePath().toString());
 
         ZipFile file = null;
         try {
@@ -90,7 +91,7 @@ public class ScannerService {
     public void scanComics(final List<SseEmitter> emitters) {
         this.emitters = emitters;
 
-        final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
+        final String comicsPath = this.preferencesService.get("comics.path");
         final Path root = Paths.get(comicsPath);
 
         List<Path> comicFiles = null;

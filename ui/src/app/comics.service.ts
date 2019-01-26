@@ -29,7 +29,7 @@ export class ComicsService {
     );
   }
 
-  get (id: number) : Observable<Comic> {
+  get (id: string) : Observable<Comic> {
     return this.http.get<Comic>(`${ this.getUrl }/${ id }`).pipe(
       map((comic: any) => {
         comic.id = comic._links.self.href.split('/').pop();

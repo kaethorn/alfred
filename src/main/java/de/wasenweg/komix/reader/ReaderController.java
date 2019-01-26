@@ -86,7 +86,7 @@ public class ReaderController {
 
     @RequestMapping("/read/{id}")
     @ResponseBody
-    public ResponseEntity<StreamingResponseBody> readFromBeginning(@PathVariable("id") final Long id) {
+    public ResponseEntity<StreamingResponseBody> readFromBeginning(@PathVariable("id") final String id) {
         return read(id, (short) 0);
     }
 
@@ -99,7 +99,7 @@ public class ReaderController {
      */
     @RequestMapping("/read/{id}/{page}")
     @ResponseBody
-    public ResponseEntity<StreamingResponseBody> read(@PathVariable("id") final Long id,
+    public ResponseEntity<StreamingResponseBody> read(@PathVariable("id") final String id,
             @PathVariable("page") final Short page) {
         final Optional<Comic> comicQuery = comicRepository.findById(id);
 
