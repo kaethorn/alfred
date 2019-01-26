@@ -48,8 +48,6 @@ public class MetaDataReader {
     private static Optional<Document> getDocument(final ZipFile file, final ZipEntry entry)
             throws SAXException, IOException {
 
-        final Optional<Document> document = Optional.empty();
-
         return Optional.ofNullable(
                 docBuilder.parse(file.getInputStream(entry)));
     }
