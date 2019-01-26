@@ -22,7 +22,8 @@ CREATE TABLE COMICS (
   page_count SMALLINT,
   manga BOOLEAN,
   characters CLOB,
-  teams CLOB
+  teams CLOB,
+  thumbnail BLOB
 );
 
 CREATE TABLE PREFERENCES (

@@ -88,6 +88,9 @@ public class Comic {
     @Lob
     private String teams;
 
+    @Lob
+    private byte[] thumbnail;
+
     public Comic() {
     }
 
@@ -295,5 +298,13 @@ public class Comic {
 
     public void setTeams(final String teams) {
         this.teams = teams;
+    }
+
+    public byte[] getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(final byte[] thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

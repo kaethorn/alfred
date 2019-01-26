@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -22,8 +23,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -38,10 +42,19 @@ public class ScannerService {
 
     private final ComicRepository comicRepository;
 
+    private DocumentBuilder docBuilder = null;
+
     @Autowired
     public ScannerService(final ComicRepository comicRepository, final PreferenceRepository preferenceRepository) {
         this.comicRepository = comicRepository;
         this.preferenceRepository = preferenceRepository;
+
+        final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        try {
+            docBuilder = docBuilderFactory.newDocumentBuilder();
+        } catch (final ParserConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendEvent(final String data, final String name) {
@@ -95,62 +108,66 @@ public class ScannerService {
         return result;
     }
 
-    private Comic readMetadata(final Path path) {
-        reportProgress(path.toString());
+    private Optional<Document> getDocument(final ZipFile file, final ZipEntry entry) {
+        Optional<Document> document = Optional.empty();
 
-        final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = null;
         try {
-            docBuilder = docBuilderFactory.newDocumentBuilder();
-        } catch (final ParserConfigurationException e) {
-            e.printStackTrace();
-            reportError(e.getMessage());
-        }
-
-        final Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", "0.0", (short) 0, (short) 0, "");
-
-        ZipFile file = null;
-        try {
-            file = new ZipFile(path.toString());
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            final Enumeration<? extends ZipEntry> entries = file.entries();
-            while (entries.hasMoreElements()) {
-                final ZipEntry entry = entries.nextElement();
-                if (entry.getName().equals("ComicInfo.xml")) {
-                    final Document document = docBuilder.parse(file.getInputStream(entry));
-                    document.getDocumentElement().normalize();
-                    comic.setTitle(readElement(document, "Title"));
-                    comic.setSeries(readElement(document, "Series"));
-                    comic.setPublisher(readElement(document, "Publisher"));
-                    comic.setNumber(readElement(document, "Number"));
-                    comic.setPosition(mapPosition(comic.getNumber()));
-                    comic.setVolume(readElement(document, "Volume"));
-                    comic.setSummary(readElement(document, "Summary"));
-                    comic.setNotes(readElement(document, "Notes"));
-                    comic.setYear(Short.parseShort(readElement(document, "Year")));
-                    comic.setMonth(Short.parseShort(readElement(document, "Month")));
-                    comic.setWriter(readElement(document, "Writer"));
-                    comic.setPenciller(readElement(document, "Penciller"));
-                    comic.setInker(readElement(document, "Inker"));
-                    comic.setColorist(readElement(document, "Colorist"));
-                    comic.setLetterer(readElement(document, "Letterer"));
-                    comic.setEditor(readElement(document, "Editor"));
-                    comic.setWeb(readElement(document, "Web"));
-                    comic.setPageCount(getPageCount(document));
-                    comic.setManga(readElement(document, "Manga").equals("Yes"));
-                    comic.setCharacters(readElement(document, "Characters"));
-                    comic.setTeams(readElement(document, "Teams"));
-                }
-            }
+            document = Optional.ofNullable(
+                    docBuilder.parse(file.getInputStream(entry)));
         } catch (final SAXException e) {
             e.printStackTrace();
             reportError(e.getMessage());
         } catch (final IOException e) {
             e.printStackTrace();
             reportError(e.getMessage());
+        }
+
+        return document;
+    }
+
+    private void parseComicInfoXml(final ZipFile file, final ZipEntry entry, final Comic comic) {
+        final Optional<Document> documentOptional = getDocument(file, entry);
+
+        if (!documentOptional.isPresent()) {
+            return;
+        }
+
+        final Document document = documentOptional.get();
+
+        document.getDocumentElement().normalize();
+        comic.setTitle(readElement(document, "Title"));
+        comic.setSeries(readElement(document, "Series"));
+        comic.setPublisher(readElement(document, "Publisher"));
+        comic.setNumber(readElement(document, "Number"));
+        comic.setPosition(mapPosition(comic.getNumber()));
+        comic.setVolume(readElement(document, "Volume"));
+        comic.setSummary(readElement(document, "Summary"));
+        comic.setNotes(readElement(document, "Notes"));
+        comic.setYear(Short.parseShort(readElement(document, "Year")));
+        comic.setMonth(Short.parseShort(readElement(document, "Month")));
+        comic.setWriter(readElement(document, "Writer"));
+        comic.setPenciller(readElement(document, "Penciller"));
+        comic.setInker(readElement(document, "Inker"));
+        comic.setColorist(readElement(document, "Colorist"));
+        comic.setLetterer(readElement(document, "Letterer"));
+        comic.setEditor(readElement(document, "Editor"));
+        comic.setWeb(readElement(document, "Web"));
+        comic.setPageCount(getPageCount(document));
+        comic.setManga(readElement(document, "Manga").equals("Yes"));
+        comic.setCharacters(readElement(document, "Characters"));
+        comic.setTeams(readElement(document, "Teams"));
+    }
+
+    private Comic createComic(final Path path) {
+        reportProgress(path.toString());
+
+        final Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", "0.0", (short) 0, (short) 0, "");
+
+        ZipFile file = null;
+        try {
+            file = new ZipFile(path.toString());
+            readMetadata(file, comic);
+            readThumbNail(file, comic);
         } catch (final Exception e) {
             e.printStackTrace();
             reportError(e.getMessage());
@@ -164,6 +181,33 @@ public class ScannerService {
         }
 
         return comic;
+    }
+
+    private void readMetadata(final ZipFile file, final Comic comic) {
+        final Enumeration<? extends ZipEntry> entries = file.entries();
+        while (entries.hasMoreElements()) {
+            final ZipEntry entry = entries.nextElement();
+            if (entry.getName().equals("ComicInfo.xml")) {
+                parseComicInfoXml(file, entry, comic);
+                break;
+            }
+        }
+    }
+
+    private void readThumbNail(final ZipFile file, final Comic comic) {
+        final Comparator<ZipEntry> byName =
+                (ze1, ze2) -> ze1.getName().compareTo(ze2.getName());
+        final Predicate<ZipEntry> isImage = ze -> ze.getName().matches(".*(png|jpg)$");
+        final List<ZipEntry> sortedEntries = file.stream()
+                .filter(isImage)
+                .sorted(byName)
+                .collect(Collectors.toList());
+
+        try {
+            comic.setThumbnail(Thumbnail.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void scanComics(final List<SseEmitter> emitters) {
@@ -183,7 +227,7 @@ public class ScannerService {
             reportTotal(comicFiles.size());
 
             comics = comicFiles.stream()
-                    .map(path -> readMetadata(path))
+                    .map(path -> createComic(path))
                     .filter(path -> !path.getTitle().isEmpty())
                     .collect(Collectors.toList());
         } catch (final IOException e) {
