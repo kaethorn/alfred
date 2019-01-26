@@ -1,8 +1,8 @@
 package de.wasenweg.comix;
 
-import de.wasenweg.komix.Comic;
-import de.wasenweg.komix.ComicRepository;
 import de.wasenweg.komix.KomixApplication;
+import de.wasenweg.komix.comics.Comic;
+import de.wasenweg.komix.comics.ComicRepository;
 
 import org.junit.After;
 import org.junit.Before;

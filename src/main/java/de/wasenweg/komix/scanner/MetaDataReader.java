@@ -1,6 +1,6 @@
 package de.wasenweg.komix.scanner;
 
-import de.wasenweg.komix.Comic;
+import de.wasenweg.komix.comics.Comic;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;

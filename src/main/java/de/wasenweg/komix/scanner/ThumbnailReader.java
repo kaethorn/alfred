@@ -1,6 +1,6 @@
 package de.wasenweg.komix.scanner;
 
-import de.wasenweg.komix.Comic;
+import de.wasenweg.komix.comics.Comic;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -23,6 +23,8 @@ public class ThumbnailReader {
                 .sorted(byName)
                 .collect(Collectors.toList());
 
-        comic.setThumbnail(Thumbnail.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
+        if (sortedEntries.size() > 0) {
+            comic.setThumbnail(Thumbnail.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
+        }
     }
 }

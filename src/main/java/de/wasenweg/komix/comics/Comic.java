@@ -1,4 +1,4 @@
-package de.wasenweg.komix;
+package de.wasenweg.komix.comics;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
