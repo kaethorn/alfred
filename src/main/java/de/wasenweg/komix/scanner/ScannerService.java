@@ -90,30 +90,31 @@ public class ScannerService {
     public void scanComics(final List<SseEmitter> emitters) {
         this.emitters = emitters;
 
-        List<Comic> comics = null;
-
         final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
         final Path root = Paths.get(comicsPath);
 
         List<Path> comicFiles = null;
 
+        comicRepository.deleteAll();
+
         try (Stream<Path> files = Files.walk(root)) {
             comicFiles = files.filter(path -> Files.isRegularFile(path))
-                    .filter(path -> path.getFileName().toString().endsWith(".cbz")).collect(Collectors.toList());
+                    .filter(path -> path.getFileName().toString().endsWith(".cbz"))
+                    .collect(Collectors.toList());
 
             reportTotal(comicFiles.size());
 
-            comics = comicFiles.stream()
+            comicFiles.stream()
                     .map(path -> createComic(path))
                     .filter(path -> !path.getTitle().isEmpty())
-                    .collect(Collectors.toList());
+                    .forEach(comic -> {
+                        comicRepository.save(comic);
+                    });
         } catch (final IOException e) {
             e.printStackTrace();
             reportError(e.getMessage());
         }
 
-        comicRepository.deleteAll();
-        comicRepository.saveAll(comics);
         reportFinish();
         emitters.forEach(emitter -> {
             emitter.complete();
