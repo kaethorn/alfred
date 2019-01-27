@@ -2,3 +2,6 @@ spring:
   data:
     rest:
       base-path: /api
+    mongodb:
+      database: komix
+      uri: mongodb://localhost/komix
