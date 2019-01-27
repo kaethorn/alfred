@@ -38,8 +38,8 @@ public class ComicsIntegrationTest {
 
     @Before
     public void setUp() {
-        comicRepository.save(new Comic("/a.cbz", "Title A", "Series A", "1", "0001.0", (short) 2007, (short) 9, "Pub A"));
-        comicRepository.save(new Comic("/b.cbz", "Title B", "Series A", "2", "0002.0", (short) 2007, (short) 10, "Pub A"));
+        comicRepository.save(new Comic("/a.cbz", "Title A", "Series A", "1999", "1", "0001.0", (short) 2007, (short) 9, "Pub A"));
+        comicRepository.save(new Comic("/b.cbz", "Title B", "Series A", "1999", "2", "0002.0", (short) 2007, (short) 10, "Pub A"));
     }
 
     @After

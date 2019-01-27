@@ -26,6 +26,8 @@ public class Comic {
     @NonNull
     private String series;
     @NonNull
+    private String volume;
+    @NonNull
     private String number;
     @NonNull
     private String position;
@@ -36,7 +38,6 @@ public class Comic {
     @NonNull
     private String publisher;
 
-    private String volume;
     private String summary;
     private String notes;
     private String writer;

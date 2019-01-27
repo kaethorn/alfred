@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 
 import { ComicsService } from './../comics.service';
 import { Comic } from './../comic';
+import { Volume } from './../volume';
 
 interface Error {
   message: string;
@@ -21,6 +22,7 @@ export class ComicsComponent {
   errors: any[] = [];
 
   comics: Array<Comic> = [];
+  seriesList: Array<Volume> = [];
 
   constructor (
     private comicsService: ComicsService
@@ -53,9 +55,9 @@ export class ComicsComponent {
   }
 
   private list () {
-    this.comicsService.list()
-      .subscribe((data: Comic[]) => {
-        this.comics = data;
+    this.comicsService.listVolumes()
+      .subscribe((data: Volume[]) => {
+        this.seriesList = data;
       });
   }
 }
