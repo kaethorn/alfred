@@ -7,6 +7,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import java.util.Optional;
 
 @RepositoryRestResource(collectionResourceRel = "preferences", path = "preferences")
-public interface PreferenceRepository extends MongoRepository<Preference, Long> {
+public interface PreferenceRepository extends MongoRepository<Preference, String> {
     Optional<Preference> findByKey(@Param("key") String key);
 }
