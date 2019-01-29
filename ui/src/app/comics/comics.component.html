@@ -13,11 +13,13 @@
             {{ series.series }}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <app-volume *ngFor="let volume of series.volumes"
-          [publisher]="publisher.publisher"
-          [series]="series.series"
-          [volume]="volume">
-        </app-volume>
+        <div class="volumes">
+          <app-volume *ngFor="let volume of series.volumes"
+            [publisher]="publisher.publisher"
+            [series]="series.series"
+            [volume]="volume">
+          </app-volume>
+        </div>
       </mat-expansion-panel>
     </mat-accordion>
   </mat-expansion-panel>

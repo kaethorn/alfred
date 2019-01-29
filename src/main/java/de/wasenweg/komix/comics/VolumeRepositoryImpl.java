@@ -2,6 +2,8 @@ package de.wasenweg.komix.comics;
 
 import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -10,6 +12,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
 @RepositoryRestResource(collectionResourceRel = "volumes", path = "volumes")
 public class VolumeRepositoryImpl implements VolumeRepository {
@@ -34,9 +37,16 @@ public class VolumeRepositoryImpl implements VolumeRepository {
     @Override
     public List<Publisher> findVolumesBySeriesAndPublishers() {
         final AggregationResults<Publisher> result = mongoTemplate.aggregate(Aggregation.newAggregation(
+            sort(Sort.Direction.DESC, "position"),
+            group("publisher", "series", "volume")
+                .last("volume").as("volume")
+                .first("thumbnail").as("thumbnail"),
             group("publisher", "series")
                 .last("series").as("series")
-                .addToSet("volume").as("volumes"),
+                .addToSet(new BasicDBObject() {{
+                    put("volume", "$_id.volume");
+                    put("thumbnail", "$thumbnail");
+                }}).as("volumes"),
             group("_id.publisher")
                 .last("_id.publisher").as("publisher")
                 .addToSet(new BasicDBObject() {{
