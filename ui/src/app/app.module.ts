@@ -23,6 +23,8 @@ import { ReaderComponent } from './reader/reader.component';
 import { AppRoutingModule } from './app-routing.module';
 import { PreferencesComponent } from './preferences/preferences.component';
 import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
+import { ScannerComponent } from './comics/scanner/scanner.component';
+import { VolumeComponent } from './comics/volume/volume.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { FullScreenReaderComponent } from './full-screen-reader/full-screen-read
     ComicsComponent,
     ReaderComponent,
     PreferencesComponent,
-    FullScreenReaderComponent
+    FullScreenReaderComponent,
+    ScannerComponent,
+    VolumeComponent
   ],
   imports: [
     BrowserModule,

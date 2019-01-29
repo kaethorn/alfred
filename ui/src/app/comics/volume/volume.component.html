@@ -1,0 +1,24 @@
+<mat-chip-list>
+  <mat-chip>{{ volume }}</mat-chip>
+  <button [routerLink]="['/read/', 'fixme', '1']" color="primary" mat-button>
+    Read
+  </button>
+  <button (click)="toggleIssues(publisher, series, volume)" mat-button>
+    List
+  </button>
+</mat-chip-list>
+
+<mat-card *ngFor="let comic of comics">
+  <mat-card-content>
+    <div class="comic-summary">
+      <a [routerLink]="['/read/', comic.id, '1']">
+        <img src="data:image/jpeg;base64,{{ comic.thumbnail }}">
+      </a>
+      <div cl>
+        <h4>#{{ comic.number }} {{ comic.title }}</h4>
+        <h5>{{ comic.year }}/{{ comic.month }}</h5>
+        <p>{{ comic.summary }}</p>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

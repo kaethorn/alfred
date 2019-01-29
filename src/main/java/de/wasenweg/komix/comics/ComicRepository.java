@@ -9,7 +9,12 @@ public interface ComicRepository extends MongoRepository<Comic, String>, VolumeR
 
     List<Comic> findAllByOrderBySeriesAscVolumeAscPositionAsc();
 
-    List<Comic> findAllBySeriesAndVolume(
+    List<Comic> findAllBySeriesAndVolumeOrderByPosition(
+            @Param("series") final String series,
+            @Param("volume") final String volume);
+
+    List<Comic> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+            @Param("publisher") final String publisher,
             @Param("series") final String series,
             @Param("volume") final String volume);
 }

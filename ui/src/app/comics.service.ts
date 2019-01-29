@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Comic } from './comic';
-import { Volume } from './volume';
+import { Publisher, Series } from './publisher';
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +14,21 @@ export class ComicsService {
 
   private API_PREFIX: String = 'api';
 
-  private scanUrl: string = `${ this.API_PREFIX }/scan`;
-  private listUrl: string = `${ this.API_PREFIX }/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc`;
-  private listByVolumeUrl: string = `${ this.API_PREFIX }/comics/search/findAllBySeriesAndVolume`;
-  private getUrl: string = `${ this.API_PREFIX }/comics`;
-  private listVolumesUrl: string = `${ this.API_PREFIX }/comics/search/findVolumesBySeries`;
+  private scanUrl: string =
+    `${ this.API_PREFIX }/scan`;
+  private comicsUrl: string =
+    `${ this.API_PREFIX }/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc`;
+  private comicsByVolumeUrl: string =
+    `${ this.API_PREFIX }/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition`;
+  private comicUrl: string =
+    `${ this.API_PREFIX }/comics`;
+  private volumesBySeriesUrl: string =
+    `${ this.API_PREFIX }/comics/search/findVolumesBySeries`;
+  private volumesByPublisherUrl: string =
+    `${ this.API_PREFIX }/comics/search/findVolumesBySeriesAndPublishers`;
 
   list () : Observable<Comic[]> {
-    return this.http.get(this.listUrl).pipe(
+    return this.http.get(this.comicsUrl).pipe(
       map((data: any) => data._embedded.comics),
       map((data: any) => {
         return data.map((comic) => {
@@ -32,14 +39,15 @@ export class ComicsService {
     );
   }
 
-  listByVolume (series: string, volume: string) : Observable<Comic[]> {
+  listByVolume (publisher: string, series: string, volume: string) : Observable<Comic[]> {
     const params = new HttpParams({
       fromObject: {
+        publisher: publisher,
         series: series,
         volume: volume
       }
     });
-    return this.http.get(this.listByVolumeUrl, { params: params }).pipe(
+    return this.http.get(this.comicsByVolumeUrl, { params: params }).pipe(
       map((data: any) => data._embedded.comics),
       map((data: any) => {
         return data.map((comic) => {
@@ -51,7 +59,7 @@ export class ComicsService {
   }
 
   get (id: string) : Observable<Comic> {
-    return this.http.get<Comic>(`${ this.getUrl }/${ id }`).pipe(
+    return this.http.get<Comic>(`${ this.comicUrl }/${ id }`).pipe(
       map((comic: any) => {
         comic.id = comic._links.self.href.split('/').pop();
         return comic;
@@ -63,15 +71,15 @@ export class ComicsService {
     return this.http.get(this.scanUrl);
   }
 
-  listVolumes () : Observable<Volume[]> {
-    return this.http.get(this.listVolumesUrl).pipe(
-      map((data: any) => data._embedded.volumes),
-      map((data: any) => {
-        return data.map((comic) => {
-          comic.id = comic._links.self.href.split('/').pop();
-          return comic;
-        });
-      })
+  listVolumesBySeries() : Observable<Series[]> {
+    return this.http.get(this.volumesBySeriesUrl).pipe(
+      map((data: any) => data._embedded.publishers)
+    );
+  }
+
+  listVolumesByPublisher () : Observable<Publisher[]> {
+    return this.http.get(this.volumesByPublisherUrl).pipe(
+      map((data: any) => data._embedded.publishers)
     );
   }
 }
