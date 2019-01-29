@@ -7,10 +7,10 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class Volume {
+public class Publisher {
 
     private String id;
 
-    private String series;
-    private List<String> volumes;
+    private String publisher;
+    private List<Series> series;
 }
