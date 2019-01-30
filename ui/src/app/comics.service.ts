@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { Comic } from './comic';
-import { Publisher, Series } from './publisher';
+import { Publisher, Series, Volume } from './publisher';
 
 @Injectable({
   providedIn: 'root'
@@ -79,7 +79,14 @@ export class ComicsService {
 
   listVolumesByPublisher () : Observable<Publisher[]> {
     return this.http.get(this.volumesByPublisherUrl).pipe(
-      map((data: any) => data._embedded.publishers)
+      map((data: any) => data._embedded.publishers
+        .map((publisher: Publisher) => {
+          publisher.series
+            .sort((a: Series, b: Series) => a.series.localeCompare(b.series))
+            .map((series: Series) => series.volumes.sort((a: Volume, b: Volume) => a.volume.localeCompare(b.volume)))
+          return publisher;
+        })
+      )
     );
   }
 }

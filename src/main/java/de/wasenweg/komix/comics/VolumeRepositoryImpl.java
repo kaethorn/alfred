@@ -3,10 +3,8 @@ package de.wasenweg.komix.comics;
 import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
@@ -26,17 +24,16 @@ public class VolumeRepositoryImpl implements VolumeRepository {
 
     @Override
     public List<Series> findVolumesBySeries() {
-        final AggregationResults<Series> result = mongoTemplate.aggregate(Aggregation.newAggregation(
+        return mongoTemplate.aggregate(Aggregation.newAggregation(
             group("series")
                 .last("series").as("series")
                 .addToSet("volume").as("volumes")
-        ), Comic.class, Series.class);
-        return result.getMappedResults();
+        ), Comic.class, Series.class).getMappedResults();
     }
 
     @Override
     public List<Publisher> findVolumesBySeriesAndPublishers() {
-        final AggregationResults<Publisher> result = mongoTemplate.aggregate(Aggregation.newAggregation(
+        return mongoTemplate.aggregate(Aggregation.newAggregation(
             sort(Sort.Direction.DESC, "position"),
             group("publisher", "series", "volume")
                 .last("volume").as("volume")
@@ -52,8 +49,8 @@ public class VolumeRepositoryImpl implements VolumeRepository {
                 .addToSet(new BasicDBObject() {{
                     put("series", "$_id.series");
                     put("volumes", "$volumes");
-                }}).as("series")
-        ), Comic.class, Publisher.class);
-        return result.getMappedResults();
+                }}).as("series"),
+            sort(Sort.Direction.ASC, "publisher")
+        ), Comic.class, Publisher.class).getMappedResults();
     }
 }
