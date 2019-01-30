@@ -1,5 +1,12 @@
 language: java
 jdk:
   - oraclejdk8
-script:
-  - ./gradlew check -s
+jobs:
+  include:
+    - stage: test
+      script:
+        - ./gradlew check -s
+      script:
+        - cd ui
+        - npm i
+        - npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
