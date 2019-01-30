@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestModule } from './../test.module';
 
 import { PreferencesComponent } from './preferences.component';
 
@@ -7,10 +8,7 @@ describe('PreferencesComponent', () => {
   let fixture: ComponentFixture<PreferencesComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PreferencesComponent ]
-    })
-    .compileComponents();
+    TestBed.configureTestingModule(TestModule).compileComponents();
   }));
 
   beforeEach(() => {

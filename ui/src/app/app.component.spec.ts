@@ -1,13 +1,11 @@
 import { TestBed, async } from '@angular/core/testing';
+import { TestModule } from './test.module';
+
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
+    TestBed.configureTestingModule(TestModule).compileComponents();
   }));
 
   it('should create the app', () => {
@@ -26,6 +24,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to KomiX!');
+    expect(compiled.querySelector('mat-toolbar').textContent).toContain('Welcome to KomiX');
   });
 });

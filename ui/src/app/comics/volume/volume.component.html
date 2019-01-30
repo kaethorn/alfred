@@ -1,10 +1,10 @@
 <mat-card>
   <mat-card-content>
     <mat-chip-list>
-      <mat-chip>{{ volume.volume }}</mat-chip>
+      <mat-chip>Vol. {{ volume.volume }}</mat-chip>
     </mat-chip-list>
   </mat-card-content>
-  <img mat-card-image src="data:image/jpeg;base64,{{ volume.thumbnail }}">
+  <img mat-card-image [src]="volumeThumbnail">
   <mat-card-actions>
     <button [routerLink]="['/read/', 'fixme', '1']" color="primary" mat-button>
       Read
@@ -19,7 +19,7 @@
   <mat-card-content>
     <div class="comic-summary">
       <a [routerLink]="['/read/', comic.id, '1']">
-        <img src="data:image/jpeg;base64,{{ comic.thumbnail }}">
+        <img [src]="comicThumbnail(comic)">
       </a>
       <div>
         <h4>#{{ comic.number }} {{ comic.title }}</h4>

@@ -1,25 +1,28 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestModule } from './../../test.module';
+import { VolumeComponent } from './volume.component';
 
-import { IssueListComponent } from './issue-list.component';
-
-describe('IssueListComponent', () => {
-  let component: IssueListComponent;
-  let fixture: ComponentFixture<IssueListComponent>;
+describe('VolumeComponent', () => {
+  let component: VolumeComponent;
+  let fixture: ComponentFixture<VolumeComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ IssueListComponent ]
-    })
-    .compileComponents();
+    TestBed.configureTestingModule(TestModule).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(IssueListComponent);
+    fixture = TestBed.createComponent(VolumeComponent);
     component = fixture.componentInstance;
+    component.volume = { volume: '1999', thumbnail: '' };
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('renders volume information', () => {
+    const volumeElement: HTMLElement = fixture.nativeElement;
+    expect(volumeElement.textContent).toContain('1999');
   });
 });

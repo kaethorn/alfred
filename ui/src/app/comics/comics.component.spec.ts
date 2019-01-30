@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TestModule } from './../test.module';
 
-import { ReaderComponent } from './reader.component';
+import { ComicsComponent } from './comics.component';
 
-describe('ReaderComponent', () => {
-  let component: ReaderComponent;
-  let fixture: ComponentFixture<ReaderComponent>;
+describe('ComicsComponent', () => {
+  let component: ComicsComponent;
+  let fixture: ComponentFixture<ComicsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule(TestModule).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReaderComponent);
+    fixture = TestBed.createComponent(ComicsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

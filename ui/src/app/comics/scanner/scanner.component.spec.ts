@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestModule } from './../../test.module';
 
 import { ScannerComponent } from './scanner.component';
 
@@ -7,10 +8,7 @@ describe('ScannerComponent', () => {
   let fixture: ComponentFixture<ScannerComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ScannerComponent ]
-    })
-    .compileComponents();
+    TestBed.configureTestingModule(TestModule).compileComponents();
   }));
 
   beforeEach(() => {
