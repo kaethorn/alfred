@@ -11,9 +11,9 @@ import { Publisher } from './../publisher';
   styleUrls: ['./comics.component.sass']
 })
 export class ComicsComponent {
-  total: number = 0;
+  total = 0;
   file: string;
-  counter: number = 0;
+  counter = 0;
   errors: any[] = [];
 
   publishers: Array<Publisher> = [];

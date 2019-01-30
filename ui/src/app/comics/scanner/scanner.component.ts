@@ -14,9 +14,9 @@ export class ScannerComponent {
 
   @Output() scanned = new EventEmitter<boolean>();
 
-  total: number = 0;
+  total = 0;
   file: string;
-  counter: number = 0;
+  counter = 0;
   errors: Error[] = [];
 
   constructor() { }

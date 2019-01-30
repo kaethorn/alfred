@@ -14,20 +14,20 @@ export class ComicsService {
 
   private API_PREFIX: String = 'api';
 
-  private scanUrl: string =
+  private scanUrl =
     `${ this.API_PREFIX }/scan`;
-  private comicsUrl: string =
+  private comicsUrl =
     `${ this.API_PREFIX }/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc`;
-  private comicsByVolumeUrl: string =
+  private comicsByVolumeUrl =
     `${ this.API_PREFIX }/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition`;
-  private comicUrl: string =
+  private comicUrl =
     `${ this.API_PREFIX }/comics`;
-  private volumesBySeriesUrl: string =
+  private volumesBySeriesUrl =
     `${ this.API_PREFIX }/comics/search/findVolumesBySeries`;
-  private volumesByPublisherUrl: string =
+  private volumesByPublisherUrl =
     `${ this.API_PREFIX }/comics/search/findVolumesBySeriesAndPublishers`;
 
-  list () : Observable<Comic[]> {
+  list (): Observable<Comic[]> {
     return this.http.get(this.comicsUrl).pipe(
       map((data: any) => data._embedded.comics),
       map((data: any) => {
@@ -39,7 +39,7 @@ export class ComicsService {
     );
   }
 
-  listByVolume (publisher: string, series: string, volume: string) : Observable<Comic[]> {
+  listByVolume (publisher: string, series: string, volume: string): Observable<Comic[]> {
     const params = new HttpParams({
       fromObject: {
         publisher: publisher,
@@ -58,7 +58,7 @@ export class ComicsService {
     );
   }
 
-  get (id: string) : Observable<Comic> {
+  get (id: string): Observable<Comic> {
     return this.http.get<Comic>(`${ this.comicUrl }/${ id }`).pipe(
       map((comic: any) => {
         comic.id = comic._links.self.href.split('/').pop();
@@ -71,19 +71,19 @@ export class ComicsService {
     return this.http.get(this.scanUrl);
   }
 
-  listVolumesBySeries() : Observable<Series[]> {
+  listVolumesBySeries(): Observable<Series[]> {
     return this.http.get(this.volumesBySeriesUrl).pipe(
       map((data: any) => data._embedded.publishers)
     );
   }
 
-  listVolumesByPublisher () : Observable<Publisher[]> {
+  listVolumesByPublisher (): Observable<Publisher[]> {
     return this.http.get(this.volumesByPublisherUrl).pipe(
       map((data: any) => data._embedded.publishers
         .map((publisher: Publisher) => {
           publisher.series
             .sort((a: Series, b: Series) => a.series.localeCompare(b.series))
-            .map((series: Series) => series.volumes.sort((a: Volume, b: Volume) => a.volume.localeCompare(b.volume)))
+            .map((series: Series) => series.volumes.sort((a: Volume, b: Volume) => a.volume.localeCompare(b.volume)));
           return publisher;
         })
       )

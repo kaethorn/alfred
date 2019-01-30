@@ -15,7 +15,7 @@ export class FullScreenReaderComponent implements OnInit {
   imagePathLeft: string;
   imagePathRight: string;
   sideBySide: boolean;
-  currentPage: number = 1;
+  currentPage = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -34,11 +34,11 @@ export class FullScreenReaderComponent implements OnInit {
     const parentElement = this.layer.nativeElement.parentElement;
     this.sideBySide = (parentElement.clientWidth > parentElement.clientHeight) ? true : false;
 
-    this.currentPage = Number.parseInt(this.route.snapshot.params.page);
+    this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10);
     this.getComic(this.route.snapshot.params.id);
   }
 
-  public onClick (event: MouseEvent) : void {
+  public onClick (event: MouseEvent): void {
     if (this.rightHalf(event)) {
       this.nextPage();
     } else {
@@ -53,26 +53,26 @@ export class FullScreenReaderComponent implements OnInit {
     return (event.clientX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ? true : false;
   }
 
-  private prevPage () : void {
+  private prevPage (): void {
     this.currentPage -= this.currentPage > 1 ? 1 : 0;
     this.currentPage -= (this.sideBySide && this.currentPage > 1) ? 1 : 0;
     this.navigate(this.comic.id, this.currentPage);
   }
 
-  private nextPage () : void {
-    let increment = this.sideBySide ? 2 : 1;
+  private nextPage (): void {
+    const increment = this.sideBySide ? 2 : 1;
     this.currentPage += (this.currentPage + increment) <= this.comic.pageCount ? increment : 0;
     this.navigate(this.comic.id, this.currentPage);
   }
 
-  private navigate(id: number, page: number) : void {
+  private navigate(id: number, page: number): void {
     const sideBySide = this.sideBySide && page > 1 && page < this.comic.pageCount;
     this.router.navigate(['/read-full-screen/', id, page ]);
     this.imagePathLeft = `/api/read/${ id }/${ page }`;
     this.imagePathRight = sideBySide ? `/api/read/${ id }/${ page + 1 }` : null;
   }
 
-  private getComic (id: string) : void {
+  private getComic (id: string): void {
     this.comicsService.get(id)
       .subscribe((data: Comic) => {
         this.comic = data;
@@ -80,7 +80,7 @@ export class FullScreenReaderComponent implements OnInit {
       });
   }
 
-  private exitFullScreen (id: number, page: number) : void {
+  private exitFullScreen (id: number, page: number): void {
     this.router.navigate(['/read/', id, page ]);
   }
 }

@@ -13,7 +13,7 @@ export class ReaderComponent implements OnInit {
 
   comic: Comic = {} as Comic;
   imagePath: string;
-  private currentPage: number = 1;
+  private currentPage = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -22,26 +22,26 @@ export class ReaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.currentPage = Number.parseInt(this.route.snapshot.params.page);
+    this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10);
     this.getComic(this.route.snapshot.params.id);
   }
 
-  public prevPage () : void {
+  public prevPage (): void {
     this.currentPage -= (this.currentPage > 1 ? 1 : 0);
     this.navigate(this.comic.id, this.currentPage);
   }
 
-  public nextPage () : void {
+  public nextPage (): void {
     this.currentPage += (this.currentPage < this.comic.pageCount ? 1 : 0);
     this.navigate(this.comic.id, this.currentPage);
   }
 
-  private navigate(id: number, page: number) : void {
+  private navigate(id: number, page: number): void {
     this.router.navigate(['/read/', id, page]);
     this.imagePath = `/api/read/${ id }/${ page }`;
   }
 
-  private getComic (id: string) : void {
+  private getComic (id: string): void {
     this.comicsService.get(id)
       .subscribe((data: Comic) => {
         this.comic = data;
