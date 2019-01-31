@@ -13,19 +13,19 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 
 import { AppRoutingModule } from './app-routing.module';
-import { ComicsComponent } from './comics/comics.component';
+import { LibraryComponent } from './library/library.component';
 import { ReaderComponent } from './reader/reader.component';
 import { PreferencesComponent } from './preferences/preferences.component';
 import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
-import { ScannerComponent } from './comics/scanner/scanner.component';
-import { VolumeComponent } from './comics/volume/volume.component';
+import { ScannerComponent } from './library/scanner/scanner.component';
+import { VolumeComponent } from './library/volume/volume.component';
 import { AppComponent } from './app.component';
 
 export const TestModule = {
   declarations: [
     AppComponent,
     VolumeComponent,
-    ComicsComponent,
+    LibraryComponent,
     ReaderComponent,
     FullScreenReaderComponent,
     PreferencesComponent,

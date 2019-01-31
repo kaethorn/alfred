@@ -7,10 +7,10 @@ import { Publisher } from './../publisher';
 
 @Component({
   selector: 'app-comics',
-  templateUrl: './comics.component.html',
-  styleUrls: ['./comics.component.sass']
+  templateUrl: './library.component.html',
+  styleUrls: ['./library.component.sass']
 })
-export class ComicsComponent {
+export class LibraryComponent {
   total = 0;
   file: string;
   counter = 0;

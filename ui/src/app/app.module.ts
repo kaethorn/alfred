@@ -19,22 +19,24 @@ import { MatDividerModule } from '@angular/material/divider';
 // Own
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ComicsComponent } from './comics/comics.component';
+import { LibraryComponent } from './library/library.component';
 import { ReaderComponent } from './reader/reader.component';
 import { PreferencesComponent } from './preferences/preferences.component';
 import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
-import { ScannerComponent } from './comics/scanner/scanner.component';
-import { VolumeComponent } from './comics/volume/volume.component';
+import { ScannerComponent } from './library/scanner/scanner.component';
+import { VolumeComponent } from './library/volume/volume.component';
+import { VolumesComponent } from './volumes/volumes.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ComicsComponent,
+    LibraryComponent,
     ReaderComponent,
     PreferencesComponent,
     FullScreenReaderComponent,
     ScannerComponent,
-    VolumeComponent
+    VolumeComponent,
+    VolumesComponent
   ],
   imports: [
     BrowserModule,
