@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TestModule } from './../test.module';
+import { TestModule } from './../../test.module';
 
 import { FullScreenReaderComponent } from './full-screen-reader.component';
 

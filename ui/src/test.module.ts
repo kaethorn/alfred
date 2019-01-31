@@ -12,19 +12,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 
-import { AppRoutingModule } from './app-routing.module';
-import { LibraryComponent } from './library/library.component';
-import { ReaderComponent } from './reader/reader.component';
-import { PreferencesComponent } from './preferences/preferences.component';
-import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
-import { ScannerComponent } from './library/scanner/scanner.component';
-import { VolumeComponent } from './library/volume/volume.component';
-import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app/app-routing.module';
+import { LibraryComponent } from './app/library/library.component';
+import { ReaderComponent } from './app/reader/reader.component';
+import { PreferencesComponent } from './app/preferences/preferences.component';
+import { FullScreenReaderComponent } from './app/full-screen-reader/full-screen-reader.component';
+import { ScannerComponent } from './app/library/scanner/scanner.component';
+import { VolumeComponent } from './app/library/volume/volume.component';
+import { VolumesComponent } from './app/volumes/volumes.component';
+import { AppComponent } from './app/app.component';
 
 export const TestModule = {
   declarations: [
     AppComponent,
     VolumeComponent,
+    VolumesComponent,
     LibraryComponent,
     ReaderComponent,
     FullScreenReaderComponent,
