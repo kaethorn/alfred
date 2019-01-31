@@ -16,7 +16,7 @@ public class PreferencesService {
     @Autowired
     public PreferencesService(final PreferenceRepository preferenceRepository) {
         this.preferenceRepository = preferenceRepository;
-        defaults.put("comics.path", new Preference("comics.path", "Path", "sample", "Path to you comic library"));
+        defaults.put("comics.path", new Preference("comics.path", "Path", "sample", "Path to your comic library"));
         defaults.forEach((key, value) -> {
             if (!this.preferenceRepository.findByKey(key).isPresent()) {
                 this.preferenceRepository.save(value);

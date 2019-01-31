@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TestModule } from './../../../test.module';
+import { TestModule } from './../../../testing/test.module';
 import { VolumeComponent } from './volume.component';
 
 describe('VolumeComponent', () => {
@@ -7,7 +7,7 @@ describe('VolumeComponent', () => {
   let fixture: ComponentFixture<VolumeComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule(TestModule).compileComponents();
+    TestBed.configureTestingModule(TestModule()).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TestModule } from './../../test.module';
 
+import { TestModule } from './../../testing/test.module';
+import { PreferencesServiceMocks as preferencesService } from './../../testing/preferences.service.mocks';
+
+import { PreferencesService } from '../preferences.service';
 import { PreferencesComponent } from './preferences.component';
 
 describe('PreferencesComponent', () => {
@@ -8,7 +11,11 @@ describe('PreferencesComponent', () => {
   let fixture: ComponentFixture<PreferencesComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule(TestModule).compileComponents();
+    const testModule: any = TestModule();
+    testModule.providers.push({
+      provide: PreferencesService, useValue: preferencesService
+    });
+    TestBed.configureTestingModule(testModule).compileComponents();
   }));
 
   beforeEach(() => {
