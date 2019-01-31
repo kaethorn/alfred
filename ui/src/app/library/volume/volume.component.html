@@ -5,14 +5,14 @@
     </mat-chip-list>
   </mat-card-content>
   <a [routerLink]="['/read/', publisher, series, volume.volume]">
-    <img mat-card-image [src]="thumbnail">
+    <img [src]="thumbnail">
   </a>
   <mat-card-actions>
     <button [routerLink]="['/read/', publisher, series, volume.volume]" color="primary" mat-button>
       Read
     </button>
     <button [routerLink]="['/volumes/', publisher, series, volume.volume]" mat-button>
-      List
+      Issues
     </button>
   </mat-card-actions>
 </mat-card>

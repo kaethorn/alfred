@@ -61,7 +61,7 @@ export class ReaderComponent implements OnInit {
     this.comicsService.listByVolume(publisher, series, volume)
       .subscribe((data: Comic[]) => {
         this.comic = data[0];
-        this.navigate(this.comic.id, this.currentPage);
+        this.router.navigate(['/read/', this.comic.id, this.currentPage], { replaceUrl: true });
       });
   }
 }
