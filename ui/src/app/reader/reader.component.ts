@@ -13,7 +13,7 @@ export class ReaderComponent implements OnInit {
 
   comic: Comic = {} as Comic;
   imagePath: string;
-  private currentPage = 1;
+  private currentPage = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,7 +27,7 @@ export class ReaderComponent implements OnInit {
   }
 
   public prevPage (): void {
-    this.currentPage -= (this.currentPage > 1 ? 1 : 0);
+    this.currentPage -= (this.currentPage > 0 ? 1 : 0);
     this.navigate(this.comic.id, this.currentPage);
   }
 

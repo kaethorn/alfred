@@ -15,7 +15,7 @@ export class FullScreenReaderComponent implements OnInit {
   imagePathLeft: string;
   imagePathRight: string;
   sideBySide: boolean;
-  currentPage = 1;
+  currentPage = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,25 +48,25 @@ export class FullScreenReaderComponent implements OnInit {
 
   // FIXME
   // Clean up all these methods. They are tightly coupled and have business logic
-  // shared between each other.
+  // shared between each other. Also compare with reader.component.ts.
   private rightHalf(event: MouseEvent) {
     return (event.clientX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ? true : false;
   }
 
   private prevPage (): void {
-    this.currentPage -= this.currentPage > 1 ? 1 : 0;
-    this.currentPage -= (this.sideBySide && this.currentPage > 1) ? 1 : 0;
+    this.currentPage -= this.currentPage > 0 ? 1 : 0;
+    this.currentPage -= (this.sideBySide && this.currentPage > 0) ? 1 : 0;
     this.navigate(this.comic.id, this.currentPage);
   }
 
   private nextPage (): void {
     const increment = this.sideBySide ? 2 : 1;
-    this.currentPage += (this.currentPage + increment) <= this.comic.pageCount ? increment : 0;
+    this.currentPage += (this.currentPage + increment) < this.comic.pageCount ? increment : 0;
     this.navigate(this.comic.id, this.currentPage);
   }
 
   private navigate(id: number, page: number): void {
-    const sideBySide = this.sideBySide && page > 1 && page < this.comic.pageCount;
+    const sideBySide = this.sideBySide && page > 1 && page < (this.comic.pageCount - 1);
     this.router.navigate(['/read-full-screen/', id, page ]);
     this.imagePathLeft = `/api/read/${ id }/${ page }`;
     this.imagePathRight = sideBySide ? `/api/read/${ id }/${ page + 1 }` : null;

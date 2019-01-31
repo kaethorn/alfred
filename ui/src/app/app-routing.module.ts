@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/library', pathMatch: 'full' },
   { path: 'library/:publisher/:series', component: LibraryComponent },
   { path: 'library', component: LibraryComponent },
-  { path: 'volumes', component: VolumesComponent },
+  { path: 'volumes/:publisher/:series/:volume', component: VolumesComponent },
   { path: 'read/:id/:page', component: ReaderComponent },
   { path: 'read-full-screen/:id/:page', component: FullScreenReaderComponent },
   { path: 'preferences', component: PreferencesComponent }

@@ -4,28 +4,13 @@
       <mat-chip>Vol. {{ volume.volume }}</mat-chip>
     </mat-chip-list>
   </mat-card-content>
-  <img mat-card-image [src]="volumeThumbnail">
+  <img mat-card-image [src]="thumbnail">
   <mat-card-actions>
     <button [routerLink]="['/read/', 'fixme', '1']" color="primary" mat-button>
       Read
     </button>
-    <button (click)="toggleIssues(publisher, series, volume.volume)" mat-button>
+    <button [routerLink]="['/volumes/', publisher, series, volume.volume]" mat-button>
       List
     </button>
   </mat-card-actions>
-</mat-card>
-
-<mat-card *ngFor="let comic of comics">
-  <mat-card-content>
-    <div class="comic-summary">
-      <a [routerLink]="['/read/', comic.id, '1']">
-        <img [src]="comicThumbnail(comic)">
-      </a>
-      <div>
-        <h4>#{{ comic.number }} {{ comic.title }}</h4>
-        <h5>{{ comic.year }}/{{ comic.month }}</h5>
-        <p>{{ comic.summary }}</p>
-      </div>
-    </div>
-  </mat-card-content>
 </mat-card>
