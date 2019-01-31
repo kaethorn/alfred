@@ -1,5 +1,8 @@
 <mat-accordion *ngIf="publishers?.length > 0">
-  <mat-expansion-panel *ngFor="let publisher of publishers">
+  <mat-expansion-panel
+    *ngFor="let publisher of publishers"
+    [expanded]="currentPublisher === publisher.publisher"
+    (opened)="openPublisher(publisher.publisher)">
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{ publisher.publisher }}
@@ -7,7 +10,10 @@
     </mat-expansion-panel-header>
 
     <mat-accordion *ngIf="publisher.series?.length > 0">
-      <mat-expansion-panel (closed)="comics = []" *ngFor="let series of publisher.series">
+      <mat-expansion-panel
+        *ngFor="let series of publisher.series"
+        [expanded]="currentSeries === series.series"
+        (opened)="openSeries(series.series)">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{ series.series }}

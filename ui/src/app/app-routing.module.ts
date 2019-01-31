@@ -10,6 +10,7 @@ import { FullScreenReaderComponent } from './full-screen-reader/full-screen-read
 const routes: Routes = [
   { path: '', redirectTo: '/library', pathMatch: 'full' },
   { path: 'library/:publisher/:series', component: LibraryComponent },
+  { path: 'library/:publisher', component: LibraryComponent },
   { path: 'library', component: LibraryComponent },
   { path: 'volumes/:publisher/:series/:volume', component: VolumesComponent },
   { path: 'read/:id/:page', component: ReaderComponent },

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { ComicsService } from './../comics.service';
@@ -10,18 +11,33 @@ import { Publisher } from './../publisher';
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.sass']
 })
-export class LibraryComponent {
-  total = 0;
-  file: string;
-  counter = 0;
-  errors: any[] = [];
+export class LibraryComponent implements OnInit {
 
   publishers: Array<Publisher> = [];
+  currentPublisher: string;
+  currentSeries: string;
 
   constructor (
+    private route: ActivatedRoute,
+    private router: Router,
     private comicsService: ComicsService
   ) {
     this.list();
+  }
+
+  ngOnInit() {
+    this.currentPublisher = this.route.snapshot.params.publisher;
+    this.currentSeries = this.route.snapshot.params.series;
+  }
+
+  openPublisher (publisher: string) {
+    this.currentPublisher = publisher;
+    this.router.navigate(['/library/', this.currentPublisher]);
+  }
+
+  openSeries (series: string) {
+    this.currentSeries = series;
+    this.router.navigate(['/library/', this.currentPublisher, this.currentSeries]);
   }
 
   private list () {
