@@ -13,7 +13,9 @@ const routes: Routes = [
   { path: 'library/:publisher', component: LibraryComponent },
   { path: 'library', component: LibraryComponent },
   { path: 'volumes/:publisher/:series/:volume', component: VolumesComponent },
+  { path: 'read/:publisher/:series/:volume', component: ReaderComponent },
   { path: 'read/:id/:page', component: ReaderComponent },
+  { path: 'read/:id', component: ReaderComponent },
   { path: 'read-full-screen/:id/:page', component: FullScreenReaderComponent },
   { path: 'preferences', component: PreferencesComponent }
 ];

@@ -4,9 +4,11 @@
       <mat-chip>Vol. {{ volume.volume }}</mat-chip>
     </mat-chip-list>
   </mat-card-content>
-  <img mat-card-image [src]="thumbnail">
+  <a [routerLink]="['/read/', publisher, series, volume.volume]">
+    <img mat-card-image [src]="thumbnail">
+  </a>
   <mat-card-actions>
-    <button [routerLink]="['/read/', 'fixme', '1']" color="primary" mat-button>
+    <button [routerLink]="['/read/', publisher, series, volume.volume]" color="primary" mat-button>
       Read
     </button>
     <button [routerLink]="['/volumes/', publisher, series, volume.volume]" mat-button>
