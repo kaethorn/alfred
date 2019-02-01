@@ -60,13 +60,13 @@ export class FullScreenReaderComponent implements OnInit {
   }
 
   private nextPage (): void {
-    const increment = this.sideBySide ? 2 : 1;
+    const increment = (this.sideBySide && this.currentPage > 0) ? 2 : 1;
     this.currentPage += (this.currentPage + increment) < this.comic.pageCount ? increment : 0;
     this.navigate(this.comic.id, this.currentPage);
   }
 
   private navigate(id: number, page: number): void {
-    const sideBySide = this.sideBySide && page > 1 && page < (this.comic.pageCount - 1);
+    const sideBySide = this.sideBySide && page > 0 && page < (this.comic.pageCount - 1);
     this.router.navigate(['/read-full-screen/', id, page ]);
     this.imagePathLeft = `/api/read/${ id }/${ page }`;
     this.imagePathRight = sideBySide ? `/api/read/${ id }/${ page + 1 }` : null;

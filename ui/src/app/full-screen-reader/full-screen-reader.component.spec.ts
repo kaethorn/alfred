@@ -129,8 +129,8 @@ describe('FullScreenReaderComponent', () => {
         });
 
         it('sets the current page and updates the route', () => {
-          expect(component.currentPage).toBe(2);
-          expect(router.navigate).toHaveBeenCalledWith(['/read-full-screen/', 923, 2]);
+          expect(component.currentPage).toBe(1);
+          expect(router.navigate).toHaveBeenCalledWith(['/read-full-screen/', 923, 1]);
         });
 
         it('displays two pages', () => {
@@ -153,11 +153,10 @@ describe('FullScreenReaderComponent', () => {
         });
 
         it('does not exceed the last page', () => {
-          expect(component.currentPage).toBe(4);
-          expect(router.navigate).toHaveBeenCalledWith(['/read-full-screen/', 923, 4]);
+          expect(component.currentPage).toBe(3);
+          expect(router.navigate).toHaveBeenCalledWith(['/read-full-screen/', 923, 3]);
           clickRightSide();
-          expect(component.currentPage).toBe(4);
-          expect(router.navigate).toHaveBeenCalledWith(['/read-full-screen/', 923, 4]);
+          expect(component.currentPage).toBe(3);
         });
       });
     });
