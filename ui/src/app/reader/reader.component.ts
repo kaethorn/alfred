@@ -13,7 +13,7 @@ export class ReaderComponent implements OnInit {
 
   comic: Comic = {} as Comic;
   imagePath: string;
-  private currentPage = 0;
+  currentPage = 0;
 
   constructor(
     private route: ActivatedRoute,

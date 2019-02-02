@@ -40,6 +40,12 @@ export class LibraryComponent implements OnInit {
     this.router.navigate(['/library/', this.currentPublisher, this.currentSeries]);
   }
 
+  onScanned (scanned) {
+    if (scanned) {
+      this.list();
+    }
+  }
+
   private list () {
     this.comicsService.listVolumesByPublisher()
       .subscribe((data: Publisher[]) => {
