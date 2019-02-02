@@ -35,7 +35,8 @@ Build the docker image:
 
 #### 4. Run
 Run the image and connect to the MongoDB:
-`docker run -p 5000:8080 --net=komix-net komix`
+`docker run -p 5000:8080 --net=komix-net -v /path/to/comics:/comics komix`
+Replace `/path/to/comics` with the path to your comic library.
 
 The application will now be available at http://localhost:5000.
 
