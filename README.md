@@ -13,7 +13,14 @@ A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack]
 
 ## Run
 
-### Docker
+### Docker using Gradle
+
+`./gradlew build docker`
+`docker run de.wasenweg/komix`
+
+### Docker manually
+
+This will basically replicate what the Gradle docker plugin manages.
 
 #### 1. Network
 Set up a common network:
@@ -31,7 +38,9 @@ If you want to use an existing MongoDB instead, run and connect it to the networ
 #### 3. Build
 Build the docker image:
 `./gradlew clean build`
-`docker build -t komix .`
+`mkdir target`
+`unzip build/libs/komix.jar -d target/dependency`
+`docker build -t de.wasenweg/komix .`
 
 #### 4. Run
 Run the image and connect to the MongoDB:
@@ -40,9 +49,10 @@ Replace `/path/to/comics` with the path to your comic library.
 
 The application will now be available at http://localhost:5000.
 
-### Standalone/Gradle
+### Gradle
 
-`./gradlew clean build && java -jar build/libs/komix.jar`
+To run the application on the host system directly, make sure to have a MongoDB running, e.g. on `localhost`, then run:
+`./gradlew clean build && java -jar build/libs/komix.jar --spring.data.mongodb.uri=mongodb://localhost/komix`
 
 The application will now be available at http://localhost:8080.
 

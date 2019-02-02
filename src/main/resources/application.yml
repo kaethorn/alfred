@@ -4,4 +4,4 @@ spring:
       base-path: /api
     mongodb:
       database: komix
-      uri: mongodb://localhost/komix
+      uri: mongodb://mongo/komix

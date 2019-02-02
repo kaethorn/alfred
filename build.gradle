@@ -1,17 +1,18 @@
 buildscript {
-	ext {
-		springBootVersion = '2.1.1.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-	}
+  ext {
+    springBootVersion = '2.1.1.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    classpath 'gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.20.1'
+  }
 }
 
 plugins {
-    id 'io.franzbecker.gradle-lombok' version '1.14'
+  id 'io.franzbecker.gradle-lombok' version '1.14'
 }
 
 apply plugin: 'java'
@@ -19,6 +20,7 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'checkstyle'
+apply plugin: 'com.palantir.docker'
 
 bootJar {
   baseName = 'komix'
@@ -29,11 +31,23 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 checkstyle {
-	toolVersion '8.11'
+  toolVersion '8.11'
+}
+
+task unpack(type: Copy) {
+  dependsOn bootJar
+  from(zipTree(tasks.bootJar.outputs.files.singleFile))
+  into("build/dependency")
+}
+
+docker {
+  name "${project.group}/${bootJar.baseName}"
+  copySpec.from(tasks.unpack.outputs).into("dependency")
+  buildArgs(['DEPENDENCY': "dependency"])
 }
 
 dependencies {
