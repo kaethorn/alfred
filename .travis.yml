@@ -6,7 +6,3 @@ jobs:
     - stage: test
       script:
         - ./gradlew check -s
-      script:
-        - cd ui && npm i && npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
-      script:
-        - cd ui && npm i && npm run lint

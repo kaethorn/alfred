@@ -14,3 +14,6 @@ jar.dependsOn 'npm_run_buildProd'
 jar {
   from 'dist/komix' into 'static'
 }
+
+test.dependsOn 'npm_run_test'
+test.dependsOn 'npm_run_lint'
