@@ -1,11 +1,11 @@
-<mat-card *ngIf="total">
+<mat-card *ngIf="total" class="progress">
   <mat-card-content>
     <mat-progress-bar mode="determinate" [value]="counter/total*100"></mat-progress-bar>
     Scanning file {{ counter }} of {{ total }} at {{ file }}
   </mat-card-content>
 </mat-card>
 
-<mat-list *ngIf="errors.length">
+<mat-list *ngIf="errors.length" class="errors">
   <h3 mat-subheader>Scan errors</h3>
   <mat-list-item *ngFor="let error of errors">
     <h4 mat-line>{{ error.message }}</h4>
