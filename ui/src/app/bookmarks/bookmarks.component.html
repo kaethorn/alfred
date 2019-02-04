@@ -1,0 +1,15 @@
+<mat-list *ngIf="bookmarks?.length > 0; else noBookmarks">
+  <h1>Currently reading</h1>
+  <mat-list-item *ngFor="let bookmark of bookmarks">
+    <h4>{{ bookmark }}</h4>
+  </mat-list-item>
+</mat-list>
+<ng-template #noBookmarks>
+  <mat-card>
+    <mat-card-content>
+      Get started by exploring your
+      <a [routerLink]="['/library']">library</a>
+      .
+    </mat-card-content>
+  </mat-card>
+</ng-template>

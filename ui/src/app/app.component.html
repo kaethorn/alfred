@@ -2,6 +2,9 @@
   <mat-toolbar-row>
     <span>Welcome to {{ title }}</span>
     <span class="spacer"></span>
+    <button mat-button [routerLink]="['/bookmarks']">
+      <mat-icon>book</mat-icon>
+    </button>
     <button mat-button [routerLink]="['/library']">
       <mat-icon>library_books</mat-icon>
     </button>

@@ -6,6 +6,7 @@ import { VolumesComponent } from './volumes/volumes.component';
 import { ReaderComponent } from './reader/reader.component';
 import { PreferencesComponent } from './preferences/preferences.component';
 import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
+import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/library', pathMatch: 'full' },
@@ -17,7 +18,8 @@ const routes: Routes = [
   { path: 'read/:id/:page', component: ReaderComponent },
   { path: 'read/:id', component: ReaderComponent },
   { path: 'read-full-screen/:id/:page', component: FullScreenReaderComponent },
-  { path: 'preferences', component: PreferencesComponent }
+  { path: 'preferences', component: PreferencesComponent },
+  { path: 'bookmarks', component: BookmarksComponent }
 ];
 
 @NgModule({

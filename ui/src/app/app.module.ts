@@ -26,6 +26,7 @@ import { FullScreenReaderComponent } from './full-screen-reader/full-screen-read
 import { ScannerComponent } from './library/scanner/scanner.component';
 import { VolumeComponent } from './library/volume/volume.component';
 import { VolumesComponent } from './volumes/volumes.component';
+import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { VolumesComponent } from './volumes/volumes.component';
     FullScreenReaderComponent,
     ScannerComponent,
     VolumeComponent,
-    VolumesComponent
+    VolumesComponent,
+    BookmarksComponent
   ],
   imports: [
     BrowserModule,
