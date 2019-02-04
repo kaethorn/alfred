@@ -1,5 +1,5 @@
 export interface Comic {
-  id: number;
+  id: string;
   path: string;
   title: string;
   series: string;

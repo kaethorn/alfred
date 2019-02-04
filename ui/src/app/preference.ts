@@ -1,5 +1,5 @@
 export interface Preference {
-  id: number;
+  id: string;
   key: string;
   name: string;
   value: string;

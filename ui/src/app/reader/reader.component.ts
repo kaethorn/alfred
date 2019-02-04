@@ -44,7 +44,7 @@ export class ReaderComponent implements OnInit {
     this.navigate(this.comic.id, this.currentPage);
   }
 
-  private navigate(id: number, page: number): void {
+  private navigate(id: string, page: number): void {
     this.router.navigate(['/read/', id, page]);
     this.imagePath = `/api/read/${ id }/${ page }`;
   }
