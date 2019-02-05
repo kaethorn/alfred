@@ -21,7 +21,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LibraryComponent } from './library/library.component';
-import { ReaderComponent } from './reader/reader.component';
+import { BrowserComponent } from './browser/browser.component';
 import { PreferencesComponent } from './preferences/preferences.component';
 import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
 import { ScannerComponent } from './library/scanner/scanner.component';
@@ -33,7 +33,7 @@ import { BookmarksComponent } from './bookmarks/bookmarks.component';
   declarations: [
     AppComponent,
     LibraryComponent,
-    ReaderComponent,
+    BrowserComponent,
     PreferencesComponent,
     FullScreenReaderComponent,
     ScannerComponent,

@@ -5,11 +5,11 @@ import { ComicsService } from './../comics.service';
 import { Comic } from './../comic';
 
 @Component({
-  selector: 'app-reader',
-  templateUrl: './reader.component.html',
-  styleUrls: ['./reader.component.sass']
+  selector: 'app-browser',
+  templateUrl: './browser.component.html',
+  styleUrls: ['./browser.component.sass']
 })
-export class ReaderComponent implements OnInit {
+export class BrowserComponent implements OnInit {
 
   comic: Comic = {} as Comic;
   imagePath: string;
