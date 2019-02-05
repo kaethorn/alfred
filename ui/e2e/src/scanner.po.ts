@@ -15,7 +15,7 @@ export class ScannerPage {
   }
 
   waitForScanEnd() {
-    return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 500);
+    return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 3000);
   }
 
   getScanButton() {
