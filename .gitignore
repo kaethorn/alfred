@@ -2,6 +2,8 @@
 /build/
 /bin/
 !gradle/wrapper/gradle-wrapper.jar
+/sample/
+/.gradletasknamecache
 
 ### STS ###
 .apt_generated
@@ -11,6 +13,8 @@
 .settings
 .springBeans
 .sts4-cache
+/.attach_pid*
+/.checkstyle
 
 ### IntelliJ IDEA ###
 .idea

@@ -16,14 +16,14 @@ export class PreferencesComponent implements OnInit {
     this.list();
   }
 
+  preferences: Preference[] = [];
+  updateError: any;
+
   ngOnInit() {
   }
 
-  preferences : Preference[] = [];
-  updateError : any;
-
   onSubmit () {
-    for (let preference of this.preferences) {
+    for (const preference of this.preferences) {
       this.preferencesService.update(preference)
         .subscribe(
           () => {},

@@ -1,0 +1,14 @@
+<mat-card *ngFor="let comic of comics">
+  <mat-card-content>
+    <div class="comic-summary">
+      <a [routerLink]="['/read/', comic.id, 0]">
+        <img [src]="thumbnail(comic)">
+      </a>
+      <div>
+        <h4>#{{ comic.number }} {{ comic.title }}</h4>
+        <h5>{{ comic.year }}/{{ comic.month }}</h5>
+        <p>{{ comic.summary }}</p>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

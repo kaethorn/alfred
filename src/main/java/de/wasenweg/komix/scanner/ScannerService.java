@@ -1,32 +1,22 @@
 package de.wasenweg.komix.scanner;
 
-import de.wasenweg.komix.Comic;
-import de.wasenweg.komix.ComicRepository;
-import de.wasenweg.komix.preferences.PreferenceRepository;
+import de.wasenweg.komix.comics.Comic;
+import de.wasenweg.komix.comics.ComicRepository;
+import de.wasenweg.komix.preferences.PreferencesService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 @Service
@@ -34,14 +24,14 @@ public class ScannerService {
 
     private List<SseEmitter> emitters = new ArrayList<>();
 
-    private final PreferenceRepository preferenceRepository;
-
     private final ComicRepository comicRepository;
 
+    private final PreferencesService preferencesService;
+
     @Autowired
-    public ScannerService(final ComicRepository comicRepository, final PreferenceRepository preferenceRepository) {
+    public ScannerService(final ComicRepository comicRepository, final PreferencesService preferencesService) {
         this.comicRepository = comicRepository;
-        this.preferenceRepository = preferenceRepository;
+        this.preferencesService = preferencesService;
     }
 
     private void sendEvent(final String data, final String name) {
@@ -72,85 +62,17 @@ public class ScannerService {
         this.sendEvent(error, "error");
     }
 
-    private String readElement(final Document document, final String elementName) {
-        final NodeList element = document.getElementsByTagName(elementName);
-        if (element.getLength() > 0) {
-            return element.item(0).getTextContent();
-        } else {
-            return "";
-        }
-    }
-
-    private Short getPageCount(final Document document) {
-        final String pageCount = readElement(document, "PageCount");
-        if (pageCount.isEmpty()) {
-            return (short) document.getElementsByTagName("Page").getLength();
-        }
-        return Short.parseShort(pageCount);
-    }
-
-    private String mapPosition(final String number) {
-        final BigDecimal position = new BigDecimal(number.equals("½") ? "0.5" : number);
-        final String result = new DecimalFormat("0000.0").format(position);
-        return result;
-    }
-
-    private Comic readMetadata(final Path path) {
+    private Comic createComic(final Path path) {
         reportProgress(path.toString());
 
-        final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = null;
-        try {
-            docBuilder = docBuilderFactory.newDocumentBuilder();
-        } catch (final ParserConfigurationException e) {
-            e.printStackTrace();
-            reportError(e.getMessage());
-        }
-
-        final Comic comic = new Comic(path.toAbsolutePath().toString(), "", "", "", "0.0", (short) 0, (short) 0, "");
+        final Comic comic = new Comic();
+        comic.setPath(path.toAbsolutePath().toString());
 
         ZipFile file = null;
         try {
             file = new ZipFile(path.toString());
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            final Enumeration<? extends ZipEntry> entries = file.entries();
-            while (entries.hasMoreElements()) {
-                final ZipEntry entry = entries.nextElement();
-                if (entry.getName().equals("ComicInfo.xml")) {
-                    final Document document = docBuilder.parse(file.getInputStream(entry));
-                    document.getDocumentElement().normalize();
-                    comic.setTitle(readElement(document, "Title"));
-                    comic.setSeries(readElement(document, "Series"));
-                    comic.setPublisher(readElement(document, "Publisher"));
-                    comic.setNumber(readElement(document, "Number"));
-                    comic.setPosition(mapPosition(comic.getNumber()));
-                    comic.setVolume(readElement(document, "Volume"));
-                    comic.setSummary(readElement(document, "Summary"));
-                    comic.setNotes(readElement(document, "Notes"));
-                    comic.setYear(Short.parseShort(readElement(document, "Year")));
-                    comic.setMonth(Short.parseShort(readElement(document, "Month")));
-                    comic.setWriter(readElement(document, "Writer"));
-                    comic.setPenciller(readElement(document, "Penciller"));
-                    comic.setInker(readElement(document, "Inker"));
-                    comic.setColorist(readElement(document, "Colorist"));
-                    comic.setLetterer(readElement(document, "Letterer"));
-                    comic.setEditor(readElement(document, "Editor"));
-                    comic.setWeb(readElement(document, "Web"));
-                    comic.setPageCount(getPageCount(document));
-                    comic.setManga(readElement(document, "Manga").equals("Yes"));
-                    comic.setCharacters(readElement(document, "Characters"));
-                    comic.setTeams(readElement(document, "Teams"));
-                }
-            }
-        } catch (final SAXException e) {
-            e.printStackTrace();
-            reportError(e.getMessage());
-        } catch (final IOException e) {
-            e.printStackTrace();
-            reportError(e.getMessage());
+            MetaDataReader.set(file, comic);
+            ThumbnailReader.set(file, comic);
         } catch (final Exception e) {
             e.printStackTrace();
             reportError(e.getMessage());
@@ -169,30 +91,31 @@ public class ScannerService {
     public void scanComics(final List<SseEmitter> emitters) {
         this.emitters = emitters;
 
-        List<Comic> comics = null;
-
-        final String comicsPath = preferenceRepository.findByKey("comics.path").getValue();
+        final String comicsPath = this.preferencesService.get("comics.path");
         final Path root = Paths.get(comicsPath);
 
         List<Path> comicFiles = null;
 
+        comicRepository.deleteAll();
+
         try (Stream<Path> files = Files.walk(root)) {
             comicFiles = files.filter(path -> Files.isRegularFile(path))
-                    .filter(path -> path.getFileName().toString().endsWith(".cbz")).collect(Collectors.toList());
+                    .filter(path -> path.getFileName().toString().endsWith(".cbz"))
+                    .collect(Collectors.toList());
 
             reportTotal(comicFiles.size());
 
-            comics = comicFiles.stream()
-                    .map(path -> readMetadata(path))
+            comicFiles.stream()
+                    .map(path -> createComic(path))
                     .filter(path -> !path.getTitle().isEmpty())
-                    .collect(Collectors.toList());
+                    .forEach(comic -> {
+                        comicRepository.save(comic);
+                    });
         } catch (final IOException e) {
             e.printStackTrace();
             reportError(e.getMessage());
         }
 
-        comicRepository.deleteAll();
-        comicRepository.saveAll(comics);
         reportFinish();
         emitters.forEach(emitter -> {
             emitter.complete();

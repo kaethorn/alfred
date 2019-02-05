@@ -1,0 +1,18 @@
+<mat-card>
+  <mat-card-content>
+    <mat-chip-list>
+      <mat-chip>Vol. {{ volume.volume }}</mat-chip>
+    </mat-chip-list>
+  </mat-card-content>
+  <a [routerLink]="['/read/', publisher, series, volume.volume]">
+    <img [src]="thumbnail">
+  </a>
+  <mat-card-actions>
+    <button [routerLink]="['/read/', publisher, series, volume.volume]" color="primary" mat-button>
+      Read
+    </button>
+    <button [routerLink]="['/volumes/', publisher, series, volume.volume]" mat-button>
+      Issues
+    </button>
+  </mat-card-actions>
+</mat-card>

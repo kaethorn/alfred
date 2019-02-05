@@ -1,0 +1,34 @@
+<mat-accordion *ngIf="publishers?.length > 0">
+  <mat-expansion-panel class="publishers"
+    *ngFor="let publisher of publishers"
+    [expanded]="currentPublisher === publisher.publisher"
+    (opened)="openPublisher(publisher.publisher)">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ publisher.publisher }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-accordion *ngIf="publisher.series?.length > 0">
+      <mat-expansion-panel
+        *ngFor="let series of publisher.series"
+        [expanded]="currentSeries === series.series"
+        (opened)="openSeries(series.series)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ series.series }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="volumes">
+          <app-volume *ngFor="let volume of series.volumes"
+            [publisher]="publisher.publisher"
+            [series]="series.series"
+            [volume]="volume">
+          </app-volume>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<app-scanner (scanned)="onScanned($event)"></app-scanner>

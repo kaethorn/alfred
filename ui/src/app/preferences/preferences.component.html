@@ -9,7 +9,7 @@
         <mat-form-field>
           <input matInput placeholder="{{ preference.name }}"
             required
-            [(ngModel)]="preference.value" name="value"
+            [(ngModel)]="preference.value" name="{{ preference.key }}"
             #value="ngModel">
           <mat-hint align="start">{{ preference.comment }}</mat-hint>
         </mat-form-field>

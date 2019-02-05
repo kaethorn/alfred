@@ -1,14 +1,15 @@
 package de.wasenweg.comix;
 
-import de.wasenweg.komix.Comic;
-import de.wasenweg.komix.ComicRepository;
 import de.wasenweg.komix.KomixApplication;
+import de.wasenweg.komix.comics.Comic;
+import de.wasenweg.komix.comics.ComicRepository;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = KomixApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@EnableAutoConfiguration
 public class ComicsIntegrationTest {
 
     @LocalServerPort
@@ -36,8 +38,8 @@ public class ComicsIntegrationTest {
 
     @Before
     public void setUp() {
-        comicRepository.save(new Comic("/a.cbz", "Title A", "Series A", "1", "0001.0", (short) 2007, (short) 9, "Pub A"));
-        comicRepository.save(new Comic("/b.cbz", "Title B", "Series A", "2", "0002.0", (short) 2007, (short) 10, "Pub A"));
+        comicRepository.save(new Comic("/a.cbz", "Title A", "Series A", "1999", "1", "0001.0", (short) 2007, (short) 9, "Pub A"));
+        comicRepository.save(new Comic("/b.cbz", "Title B", "Series A", "1999", "2", "0002.0", (short) 2007, (short) 10, "Pub A"));
     }
 
     @After

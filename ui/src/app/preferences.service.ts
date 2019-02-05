@@ -13,10 +13,10 @@ export class PreferencesService {
 
   private API_PREFIX: String = 'api';
 
-  private listUrl: string = `${ this.API_PREFIX }/preferences`;
-  private getUrl: string = `${ this.API_PREFIX }/preferences/search/findByKey?key=`;
+  private listUrl = `${ this.API_PREFIX }/preferences`;
+  private getUrl = `${ this.API_PREFIX }/preferences/search/findByKey?key=`;
 
-  list () : Observable<Preference[]> {
+  list (): Observable<Preference[]> {
     return this.http.get(this.listUrl).pipe(
       map((data: any) => data._embedded.preferences),
       map((data: any) => {
@@ -28,7 +28,7 @@ export class PreferencesService {
     );
   }
 
-  get (key: string) : Observable<Preference> {
+  get (key: string): Observable<Preference> {
     return this.http.get<Preference>(`${ this.getUrl }${ key }`).pipe(
       map((item: any) => {
         item.id = item._links.self.href.split('/').pop();
@@ -37,7 +37,7 @@ export class PreferencesService {
     );
   }
 
-  update (preference: Preference) : Observable<Preference> {
+  update (preference: Preference): Observable<Preference> {
     return this.http.put<Preference>(`${ this.listUrl }/${ preference.id }`, preference);
   }
 }

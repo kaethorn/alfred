@@ -1,8 +1,8 @@
 package de.wasenweg.comix;
 
-import de.wasenweg.komix.Comic;
-import de.wasenweg.komix.ComicRepository;
 import de.wasenweg.komix.KomixApplication;
+import de.wasenweg.komix.comics.Comic;
+import de.wasenweg.komix.comics.ComicRepository;
 import de.wasenweg.komix.preferences.Preference;
 import de.wasenweg.komix.preferences.PreferenceRepository;
 
@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -31,6 +32,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = KomixApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@EnableAutoConfiguration
 public class ScannerIngrationTest {
 
     @LocalServerPort
@@ -44,8 +46,7 @@ public class ScannerIngrationTest {
 
     @Before
     public void setUp() {
-        final Preference comicsPath = preferenceRepository
-                .findByKey("comics.path");
+        final Preference comicsPath = preferenceRepository.findByKey("comics.path").get();
         comicsPath.setValue("src/test/resources/fixtures/simple");
         preferenceRepository.save(comicsPath);
     }

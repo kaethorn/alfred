@@ -1,13 +1,19 @@
 buildscript {
-	ext {
-		springBootVersion = '2.1.1.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-	}
+  ext {
+    springBootVersion = '2.1.1.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    classpath 'gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.20.1'
+  }
+}
+
+plugins {
+  id 'io.franzbecker.gradle-lombok' version '1.14'
+  id 'com.github.psxpaul.execfork' version '0.1.9'
 }
 
 apply plugin: 'java'
@@ -15,6 +21,7 @@ apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'checkstyle'
+apply plugin: 'com.palantir.docker'
 
 bootJar {
   baseName = 'komix'
@@ -25,28 +32,48 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 checkstyle {
-	toolVersion '8.11'
+  toolVersion '8.11'
+}
+
+task bootRunEmbedded(type: com.github.psxpaul.task.JavaExecFork) {
+  classpath = sourceSets.test.runtimeClasspath
+  main = 'de.wasenweg.komix.KomixApplication'
+  waitForPort = 8080
+}
+
+test.dependsOn bootRunEmbedded
+
+task unpack(type: Copy) {
+  dependsOn bootJar
+  from(zipTree(tasks.bootJar.outputs.files.singleFile))
+  into("build/dependency")
+}
+
+docker {
+  name "${project.group}/${bootJar.baseName}"
+  copySpec.from(tasks.unpack.outputs).into("dependency")
+  buildArgs(['DEPENDENCY': "dependency"])
 }
 
 dependencies {
   compile 'org.springframework.boot:spring-boot-starter-web'
   compile 'org.springframework.boot:spring-boot-starter-data-rest'
-  compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+  compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
   compile 'org.springframework.boot:spring-boot-starter-webflux'
   compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+  compile 'org.projectlombok:lombok'
 
   compile 'org.webjars:webjars-locator-core'
   compile 'org.webjars:sockjs-client:1.0.2'
-  compile 'org.flywaydb:flyway-core'
-  compile 'com.h2database:h2'
 
   testCompile 'org.glassfish.jersey.media:jersey-media-sse:2.27'
   testCompile 'org.springframework.boot:spring-boot-starter-test'
+  testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 
   implementation(project(':ui'))
 }

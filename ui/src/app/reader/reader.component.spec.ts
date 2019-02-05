@@ -1,5 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TestModule } from './../../testing/test.module';
+import { ComicsServiceMocks as comicsService } from './../../testing/comics.service.mocks';
+
+import { ComicsService } from '../comics.service';
 import { ReaderComponent } from './reader.component';
 
 describe('ReaderComponent', () => {
@@ -7,10 +11,11 @@ describe('ReaderComponent', () => {
   let fixture: ComponentFixture<ReaderComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ReaderComponent ]
-    })
-    .compileComponents();
+    const testModule: any = TestModule();
+    testModule.providers.push({
+      provide: ComicsService, useValue: comicsService
+    });
+    TestBed.configureTestingModule(testModule).compileComponents();
   }));
 
   beforeEach(() => {

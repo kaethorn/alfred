@@ -6,36 +6,57 @@ A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack]
 
 ## Requirements
 
-* Java 8 or Docker
+* Java 8
+* A MongoDB
+* (optional) Docker
 * Zipped comic book files (.cbz) containing embedded `ComicInfo.xml` metadata files from ComicRack, see [docs](http://comicrack.cyolito.com/software/windows/windows-documentation/7-meta-data-in-comic-files).
 
 ## Run
 
-### Docker
+### Docker using Gradle
 
-Build and run the docker image:
+`./gradlew build docker`
+`docker run de.wasenweg/komix`
+
+### Docker manually
+
+This will basically replicate what the Gradle docker plugin manages.
+
+#### 1. Network
+Set up a common network:
+`docker network create komix-net`
+
+#### 2a. New MongoDB
+Set up a new MongoDB connected to the network:
+`docker run --name mongo -p 27017:27017 --net=komix-net mongo`
+
+#### 2b. Existing MongoDB
+If you want to use an existing MongoDB instead, run and connect it to the network:
+`docker start mongo`
+`docker network connect komix-net mongo`
+
+#### 3. Build
+Build the docker image:
 `./gradlew clean build`
-`docker build -t komix .`
-`docker run -p 5000:8080 komix`
+`mkdir target`
+`unzip build/libs/komix.jar -d target/dependency`
+`docker build -t de.wasenweg/komix .`
+
+#### 4. Run
+Run the image and connect to the MongoDB:
+`docker run -p 5000:8080 --net=komix-net -v /path/to/comics:/comics komix`
+Replace `/path/to/comics` with the path to your comic library.
 
 The application will now be available at http://localhost:5000.
 
-### Standalone/Gradle
+### Gradle
 
-`./gradlew clean build && java -jar build/libs/komix.jar`
+To run the application on the host system directly, make sure to have a MongoDB running, e.g. on `localhost`, then run:
+`./gradlew clean build && java -jar build/libs/komix.jar --spring.data.mongodb.uri=mongodb://localhost/komix`
 
 The application will now be available at http://localhost:8080.
 
 ## Stack
 
-* Spring Boot 2 App using a H2 database
-* Angular 7 UI with Material design
-
-## TODO
-
-* [x] Scan Comics and read metadata.
-* [x] Update scan progress via WebSockets.
-* [x] Comic book reader.
-* [ ] Filter comics.
-* [ ] Browser comics.
-* [ ] Dockerize.
+* Spring Boot 2 App using MongoDB.
+* Angular 7 UI with Material design.

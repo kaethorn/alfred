@@ -136,7 +136,7 @@
   "defaultProject": "komix",
   "schematics": {
     "@schematics/angular:component": {
-      "styleext": "scss"
+      "styleext": "sass"
     }
   }
 }

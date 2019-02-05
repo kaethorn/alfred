@@ -1,14 +1,14 @@
 import { AppPage } from './app.po';
 
-describe('workspace-project App', () => {
+describe('AppComponent', () => {
   let page: AppPage;
 
   beforeEach(() => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
-    page.navigateTo();
-    expect(page.getTitleText()).toEqual('Welcome to KomiX!');
+  it('should display welcome message', async () => {
+    await page.navigateTo();
+    expect(await page.getTitleText()).toContain('Welcome to KomiX');
   });
 });

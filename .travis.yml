@@ -1,5 +1,10 @@
 language: java
 jdk:
   - oraclejdk8
-script:
-  - ./gradlew check -s
+addons:
+  chrome: stable
+jobs:
+  include:
+    - stage: test
+      script:
+        - ./gradlew check -s
