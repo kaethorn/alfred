@@ -1,5 +1,5 @@
 <mat-accordion *ngIf="publishers?.length > 0">
-  <mat-expansion-panel
+  <mat-expansion-panel class="publishers"
     *ngFor="let publisher of publishers"
     [expanded]="currentPublisher === publisher.publisher"
     (opened)="openPublisher(publisher.publisher)">

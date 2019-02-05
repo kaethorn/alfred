@@ -7,7 +7,7 @@ import { Comic } from './../comic';
 import { Publisher } from './../publisher';
 
 @Component({
-  selector: 'app-comics',
+  selector: 'app-library',
   templateUrl: './library.component.html',
   styleUrls: ['./library.component.sass']
 })

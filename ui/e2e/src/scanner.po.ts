@@ -10,12 +10,16 @@ export class ScannerPage {
     return browser.get('/library');
   }
 
-  getScanButton() {
-    return element(by.buttonText('Scan'));
+  waitForScanStart() {
+    return browser.wait(ExpectedConditions.presenceOf(this.progress), 500);
   }
 
-  waitForScanProgress() {
-    return browser.wait(ExpectedConditions.presenceOf(this.progress), 500);
+  waitForScanEnd() {
+    return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 500);
+  }
+
+  getScanButton() {
+    return element(by.buttonText('Scan'));
   }
 
   getScanProgress() {
