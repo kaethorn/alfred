@@ -6,11 +6,11 @@ import { NavigatorService } from './../navigator.service';
 import { Comic } from './../comic';
 
 @Component({
-  selector: 'app-full-screen-reader',
-  templateUrl: './full-screen-reader.component.html',
-  styleUrls: ['./full-screen-reader.component.sass']
+  selector: 'app-reader',
+  templateUrl: './reader.component.html',
+  styleUrls: ['./reader.component.sass']
 })
-export class FullScreenReaderComponent implements OnInit {
+export class ReaderComponent implements OnInit {
 
   comic: Comic = {} as Comic;
   imagePathLeft: string;
@@ -50,7 +50,7 @@ export class FullScreenReaderComponent implements OnInit {
   }
 
   private navigate (sideBySide: boolean) {
-    this.router.navigate(['/read-full-screen/', this.comic.id, NavigatorService.page]);
+    this.router.navigate(['/read/', this.comic.id, NavigatorService.page]);
     this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
     this.imagePathRight = sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
   }

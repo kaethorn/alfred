@@ -23,7 +23,7 @@ import { AppComponent } from './app.component';
 import { LibraryComponent } from './library/library.component';
 import { BrowserComponent } from './browser/browser.component';
 import { PreferencesComponent } from './preferences/preferences.component';
-import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
+import { ReaderComponent } from './reader/reader.component';
 import { ScannerComponent } from './library/scanner/scanner.component';
 import { VolumeComponent } from './library/volume/volume.component';
 import { VolumesComponent } from './volumes/volumes.component';
@@ -35,7 +35,7 @@ import { BookmarksComponent } from './bookmarks/bookmarks.component';
     LibraryComponent,
     BrowserComponent,
     PreferencesComponent,
-    FullScreenReaderComponent,
+    ReaderComponent,
     ScannerComponent,
     VolumeComponent,
     VolumesComponent,

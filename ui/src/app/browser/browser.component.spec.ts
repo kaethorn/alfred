@@ -4,11 +4,11 @@ import { TestModule } from './../../testing/test.module';
 import { ComicsServiceMocks as comicsService } from './../../testing/comics.service.mocks';
 
 import { ComicsService } from '../comics.service';
-import { ReaderComponent } from './reader.component';
+import { BrowserComponent } from './browser.component';
 
-describe('ReaderComponent', () => {
-  let component: ReaderComponent;
-  let fixture: ComponentFixture<ReaderComponent>;
+describe('BrowserComponent', () => {
+  let component: BrowserComponent;
+  let fixture: ComponentFixture<BrowserComponent>;
 
   beforeEach(async(() => {
     const testModule: any = TestModule();

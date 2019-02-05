@@ -11,7 +11,7 @@
     <button mat-button (click)="nextPage()"><mat-icon>skip_next</mat-icon></button>
   </mat-card-actions>
   <div class="image-container">
-    <a [routerLink]="['/read-full-screen', comic.id, currentPage]">
+    <a [routerLink]="['/read', comic.id, currentPage]">
       <img *ngIf="imagePath" [src]="imagePath"
            alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
     </a>
