@@ -17,7 +17,7 @@ export class BookmarksService {
 
   list (): Observable<Bookmark[]> {
     return this.http.get(this.listUrl).pipe(
-      map((data: any) => data._embedded.preferences),
+      map((data: any) => data._embedded.bookmarks),
       map((data: any) => {
         return data.map((item) => {
           item.id = item._links.self.href.split('/').pop();
