@@ -6,7 +6,7 @@ export class PreferencesPage {
   }
 
   getComicsPathInput() {
-    return element(by.css('input[ng-reflect-name="comics.path"]'));
+    return element(by.css('input[Placeholder="Path"]'));
   }
 
   getSaveButton() {
