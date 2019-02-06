@@ -89,4 +89,8 @@ export class ComicsService {
       )
     );
   }
+
+  update (comic: Comic) {
+    return this.http.put<Comic>(`${ this.comicUrl }/${ comic.id }`, comic);
+  }
 }

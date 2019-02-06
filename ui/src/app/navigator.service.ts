@@ -27,4 +27,10 @@ export class NavigatorService {
 
     return this.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (this.pageCount - 1);
   }
+
+  lastPage (): boolean {
+    if (NavigatorService.page === (this.pageCount - 1)) {
+      return true;
+    }
+  }
 }

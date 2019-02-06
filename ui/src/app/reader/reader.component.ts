@@ -27,7 +27,7 @@ export class ReaderComponent implements OnInit {
 
   @HostListener('document:keyup.esc', ['$event'])
   handleEscape() {
-    this.router.navigate(['/read/', this.comic.id, NavigatorService.page ]);
+    this.router.navigate(['/browse/', this.comic.id, NavigatorService.page ]);
   }
 
   ngOnInit () {
@@ -53,5 +53,11 @@ export class ReaderComponent implements OnInit {
     this.router.navigate(['/read/', this.comic.id, NavigatorService.page]);
     this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
     this.imagePathRight = sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
+    if (this.navigator.lastPage()) {
+      this.comic.read = true;
+      this.comic.lastRead = new Date();
+      this.comicsService.update(this.comic)
+        .subscribe(() => {});
+    }
   }
 }

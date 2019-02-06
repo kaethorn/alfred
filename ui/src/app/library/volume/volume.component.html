@@ -4,7 +4,7 @@
       <mat-chip>Vol. {{ volume.volume }}</mat-chip>
     </mat-chip-list>
   </mat-card-content>
-  <a [routerLink]="['/read/', publisher, series, volume.volume]">
+  <a [routerLink]="['/browse/', publisher, series, volume.volume]">
     <img [src]="thumbnail">
   </a>
   <mat-card-actions>

@@ -23,4 +23,6 @@ export interface Comic {
   characters: string;
   teams: string;
   thumbnail: string;
+  read: boolean;
+  lastRead: Date;
 }

@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -53,6 +54,8 @@ public class Comic {
     private String characters;
     private String teams;
     private byte[] thumbnail;
+    private boolean read = false;
+    private Date lastRead;
 
     @Override
     public String toString() {
