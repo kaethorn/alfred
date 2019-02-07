@@ -30,6 +30,22 @@ export class VolumesComponent implements OnInit {
       });
   }
 
+  markAsRead (comic: Comic): void {
+    comic.read = true;
+    comic.lastRead = new Date();
+    this.updateComic(comic);
+  }
+
+  markAsUnread (comic: Comic): void {
+    comic.read = false;
+    comic.lastRead = null;
+    this.updateComic(comic);
+  }
+
+  private updateComic (comic: Comic): void {
+    this.comicsService.update(comic).subscribe(() => {});
+  }
+
   thumbnail (comic: Comic): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
   }
