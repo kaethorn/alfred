@@ -5,7 +5,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ComicRepository extends MongoRepository<Comic, String>, VolumeRepository {
+public interface ComicRepository extends MongoRepository<Comic, String>, VolumeRepository, ComicQueryRepository {
 
     List<Comic> findAllByOrderBySeriesAscVolumeAscPositionAsc();
 
