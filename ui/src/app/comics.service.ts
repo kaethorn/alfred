@@ -18,6 +18,8 @@ export class ComicsService {
     `${ this.API_PREFIX }/scan`;
   private comicsUrl =
     `${ this.API_PREFIX }/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc`;
+  private lastUnreadUrl =
+    `${ this.API_PREFIX }/comics/search/findAllLastReadByVolume`;
   private comicsByVolumeUrl =
     `${ this.API_PREFIX }/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition`;
   private comicUrl =
@@ -69,6 +71,18 @@ export class ComicsService {
 
   scan () {
     return this.http.get(this.scanUrl);
+  }
+
+  listLastReadByVolume(): Observable<Comic[]> {
+    return this.http.get(this.lastUnreadUrl).pipe(
+      map((data: any) => data._embedded.comics),
+      map((data: any) => {
+        return data.map((comic) => {
+          comic.id = comic._links.self.href.split('/').pop();
+          return comic;
+        });
+      })
+    );
   }
 
   listVolumesBySeries(): Observable<Series[]> {

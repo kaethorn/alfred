@@ -15,7 +15,7 @@ describe('LibraryComponent', () => {
     testModule.providers.push({
       provide: ComicsService, useValue: comicsService
     });
-    TestBed.configureTestingModule(TestModule()).compileComponents();
+    TestBed.configureTestingModule(testModule).compileComponents();
   }));
 
   beforeEach(() => {

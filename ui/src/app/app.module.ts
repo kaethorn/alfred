@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // Own
 import { AppRoutingModule } from './app-routing.module';
@@ -57,6 +58,7 @@ import { BookmarksComponent } from './bookmarks/bookmarks.component';
     MatInputModule,
     MatDividerModule,
     MatBadgeModule,
+    MatSnackBarModule,
 
     BrowserAnimationsModule,
     AppRoutingModule

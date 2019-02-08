@@ -29,7 +29,7 @@ export class BrowserComponent implements OnInit {
         this.route.snapshot.params.volume
       );
     } else {
-      this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10);
+      this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10) || 0;
       this.getComic(this.route.snapshot.params.id);
     }
   }

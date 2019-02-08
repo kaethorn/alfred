@@ -1,6 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { APP_BASE_HREF } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -12,16 +13,19 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AppRoutingModule } from './../app/app-routing.module';
+import { AppComponent } from './../app/app.component';
 import { LibraryComponent } from './../app/library/library.component';
-import { ReaderComponent } from './../app/reader/reader.component';
+import { BrowserComponent } from './../app/browser/browser.component';
 import { PreferencesComponent } from './../app/preferences/preferences.component';
-import { FullScreenReaderComponent } from './../app/full-screen-reader/full-screen-reader.component';
+import { ReaderComponent } from './../app/reader/reader.component';
 import { ScannerComponent } from './../app/library/scanner/scanner.component';
 import { VolumeComponent } from './../app/library/volume/volume.component';
 import { VolumesComponent } from './../app/volumes/volumes.component';
-import { AppComponent } from './../app/app.component';
+import { BookmarksComponent } from './../app/bookmarks/bookmarks.component';
 
 export const TestModule = () => {
   return {
@@ -30,10 +34,11 @@ export const TestModule = () => {
       VolumeComponent,
       VolumesComponent,
       LibraryComponent,
+      BrowserComponent,
       ReaderComponent,
-      FullScreenReaderComponent,
       PreferencesComponent,
-      ScannerComponent
+      ScannerComponent,
+      BookmarksComponent
     ],
     imports: [
       FormsModule,
@@ -49,11 +54,14 @@ export const TestModule = () => {
       MatIconModule,
       MatInputModule,
       MatDividerModule,
+      MatBadgeModule,
+      MatSnackBarModule,
 
       NoopAnimationsModule,
       AppRoutingModule
     ],
     providers: [
+      { provide: APP_BASE_HREF, useValue: '/' }
     ]
   };
 };
