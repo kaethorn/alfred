@@ -16,5 +16,6 @@ jar {
 }
 
 test.dependsOn 'npm_run_ciTest'
-test.dependsOn 'npm_run_lint'
 test.dependsOn 'npm_run_ciE2e'
+
+check.dependsOn 'npm_run_lint'
