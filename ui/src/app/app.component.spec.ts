@@ -14,16 +14,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'KomiX'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('KomiX');
-  });
-
   it('should render title in a h1 tag', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('mat-toolbar').textContent).toContain('Welcome to KomiX');
+    expect(compiled.querySelector('mat-toolbar').textContent).toContain('KomX');
   });
 });
