@@ -45,7 +45,7 @@ export class BrowserComponent implements OnInit {
   }
 
   private navigate(id: string, page: number): void {
-    this.router.navigate(['/browse/', id, page]);
+    this.router.navigate(['/browse', id, page]);
     this.imagePath = `/api/read/${ id }/${ page }`;
   }
 
@@ -61,7 +61,7 @@ export class BrowserComponent implements OnInit {
     this.comicsService.listByVolume(publisher, series, volume)
       .subscribe((data: Comic[]) => {
         this.comic = data[0];
-        this.router.navigate(['/read/', this.comic.id, this.currentPage], { replaceUrl: true });
+        this.router.navigate(['/read', this.comic.id, this.currentPage], { replaceUrl: true });
       });
   }
 }

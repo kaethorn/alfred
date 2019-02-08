@@ -81,7 +81,7 @@ describe('ReaderComponent', () => {
       fixture.detectChanges();
 
       expect(component.comic.id).toBe('923');
-      expect(router.navigate).toHaveBeenCalledWith(['/read/', '923', 0]);
+      expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 0]);
     });
 
     describe('in single page mode', () => {
@@ -107,7 +107,7 @@ describe('ReaderComponent', () => {
         });
 
         it('sets the current page and updates the route', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read/', '923', 1]);
+          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 1]);
         });
       });
 
@@ -120,9 +120,9 @@ describe('ReaderComponent', () => {
         });
 
         it('does not exceed the last page', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read/', '923', 3]);
+          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
           clickRightSide();
-          expect(router.navigate).toHaveBeenCalledWith(['/read/', '923', 3]);
+          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
         });
       });
     });
@@ -154,7 +154,7 @@ describe('ReaderComponent', () => {
         });
 
         it('sets the current page and updates the route', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read/', '923', 1]);
+          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 1]);
         });
 
         it('displays two pages', () => {
@@ -177,9 +177,9 @@ describe('ReaderComponent', () => {
         });
 
         it('does not exceed the last page', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read/', '923', 3]);
+          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
           clickRightSide();
-          expect(router.navigate).not.toHaveBeenCalledWith(['/read/', '923', 4]);
+          expect(router.navigate).not.toHaveBeenCalledWith(['/read', '923', 4]);
         });
       });
     });

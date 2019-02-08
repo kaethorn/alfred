@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 import { ComicsService } from '../comics.service';
 import { Comic } from '../comic';
@@ -18,7 +19,8 @@ export class BookmarksComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     private router: Router,
-    private comicsService: ComicsService
+    private comicsService: ComicsService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -35,5 +37,9 @@ export class BookmarksComponent implements OnInit {
         });
       }
     });
+  }
+
+  thumbnail (comic: Comic): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
   }
 }

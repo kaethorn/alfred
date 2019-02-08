@@ -1,17 +1,17 @@
 <mat-card>
   <mat-card-content>
     <mat-chip-list>
-      <mat-chip>Vol. {{ volume.volume }}</mat-chip>
+      <mat-chip color="primary" selected>Vol. {{ volume.volume }}</mat-chip>
     </mat-chip-list>
   </mat-card-content>
-  <a [routerLink]="['/browse/', publisher, series, volume.volume]">
+  <a [routerLink]="['/browse', publisher, series, volume.volume]">
     <img [src]="thumbnail">
   </a>
   <mat-card-actions>
-    <button [routerLink]="['/browse/', publisher, series, volume.volume]" color="primary" mat-button>
+    <button [routerLink]="['/browse', publisher, series, volume.volume]" color="primary" mat-button>
       READ
     </button>
-    <button [routerLink]="['/volumes/', publisher, series, volume.volume]" mat-button>
+    <button [routerLink]="['/volumes', publisher, series, volume.volume]" mat-button>
       LIST
     </button>
   </mat-card-actions>
