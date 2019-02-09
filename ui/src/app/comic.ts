@@ -25,5 +25,6 @@ export interface Comic {
   locations: string;
   thumbnail: string;
   read: boolean;
+  currentPage: number;
   lastRead: Date;
 }

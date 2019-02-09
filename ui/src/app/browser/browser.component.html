@@ -7,8 +7,8 @@
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-actions>
-    <button mat-button (click)="prevPage()"><mat-icon>skip_previous</mat-icon></button>
-    <button mat-button (click)="nextPage()"><mat-icon>skip_next</mat-icon></button>
+    <button mat-button (click)="go(-1)"><mat-icon>skip_previous</mat-icon></button>
+    <button mat-button (click)="go(+1)"><mat-icon>skip_next</mat-icon></button>
   </mat-card-actions>
   <div class="image-container">
     <a [routerLink]="['/read', comic.id, currentPage]">
@@ -17,7 +17,7 @@
     </a>
   </div>
   <mat-card-actions>
-    <button mat-button (click)="prevPage()"><mat-icon>skip_previous</mat-icon></button>
-    <button mat-button (click)="nextPage()"><mat-icon>skip_next</mat-icon></button>
+    <button mat-button (click)="go(-1)"><mat-icon>skip_previous</mat-icon></button>
+    <button mat-button (click)="go(+1)"><mat-icon>skip_next</mat-icon></button>
   </mat-card-actions>
 </mat-card>

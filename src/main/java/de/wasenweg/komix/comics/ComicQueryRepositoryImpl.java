@@ -27,7 +27,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
     @Override
     public List<Comic> findAllLastReadByVolume() {
         return mongoTemplate.aggregate(Aggregation.newAggregation(
-            match(where("read").is(true)),
+            match(where("currentPage").ne(null)),
             sort(Sort.Direction.ASC, "position"),
             group("publisher", "series", "volume")
                 .last("$$ROOT").as("comic"),

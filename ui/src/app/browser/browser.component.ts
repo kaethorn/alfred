@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from './../comics.service';
+import { NavigatorService } from './../navigator.service';
 import { Comic } from './../comic';
 
 @Component({
@@ -18,7 +19,8 @@ export class BrowserComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private comicsService: ComicsService
+    private comicsService: ComicsService,
+    private navigator: NavigatorService
   ) {}
 
   ngOnInit() {
@@ -30,31 +32,36 @@ export class BrowserComponent implements OnInit {
       );
     } else {
       this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10) || 0;
-      this.getComic(this.route.snapshot.params.id);
+      this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
+        this.comic = data;
+        this.navigator.set(
+          this.comic.pageCount,
+          Number.parseInt(this.route.snapshot.params.page, 10),
+          false
+        );
+        this.navigator.go();
+        this.navigate();
+      });
     }
   }
 
-  public prevPage (): void {
-    this.currentPage -= (this.currentPage > 0 ? 1 : 0);
-    this.navigate(this.comic.id, this.currentPage);
+  public go (offset: number): void {
+    this.navigator.go(offset);
+    this.navigate();
   }
 
-  public nextPage (): void {
-    this.currentPage += (this.currentPage < this.comic.pageCount ? 1 : 0);
-    this.navigate(this.comic.id, this.currentPage);
-  }
+  private navigate(): void {
+    this.router.navigate(['/browse', this.comic.id, NavigatorService.page]);
+    this.imagePath = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
 
-  private navigate(id: string, page: number): void {
-    this.router.navigate(['/browse', id, page]);
-    this.imagePath = `/api/read/${ id }/${ page }`;
-  }
-
-  private getComic (id: string): void {
-    this.comicsService.get(id)
-      .subscribe((data: Comic) => {
-        this.comic = data;
-        this.navigate(this.comic.id, this.currentPage);
-      });
+    // Update progress
+    this.comic.currentPage = NavigatorService.page;
+    if (this.navigator.lastPage()) {
+      this.comic.read = true;
+      this.comic.lastRead = new Date();
+    }
+    this.comicsService.update(this.comic)
+      .subscribe(() => {});
   }
 
   private getFirstComic (publisher: string, series: string, volume: string) {

@@ -61,6 +61,7 @@ public class Comic {
     private byte[] thumbnail;
 
     private boolean read = false;
+    private Short currentPage;
     private Date lastRead;
 
     @Override

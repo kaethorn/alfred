@@ -9,11 +9,11 @@
         <mat-card-title>{{ comic.series }} #{{ comic.number }}</mat-card-title>
         <mat-card-subtitle>Vol. {{ comic.volume }}</mat-card-subtitle>
       </mat-card-header>
-      <a [routerLink]="['/read', comic.id, 0]">
+      <a [routerLink]="['/read', comic.id, comic.currentPage]">
         <img [src]="thumbnail(comic)">
       </a>
       <mat-card-actions>
-        <button mat-button color="accent" [routerLink]="['/read', comic.id, 0]">RESUME</button>
+        <button mat-button color="accent" [routerLink]="['/read', comic.id, comic.currentPage]">RESUME</button>
         <span class="spacer"></span>
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
