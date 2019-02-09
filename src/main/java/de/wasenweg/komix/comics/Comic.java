@@ -41,6 +41,7 @@ public class Comic {
 
     private String summary;
     private String notes;
+
     private String writer;
     private String penciller;
     private String inker;
@@ -49,11 +50,16 @@ public class Comic {
     private String coverArtist;
     private String editor;
     private String web;
+
     private Short pageCount;
     private boolean manga;
+
     private String characters;
     private String teams;
+    private String locations;
+
     private byte[] thumbnail;
+
     private boolean read = false;
     private Date lastRead;
 

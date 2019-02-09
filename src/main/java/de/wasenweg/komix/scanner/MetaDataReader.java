@@ -85,6 +85,7 @@ public class MetaDataReader {
         comic.setManga(readElement(document, "Manga").equals("Yes"));
         comic.setCharacters(readElement(document, "Characters"));
         comic.setTeams(readElement(document, "Teams"));
+        comic.setLocations(readElement(document, "Locations"));
     }
 
     public static void set(final ZipFile file, final Comic comic)

@@ -22,6 +22,7 @@ export interface Comic {
   manga: boolean;
   characters: string;
   teams: string;
+  locations: string;
   thumbnail: string;
   read: boolean;
   lastRead: Date;
