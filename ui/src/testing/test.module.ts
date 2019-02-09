@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { AppRoutingModule } from './../app/app-routing.module';
 import { AppComponent } from './../app/app.component';
@@ -56,6 +57,7 @@ export const TestModule = () => {
       MatDividerModule,
       MatBadgeModule,
       MatSnackBarModule,
+      MatMenuModule,
 
       NoopAnimationsModule,
       AppRoutingModule

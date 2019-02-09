@@ -8,15 +8,30 @@
       <mat-card-content class=".mat-h4">
         <mat-chip-list>
           <mat-chip color="accent" selected>{{ comic.series }}</mat-chip>
+          <span class="spacer"></span>
           <mat-chip color="primary" selected>Vol. {{ comic.volume }}</mat-chip>
         </mat-chip-list>
       </mat-card-content>
       <a [routerLink]="['/read', comic.id, 0]">
         <img [src]="thumbnail(comic)">
       </a>
-      <mat-card-content>
+      <mat-card-content class=".mat-h4">
         <mat-chip-list>
           <mat-chip>#{{ comic.number }}</mat-chip>
+          <span class="spacer"></span>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item [routerLink]="['/volumes', comic.publisher, comic.series, comic.volume]">
+              <mat-icon>filter_none</mat-icon>
+              <span>View volume</span>
+            </button>
+            <button mat-menu-item [routerLink]="['/library', comic.publisher, comic.series]">
+              <mat-icon>library_books</mat-icon>
+              <span>View in library</span>
+            </button>
+          </mat-menu>
         </mat-chip-list>
       </mat-card-content>
     </mat-card>
