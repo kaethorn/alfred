@@ -31,7 +31,8 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             sort(Sort.Direction.ASC, "position"),
             group("publisher", "series", "volume")
                 .last("$$ROOT").as("comic"),
-            replaceRoot("comic")
+            replaceRoot("comic"),
+            sort(Sort.Direction.DESC, "lastRead")
         ), Comic.class, Comic.class).getMappedResults();
     }
 }
