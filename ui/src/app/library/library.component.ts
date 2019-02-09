@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 import { ComicsService } from './../comics.service';
-import { Comic } from './../comic';
 import { Publisher } from './../publisher';
 
 @Component({

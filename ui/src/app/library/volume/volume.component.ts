@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
-import { Comic } from '../../comic';
 import { Volume } from '../../publisher';
 
 @Component({ selector: 'app-volume',

@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Location } from '@angular/common';
-import { Router, Routes, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { defer } from 'rxjs';
@@ -10,7 +9,6 @@ import { ComicsServiceMocks as comicsService } from './../../testing/comics.serv
 import { comic1 as comic } from './../../testing/comic.fixtures';
 
 import { ComicsService } from '../comics.service';
-import { Comic } from '../comic';
 import { ReaderComponent } from './reader.component';
 
 describe('ReaderComponent', () => {

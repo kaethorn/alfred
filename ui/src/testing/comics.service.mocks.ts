@@ -1,20 +1,21 @@
 import { of } from 'rxjs';
 
-import { ComicsService } from '../app/comics.service';
-
 import { comic1 as comic } from './comic.fixtures';
 
 const comicsService = jasmine.createSpyObj('ComicsService', [
-  'listByVolume',
-  'listVolumesByPublisher',
+  'findVolumesBySeriesAndPublishers',
   'get',
+  'listByVolume',
   'listLastReadByVolume',
-  'findVolumesBySeriesAndPublishers'
+  'listVolumesByPublisher',
+  'update'
 ]);
-comicsService.listByVolume.and.returnValue( of([comic]) );
-comicsService.get.and.returnValue( of(comic) );
-comicsService.listVolumesByPublisher.and.returnValue( of([]) );
-comicsService.listLastReadByVolume.and.returnValue( of([]) );
+
 comicsService.findVolumesBySeriesAndPublishers.and.returnValue( of([]) );
+comicsService.get.and.returnValue( of(comic) );
+comicsService.listByVolume.and.returnValue( of([comic]) );
+comicsService.listLastReadByVolume.and.returnValue( of([]) );
+comicsService.listVolumesByPublisher.and.returnValue( of([]) );
+comicsService.update.and.returnValue( of(comic) );
 
 export { comicsService as ComicsServiceMocks };
