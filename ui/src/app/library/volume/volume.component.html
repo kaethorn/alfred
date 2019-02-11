@@ -22,7 +22,11 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="markAsRead(volume)">
         <mat-icon>done_all</mat-icon>
-        <span>Mark as read</span>
+        <span>Mark volume as read</span>
+      </button>
+      <button mat-menu-item (click)="markAsUnread(volume)">
+        <mat-icon>done_outline</mat-icon>
+        <span>Mark volume as not read</span>
       </button>
     </mat-menu>
   </mat-card-actions>

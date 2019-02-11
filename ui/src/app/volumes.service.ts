@@ -14,6 +14,7 @@ export class VolumesService {
   private readonly volumesBySeriesUrl = '/api/comics/search/findVolumesBySeries';
   private readonly volumesByPublisherUrl = '/api/comics/search/findVolumesBySeriesAndPublishers';
   private readonly markAsReadUrl = '/api/volumes/markAsRead';
+  private readonly markAsUnreadUrl = '/api/volumes/markAsUnread';
 
   listVolumesBySeries(): Observable<Series[]> {
     return this.http.get(this.volumesBySeriesUrl).pipe(
@@ -36,5 +37,9 @@ export class VolumesService {
 
   markAsRead (volume: Volume): Observable<Volume> {
     return this.http.put<Volume>(`${ this.markAsReadUrl }`, volume);
+  }
+
+  markAsUnread (volume: Volume): Observable<Volume> {
+    return this.http.put<Volume>(`${ this.markAsUnreadUrl }`, volume);
   }
 }

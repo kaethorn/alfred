@@ -28,4 +28,9 @@ export class VolumeComponent {
     this.volumesService.markAsRead(volume)
       .subscribe(() => {});
   }
+
+  public markAsUnread(volume: Volume) {
+    this.volumesService.markAsUnread(volume)
+      .subscribe(() => {});
+  }
 }

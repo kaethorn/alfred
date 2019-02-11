@@ -29,18 +29,35 @@ public class VolumeController {
     @PutMapping("/markAsRead")
     @ResponseBody
     public String markAsRead(@Valid @RequestBody final Volume volume) {
+        final UpdateResult updateResult = updateRead(volume, true);
+        if (updateResult.wasAcknowledged()) {
+            return "Success";
+        }
+        return "Error";
+    }
+
+    @PutMapping("/markAsUnread")
+    @ResponseBody
+    public String markAsUnread(@Valid @RequestBody final Volume volume) {
+        final UpdateResult updateResult = updateRead(volume, false);
+        if (updateResult.wasAcknowledged()) {
+            return "Success";
+        }
+        return "Error";
+    }
+
+    // FIXME move to a @Service
+    private UpdateResult updateRead(final Volume volume, final Boolean read) {
         final Query select = Query.query(Criteria
           .where("publisher").is(volume.getPublisher())
           .and("series").is(volume.getSeries())
           .and("volume").is(volume.getVolume()));
         final Update update = new Update();
-        update.set("read", true);
-        update.set("lastRead", new Date());
-        final UpdateResult updateResult = mongoTemplate
-                .updateMulti(select, update, Comic.class);
-        if (updateResult.wasAcknowledged()) {
-            return "Success";
+        update.set("read", read);
+        if (read) {
+            update.set("lastRead", new Date());
         }
-        return "Error";
+        return mongoTemplate
+                .updateMulti(select, update, Comic.class);
     }
 }
