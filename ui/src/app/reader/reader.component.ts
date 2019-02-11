@@ -49,6 +49,10 @@ export class ReaderComponent implements OnInit {
         (event.clientX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ?  1 : -1));
   }
 
+  public onSwipe(offset) {
+    this.navigate(this.navigator.go(offset));
+  }
+
   private navigate (sideBySide: boolean) {
     this.router.navigate(['/read', this.comic.id, NavigatorService.page]);
     this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;

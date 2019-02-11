@@ -1,4 +1,5 @@
-<div class="layer" (click)="onClick($event)" #layer>
+<div class="layer" #layer
+  (click)="onClick($event)" (swipeleft)="onSwipe(1)" (swiperight)="onSwipe(-1)">
   <div class="wrapper">
     <img *ngIf="imagePathLeft" [src]="imagePathLeft" class="left"
          alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
