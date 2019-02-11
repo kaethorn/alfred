@@ -13,7 +13,15 @@ describe('VolumeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VolumeComponent);
     component = fixture.componentInstance;
-    component.volume = { volume: '1999', thumbnail: '' };
+    component.volume = {
+      volume: '1999',
+      thumbnail: '',
+      series: 'Batgirl',
+      publisher: 'DC Comics',
+      read: false,
+      issueCount: 10,
+      readCount: 0
+    };
     fixture.detectChanges();
   });
 
