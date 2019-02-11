@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>Vol. {{ volume.volume }}</mat-card-title>
-    <mat-card-subtitle>{{ volume.issueCount }} issues</mat-card-subtitle>
+    <mat-card-subtitle>{{ volume.readCount }} of {{ volume.issueCount }} issues read</mat-card-subtitle>
   </mat-card-header>
   <a class="thumbnail" [routerLink]="['/browse', publisher, series, volume.volume]"
       [matBadgeHidden]="!volume.read" matBadge="&#10004;" matBadgeColor="accent">
