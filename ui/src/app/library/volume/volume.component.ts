@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 import { VolumesService } from '../../volumes.service';
@@ -13,6 +13,7 @@ export class VolumeComponent {
   @Input() volume: Volume;
   @Input() series: string;
   @Input() publisher: string;
+  @Output() updated = new EventEmitter<boolean>();
 
   constructor (
     private sanitizer: DomSanitizer,
@@ -26,11 +27,15 @@ export class VolumeComponent {
 
   public markAsRead(volume: Volume) {
     this.volumesService.markAsRead(volume)
-      .subscribe(() => {});
+      .subscribe(() => {
+        this.updated.emit(true);
+      });
   }
 
   public markAsUnread(volume: Volume) {
     this.volumesService.markAsUnread(volume)
-      .subscribe(() => {});
+      .subscribe(() => {
+        this.updated.emit(true);
+      });
   }
 }

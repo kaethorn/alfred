@@ -38,6 +38,8 @@ public class VolumeRepositoryImpl implements VolumeRepository {
             sort(Sort.Direction.DESC, "position"),
             group("publisher", "series", "volume")
                 .last("volume").as("volume")
+                .count().as("issueCount")
+                .min("read").as("read")
                 .first("thumbnail").as("thumbnail"),
             group("publisher", "series")
                 .last("series").as("series")
@@ -45,6 +47,8 @@ public class VolumeRepositoryImpl implements VolumeRepository {
                     put("volume", "$_id.volume");
                     put("series", "$_id.series");
                     put("publisher", "$_id.publisher");
+                    put("issueCount", "$issueCount");
+                    put("read", "$read");
                     put("thumbnail", "$thumbnail");
                 }}).as("volumes"),
             group("_id.publisher")

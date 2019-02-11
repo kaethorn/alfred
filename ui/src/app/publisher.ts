@@ -2,6 +2,8 @@ export interface Volume {
   volume: string;
   series: string;
   publisher: string;
+  issueCount: number;
+  read: boolean;
   thumbnail: string;
 }
 

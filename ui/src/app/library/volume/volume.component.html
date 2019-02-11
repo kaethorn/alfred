@@ -1,10 +1,9 @@
 <mat-card>
-  <mat-card-content>
-    <mat-chip-list>
-      <mat-chip color="primary" selected>Vol. {{ volume.volume }}</mat-chip>
-    </mat-chip-list>
-  </mat-card-content>
-  <a [routerLink]="['/browse', publisher, series, volume.volume]"
+  <mat-card-header>
+    <mat-card-title>Vol. {{ volume.volume }}</mat-card-title>
+    <mat-card-subtitle>{{ volume.issueCount }} issues</mat-card-subtitle>
+  </mat-card-header>
+  <a class="thumbnail" [routerLink]="['/browse', publisher, series, volume.volume]"
       [matBadgeHidden]="!volume.read" matBadge="&#10004;" matBadgeColor="accent">
     <img [src]="thumbnail">
   </a>

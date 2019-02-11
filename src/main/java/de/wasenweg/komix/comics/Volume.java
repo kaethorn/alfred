@@ -14,5 +14,7 @@ public class Volume {
     private String volume;
     private String series;
     private String publisher;
+    private Short issueCount;
+    private Boolean read;
     private byte[] thumbnail;
 }

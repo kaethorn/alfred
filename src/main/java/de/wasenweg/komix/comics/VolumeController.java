@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -27,23 +26,13 @@ public class VolumeController {
     }
 
     @PutMapping("/markAsRead")
-    @ResponseBody
-    public String markAsRead(@Valid @RequestBody final Volume volume) {
-        final UpdateResult updateResult = updateRead(volume, true);
-        if (updateResult.wasAcknowledged()) {
-            return "Success";
-        }
-        return "Error";
+    public void markAsRead(@Valid @RequestBody final Volume volume) {
+        updateRead(volume, true);
     }
 
     @PutMapping("/markAsUnread")
-    @ResponseBody
-    public String markAsUnread(@Valid @RequestBody final Volume volume) {
-        final UpdateResult updateResult = updateRead(volume, false);
-        if (updateResult.wasAcknowledged()) {
-            return "Success";
-        }
-        return "Error";
+    public void markAsUnread(@Valid @RequestBody final Volume volume) {
+        updateRead(volume, false);
     }
 
     // FIXME move to a @Service
