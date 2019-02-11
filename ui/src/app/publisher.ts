@@ -1,5 +1,7 @@
 export interface Volume {
   volume: string;
+  series: string;
+  publisher: string;
   thumbnail: string;
 }
 

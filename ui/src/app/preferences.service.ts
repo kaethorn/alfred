@@ -11,10 +11,8 @@ import { Preference } from './preference';
 export class PreferencesService {
   constructor(private http: HttpClient) {}
 
-  private API_PREFIX: String = 'api';
-
-  private listUrl = `${ this.API_PREFIX }/preferences`;
-  private getUrl = `${ this.API_PREFIX }/preferences/search/findByKey?key=`;
+  private readonly listUrl = 'api/preferences';
+  private readonly getUrl = 'api/preferences/search/findByKey?key=';
 
   list (): Observable<Preference[]> {
     return this.http.get(this.listUrl).pipe(

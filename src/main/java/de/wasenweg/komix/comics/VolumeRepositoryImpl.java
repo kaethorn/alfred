@@ -1,6 +1,7 @@
 package de.wasenweg.komix.comics;
 
 import com.mongodb.BasicDBObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -42,6 +43,8 @@ public class VolumeRepositoryImpl implements VolumeRepository {
                 .last("series").as("series")
                 .addToSet(new BasicDBObject() {{
                     put("volume", "$_id.volume");
+                    put("series", "$_id.series");
+                    put("publisher", "$_id.publisher");
                     put("thumbnail", "$thumbnail");
                 }}).as("volumes"),
             group("_id.publisher")

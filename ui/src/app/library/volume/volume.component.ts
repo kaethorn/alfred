@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
+import { VolumesService } from '../../volumes.service';
 import { Volume } from '../../publisher';
 
 @Component({ selector: 'app-volume',
@@ -14,11 +15,17 @@ export class VolumeComponent {
   @Input() publisher: string;
 
   constructor (
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private volumesService: VolumesService
   ) {
   }
 
   get thumbnail(): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ this.volume.thumbnail }`);
+  }
+
+  public markAsRead(volume: Volume) {
+    this.volumesService.markAsRead(volume)
+      .subscribe(() => {});
   }
 }

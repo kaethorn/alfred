@@ -4,7 +4,8 @@
       <mat-chip color="primary" selected>Vol. {{ volume.volume }}</mat-chip>
     </mat-chip-list>
   </mat-card-content>
-  <a [routerLink]="['/browse', publisher, series, volume.volume]">
+  <a [routerLink]="['/browse', publisher, series, volume.volume]"
+      [matBadgeHidden]="!volume.read" matBadge="&#10004;" matBadgeColor="accent">
     <img [src]="thumbnail">
   </a>
   <mat-card-actions>
@@ -14,5 +15,15 @@
     <button [routerLink]="['/volumes', publisher, series, volume.volume]" mat-button>
       LIST
     </button>
+    <span class="flex-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="markAsRead(volume)">
+        <mat-icon>done_all</mat-icon>
+        <span>Mark as read</span>
+      </button>
+    </mat-menu>
   </mat-card-actions>
 </mat-card>

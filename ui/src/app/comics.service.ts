@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Comic } from './comic';
-import { Publisher, Series, Volume } from './publisher';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +11,11 @@ import { Publisher, Series, Volume } from './publisher';
 export class ComicsService {
   constructor(private http: HttpClient) {}
 
-  private API_PREFIX: String = 'api';
-
-  private scanUrl =
-    `${ this.API_PREFIX }/scan`;
-  private comicsUrl =
-    `${ this.API_PREFIX }/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc`;
-  private lastUnreadUrl =
-    `${ this.API_PREFIX }/comics/search/findAllLastReadByVolume`;
-  private comicsByVolumeUrl =
-    `${ this.API_PREFIX }/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition`;
-  private comicUrl =
-    `${ this.API_PREFIX }/comics`;
-  private volumesBySeriesUrl =
-    `${ this.API_PREFIX }/comics/search/findVolumesBySeries`;
-  private volumesByPublisherUrl =
-    `${ this.API_PREFIX }/comics/search/findVolumesBySeriesAndPublishers`;
+  private readonly scanUrl = 'api/scan';
+  private readonly comicsUrl = 'api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc';
+  private readonly lastUnreadUrl = 'api/comics/search/findAllLastReadByVolume';
+  private readonly comicsByVolumeUrl = 'api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition';
+  private readonly comicUrl = 'api/comics';
 
   list (): Observable<Comic[]> {
     return this.http.get(this.comicsUrl).pipe(
@@ -85,26 +73,7 @@ export class ComicsService {
     );
   }
 
-  listVolumesBySeries(): Observable<Series[]> {
-    return this.http.get(this.volumesBySeriesUrl).pipe(
-      map((data: any) => data._embedded.publishers)
-    );
-  }
-
-  listVolumesByPublisher (): Observable<Publisher[]> {
-    return this.http.get(this.volumesByPublisherUrl).pipe(
-      map((data: any) => data._embedded.publishers
-        .map((publisher: Publisher) => {
-          publisher.series
-            .sort((a: Series, b: Series) => a.series.localeCompare(b.series))
-            .map((series: Series) => series.volumes.sort((a: Volume, b: Volume) => a.volume.localeCompare(b.volume)));
-          return publisher;
-        })
-      )
-    );
-  }
-
-  update (comic: Comic) {
+  update (comic: Comic): Observable<Comic> {
     return this.http.put<Comic>(`${ this.comicUrl }/${ comic.id }`, comic);
   }
 }

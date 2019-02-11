@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ComicsService } from './../comics.service';
+import { VolumesService } from './../volumes.service';
 import { Publisher } from './../publisher';
 
 @Component({
@@ -18,7 +18,7 @@ export class LibraryComponent implements OnInit {
   constructor (
     private route: ActivatedRoute,
     private router: Router,
-    private comicsService: ComicsService
+    private volumesService: VolumesService
   ) {
     this.list();
   }
@@ -45,7 +45,7 @@ export class LibraryComponent implements OnInit {
   }
 
   private list () {
-    this.comicsService.listVolumesByPublisher()
+    this.volumesService.listVolumesByPublisher()
       .subscribe((data: Publisher[]) => {
         this.publishers = data;
       });
