@@ -1,4 +1,4 @@
-package de.wasenweg.komix.comics;
+package de.wasenweg.komix.volumes;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;

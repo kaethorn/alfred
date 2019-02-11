@@ -1,6 +1,8 @@
-package de.wasenweg.komix.comics;
+package de.wasenweg.komix.volumes;
 
 import com.mongodb.BasicDBObject;
+
+import de.wasenweg.komix.comics.Comic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;

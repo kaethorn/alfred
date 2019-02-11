@@ -28,28 +28,6 @@ public class ReaderController {
     @Autowired
     private ComicRepository comicRepository;
 
-    // TODO figure out a caching strategy:
-    /// * in memory, self handled and capped
-    // * file based, self handled and capped
-    // * hybrid
-    // * Spring @Cacheable
-    // * 3rd party library
-    // Caching is highly educated because once a comic is open at a
-    // specific page, access is linear from that point as either the
-    // previous or next page is opened. Random access is seldom and
-    // can be slow.
-    //
-    // So a strategy would look like this:
-    // 1. Once a page is openend, cache the next page immediately.
-    // 2. Evict pages that are behind more than one position.
-    // This would mean that once at each turn of a page, the zip
-    // would have to be opened and an image extracted. This might
-    // cause I/O overhead.
-    // Alternatively, a comic could be extracted to the file
-    // system entirely at first access and kept there until a
-    // predefined timeout (30m). This would probably require a
-    // scheduled clean up task.
-
     private ComicPage extractPage(final Comic comic, final Short page) {
         final ComicPage result = new ComicPage();
         ZipFile file = null;

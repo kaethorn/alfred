@@ -1,5 +1,6 @@
 package de.wasenweg.komix.comics;
 
+import de.wasenweg.komix.volumes.VolumeRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 
