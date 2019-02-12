@@ -28,7 +28,9 @@ public class VolumeService {
           .and("volume").is(volume.getVolume()));
         final Update update = new Update();
         update.set("read", read);
+        update.set("currentPage", null);
         if (read) {
+            update.set("currentPage", 0);
             update.set("lastRead", new Date());
         }
         return mongoTemplate
