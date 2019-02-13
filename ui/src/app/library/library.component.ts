@@ -30,12 +30,12 @@ export class LibraryComponent implements OnInit {
 
   openPublisher (publisher: string) {
     this.currentPublisher = publisher;
-    this.router.navigate(['/library', this.currentPublisher]);
+    this.router.navigate(['/library', this.currentPublisher], { skipLocationChange: true });
   }
 
   openSeries (series: string) {
     this.currentSeries = series;
-    this.router.navigate(['/library', this.currentPublisher, this.currentSeries]);
+    this.router.navigate(['/library', this.currentPublisher, this.currentSeries], { skipLocationChange: true });
   }
 
   list () {
