@@ -14,8 +14,6 @@ import { Comic } from '../../comic';
 export class VolumeComponent {
 
   @Input() volume: Volume;
-  @Input() series: string;
-  @Input() publisher: string;
   @Output() updated = new EventEmitter<boolean>();
 
   constructor (
@@ -44,10 +42,17 @@ export class VolumeComponent {
       });
   }
 
-  public resumeVolume(publisher: string, series: string, volume: string): void {
-    this.comicsService.getLastUnreadByVolume(publisher, series, volume)
-      .subscribe((comic: Comic) => {
-        this.router.navigate(['/read', comic.id, comic.currentPage]);
-      });
+  public resumeVolume(volume: Volume): void {
+    if (volume.read) {
+      this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.volume)
+        .subscribe((comic: Comic) => {
+          this.router.navigate(['/read', comic.id, comic.currentPage]);
+        });
+    } else {
+      this.comicsService.getLastUnreadByVolume(volume.publisher, volume.series, volume.volume)
+        .subscribe((comic: Comic) => {
+          this.router.navigate(['/read', comic.id, comic.currentPage]);
+        });
+    }
   }
 }

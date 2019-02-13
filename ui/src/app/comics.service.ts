@@ -16,6 +16,7 @@ export class ComicsService {
   private readonly lastUnreadsUrl = 'api/comics/search/findAllLastReadPerVolume';
   private readonly lastUnreadUrl = 'api/comics/search/findLastReadForVolume';
   private readonly comicsByVolumeUrl = 'api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition';
+  private readonly firstByVolumeUrl = 'api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition';
   private readonly comicUrl = 'api/comics';
 
   list (): Observable<Comic[]> {
@@ -67,6 +68,22 @@ export class ComicsService {
       }
     });
     return this.http.get<Comic>(this.lastUnreadUrl, { params: params }).pipe(
+      map((comic: any) => {
+        comic.id = comic._links.self.href.split('/').pop();
+        return comic;
+      })
+    );
+  }
+
+  getFirstByVolume(publisher: string, series: string, volume: string): Observable<Comic> {
+    const params = new HttpParams({
+      fromObject: {
+        publisher: publisher,
+        series: series,
+        volume: volume
+      }
+    });
+    return this.http.get<Comic>(this.firstByVolumeUrl, { params: params }).pipe(
       map((comic: any) => {
         comic.id = comic._links.self.href.split('/').pop();
         return comic;

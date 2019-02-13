@@ -39,7 +39,7 @@ public class VolumeRepositoryImpl implements VolumeRepository {
     @Override
     public List<Publisher> findVolumesBySeriesAndPublishers() {
         return mongoTemplate.aggregate(Aggregation.newAggregation(
-            sort(Sort.Direction.DESC, "position"),
+            sort(Sort.Direction.ASC, "position"),
             group("publisher", "series", "volume")
                 .last("volume").as("volume")
                 .count().as("issueCount")

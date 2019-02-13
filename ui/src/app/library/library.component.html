@@ -22,8 +22,6 @@
         <div class="volumes">
           <app-volume *ngFor="let volume of series.volumes"
             (updated)="list()"
-            [publisher]="publisher.publisher"
-            [series]="series.series"
             [volume]="volume">
           </app-volume>
         </div>

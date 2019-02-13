@@ -3,15 +3,12 @@
     <mat-card-title>Vol. {{ volume.volume }}</mat-card-title>
     <mat-card-subtitle>{{ volume.readCount }} of {{ volume.issueCount }} issues read</mat-card-subtitle>
   </mat-card-header>
-  <a class="thumbnail" (click)="resumeVolume(publisher, series, volume.volume)"
+  <a class="thumbnail" (click)="resumeVolume(volume)"
       [matBadgeHidden]="!volume.read" matBadge="&#10004;" matBadgeColor="accent">
     <img [src]="thumbnail">
   </a>
   <mat-card-actions>
-    <button (click)="resumeVolume(publisher, series, volume.volume)" color="primary" mat-button>
-      READ
-    </button>
-    <button [routerLink]="['/volumes', publisher, series, volume.volume]" mat-button>
+    <button [routerLink]="['/volumes', volume.publisher, volume.series, volume.volume]" mat-button>
       LIST
     </button>
     <span class="flex-spacer"></span>
