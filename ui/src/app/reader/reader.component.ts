@@ -36,7 +36,7 @@ export class ReaderComponent implements OnInit {
       const parentElement = this.layer.nativeElement.parentElement;
       this.navigator.set(
         this.comic.pageCount,
-        Number.parseInt(this.route.snapshot.params.page, 10),
+        Number.parseInt(this.route.snapshot.params.page, 10) || 0,
         (parentElement.clientWidth > parentElement.clientHeight) ? true : false
       );
       this.navigate(this.navigator.go());

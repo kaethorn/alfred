@@ -14,10 +14,10 @@ const routes: Routes = [
   { path: 'library/:publisher', component: LibraryComponent },
   { path: 'library', component: LibraryComponent },
   { path: 'volumes/:publisher/:series/:volume', component: VolumesComponent },
-  { path: 'browse/:publisher/:series/:volume', component: BrowserComponent },
   { path: 'browse/:id/:page', component: BrowserComponent },
   { path: 'browse/:id', component: BrowserComponent },
   { path: 'read/:id/:page', component: ReaderComponent },
+  { path: 'read/:id', component: ReaderComponent },
   { path: 'preferences', component: PreferencesComponent },
   { path: 'bookmarks', component: BookmarksComponent }
 ];

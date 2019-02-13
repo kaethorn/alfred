@@ -24,25 +24,17 @@ export class BrowserComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.route.snapshot.params.publisher) {
-      this.getFirstComic(
-        this.route.snapshot.params.publisher,
-        this.route.snapshot.params.series,
-        this.route.snapshot.params.volume
+    this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10) || 0;
+    this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
+      this.comic = data;
+      this.navigator.set(
+        this.comic.pageCount,
+        Number.parseInt(this.route.snapshot.params.page, 10),
+        false
       );
-    } else {
-      this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10) || 0;
-      this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
-        this.comic = data;
-        this.navigator.set(
-          this.comic.pageCount,
-          Number.parseInt(this.route.snapshot.params.page, 10),
-          false
-        );
-        this.navigator.go();
-        this.navigate();
-      });
-    }
+      this.navigator.go();
+      this.navigate();
+    });
   }
 
   public go (offset: number): void {
@@ -62,13 +54,5 @@ export class BrowserComponent implements OnInit {
     }
     this.comicsService.update(this.comic)
       .subscribe(() => {});
-  }
-
-  private getFirstComic (publisher: string, series: string, volume: string) {
-    this.comicsService.listByVolume(publisher, series, volume)
-      .subscribe((data: Comic[]) => {
-        this.comic = data[0];
-        this.router.navigate(['/read', this.comic.id, this.currentPage], { replaceUrl: true });
-      });
   }
 }

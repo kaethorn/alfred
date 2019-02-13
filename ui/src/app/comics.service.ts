@@ -13,7 +13,8 @@ export class ComicsService {
 
   private readonly scanUrl = 'api/scan';
   private readonly comicsUrl = 'api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc';
-  private readonly lastUnreadUrl = 'api/comics/search/findAllLastReadByVolume';
+  private readonly lastUnreadsUrl = 'api/comics/search/findAllLastReadPerVolume';
+  private readonly lastUnreadUrl = 'api/comics/search/findLastReadForVolume';
   private readonly comicsByVolumeUrl = 'api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition';
   private readonly comicUrl = 'api/comics';
 
@@ -57,12 +58,28 @@ export class ComicsService {
     );
   }
 
+  getLastUnreadByVolume(publisher: string, series: string, volume: string): Observable<Comic> {
+    const params = new HttpParams({
+      fromObject: {
+        publisher: publisher,
+        series: series,
+        volume: volume
+      }
+    });
+    return this.http.get<Comic>(this.lastUnreadUrl, { params: params }).pipe(
+      map((comic: any) => {
+        comic.id = comic._links.self.href.split('/').pop();
+        return comic;
+      })
+    );
+  }
+
   scan () {
     return this.http.get(this.scanUrl);
   }
 
   listLastReadByVolume(): Observable<Comic[]> {
-    return this.http.get(this.lastUnreadUrl).pipe(
+    return this.http.get(this.lastUnreadsUrl).pipe(
       map((data: any) => data._embedded.comics),
       map((data: any) => {
         return data.map((comic) => {
