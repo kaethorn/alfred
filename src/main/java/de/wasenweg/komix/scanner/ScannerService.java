@@ -4,7 +4,6 @@ import de.wasenweg.komix.comics.Comic;
 import de.wasenweg.komix.comics.ComicRepository;
 import de.wasenweg.komix.preferences.PreferencesService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
@@ -28,7 +27,6 @@ public class ScannerService {
 
     private final PreferencesService preferencesService;
 
-    @Autowired
     public ScannerService(final ComicRepository comicRepository, final PreferencesService preferencesService) {
         this.comicRepository = comicRepository;
         this.preferencesService = preferencesService;

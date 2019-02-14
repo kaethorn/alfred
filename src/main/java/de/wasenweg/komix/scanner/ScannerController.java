@@ -15,11 +15,7 @@ public class ScannerController {
 
     private final List<SseEmitter> emitters = new ArrayList<>();
 
-    private final ScannerService scannerService;
-
-    public ScannerController(final ScannerService scannerService) {
-        this.scannerService = scannerService;
-    }
+    private ScannerService scannerService;
 
     @GetMapping("/scan-progress")
     SseEmitter streamScanProgress() {

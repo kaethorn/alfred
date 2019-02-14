@@ -23,12 +23,8 @@ import static org.springframework.data.mongodb.core.aggregation.ComparisonOperat
 @RepositoryRestResource
 public class ComicQueryRepositoryImpl implements ComicQueryRepository {
 
-    private final MongoTemplate mongoTemplate;
-
     @Autowired
-    public ComicQueryRepositoryImpl(final MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
+    private MongoTemplate mongoTemplate;
 
     @Override
     public List<Comic> findAllLastReadPerVolume() {

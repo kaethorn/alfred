@@ -4,7 +4,6 @@ import de.wasenweg.komix.comics.Comic;
 import de.wasenweg.komix.comics.ComicRepository;
 import de.wasenweg.komix.util.ZipReader;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import java.util.zip.ZipFile;
 @RestController
 public class ReaderController {
 
-    @Autowired
     private ComicRepository comicRepository;
 
     private ComicPage extractPage(final Comic comic, final Short page) {

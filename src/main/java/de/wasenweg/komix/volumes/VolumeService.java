@@ -14,12 +14,8 @@ import java.util.Date;
 @Service
 public class VolumeService {
 
-    private final MongoTemplate mongoTemplate;
-
     @Autowired
-    public VolumeService(final MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
+    private MongoTemplate mongoTemplate;
 
     public UpdateResult updateRead(final Volume volume, final Boolean read) {
         final Query query = Query.query(Criteria

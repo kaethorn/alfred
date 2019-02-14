@@ -20,12 +20,8 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort
 @RepositoryRestResource(collectionResourceRel = "volumes", path = "volumes")
 public class VolumeRepositoryImpl implements VolumeRepository {
 
-    private final MongoTemplate mongoTemplate;
-
     @Autowired
-    public VolumeRepositoryImpl(final MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
+    private MongoTemplate mongoTemplate;
 
     @Override
     public List<Series> findVolumesBySeries() {
