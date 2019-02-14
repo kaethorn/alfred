@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Publisher, Series, Volume } from './publisher';
+import { Comic } from './comic';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class VolumesService {
   private readonly volumesByPublisherUrl = '/api/comics/search/findVolumesBySeriesAndPublishers';
   private readonly markAsReadUrl = '/api/volumes/markAsRead';
   private readonly markAsUnreadUrl = '/api/volumes/markAsUnread';
+  private readonly markAllAsReadUntilUrl = 'api/volumes/markAllAsReadUntil';
 
   listVolumesBySeries(): Observable<Series[]> {
     return this.http.get(this.volumesBySeriesUrl).pipe(
@@ -41,5 +43,9 @@ export class VolumesService {
 
   markAsUnread (volume: Volume): Observable<Volume> {
     return this.http.put<Volume>(`${ this.markAsUnreadUrl }`, volume);
+  }
+
+  markAllAsReadUntil (comic: Comic): Observable<any> {
+    return this.http.put(this.markAllAsReadUntilUrl, comic);
   }
 }

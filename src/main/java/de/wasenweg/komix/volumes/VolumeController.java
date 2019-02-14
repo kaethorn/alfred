@@ -1,5 +1,6 @@
 package de.wasenweg.komix.volumes;
 
+import de.wasenweg.komix.comics.Comic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,5 +24,10 @@ public class VolumeController {
     @PutMapping("/markAsUnread")
     public void markAsUnread(@Valid @RequestBody final Volume volume) {
         this.volumeService.updateRead(volume, false);
+    }
+
+    @PutMapping("/markAllAsReadUntil")
+    public void markAsUnread(@Valid @RequestBody final Comic comic) {
+        this.volumeService.updateReadUntil(comic);
     }
 }

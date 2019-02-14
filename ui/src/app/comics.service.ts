@@ -91,7 +91,7 @@ export class ComicsService {
     );
   }
 
-  scan () {
+  scan (): Observable<any> {
     return this.http.get(this.scanUrl);
   }
 

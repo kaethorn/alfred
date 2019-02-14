@@ -23,5 +23,19 @@
     <ng-template #notRead>
       <button mat-button (click)="markAsRead(comic)" color="primary">MARK AS READ</button>
     </ng-template>
+    <span class="flex-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="markAsReadUntil(comic)">
+        <mat-icon>done_all</mat-icon>
+        <span>Mark read until here</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/library', comic.publisher, comic.series]">
+        <mat-icon>library_books</mat-icon>
+        <span>View in library</span>
+      </button>
+    </mat-menu>
   </mat-card-actions>
 </mat-card>
