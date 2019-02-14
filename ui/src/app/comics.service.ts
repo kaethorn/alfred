@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { Comic } from './comic';
-import { Publisher, Series, Volume } from './publisher';
 
 @Injectable({
   providedIn: 'root'
@@ -12,20 +11,13 @@ import { Publisher, Series, Volume } from './publisher';
 export class ComicsService {
   constructor(private http: HttpClient) {}
 
-  private API_PREFIX: String = 'api';
-
-  private scanUrl =
-    `${ this.API_PREFIX }/scan`;
-  private comicsUrl =
-    `${ this.API_PREFIX }/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc`;
-  private comicsByVolumeUrl =
-    `${ this.API_PREFIX }/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition`;
-  private comicUrl =
-    `${ this.API_PREFIX }/comics`;
-  private volumesBySeriesUrl =
-    `${ this.API_PREFIX }/comics/search/findVolumesBySeries`;
-  private volumesByPublisherUrl =
-    `${ this.API_PREFIX }/comics/search/findVolumesBySeriesAndPublishers`;
+  private readonly scanUrl = 'api/scan';
+  private readonly comicsUrl = 'api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc';
+  private readonly lastUnreadsUrl = 'api/comics/search/findAllLastReadPerVolume';
+  private readonly lastUnreadUrl = 'api/comics/search/findLastReadForVolume';
+  private readonly comicsByVolumeUrl = 'api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition';
+  private readonly firstByVolumeUrl = 'api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition';
+  private readonly comicUrl = 'api/comics';
 
   list (): Observable<Comic[]> {
     return this.http.get(this.comicsUrl).pipe(
@@ -67,26 +59,55 @@ export class ComicsService {
     );
   }
 
-  scan () {
+  getLastUnreadByVolume(publisher: string, series: string, volume: string): Observable<Comic> {
+    const params = new HttpParams({
+      fromObject: {
+        publisher: publisher,
+        series: series,
+        volume: volume
+      }
+    });
+    return this.http.get<Comic>(this.lastUnreadUrl, { params: params }).pipe(
+      map((comic: any) => {
+        comic.id = comic._links.self.href.split('/').pop();
+        return comic;
+      })
+    );
+  }
+
+  getFirstByVolume(publisher: string, series: string, volume: string): Observable<Comic> {
+    const params = new HttpParams({
+      fromObject: {
+        publisher: publisher,
+        series: series,
+        volume: volume
+      }
+    });
+    return this.http.get<Comic>(this.firstByVolumeUrl, { params: params }).pipe(
+      map((comic: any) => {
+        comic.id = comic._links.self.href.split('/').pop();
+        return comic;
+      })
+    );
+  }
+
+  scan (): Observable<any> {
     return this.http.get(this.scanUrl);
   }
 
-  listVolumesBySeries(): Observable<Series[]> {
-    return this.http.get(this.volumesBySeriesUrl).pipe(
-      map((data: any) => data._embedded.publishers)
+  listLastReadByVolume(): Observable<Comic[]> {
+    return this.http.get(this.lastUnreadsUrl).pipe(
+      map((data: any) => data._embedded.comics),
+      map((data: any) => {
+        return data.map((comic) => {
+          comic.id = comic._links.self.href.split('/').pop();
+          return comic;
+        });
+      })
     );
   }
 
-  listVolumesByPublisher (): Observable<Publisher[]> {
-    return this.http.get(this.volumesByPublisherUrl).pipe(
-      map((data: any) => data._embedded.publishers
-        .map((publisher: Publisher) => {
-          publisher.series
-            .sort((a: Series, b: Series) => a.series.localeCompare(b.series))
-            .map((series: Series) => series.volumes.sort((a: Volume, b: Volume) => a.volume.localeCompare(b.volume)));
-          return publisher;
-        })
-      )
-    );
+  update (comic: Comic): Observable<Comic> {
+    return this.http.put<Comic>(`${ this.comicUrl }/${ comic.id }`, comic);
   }
 }

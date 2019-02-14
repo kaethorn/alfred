@@ -1,9 +1,12 @@
 <mat-card *ngFor="let comic of comics">
   <mat-card-content>
     <div class="comic-summary">
-      <a [routerLink]="['/read/', comic.id, 0]">
-        <img [src]="thumbnail(comic)">
-      </a>
+      <div class="thumbnail">
+        <a [routerLink]="['/read', comic.id, 0]"
+          [matBadgeHidden]="!comic.read" matBadge="&#10004;" matBadgeColor="accent">
+          <img [src]="thumbnail(comic)">
+        </a>
+      </div>
       <div>
         <h4>#{{ comic.number }} {{ comic.title }}</h4>
         <h5>{{ comic.year }}/{{ comic.month }}</h5>
@@ -11,4 +14,28 @@
       </div>
     </div>
   </mat-card-content>
+  <mat-card-actions>
+    <button mat-button [routerLink]="['/browse', comic.id, 0]">BROWSE</button>
+    <button mat-button *ngIf="comic.read; else notRead"
+      (click)="markAsUnread(comic)" color="primary">
+      MARK AS UNREAD
+    </button>
+    <ng-template #notRead>
+      <button mat-button (click)="markAsRead(comic)" color="primary">MARK AS READ</button>
+    </ng-template>
+    <span class="flex-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="markAsReadUntil(comic)">
+        <mat-icon>done_all</mat-icon>
+        <span>Mark read until here</span>
+      </button>
+      <button mat-menu-item [routerLink]="['/library', comic.publisher, comic.series]">
+        <mat-icon>library_books</mat-icon>
+        <span>View in library</span>
+      </button>
+    </mat-menu>
+  </mat-card-actions>
 </mat-card>

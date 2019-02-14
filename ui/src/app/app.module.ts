@@ -15,28 +15,33 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
 
 // Own
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LibraryComponent } from './library/library.component';
-import { ReaderComponent } from './reader/reader.component';
+import { BrowserComponent } from './browser/browser.component';
 import { PreferencesComponent } from './preferences/preferences.component';
-import { FullScreenReaderComponent } from './full-screen-reader/full-screen-reader.component';
+import { ReaderComponent } from './reader/reader.component';
 import { ScannerComponent } from './library/scanner/scanner.component';
 import { VolumeComponent } from './library/volume/volume.component';
 import { VolumesComponent } from './volumes/volumes.component';
+import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LibraryComponent,
-    ReaderComponent,
+    BrowserComponent,
     PreferencesComponent,
-    FullScreenReaderComponent,
+    ReaderComponent,
     ScannerComponent,
     VolumeComponent,
-    VolumesComponent
+    VolumesComponent,
+    BookmarksComponent
   ],
   imports: [
     BrowserModule,
@@ -53,6 +58,9 @@ import { VolumesComponent } from './volumes/volumes.component';
     MatIconModule,
     MatInputModule,
     MatDividerModule,
+    MatBadgeModule,
+    MatSnackBarModule,
+    MatMenuModule,
 
     BrowserAnimationsModule,
     AppRoutingModule

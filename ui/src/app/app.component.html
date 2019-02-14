@@ -1,7 +1,14 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Welcome to {{ title }}</span>
-    <span class="spacer"></span>
+    <a class="logo" [routerLink]="['/library']">
+      <span class="k">K</span>
+      <span class="om">om</span>
+      <span class="x">X</span>
+    </a>
+    <span class="flex-spacer"></span>
+    <button mat-button [routerLink]="['/bookmarks']">
+      <mat-icon>book</mat-icon>
+    </button>
     <button mat-button [routerLink]="['/library']">
       <mat-icon>library_books</mat-icon>
     </button>

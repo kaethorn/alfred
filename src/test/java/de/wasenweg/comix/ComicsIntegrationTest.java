@@ -5,7 +5,6 @@ import de.wasenweg.komix.comics.Comic;
 import de.wasenweg.komix.comics.ComicRepository;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,9 @@ import org.springframework.hateoas.client.Traverson;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,12 +37,6 @@ public class ComicsIntegrationTest {
     @Autowired
     private ComicRepository comicRepository;
 
-    @Before
-    public void setUp() {
-        comicRepository.save(new Comic("/a.cbz", "Title A", "Series A", "1999", "1", "0001.0", (short) 2007, (short) 9, "Pub A"));
-        comicRepository.save(new Comic("/b.cbz", "Title B", "Series A", "1999", "2", "0002.0", (short) 2007, (short) 10, "Pub A"));
-    }
-
     @After
     public void tearDown() {
         comicRepository.deleteAll();
@@ -49,12 +44,64 @@ public class ComicsIntegrationTest {
 
     @Test
     public void getAllComics() throws Exception {
+        comicRepository.save(ComicFixtures.COMIC_A1);
+        comicRepository.save(ComicFixtures.COMIC_A2);
+
         final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
-        final ParameterizedTypeReference<Resources<Comic>> typeRef = new ParameterizedTypeReference<Resources<Comic>>() { };
-        final Collection<Comic> comics = traverson.follow("comics").toObject(typeRef).getContent();
+        final List<Comic> comics = traverson
+                .follow("comics")
+                .toObject(new ParameterizedTypeReference<Resources<Comic>>() { })
+                .getContent()
+                .stream().collect(Collectors.toList());
 
         assertThat(comics.size()).isEqualTo(2);
-        assertThat(comics.stream().map(Comic::getTitle).collect(Collectors.toList())).contains("Title A");
-        assertThat(comics.stream().map(Comic::getTitle).collect(Collectors.toList())).contains("Title B");
+        assertThat(comics.get(0).getTitle()).isEqualTo("Title A1");
+        assertThat(comics.get(1).getTitle()).isEqualTo("Title A2");
+    }
+
+    @Test
+    public void findLastReadForVolume() throws Exception {
+        comicRepository.save(ComicFixtures.COMIC_A1);
+        comicRepository.save(ComicFixtures.COMIC_A2);
+        comicRepository.save(ComicFixtures.COMIC_A3);
+
+        final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("publisher", "Pub A");
+        params.put("series", "Series A");
+        params.put("volume", "1999");
+
+        final Comic comic = traverson
+                .follow("comics", "search", "findLastReadForVolume")
+                .withTemplateParameters(params)
+                .toObject(new ParameterizedTypeReference<Comic>() { });
+
+        assertThat(comic.getTitle()).isEqualTo("Title A2");
+    }
+
+    @Test
+    public void findAllLastReadPerVolume() throws Exception {
+        comicRepository.save(ComicFixtures.COMIC_A1);
+        comicRepository.save(ComicFixtures.COMIC_A2);
+        comicRepository.save(ComicFixtures.COMIC_A3);
+        comicRepository.save(ComicFixtures.COMIC_B1);
+        comicRepository.save(ComicFixtures.COMIC_B2);
+        comicRepository.save(ComicFixtures.COMIC_B3);
+        comicRepository.save(ComicFixtures.COMIC_C1);
+        comicRepository.save(ComicFixtures.COMIC_C2);
+        comicRepository.save(ComicFixtures.COMIC_C3);
+
+        final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
+
+        final List<Comic> comics = traverson
+                .follow("comics", "search", "findAllLastReadPerVolume")
+                .toObject(new ParameterizedTypeReference<Resources<Comic>>() { })
+                .getContent()
+                .stream().collect(Collectors.toList());
+
+        assertThat(comics.size()).isEqualTo(2);
+        assertThat(comics.get(0).getTitle()).isEqualTo("Title A2");
+        assertThat(comics.get(1).getTitle()).isEqualTo("Title C3");
     }
 }

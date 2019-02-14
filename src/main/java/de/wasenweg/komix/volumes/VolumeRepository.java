@@ -1,4 +1,4 @@
-package de.wasenweg.komix.comics;
+package de.wasenweg.komix.volumes;
 
 import java.util.List;
 

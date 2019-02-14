@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
-import { ComicsService } from './../comics.service';
-import { Comic } from './../comic';
+import { VolumesService } from './../volumes.service';
 import { Publisher } from './../publisher';
 
 @Component({
@@ -20,34 +18,36 @@ export class LibraryComponent implements OnInit {
   constructor (
     private route: ActivatedRoute,
     private router: Router,
-    private comicsService: ComicsService
+    private volumesService: VolumesService
   ) {
     this.list();
   }
 
   ngOnInit() {
-    this.currentPublisher = this.route.snapshot.params.publisher;
-    this.currentSeries = this.route.snapshot.params.series;
+    this.currentPublisher = this.route.snapshot.queryParams.publisher;
+    this.currentSeries = this.route.snapshot.queryParams.series;
   }
 
   openPublisher (publisher: string) {
     this.currentPublisher = publisher;
-    this.router.navigate(['/library/', this.currentPublisher]);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { publisher: publisher },
+      queryParamsHandling: 'merge'
+    });
   }
 
   openSeries (series: string) {
     this.currentSeries = series;
-    this.router.navigate(['/library/', this.currentPublisher, this.currentSeries]);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { series: series },
+      queryParamsHandling: 'merge'
+    });
   }
 
-  onScanned (scanned) {
-    if (scanned) {
-      this.list();
-    }
-  }
-
-  private list () {
-    this.comicsService.listVolumesByPublisher()
+  list () {
+    this.volumesService.listVolumesByPublisher()
       .subscribe((data: Publisher[]) => {
         this.publishers = data;
       });

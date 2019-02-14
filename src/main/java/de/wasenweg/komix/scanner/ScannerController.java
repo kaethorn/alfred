@@ -1,5 +1,6 @@
 package de.wasenweg.komix.scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,11 +16,8 @@ public class ScannerController {
 
     private final List<SseEmitter> emitters = new ArrayList<>();
 
-    private final ScannerService scannerService;
-
-    public ScannerController(final ScannerService scannerService) {
-        this.scannerService = scannerService;
-    }
+    @Autowired
+    private ScannerService scannerService;
 
     @GetMapping("/scan-progress")
     SseEmitter streamScanProgress() {

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from './../comics.service';
+import { NavigatorService } from './../navigator.service';
 import { Comic } from './../comic';
 
 @Component({
@@ -12,56 +13,58 @@ import { Comic } from './../comic';
 export class ReaderComponent implements OnInit {
 
   comic: Comic = {} as Comic;
-  imagePath: string;
-  currentPage = 0;
+  imagePathLeft: string;
+  imagePathRight: string;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private comicsService: ComicsService
+    private comicsService: ComicsService,
+    private navigator: NavigatorService
   ) {}
 
-  ngOnInit() {
-    if (this.route.snapshot.params.publisher) {
-      this.getFirstComic(
-        this.route.snapshot.params.publisher,
-        this.route.snapshot.params.series,
-        this.route.snapshot.params.volume
+  @ViewChild('layer') layer: ElementRef;
+
+  @HostListener('document:keyup.esc', ['$event'])
+  handleEscape() {
+    this.router.navigate(['/browse', this.comic.id, NavigatorService.page ]);
+  }
+
+  ngOnInit () {
+    this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
+      this.comic = data;
+      const parentElement = this.layer.nativeElement.parentElement;
+      this.navigator.set(
+        this.comic.pageCount,
+        Number.parseInt(this.route.snapshot.params.page, 10) || 0,
+        (parentElement.clientWidth > parentElement.clientHeight) ? true : false
       );
-    } else {
-      this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10);
-      this.getComic(this.route.snapshot.params.id);
+      this.navigate(this.navigator.go());
+    });
+  }
+
+  public onClick (event: MouseEvent): void {
+    this.navigate(
+      this.navigator.go(
+        (event.clientX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ?  1 : -1));
+  }
+
+  public onSwipe(offset) {
+    this.navigate(this.navigator.go(offset));
+  }
+
+  private navigate (sideBySide: boolean) {
+    this.router.navigate(['/read', this.comic.id, NavigatorService.page]);
+    this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
+    this.imagePathRight = sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
+
+    // Update progress
+    this.comic.currentPage = NavigatorService.page;
+    if (this.navigator.lastPage()) {
+      this.comic.read = true;
+      this.comic.lastRead = new Date();
     }
-  }
-
-  public prevPage (): void {
-    this.currentPage -= (this.currentPage > 0 ? 1 : 0);
-    this.navigate(this.comic.id, this.currentPage);
-  }
-
-  public nextPage (): void {
-    this.currentPage += (this.currentPage < this.comic.pageCount ? 1 : 0);
-    this.navigate(this.comic.id, this.currentPage);
-  }
-
-  private navigate(id: number, page: number): void {
-    this.router.navigate(['/read/', id, page]);
-    this.imagePath = `/api/read/${ id }/${ page }`;
-  }
-
-  private getComic (id: string): void {
-    this.comicsService.get(id)
-      .subscribe((data: Comic) => {
-        this.comic = data;
-        this.navigate(this.comic.id, this.currentPage);
-      });
-  }
-
-  private getFirstComic (publisher: string, series: string, volume: string) {
-    this.comicsService.listByVolume(publisher, series, volume)
-      .subscribe((data: Comic[]) => {
-        this.comic = data[0];
-        this.router.navigate(['/read/', this.comic.id, this.currentPage], { replaceUrl: true });
-      });
+    this.comicsService.update(this.comic)
+      .subscribe(() => {});
   }
 }

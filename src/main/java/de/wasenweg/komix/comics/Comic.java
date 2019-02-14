@@ -1,15 +1,18 @@
 package de.wasenweg.komix.comics;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -40,6 +43,7 @@ public class Comic {
 
     private String summary;
     private String notes;
+
     private String writer;
     private String penciller;
     private String inker;
@@ -48,11 +52,19 @@ public class Comic {
     private String coverArtist;
     private String editor;
     private String web;
+
     private Short pageCount;
     private boolean manga;
+
     private String characters;
     private String teams;
+    private String locations;
+
     private byte[] thumbnail;
+
+    private boolean read = false;
+    private Short currentPage = 0;
+    private Date lastRead;
 
     @Override
     public String toString() {

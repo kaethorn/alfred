@@ -19,7 +19,7 @@ export class ScannerPage {
   }
 
   getScanButton() {
-    return element(by.buttonText('Scan'));
+    return element(by.buttonText('SCAN'));
   }
 
   getScanProgress() {

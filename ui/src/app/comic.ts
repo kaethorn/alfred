@@ -1,5 +1,5 @@
 export interface Comic {
-  id: number;
+  id: string;
   path: string;
   title: string;
   series: string;
@@ -22,5 +22,9 @@ export interface Comic {
   manga: boolean;
   characters: string;
   teams: string;
+  locations: string;
   thumbnail: string;
+  read: boolean;
+  currentPage: number;
+  lastRead: Date;
 }

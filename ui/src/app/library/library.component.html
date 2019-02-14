@@ -21,8 +21,7 @@
         </mat-expansion-panel-header>
         <div class="volumes">
           <app-volume *ngFor="let volume of series.volumes"
-            [publisher]="publisher.publisher"
-            [series]="series.series"
+            (updated)="list()"
             [volume]="volume">
           </app-volume>
         </div>
@@ -31,4 +30,4 @@
   </mat-expansion-panel>
 </mat-accordion>
 
-<app-scanner (scanned)="onScanned($event)"></app-scanner>
+<app-scanner (scanned)="list()"></app-scanner>

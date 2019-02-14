@@ -1,18 +1,29 @@
 <mat-card>
-  <mat-card-content>
-    <mat-chip-list>
-      <mat-chip>Vol. {{ volume.volume }}</mat-chip>
-    </mat-chip-list>
-  </mat-card-content>
-  <a [routerLink]="['/read/', publisher, series, volume.volume]">
+  <mat-card-header>
+    <mat-card-title>Vol. {{ volume.volume }}</mat-card-title>
+    <mat-card-subtitle>{{ volume.readCount }} of {{ volume.issueCount }} issues read</mat-card-subtitle>
+  </mat-card-header>
+  <a class="thumbnail" (click)="resumeVolume(volume)"
+      [matBadgeHidden]="!volume.read" matBadge="&#10004;" matBadgeColor="accent">
     <img [src]="thumbnail">
   </a>
   <mat-card-actions>
-    <button [routerLink]="['/read/', publisher, series, volume.volume]" color="primary" mat-button>
-      Read
+    <button [routerLink]="['/volumes', volume.publisher, volume.series, volume.volume]" mat-button>
+      LIST
     </button>
-    <button [routerLink]="['/volumes/', publisher, series, volume.volume]" mat-button>
-      Issues
+    <span class="flex-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
     </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="markAsRead(volume)">
+        <mat-icon>done_all</mat-icon>
+        <span>Mark volume as read</span>
+      </button>
+      <button mat-menu-item (click)="markAsUnread(volume)">
+        <mat-icon>done_outline</mat-icon>
+        <span>Mark volume as not read</span>
+      </button>
+    </mat-menu>
   </mat-card-actions>
 </mat-card>

@@ -4,11 +4,11 @@ import { TestModule } from './../../testing/test.module';
 import { ComicsServiceMocks as comicsService } from './../../testing/comics.service.mocks';
 
 import { ComicsService } from '../comics.service';
-import { LibraryComponent } from './library.component';
+import { BrowserComponent } from './browser.component';
 
-describe('LibraryComponent', () => {
-  let component: LibraryComponent;
-  let fixture: ComponentFixture<LibraryComponent>;
+describe('BrowserComponent', () => {
+  let component: BrowserComponent;
+  let fixture: ComponentFixture<BrowserComponent>;
 
   beforeEach(async(() => {
     const testModule: any = TestModule();
@@ -19,7 +19,7 @@ describe('LibraryComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LibraryComponent);
+    fixture = TestBed.createComponent(BrowserComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

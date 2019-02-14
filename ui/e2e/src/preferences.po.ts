@@ -10,6 +10,6 @@ export class PreferencesPage {
   }
 
   getSaveButton() {
-    return element(by.buttonText('Save'));
+    return element(by.buttonText('SAVE'));
   }
 }

@@ -1,0 +1,35 @@
+<mat-card *ngIf="comics?.length > 0">
+  <mat-card-header>
+    <mat-card-title>Currently reading</mat-card-title>
+    <mat-card-subtitle>continue where you left off</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="comic-tiles">
+    <mat-card *ngFor="let comic of comics" class="comic-tile">
+      <mat-card-header>
+        <mat-card-title>{{ comic.series }} #{{ comic.number }}</mat-card-title>
+        <mat-card-subtitle>Vol. {{ comic.volume }}</mat-card-subtitle>
+      </mat-card-header>
+      <a [routerLink]="['/read', comic.id, comic.currentPage]">
+        <img [src]="thumbnail(comic)">
+      </a>
+      <mat-card-actions>
+        <button mat-button color="accent" [routerLink]="['/read', comic.id, comic.currentPage]">RESUME</button>
+        <span class="flex-spacer"></span>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item [routerLink]="['/volumes', comic.publisher, comic.series, comic.volume]">
+            <mat-icon>filter_none</mat-icon>
+            <span>View volume</span>
+          </button>
+          <button mat-menu-item [routerLink]="['/library', comic.publisher, comic.series]">
+            <mat-icon>library_books</mat-icon>
+            <span>View in library</span>
+          </button>
+        </mat-menu>
+      </mat-card-actions>
+    </mat-card>
+  </mat-card-content>
+</mat-card>
+
