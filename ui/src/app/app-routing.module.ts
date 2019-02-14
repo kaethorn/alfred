@@ -9,7 +9,7 @@ import { ReaderComponent } from './reader/reader.component';
 import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/library', pathMatch: 'full' },
+  { path: '', redirectTo: '/bookmarks', pathMatch: 'full' },
   { path: 'library', component: LibraryComponent },
   { path: 'volumes/:publisher/:series/:volume', component: VolumesComponent },
   { path: 'browse/:id/:page', component: BrowserComponent },
