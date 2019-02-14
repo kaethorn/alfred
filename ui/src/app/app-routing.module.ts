@@ -10,14 +10,10 @@ import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/library', pathMatch: 'full' },
-  { path: 'library/:publisher/:series', component: LibraryComponent },
-  { path: 'library/:publisher', component: LibraryComponent },
   { path: 'library', component: LibraryComponent },
   { path: 'volumes/:publisher/:series/:volume', component: VolumesComponent },
   { path: 'browse/:id/:page', component: BrowserComponent },
-  { path: 'browse/:id', component: BrowserComponent },
   { path: 'read/:id/:page', component: ReaderComponent },
-  { path: 'read/:id', component: ReaderComponent },
   { path: 'preferences', component: PreferencesComponent },
   { path: 'bookmarks', component: BookmarksComponent }
 ];

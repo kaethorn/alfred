@@ -29,7 +29,7 @@ export class BrowserComponent implements OnInit {
       this.comic = data;
       this.navigator.set(
         this.comic.pageCount,
-        Number.parseInt(this.route.snapshot.params.page, 10),
+        Number.parseInt(this.route.snapshot.params.page, 10) || 0,
         false
       );
       this.navigator.go();
