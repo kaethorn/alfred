@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/kaethorn/comix.svg?branch=master)](https://travis-ci.org/kaethorn/comix)
+[![Build Status](https://travis-ci.org/kaethorn/komix.svg?branch=master)](https://travis-ci.org/kaethorn/komix)
 
 # KomiX
 
