@@ -97,13 +97,6 @@ public class ScannerService {
      * Updates existing files, adds new files and removes files that are
      * not available anymore.
      *
-     * Process:
-     * 1. Extract a list of paths of all existing comics.
-     * 2. Scan for and upsert comics.
-     * 3. Overwrite all XML/scraper data.
-     * 4. Remove each existing/updated comic from the list of 1.
-     * 5. Finally, remove any remaining comic in the list of 1.
-     *
      * @param emitters Emitter object to report scan progress on.
      */
     public void scanComics(final List<SseEmitter> emitters) {
@@ -127,13 +120,12 @@ public class ScannerService {
 
             // Purge comics from the DB that don't have a corresponding file.
             final List<String> comicFilePaths = comicFiles.stream()
-                    .map(path -> path.toString())
+                    .map(path -> path.toAbsolutePath().toString())
                     .collect(Collectors.toList());
-            comicRepository.findAll().stream()
+            final List<Comic> toDelete = comicRepository.findAll().stream()
                     .filter(comic -> !comicFilePaths.contains(comic.getPath()))
-                    .forEach(comic -> {
-                        comicRepository.delete(comic);
-                    });
+                    .collect(Collectors.toList());
+            comicRepository.deleteAll(toDelete);
         } catch (final IOException e) {
             e.printStackTrace();
             reportError(e.getMessage());
