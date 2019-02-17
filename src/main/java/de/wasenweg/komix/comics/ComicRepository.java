@@ -5,8 +5,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ComicRepository extends MongoRepository<Comic, String>, VolumeRepository, ComicQueryRepository {
+
+    Optional<Comic> findByPath(@Param("path") final String path);
 
     List<Comic> findAllByOrderBySeriesAscVolumeAscPositionAsc();
 

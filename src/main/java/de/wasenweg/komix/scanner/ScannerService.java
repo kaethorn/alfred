@@ -14,8 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
 @Service
@@ -60,11 +60,16 @@ public class ScannerService {
         this.sendEvent(error, "error");
     }
 
-    private Comic createComic(final Path path) {
+    private Comic createOrUpdateComic(final Path path) {
         reportProgress(path.toString());
 
-        final Comic comic = new Comic();
+        Comic comic = new Comic();
         comic.setPath(path.toAbsolutePath().toString());
+
+        final Optional<Comic> existingComic = comicRepository.findByPath(comic.getPath());
+        if (existingComic.isPresent()) {
+            comic = existingComic.get();
+        }
 
         ZipFile file = null;
         try {
@@ -86,29 +91,41 @@ public class ScannerService {
         return comic;
     }
 
+    /**
+     * Scan for comics.
+     *
+     * Updates existing files, adds new files and removes files that are
+     * not available anymore.
+     *
+     * @param emitters Emitter object to report scan progress on.
+     */
     public void scanComics(final List<SseEmitter> emitters) {
         this.emitters = emitters;
 
-        final String comicsPath = this.preferencesService.get("comics.path");
-        final Path root = Paths.get(comicsPath);
+        final Path comicsPath = Paths.get(this.preferencesService.get("comics.path"));
 
-        List<Path> comicFiles = null;
-
-        comicRepository.deleteAll();
-
-        try (Stream<Path> files = Files.walk(root)) {
-            comicFiles = files.filter(path -> Files.isRegularFile(path))
+        try {
+            final List<Path> comicFiles = Files.walk(comicsPath)
+                    .filter(path -> Files.isRegularFile(path))
                     .filter(path -> path.getFileName().toString().endsWith(".cbz"))
                     .collect(Collectors.toList());
 
             reportTotal(comicFiles.size());
 
             comicFiles.stream()
-                    .map(path -> createComic(path))
-                    .filter(path -> !path.getTitle().isEmpty())
+                    .map(path -> createOrUpdateComic(path))
                     .forEach(comic -> {
                         comicRepository.save(comic);
                     });
+
+            // Purge comics from the DB that don't have a corresponding file.
+            final List<String> comicFilePaths = comicFiles.stream()
+                    .map(path -> path.toAbsolutePath().toString())
+                    .collect(Collectors.toList());
+            final List<Comic> toDelete = comicRepository.findAll().stream()
+                    .filter(comic -> !comicFilePaths.contains(comic.getPath()))
+                    .collect(Collectors.toList());
+            comicRepository.deleteAll(toDelete);
         } catch (final IOException e) {
             e.printStackTrace();
             reportError(e.getMessage());
