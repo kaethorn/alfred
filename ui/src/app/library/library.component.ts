@@ -11,6 +11,7 @@ import { Publisher } from './../publisher';
 })
 export class LibraryComponent implements OnInit {
 
+  publishersData: Array<Publisher> = [];
   publishers: Array<Publisher> = [];
   currentPublisher: string;
   currentSeries: string;
@@ -49,7 +50,12 @@ export class LibraryComponent implements OnInit {
   list () {
     this.volumesService.listVolumesByPublisher()
       .subscribe((data: Publisher[]) => {
-        this.publishers = data;
+        this.publishersData = data;
+        this.publishers = this.publishersData;
       });
+  }
+
+  filter (value: string) {
+    this.publishers = this.publishersData.filter(publisher => publisher.publisher.match(value));
   }
 }
