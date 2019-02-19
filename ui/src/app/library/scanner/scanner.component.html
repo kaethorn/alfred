@@ -14,5 +14,5 @@
 </mat-list>
 
 <mat-toolbar>
-  <button (click)="scan()" color="primary" mat-button>SCAN</button>
+  <button (click)="scan()" [disabled]="total > 0" color="primary" mat-button>SCAN</button>
 </mat-toolbar>
