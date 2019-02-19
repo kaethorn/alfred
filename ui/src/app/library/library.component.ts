@@ -13,7 +13,6 @@ export class LibraryComponent implements OnInit {
 
   publishersData: Array<Publisher> = [];
   publishers: Array<Publisher> = [];
-  currentPublisher: string;
   currentSeries: string;
 
   constructor (
@@ -25,17 +24,7 @@ export class LibraryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentPublisher = this.route.snapshot.queryParams.publisher;
     this.currentSeries = this.route.snapshot.queryParams.series;
-  }
-
-  openPublisher (publisher: string) {
-    this.currentPublisher = publisher;
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { publisher: publisher },
-      queryParamsHandling: 'merge'
-    });
   }
 
   openSeries (series: string) {
