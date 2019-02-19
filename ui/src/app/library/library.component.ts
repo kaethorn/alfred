@@ -56,6 +56,11 @@ export class LibraryComponent implements OnInit {
   }
 
   filter (value: string) {
-    this.publishers = this.publishersData.filter(publisher => publisher.publisher.match(value));
+    this.publishers = this.publishersData
+      .filter(publisher => publisher.series.filter(series => series.series.match(value)).length)
+      .map(publisher => ({
+        ...publisher,
+        series: publisher.series.filter(series => series.series.match(value))
+      }));
   }
 }
