@@ -7,6 +7,6 @@ export class LibraryPage {
   }
 
   getComicPublishers() {
-    return element(by.css('app-library .publishers')).getText();
+    return element(by.css('app-library .publisher h3')).getText();
   }
 }
