@@ -126,7 +126,6 @@ public class ScannerService {
             }
 
             reportFinish();
-            emitter.onComplete();
         });
 
         return emitter.log();
