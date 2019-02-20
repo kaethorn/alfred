@@ -9,10 +9,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 @RestController
 @RequestMapping("/api")
 public class ScannerController {
+
+    private final Semaphore running = new Semaphore(1);
 
     private final List<SseEmitter> emitters = new ArrayList<>();
 
@@ -30,12 +33,14 @@ public class ScannerController {
             this.emitters.remove(emitter);
         });
 
-        // TODO
-        // * Make sure no new task is started if one is already running. Might be
-        //   working out of the box. Write a test?
-        Executors.newSingleThreadExecutor().execute(() -> {
-            scannerService.scanComics(emitters);
-        });
+        if (running.tryAcquire()) {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                scannerService.scanComics(emitters);
+                running.release();
+            });
+        } else {
+            emitter.complete();
+        }
 
         return emitter;
     }

@@ -1,23 +1,25 @@
-<mat-accordion *ngIf="publishers?.length > 0">
-  <mat-expansion-panel class="publishers"
-    *ngFor="let publisher of publishers"
-    [expanded]="currentPublisher === publisher.publisher"
-    (opened)="openPublisher(publisher.publisher)">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{ publisher.publisher }}
-      </mat-panel-title>
-    </mat-expansion-panel-header>
+<form class="library-filter">
+  <mat-form-field>
+    <span matPrefix><mat-icon>search</mat-icon></span>
+    <input matInput placeholder="Search for series" #libraryFilter
+      (keyup)="filter(libraryFilter.value)">
+  </mat-form-field>
+</form>
 
-    <mat-accordion *ngIf="publisher.series?.length > 0">
-      <mat-expansion-panel
-        *ngFor="let series of publisher.series"
+<div *ngIf="publishers?.length > 0">
+  <div *ngFor="let publisher of publishers" class="publisher">
+    <h3>{{ publisher.publisher }}</h3>
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let series of publisher.series"
         [expanded]="currentSeries === series.series"
         (opened)="openSeries(series.series)">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{ series.series }}
           </mat-panel-title>
+          <mat-panel-description>
+            {{ series.volumes.length }} volumes
+          </mat-panel-description>
         </mat-expansion-panel-header>
         <div class="volumes">
           <app-volume *ngFor="let volume of series.volumes"
@@ -27,7 +29,11 @@
         </div>
       </mat-expansion-panel>
     </mat-accordion>
-  </mat-expansion-panel>
-</mat-accordion>
+    <mat-divider></mat-divider>
+  </div>
+</div>
+<div *ngIf="publishers?.length == 0" class="no-comics">
+  No comics found.
+</div>
 
 <app-scanner (scanned)="list()"></app-scanner>
