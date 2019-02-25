@@ -19,7 +19,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,24 +63,19 @@ public class ScannerIngrationTest {
         final ParameterizedTypeReference<ServerSentEvent<String>> type =
                 new ParameterizedTypeReference<ServerSentEvent<String>>() { };
 
-        final Flux<ServerSentEvent<String>> eventStream = client.get()
-                .uri("/scan-progress")
-                .retrieve()
-                .bodyToFlux(type);
-
         final List<ServerSentEvent<String>> events = new ArrayList<ServerSentEvent<String>>();
 
         final CompletableFuture<String> future = new CompletableFuture<>();
-        eventStream.subscribe(
+        client.get()
+            .uri("/scan-progress")
+            .retrieve()
+            .bodyToFlux(type)
+            .subscribe(
                 content -> {
+                    if (content.event().equals("done")) {
+                        future.complete("Complete");
+                    }
                     events.add(content);
-                },
-                error -> {
-                    assertThat(true).isEqualTo(false);
-                    future.complete("Error");
-                },
-                () -> {
-                    future.complete("Complete");
                 }
         );
         assertEquals("Complete", future.get());
