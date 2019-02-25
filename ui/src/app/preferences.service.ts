@@ -14,24 +14,25 @@ export class PreferencesService {
   private readonly listUrl = 'api/preferences';
   private readonly getUrl = 'api/preferences/search/findByKey?key=';
 
+  private consumeHateoas (): any {
+    return map((data: any) => data._embedded.preferences);
+  }
+
+  private addId(item: any): any {
+    item.id = item._links.self.href.split('/').pop();
+    return item;
+  }
+
   list (): Observable<Preference[]> {
     return this.http.get(this.listUrl).pipe(
-      map((data: any) => data._embedded.preferences),
-      map((data: any) => {
-        return data.map((item) => {
-          item.id = item._links.self.href.split('/').pop();
-          return item;
-        });
-      })
+      this.consumeHateoas(),
+      map((data: any) => data.map((item) => this.addId(item)))
     );
   }
 
   get (key: string): Observable<Preference> {
     return this.http.get<Preference>(`${ this.getUrl }${ key }`).pipe(
-      map((item: any) => {
-        item.id = item._links.self.href.split('/').pop();
-        return item;
-      })
+      map((item: any) => this.addId(item))
     );
   }
 

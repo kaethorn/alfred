@@ -18,22 +18,31 @@ export class VolumesService {
   private readonly markAsUnreadUrl = '/api/volumes/markAsUnread';
   private readonly markAllAsReadUntilUrl = 'api/volumes/markAllAsReadUntil';
 
-  listVolumesBySeries(): Observable<Series[]> {
-    return this.http.get(this.volumesBySeriesUrl).pipe(
-      map((data: any) => data._embedded.publishers)
-    );
+  private consumeHateoas (): any {
+    return map((data: any) => data._embedded.publishers);
+  }
+
+  private sortSeriesAndVolumes (): any {
+    return map((publishers: Publisher[]) => {
+      return publishers.map((publisher: Publisher) => {
+        publisher.series
+          .sort((a: Series, b: Series) => a.series.localeCompare(b.series))
+          .map((series: Series) => series.volumes.sort((a: Volume, b: Volume) => a.volume.localeCompare(b.volume)));
+        return publisher;
+      });
+    });
   }
 
   listVolumesByPublisher (): Observable<Publisher[]> {
     return this.http.get(this.volumesByPublisherUrl).pipe(
-      map((data: any) => data._embedded.publishers
-        .map((publisher: Publisher) => {
-          publisher.series
-            .sort((a: Series, b: Series) => a.series.localeCompare(b.series))
-            .map((series: Series) => series.volumes.sort((a: Volume, b: Volume) => a.volume.localeCompare(b.volume)));
-          return publisher;
-        })
-      )
+      this.consumeHateoas(),
+      this.sortSeriesAndVolumes()
+    );
+  }
+
+  listVolumesBySeries(): Observable<Publisher[]> {
+    return this.http.get(this.volumesBySeriesUrl).pipe(
+      this.consumeHateoas()
     );
   }
 
