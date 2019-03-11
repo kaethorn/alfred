@@ -4,44 +4,41 @@ import de.wasenweg.komix.comics.Comic;
 import de.wasenweg.komix.comics.ComicRepository;
 import de.wasenweg.komix.preferences.PreferencesService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
+
+import reactor.core.publisher.EmitterProcessor;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 
 @Service
 public class ScannerService {
 
-    private List<SseEmitter> emitters = new ArrayList<>();
+    private final EmitterProcessor<ServerSentEvent<String>> emitter = EmitterProcessor.create();
 
-    private final ComicRepository comicRepository;
+    @Autowired
+    private ComicRepository comicRepository;
 
-    private final PreferencesService preferencesService;
-
-    public ScannerService(final ComicRepository comicRepository, final PreferencesService preferencesService) {
-        this.comicRepository = comicRepository;
-        this.preferencesService = preferencesService;
-    }
+    @Autowired
+    private PreferencesService preferencesService;
 
     private void sendEvent(final String data, final String name) {
-        final SseEventBuilder event = SseEmitter.event().data(data).id(String.valueOf(this.hashCode())).name(name);
-        emitters.forEach(emitter -> {
-            try {
-                emitter.send(event);
-            } catch (final IOException e) {
-                reportError(e.getMessage());
-                emitter.completeWithError(e);
-            }
-        });
+        emitter.onNext(
+            ServerSentEvent.builder(data)
+              .id(String.valueOf(this.hashCode()))
+              .event(name)
+              .build()
+        );
     }
 
     private void reportProgress(final String path) {
@@ -52,11 +49,11 @@ public class ScannerService {
         this.sendEvent(String.valueOf(total), "total");
     }
 
-    public void reportFinish() {
+    private void reportFinish() {
         this.sendEvent("", "done");
     }
 
-    public void reportError(final String error) {
+    private void reportError(final String error) {
         this.sendEvent(error, "error");
     }
 
@@ -96,44 +93,41 @@ public class ScannerService {
      *
      * Updates existing files, adds new files and removes files that are
      * not available anymore.
-     *
-     * @param emitters Emitter object to report scan progress on.
      */
-    public void scanComics(final List<SseEmitter> emitters) {
-        this.emitters = emitters;
-
+    public Flux<ServerSentEvent<String>> scanComics() {
         final Path comicsPath = Paths.get(this.preferencesService.get("comics.path"));
 
-        try {
-            final List<Path> comicFiles = Files.walk(comicsPath)
-                    .filter(path -> Files.isRegularFile(path))
-                    .filter(path -> path.getFileName().toString().endsWith(".cbz"))
-                    .collect(Collectors.toList());
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                final List<Path> comicFiles = Files.walk(comicsPath)
+                        .filter(path -> Files.isRegularFile(path))
+                        .filter(path -> path.getFileName().toString().endsWith(".cbz"))
+                        .collect(Collectors.toList());
 
-            reportTotal(comicFiles.size());
+                reportTotal(comicFiles.size());
 
-            comicFiles.stream()
-                    .map(path -> createOrUpdateComic(path))
-                    .forEach(comic -> {
-                        comicRepository.save(comic);
-                    });
+                comicFiles.stream()
+                        .map(path -> createOrUpdateComic(path))
+                        .forEach(comic -> {
+                            comicRepository.save(comic);
+                        });
 
-            // Purge comics from the DB that don't have a corresponding file.
-            final List<String> comicFilePaths = comicFiles.stream()
-                    .map(path -> path.toAbsolutePath().toString())
-                    .collect(Collectors.toList());
-            final List<Comic> toDelete = comicRepository.findAll().stream()
-                    .filter(comic -> !comicFilePaths.contains(comic.getPath()))
-                    .collect(Collectors.toList());
-            comicRepository.deleteAll(toDelete);
-        } catch (final IOException e) {
-            e.printStackTrace();
-            reportError(e.getMessage());
-        }
+                // Purge comics from the DB that don't have a corresponding file.
+                final List<String> comicFilePaths = comicFiles.stream()
+                        .map(path -> path.toAbsolutePath().toString())
+                        .collect(Collectors.toList());
+                final List<Comic> toDelete = comicRepository.findAll().stream()
+                        .filter(comic -> !comicFilePaths.contains(comic.getPath()))
+                        .collect(Collectors.toList());
+                comicRepository.deleteAll(toDelete);
+            } catch (final IOException e) {
+                e.printStackTrace();
+                reportError(e.getMessage());
+            }
 
-        reportFinish();
-        emitters.forEach(emitter -> {
-            emitter.complete();
+            reportFinish();
         });
+
+        return emitter.log();
     }
 }

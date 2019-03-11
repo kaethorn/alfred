@@ -19,15 +19,19 @@ export class ComicsService {
   private readonly firstByVolumeUrl = 'api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition';
   private readonly comicUrl = 'api/comics';
 
+  private consumeHateoas (): any {
+    return map((data: any) => data._embedded.comics);
+  }
+
+  private addId(item: any): any {
+    item.id = item._links.self.href.split('/').pop();
+    return item;
+  }
+
   list (): Observable<Comic[]> {
     return this.http.get(this.comicsUrl).pipe(
-      map((data: any) => data._embedded.comics),
-      map((data: any) => {
-        return data.map((comic) => {
-          comic.id = comic._links.self.href.split('/').pop();
-          return comic;
-        });
-      })
+      this.consumeHateoas(),
+      map((data: any) => data.map((comic) => this.addId(comic)))
     );
   }
 
@@ -40,22 +44,14 @@ export class ComicsService {
       }
     });
     return this.http.get(this.comicsByVolumeUrl, { params: params }).pipe(
-      map((data: any) => data._embedded.comics),
-      map((data: any) => {
-        return data.map((comic) => {
-          comic.id = comic._links.self.href.split('/').pop();
-          return comic;
-        });
-      })
+      this.consumeHateoas(),
+      map((data: any) => data.map((comic) => this.addId(comic)))
     );
   }
 
   get (id: string): Observable<Comic> {
     return this.http.get<Comic>(`${ this.comicUrl }/${ id }`).pipe(
-      map((comic: any) => {
-        comic.id = comic._links.self.href.split('/').pop();
-        return comic;
-      })
+      map((comic: any) => this.addId(comic))
     );
   }
 
@@ -68,10 +64,7 @@ export class ComicsService {
       }
     });
     return this.http.get<Comic>(this.lastUnreadUrl, { params: params }).pipe(
-      map((comic: any) => {
-        comic.id = comic._links.self.href.split('/').pop();
-        return comic;
-      })
+      map((comic: any) => this.addId(comic))
     );
   }
 
@@ -84,10 +77,7 @@ export class ComicsService {
       }
     });
     return this.http.get<Comic>(this.firstByVolumeUrl, { params: params }).pipe(
-      map((comic: any) => {
-        comic.id = comic._links.self.href.split('/').pop();
-        return comic;
-      })
+      map((comic: any) => this.addId(comic))
     );
   }
 
@@ -97,13 +87,8 @@ export class ComicsService {
 
   listLastReadByVolume(): Observable<Comic[]> {
     return this.http.get(this.lastUnreadsUrl).pipe(
-      map((data: any) => data._embedded.comics),
-      map((data: any) => {
-        return data.map((comic) => {
-          comic.id = comic._links.self.href.split('/').pop();
-          return comic;
-        });
-      })
+      this.consumeHateoas(),
+      map((data: any) => data.map((comic) => this.addId(comic)))
     );
   }
 
