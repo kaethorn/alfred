@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
@@ -86,6 +90,40 @@ public class ReaderController {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + comicPage.name)
-                .contentLength(comicPage.size).contentType(MediaType.parseMediaType(comicPage.type)).body(responseBody);
+                .contentLength(comicPage.size)
+                .contentType(MediaType.parseMediaType(comicPage.type))
+                .body(responseBody);
+    }
+
+    @RequestMapping("/download/{id}")
+    @ResponseBody
+    public ResponseEntity<StreamingResponseBody> download(@PathVariable("id") final String id) throws FileNotFoundException {
+        final Optional<Comic> comicQuery = comicRepository.findById(id);
+
+        if (!comicQuery.isPresent() || id == null) {
+            return null;
+        }
+
+        final Comic comic = comicQuery.get();
+
+        final File file = new File(comic.getPath());
+
+        final InputStream inputStream = new FileInputStream(file);
+
+        final StreamingResponseBody responseBody = outputStream -> {
+            int numberOfBytesToWrite;
+            final byte[] data = new byte[1024];
+            while ((numberOfBytesToWrite = inputStream.read(data, 0, data.length)) != -1) {
+                outputStream.write(data, 0, numberOfBytesToWrite);
+            }
+
+            inputStream.close();
+        };
+
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(responseBody);
     }
 }
