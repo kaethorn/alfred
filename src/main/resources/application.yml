@@ -5,3 +5,12 @@ spring:
     mongodb:
       database: komix
       uri: mongodb://mongo/komix
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 401455891931-28afa7q3453j1fsdfnlen5tf46oqeadr.apps.googleusercontent.com
+            client-secret: f_AUYbM88Y5B3pj3FKNdvtON
+            redirect-uri: http://localhost:8081/login/oauth2/client/google
