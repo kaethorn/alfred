@@ -15,6 +15,9 @@
     <button mat-button [routerLink]="['/preferences']">
       <mat-icon>settings</mat-icon>
     </button>
+    <button mat-button>
+      <img class="avatar" [src]="user.userAuthentication.details.picture" />
+    </button>
   </mat-toolbar-row>
 </mat-toolbar>
 <router-outlet></router-outlet>

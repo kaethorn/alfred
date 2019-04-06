@@ -70,6 +70,8 @@ dependencies {
 
   compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
   compile 'org.projectlombok:lombok'
+  compile 'org.modelmapper:modelmapper:2.3.2'
+
 
   compile 'org.webjars:webjars-locator-core'
   compile 'org.webjars:sockjs-client:1.0.2'
