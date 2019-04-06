@@ -16,7 +16,7 @@
       <mat-icon>settings</mat-icon>
     </button>
     <button mat-button>
-      <img class="avatar" [src]="user.userAuthentication.details.picture" />
+      <img class="avatar" matTooltip="Logged in as {{ user?.name }}" [src]="user?.picture" />
     </button>
   </mat-toolbar-row>
 </mat-toolbar>
