@@ -15,9 +15,12 @@
     <button mat-button [routerLink]="['/preferences']">
       <mat-icon>settings</mat-icon>
     </button>
-    <button mat-button>
-      <img class="avatar" matTooltip="Logged in as {{ user?.name }}" [src]="user?.picture" />
+    <button mat-button [matMenuTriggerFor]="userMenu" *ngIf="user">
+      <img class="avatar" matTooltip="Logged in as {{ user.name }}" [src]="user.picture" />
     </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="logout()">Logout</button>
+    </mat-menu>
   </mat-toolbar-row>
 </mat-toolbar>
 <router-outlet></router-outlet>

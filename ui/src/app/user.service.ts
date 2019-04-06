@@ -11,8 +11,13 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   private readonly userUrl = 'api/user';
+  private readonly logoutUrl = 'api/logout';
 
   get (): Observable<User> {
     return this.http.get<User>(this.userUrl);
+  }
+
+  logout (): Observable<any> {
+    return this.http.post(this.logoutUrl, {}, { responseType: 'text' });
   }
 }
