@@ -19,6 +19,7 @@ import org.springframework.hateoas.client.Traverson;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URI;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,8 @@ public class ComicsIntegrationTest {
 
     @Test
     public void getAllComics() throws Exception {
-        comicRepository.save(ComicFixtures.COMIC_A1);
-        comicRepository.save(ComicFixtures.COMIC_A2);
+        comicRepository.save(ComicFixtures.COMIC_V1_1.build());
+        comicRepository.save(ComicFixtures.COMIC_V1_2.build());
 
         final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
         final List<Comic> comics = traverson
@@ -61,9 +62,12 @@ public class ComicsIntegrationTest {
 
     @Test
     public void findLastReadForVolume() throws Exception {
-        comicRepository.save(ComicFixtures.COMIC_A1);
-        comicRepository.save(ComicFixtures.COMIC_A2);
-        comicRepository.save(ComicFixtures.COMIC_A3);
+        comicRepository.save(ComicFixtures.COMIC_V1_1
+                .read(true)
+                .lastRead(new GregorianCalendar(2019, 1, 20).getTime())
+                .build());
+        comicRepository.save(ComicFixtures.COMIC_V1_2.build());
+        comicRepository.save(ComicFixtures.COMIC_V1_3.build());
 
         final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
 
@@ -81,16 +85,30 @@ public class ComicsIntegrationTest {
     }
 
     @Test
-    public void findAllLastReadPerVolume() throws Exception {
-        comicRepository.save(ComicFixtures.COMIC_A1);
-        comicRepository.save(ComicFixtures.COMIC_A2);
-        comicRepository.save(ComicFixtures.COMIC_A3);
-        comicRepository.save(ComicFixtures.COMIC_B1);
-        comicRepository.save(ComicFixtures.COMIC_B2);
-        comicRepository.save(ComicFixtures.COMIC_B3);
-        comicRepository.save(ComicFixtures.COMIC_C1);
-        comicRepository.save(ComicFixtures.COMIC_C2);
-        comicRepository.save(ComicFixtures.COMIC_C3);
+    public void findBookmarksMixed() throws Exception {
+        // Partly read volume at second issue
+        comicRepository.save(ComicFixtures.COMIC_V1_1
+                .read(true)
+                .lastRead(new GregorianCalendar(2019, 1, 20).getTime())
+                .build());
+        comicRepository.save(ComicFixtures.COMIC_V1_2.build());
+        comicRepository.save(ComicFixtures.COMIC_V1_3.build());
+
+        // Unread volume
+        comicRepository.save(ComicFixtures.COMIC_V2_1.build());
+        comicRepository.save(ComicFixtures.COMIC_V2_2.build());
+        comicRepository.save(ComicFixtures.COMIC_V2_3.build());
+
+        // Partly read volume at third issue
+        comicRepository.save(ComicFixtures.COMIC_V3_1
+                .read(true)
+                .lastRead(new GregorianCalendar(2018, 10, 8).getTime())
+                .build());
+        comicRepository.save(ComicFixtures.COMIC_V3_2
+                .read(true)
+                .lastRead(new GregorianCalendar(2018, 10, 13).getTime())
+                .build());
+        comicRepository.save(ComicFixtures.COMIC_V3_3.build());
 
         final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
 
@@ -103,5 +121,54 @@ public class ComicsIntegrationTest {
         assertThat(comics.size()).isEqualTo(2);
         assertThat(comics.get(0).getTitle()).isEqualTo("Title A2");
         assertThat(comics.get(1).getTitle()).isEqualTo("Title C3");
+    }
+
+    @Test
+    public void findBookmarksFirstStarted() throws Exception {
+        // Partly read volume at first issue
+        comicRepository.save(ComicFixtures.COMIC_V1_1
+                .currentPage((short) 4)
+                .lastRead(new GregorianCalendar(2019, 1, 20).getTime())
+                .build());
+        comicRepository.save(ComicFixtures.COMIC_V1_2.build());
+        comicRepository.save(ComicFixtures.COMIC_V1_3.build());
+
+        final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
+
+        final List<Comic> comics = traverson
+                .follow("comics", "search", "findAllLastReadPerVolume")
+                .toObject(new ParameterizedTypeReference<Resources<Comic>>() { })
+                .getContent()
+                .stream().collect(Collectors.toList());
+
+        assertThat(comics.size()).isEqualTo(1);
+        assertThat(comics.get(0).getTitle()).isEqualTo("Title A1");
+    }
+
+    @Test
+    public void findBookmarksAllRead() throws Exception {
+        // Completely read volume
+        comicRepository.save(ComicFixtures.COMIC_V1_1
+                .read(true)
+                .lastRead(new GregorianCalendar(2019, 1, 20).getTime())
+                .build());
+        comicRepository.save(ComicFixtures.COMIC_V1_2
+                .read(true)
+                .lastRead(new GregorianCalendar(2019, 1, 21).getTime())
+                .build());
+        comicRepository.save(ComicFixtures.COMIC_V1_3
+                .read(true)
+                .lastRead(new GregorianCalendar(2019, 1, 22).getTime())
+                .build());
+
+        final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
+
+        final List<Comic> comics = traverson
+                .follow("comics", "search", "findAllLastReadPerVolume")
+                .toObject(new ParameterizedTypeReference<Resources<Comic>>() { })
+                .getContent()
+                .stream().collect(Collectors.toList());
+
+        assertThat(comics.size()).isEqualTo(0);
     }
 }
