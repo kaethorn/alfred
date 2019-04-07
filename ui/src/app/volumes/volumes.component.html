@@ -43,7 +43,7 @@
         <mat-icon>done_all</mat-icon>
         <span>Mark read until here</span>
       </button>
-      <button mat-menu-item [routerLink]="['/library', comic.publisher, comic.series]">
+      <button mat-menu-item [routerLink]="['/library']" [queryParams]="{ series: comic.series }">
         <mat-icon>library_books</mat-icon>
         <span>View in library</span>
       </button>
