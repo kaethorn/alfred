@@ -45,14 +45,5 @@ export class BrowserComponent implements OnInit {
   private navigate(): void {
     this.router.navigate(['/browse', this.comic.id, NavigatorService.page]);
     this.imagePath = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
-
-    // Update progress
-    this.comic.currentPage = NavigatorService.page;
-    if (this.navigator.lastPage()) {
-      this.comic.read = true;
-      this.comic.lastRead = new Date();
-    }
-    this.comicsService.update(this.comic)
-      .subscribe(() => {});
   }
 }

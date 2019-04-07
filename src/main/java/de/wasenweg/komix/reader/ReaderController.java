@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
@@ -75,7 +76,16 @@ public class ReaderController {
             return null;
         }
 
-        final Comic comic = comicQuery.get();
+        Comic comic = comicQuery.get();
+
+        // Update read state
+        comic.setCurrentPage(page);
+        if (page == comic.getPageCount() - 1) {
+            comic.setLastRead(new Date());
+            comic.setRead(true);
+        }
+        comic = comicRepository.save(comic);
+
         final ComicPage comicPage = extractPage(comic, page);
 
         final StreamingResponseBody responseBody = outputStream -> {
