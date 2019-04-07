@@ -42,15 +42,15 @@ public class VolumesIntegrationTest {
 
     @Test
     public void findVolumesBySeriesAndPublishers() throws Exception {
-        comicRepository.save(ComicFixtures.COMIC_V1_1.build());
-        comicRepository.save(ComicFixtures.COMIC_V1_2.build());
-        comicRepository.save(ComicFixtures.COMIC_V1_3.build());
-        comicRepository.save(ComicFixtures.COMIC_V2_1.build());
-        comicRepository.save(ComicFixtures.COMIC_V2_2.build());
-        comicRepository.save(ComicFixtures.COMIC_V2_3.build());
-        comicRepository.save(ComicFixtures.COMIC_V3_1.build());
-        comicRepository.save(ComicFixtures.COMIC_V3_2.build());
-        comicRepository.save(ComicFixtures.COMIC_V3_3.build());
+        comicRepository.save(ComicFixtures.COMIC_V1_1);
+        comicRepository.save(ComicFixtures.COMIC_V1_2);
+        comicRepository.save(ComicFixtures.COMIC_V1_3);
+        comicRepository.save(ComicFixtures.COMIC_V2_1);
+        comicRepository.save(ComicFixtures.COMIC_V2_2);
+        comicRepository.save(ComicFixtures.COMIC_V2_3);
+        comicRepository.save(ComicFixtures.COMIC_V3_1);
+        comicRepository.save(ComicFixtures.COMIC_V3_2);
+        comicRepository.save(ComicFixtures.COMIC_V3_3);
 
         final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
 

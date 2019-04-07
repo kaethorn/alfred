@@ -44,10 +44,16 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
                 .min("read").as("read")
                 .max("lastRead").as("lastRead")
                 .sum(ConditionalOperators
-                        .when(new Criteria("currentPage").gt(0))
-                        .then(1).otherwise(0)).as("readCount")
+                        // Consider either partly read or completed issues
+                        .when(new Criteria().orOperator(
+                                new Criteria("currentPage").gt(0),
+                                new Criteria("read").is(true)))
+                        .then(1).otherwise(0))
+                        .as("readCount")
                 .push("$$ROOT").as("comics"),
+            // Skip volumes where all issues are read
             match(Criteria.where("read").is(false)),
+            // Skip volumes that where never read
             match(Criteria.where("readCount").gt(0)),
             sort(Sort.Direction.DESC, "lastRead"),
             // At this point, we have a list of volumes being read, each
