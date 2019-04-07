@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
@@ -60,13 +59,10 @@ public class ScannerService {
     private Comic createOrUpdateComic(final Path path) {
         reportProgress(path.toString());
 
-        Comic comic = new Comic();
-        comic.setPath(path.toAbsolutePath().toString());
+        final String comicPath = path.toAbsolutePath().toString();
 
-        final Optional<Comic> existingComic = comicRepository.findByPath(comic.getPath());
-        if (existingComic.isPresent()) {
-            comic = existingComic.get();
-        }
+        final Comic comic = comicRepository.findByPath(comicPath).orElse(new Comic());
+        comic.setPath(comicPath);
 
         ZipFile file = null;
         try {

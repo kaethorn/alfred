@@ -62,6 +62,7 @@ public class Comic {
 
     private byte[] thumbnail;
 
+    // User specific information
     private boolean read = false;
     private Short currentPage = 0;
     private Date lastRead;
