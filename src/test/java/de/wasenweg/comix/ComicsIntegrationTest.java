@@ -84,7 +84,7 @@ public class ComicsIntegrationTest {
     }
 
     @Test
-    public void findBookmarksMixed() throws Exception {
+    public void findBookmarksMultipleVolumes() throws Exception {
         comicRepository.saveAll(Arrays.asList(
                 // Partly read volume at second issue
                 ComicFixtures.COMIC_V1_1_READ,
@@ -110,8 +110,8 @@ public class ComicsIntegrationTest {
                 .stream().collect(Collectors.toList());
 
         assertThat(comics.size()).isEqualTo(2);
-        assertThat(comics.get(0).getTitle()).isEqualTo("Title A2");
-        assertThat(comics.get(1).getTitle()).isEqualTo("Title C3");
+        assertThat(comics.get(0).getTitle()).isEqualTo(ComicFixtures.COMIC_V1_2.getTitle());
+        assertThat(comics.get(1).getTitle()).isEqualTo(ComicFixtures.COMIC_V3_3.getTitle());
     }
 
     @Test
@@ -131,7 +131,7 @@ public class ComicsIntegrationTest {
                 .stream().collect(Collectors.toList());
 
         assertThat(comics.size()).isEqualTo(1);
-        assertThat(comics.get(0).getTitle()).isEqualTo("Title A1");
+        assertThat(comics.get(0).getTitle()).isEqualTo(ComicFixtures.COMIC_V1_1.getTitle());
     }
 
     @Test
@@ -151,5 +151,64 @@ public class ComicsIntegrationTest {
                 .stream().collect(Collectors.toList());
 
         assertThat(comics.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void findBookmarksNoneRead() throws Exception {
+        comicRepository.saveAll(Arrays.asList(
+                // Completely unread volume
+                ComicFixtures.COMIC_V3_1,
+                ComicFixtures.COMIC_V3_2,
+                ComicFixtures.COMIC_V3_3));
+
+        final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
+
+        final List<Comic> comics = traverson
+                .follow("comics", "search", "findAllLastReadPerVolume")
+                .toObject(new ParameterizedTypeReference<Resources<Comic>>() { })
+                .getContent()
+                .stream().collect(Collectors.toList());
+
+        assertThat(comics.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void findBookmarksLastStarted() throws Exception {
+        comicRepository.saveAll(Arrays.asList(
+                // Almost read volume
+                ComicFixtures.COMIC_V3_1_READ,
+                ComicFixtures.COMIC_V3_2_READ,
+                ComicFixtures.COMIC_V3_3));
+
+        final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
+
+        final List<Comic> comics = traverson
+                .follow("comics", "search", "findAllLastReadPerVolume")
+                .toObject(new ParameterizedTypeReference<Resources<Comic>>() { })
+                .getContent()
+                .stream().collect(Collectors.toList());
+
+        assertThat(comics.size()).isEqualTo(1);
+        assertThat(comics.get(0).getTitle()).isEqualTo(ComicFixtures.COMIC_V3_3.getTitle());
+    }
+
+    @Test
+    public void findBookmarksWithGaps() throws Exception {
+        comicRepository.saveAll(Arrays.asList(
+                // A volume with unread first issue
+                ComicFixtures.COMIC_V3_1,
+                ComicFixtures.COMIC_V3_2_READ,
+                ComicFixtures.COMIC_V3_3));
+
+        final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
+
+        final List<Comic> comics = traverson
+                .follow("comics", "search", "findAllLastReadPerVolume")
+                .toObject(new ParameterizedTypeReference<Resources<Comic>>() { })
+                .getContent()
+                .stream().collect(Collectors.toList());
+
+        assertThat(comics.size()).isEqualTo(1);
+        assertThat(comics.get(0).getTitle()).isEqualTo(ComicFixtures.COMIC_V3_1.getTitle());
     }
 }

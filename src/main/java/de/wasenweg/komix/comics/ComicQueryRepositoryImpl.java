@@ -26,16 +26,6 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    /*
-     * Test the following use cases:
-     * 1. Show volumes where the first issue is in progress (currentPage > 0)
-     * 2. Show volumes where the last issue is in progress
-     * 3. Don't show volumes where all issues are read (read=true)
-     * 4. Don't show volumes where no issue is in progress
-     * 5. Show volumes where the first issue is not in progress but another issue is
-     *
-     * @see de.wasenweg.komix.comics.ComicQueryRepository#findAllLastReadPerVolume()
-     */
     @Override
     public List<Comic> findAllLastReadPerVolume() {
         return mongoTemplate.aggregate(Aggregation.newAggregation(
