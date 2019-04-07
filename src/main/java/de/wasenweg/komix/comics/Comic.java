@@ -63,8 +63,10 @@ public class Comic {
     private byte[] thumbnail;
 
     // User specific information
-    @Builder.Default private boolean read = false;
-    @Builder.Default private Short currentPage = 0;
+    @Builder.Default
+    private boolean read = false;
+    @Builder.Default
+    private Short currentPage = 0;
     private Date lastRead;
 
     @Override

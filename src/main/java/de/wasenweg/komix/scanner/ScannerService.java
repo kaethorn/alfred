@@ -61,7 +61,8 @@ public class ScannerService {
 
         final String comicPath = path.toAbsolutePath().toString();
 
-        final Comic comic = comicRepository.findByPath(comicPath).orElse(Comic.builder().build());
+        final Comic comic = comicRepository.findByPath(comicPath)
+                .orElse(new Comic());
         comic.setPath(comicPath);
 
         ZipFile file = null;
