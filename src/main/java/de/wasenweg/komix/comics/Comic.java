@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @Builder
@@ -62,12 +63,9 @@ public class Comic {
 
     private byte[] thumbnail;
 
-    // User specific information
+    // Maps progress to each user
     @Builder.Default
-    private boolean read = false;
-    @Builder.Default
-    private Short currentPage = 0;
-    private Date lastRead;
+    private Map<String, Progress> readState = new HashMap<String, Progress>();
 
     @Override
     public String toString() {

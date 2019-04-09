@@ -2,6 +2,7 @@ package de.wasenweg.komix.reader;
 
 import de.wasenweg.komix.comics.Comic;
 import de.wasenweg.komix.comics.ComicRepository;
+import de.wasenweg.komix.comics.Progress;
 import de.wasenweg.komix.util.ZipReader;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -52,10 +54,28 @@ public class ReaderController {
         return result;
     }
 
+    private void setReadState(Comic comic, final Short page, final String userName) {
+        final Progress progress;
+        if (comic.getReadState().containsKey(userName)) {
+            progress = new Progress();
+        } else {
+            progress = comic.getReadState().get(userName);
+        }
+        progress.setCurrentPage(page);
+        if (page == comic.getPageCount() - 1) {
+            progress.setLastRead(new Date());
+            progress.setRead(true);
+        }
+        comic.getReadState().put(userName, progress);
+        comic = comicRepository.save(comic);
+    }
+
     @RequestMapping("/read/{id}")
     @ResponseBody
-    public ResponseEntity<StreamingResponseBody> readFromBeginning(@PathVariable("id") final String id) {
-        return read(id, (short) 0);
+    public ResponseEntity<StreamingResponseBody> readFromBeginning(
+            @PathVariable("id") final String id,
+            final Principal principal) {
+        return read(id, (short) 0, principal);
     }
 
     /**
@@ -69,22 +89,17 @@ public class ReaderController {
     @ResponseBody
     public ResponseEntity<StreamingResponseBody> read(
             @PathVariable("id") final String id,
-            @PathVariable("page") final Short page) {
+            @PathVariable("page") final Short page,
+            final Principal principal) {
         final Optional<Comic> comicQuery = comicRepository.findById(id);
 
         if (!comicQuery.isPresent() || id == null || page == null) {
             return null;
         }
 
-        Comic comic = comicQuery.get();
+        final Comic comic = comicQuery.get();
 
-        // Update read state
-        comic.setCurrentPage(page);
-        if (page == comic.getPageCount() - 1) {
-            comic.setLastRead(new Date());
-            comic.setRead(true);
-        }
-        comic = comicRepository.save(comic);
+        setReadState(comic, page, principal.getName());
 
         final ComicPage comicPage = extractPage(comic, page);
 
