@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,7 +71,7 @@ public class ReaderController {
         comic = comicRepository.save(comic);
     }
 
-    @RequestMapping("/read/{id}")
+    @GetMapping("/read/{id}")
     @ResponseBody
     public ResponseEntity<StreamingResponseBody> readFromBeginning(
             @PathVariable("id") final String id,
@@ -85,7 +86,7 @@ public class ReaderController {
      * @param page The page number from which to start.
      * @return The extracted page.
      */
-    @RequestMapping("/read/{id}/{page}")
+    @GetMapping("/read/{id}/{page}")
     @ResponseBody
     public ResponseEntity<StreamingResponseBody> read(
             @PathVariable("id") final String id,
@@ -120,7 +121,7 @@ public class ReaderController {
                 .body(responseBody);
     }
 
-    @RequestMapping("/download/{id}")
+    @GetMapping("/download/{id}")
     @ResponseBody
     public ResponseEntity<StreamingResponseBody> download(@PathVariable("id") final String id) throws FileNotFoundException {
         final Optional<Comic> comicQuery = comicRepository.findById(id);
