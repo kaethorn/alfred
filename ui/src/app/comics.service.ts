@@ -63,9 +63,7 @@ export class ComicsService {
         volume: volume
       }
     });
-    return this.http.get<Comic>(this.lastUnreadUrl, { params: params }).pipe(
-      map((comic: any) => this.addId(comic))
-    );
+    return this.http.get<Comic>(this.lastUnreadUrl, { params: params });
   }
 
   getFirstByVolume(publisher: string, series: string, volume: string): Observable<Comic> {
@@ -86,10 +84,7 @@ export class ComicsService {
   }
 
   listLastReadByVolume(): Observable<Comic[]> {
-    return this.http.get(this.lastUnreadsUrl).pipe(
-      this.consumeHateoas(),
-      map((data: any) => data.map((comic) => this.addId(comic)))
-    );
+    return this.http.get<Comic[]>(this.lastUnreadsUrl);
   }
 
   update (comic: Comic): Observable<Comic> {

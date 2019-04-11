@@ -12,15 +12,10 @@ import { Comic } from './comic';
 export class VolumesService {
   constructor(private http: HttpClient) {}
 
-  private readonly volumesBySeriesUrl = '/api/comics/search/findVolumesBySeries';
-  private readonly volumesByPublisherUrl = '/api/comics/search/findVolumesBySeriesAndPublishers';
+  private readonly volumesByPublisherUrl = '/api/publishers/search/findAll';
   private readonly markAsReadUrl = '/api/volumes/markAsRead';
   private readonly markAsUnreadUrl = '/api/volumes/markAsUnread';
   private readonly markAllAsReadUntilUrl = 'api/volumes/markAllAsReadUntil';
-
-  private consumeHateoas (): any {
-    return map((data: any) => data._embedded.publishers);
-  }
 
   private sortSeriesAndVolumes (): any {
     return map((publishers: Publisher[]) => {
@@ -35,14 +30,7 @@ export class VolumesService {
 
   listVolumesByPublisher (): Observable<Publisher[]> {
     return this.http.get(this.volumesByPublisherUrl).pipe(
-      this.consumeHateoas(),
       this.sortSeriesAndVolumes()
-    );
-  }
-
-  listVolumesBySeries(): Observable<Publisher[]> {
-    return this.http.get(this.volumesBySeriesUrl).pipe(
-      this.consumeHateoas()
     );
   }
 

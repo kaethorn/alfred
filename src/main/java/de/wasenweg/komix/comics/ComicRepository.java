@@ -1,13 +1,12 @@
 package de.wasenweg.komix.comics;
 
-import de.wasenweg.komix.volumes.VolumeRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ComicRepository extends MongoRepository<Comic, String>, VolumeRepository, ComicQueryRepository {
+public interface ComicRepository extends MongoRepository<Comic, String>, ComicQueryRepository {
 
     Optional<Comic> findByPath(@Param("path") final String path);
 
@@ -22,7 +21,7 @@ public interface ComicRepository extends MongoRepository<Comic, String>, VolumeR
             @Param("series") final String series,
             @Param("volume") final String volume);
 
-    Comic findFirstByPublisherAndSeriesAndVolumeOrderByPosition(
+    Optional<Comic> findFirstByPublisherAndSeriesAndVolumeOrderByPosition(
             @Param("publisher") final String publisher,
             @Param("series") final String series,
             @Param("volume") final String volume);

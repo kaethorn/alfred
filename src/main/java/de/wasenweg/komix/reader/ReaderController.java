@@ -58,9 +58,9 @@ public class ReaderController {
     private void setReadState(Comic comic, final Short page, final String userName) {
         final Progress progress;
         if (comic.getReadState().containsKey(userName)) {
-            progress = new Progress();
-        } else {
             progress = comic.getReadState().get(userName);
+        } else {
+            progress = new Progress();
         }
         progress.setCurrentPage(page);
         if (page == comic.getPageCount() - 1) {

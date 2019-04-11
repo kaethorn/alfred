@@ -2,7 +2,7 @@ package de.wasenweg.comix;
 
 import de.wasenweg.komix.KomixApplication;
 import de.wasenweg.komix.comics.ComicRepository;
-import de.wasenweg.komix.volumes.Publisher;
+import de.wasenweg.komix.publisher.Publisher;
 
 import org.junit.After;
 import org.junit.Test;

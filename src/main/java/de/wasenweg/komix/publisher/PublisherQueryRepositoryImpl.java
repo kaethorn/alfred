@@ -1,4 +1,4 @@
-package de.wasenweg.komix.volumes;
+package de.wasenweg.komix.publisher;
 
 import com.mongodb.BasicDBObject;
 
@@ -11,37 +11,32 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
-@RepositoryRestResource(collectionResourceRel = "volumes", path = "volumes")
-public class VolumeRepositoryImpl implements VolumeRepository {
+@Repository
+@RepositoryRestResource(collectionResourceRel = "publishers", path = "publishers")
+public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<Series> findVolumesBySeries() {
-        return mongoTemplate.aggregate(Aggregation.newAggregation(
-            group("series")
-                .last("series").as("series")
-                .addToSet("volume").as("volumes")
-        ), Comic.class, Series.class).getMappedResults();
-    }
-
-    @Override
-    public List<Publisher> findVolumesBySeriesAndPublishers() {
+    public List<Publisher> findAll(final String userName) {
         return mongoTemplate.aggregate(Aggregation.newAggregation(
             sort(Sort.Direction.ASC, "position"),
             group("publisher", "series", "volume")
                 .last("volume").as("volume")
                 .count().as("issueCount")
-                .min("read").as("read")
+                .min(ConditionalOperators
+                        .when(new Criteria("readState." + userName + ".read").is(true))
+                        .then(true).otherwise(false)).as("read")
                 .sum(ConditionalOperators
-                        .when(new Criteria("read").is(true))
+                        .when(new Criteria("readState." + userName + ".read").is(true))
                         .then(1).otherwise(0)).as("readCount")
                 .first("thumbnail").as("thumbnail"),
             group("publisher", "series")

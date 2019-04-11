@@ -17,7 +17,7 @@ public class VolumeService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public UpdateResult updateRead(final Volume volume, final Boolean read) {
+    public UpdateResult updateRead(final String userName, final Volume volume, final Boolean read) {
         final Query query = Query.query(Criteria
             .where("publisher").is(volume.getPublisher())
             .and("series").is(volume.getSeries())
@@ -34,7 +34,7 @@ public class VolumeService {
                 .updateMulti(query, update, Comic.class);
     }
 
-    public UpdateResult updateReadUntil(final Comic comic) {
+    public UpdateResult updateReadUntil(final String userName, final Comic comic) {
         final Query query = Query.query(Criteria
             .where("publisher").is(comic.getPublisher())
             .and("series").is(comic.getSeries())
@@ -48,6 +48,5 @@ public class VolumeService {
 
         return mongoTemplate
                 .updateMulti(query, update, Comic.class);
-
     }
 }
