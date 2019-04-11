@@ -51,8 +51,7 @@ export class VolumeComponent {
     } else {
       this.comicsService.getLastUnreadByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {
-          // FIXME don't fall back to 0, current page should have been set by the back end.
-          this.router.navigate(['/read', comic.id, comic.currentPage || 0]);
+          this.router.navigate(['/read', comic.id, comic.currentPage]);
         });
     }
   }

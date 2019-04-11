@@ -35,12 +35,14 @@ export class VolumesComponent implements OnInit {
     this.list();
   }
 
+  // FIXME broken:
   markAsRead (comic: Comic): void {
     comic.read = true;
     comic.lastRead = new Date();
     this.updateComic(comic);
   }
 
+  // FIXME broken:
   markAsUnread (comic: Comic): void {
     comic.read = false;
     comic.lastRead = null;

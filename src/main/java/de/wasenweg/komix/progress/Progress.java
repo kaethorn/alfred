@@ -1,4 +1,4 @@
-package de.wasenweg.komix.comics;
+package de.wasenweg.komix.progress;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Date;
 
 @Data
@@ -14,7 +18,17 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Document
 public class Progress {
+
+    @Id
+    private String id;
+
+    @NonNull
+    private String userId;
+
+    @NonNull
+    private ObjectId comicId;
 
     @Builder.Default
     private boolean read = false;

@@ -6,11 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @Builder
@@ -62,10 +60,6 @@ public class Comic {
     private String locations;
 
     private byte[] thumbnail;
-
-    // Maps progress to each user
-    @Builder.Default
-    private Map<String, Progress> readState = new HashMap<String, Progress>();
 
     @Override
     public String toString() {

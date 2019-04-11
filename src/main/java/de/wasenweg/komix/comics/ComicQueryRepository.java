@@ -5,11 +5,11 @@ import java.util.Optional;
 
 public interface ComicQueryRepository {
 
-    Optional<Comic> findLastReadForVolume(
-            final String userName,
+    Optional<ComicDTO> findLastReadForVolume(
+            final String userId,
             final String publisher,
             final String series,
             final String volume);
 
-    List<Comic> findAllLastReadPerVolume(final String userName);
+    List<ComicDTO> findAllLastReadPerVolume(final String userId);
 }

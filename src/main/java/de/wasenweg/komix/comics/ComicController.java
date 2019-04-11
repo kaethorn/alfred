@@ -18,12 +18,12 @@ public class ComicController {
     private ComicQueryRepositoryImpl repository;
 
     @GetMapping("/search/findAllLastReadPerVolume")
-    public List<Comic> findAllLastReadPerVolume(final Principal principal) {
+    public List<ComicDTO> findAllLastReadPerVolume(final Principal principal) {
         return this.repository.findAllLastReadPerVolume(principal.getName());
     }
 
     @GetMapping("/search/findLastReadForVolume")
-    public Optional<Comic> findLastReadForVolume(
+    public Optional<ComicDTO> findLastReadForVolume(
             final Principal principal,
             @Param("publisher") final String publisher,
             @Param("series") final String series,

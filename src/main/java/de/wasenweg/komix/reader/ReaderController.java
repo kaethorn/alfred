@@ -2,13 +2,16 @@ package de.wasenweg.komix.reader;
 
 import de.wasenweg.komix.comics.Comic;
 import de.wasenweg.komix.comics.ComicRepository;
-import de.wasenweg.komix.comics.Progress;
+import de.wasenweg.komix.progress.Progress;
+import de.wasenweg.komix.progress.ProgressRepository;
 import de.wasenweg.komix.util.ZipReader;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +39,9 @@ public class ReaderController {
     @Autowired
     private ComicRepository comicRepository;
 
+    @Autowired
+    private ProgressRepository progressRepository;
+
     private ComicPage extractPage(final Comic comic, final Short page) {
         final ComicPage result = new ComicPage();
         ZipFile file = null;
@@ -55,20 +61,21 @@ public class ReaderController {
         return result;
     }
 
-    private void setReadState(Comic comic, final Short page, final String userName) {
-        final Progress progress;
-        if (comic.getReadState().containsKey(userName)) {
-            progress = comic.getReadState().get(userName);
-        } else {
-            progress = new Progress();
-        }
+    @Transactional
+    private void setReadState(final Comic comic, final Short page, final String userId) {
+        final ObjectId comicId = new ObjectId(comic.getId());
+        final Progress progress = progressRepository
+                .findByUserIdAndComicId(userId, comicId)
+                .orElse(Progress.builder().comicId(comicId).userId(userId).build());
+
         progress.setCurrentPage(page);
+        progress.setLastRead(new Date());
+
         if (page == comic.getPageCount() - 1) {
-            progress.setLastRead(new Date());
             progress.setRead(true);
         }
-        comic.getReadState().put(userName, progress);
-        comic = comicRepository.save(comic);
+
+        progressRepository.save(progress);
     }
 
     @GetMapping("/read/{id}")
