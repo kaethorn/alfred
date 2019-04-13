@@ -2,9 +2,9 @@ package de.wasenweg.comix;
 
 import de.wasenweg.komix.KomixApplication;
 import de.wasenweg.komix.comics.ComicRepository;
-import de.wasenweg.komix.publisher.Publisher;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +12,21 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.client.Traverson;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = KomixApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = { KomixApplication.class, EmbeddedMongoConfig.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
 public class VolumesIntegrationTest {
 
@@ -34,6 +35,19 @@ public class VolumesIntegrationTest {
 
     @Autowired
     private ComicRepository comicRepository;
+
+    @Autowired
+    private WebApplicationContext context;
+
+    private MockMvc mvc;
+
+    @Before
+    public void setup() {
+        mvc = MockMvcBuilders
+          .webAppContextSetup(context)
+          .apply(springSecurity())
+          .build();
+    }
 
     @After
     public void tearDown() {
@@ -52,19 +66,16 @@ public class VolumesIntegrationTest {
         comicRepository.save(ComicFixtures.COMIC_V3_2);
         comicRepository.save(ComicFixtures.COMIC_V3_3);
 
-        final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
-
-        final List<Publisher> publishers = traverson
-                .follow("publishers")
-                .toObject(new ParameterizedTypeReference<Resources<Publisher>>() { })
-                .getContent()
-                .stream().collect(Collectors.toList());
-
-        assertThat(publishers.size()).isEqualTo(1);
-        assertThat(publishers.get(0).getSeries().size()).isEqualTo(1);
-        assertThat(publishers.get(0).getSeries().get(0).getVolumes().size()).isEqualTo(3);
-        assertThat(publishers.get(0).getSeries().get(0).getVolumes().get(0).getVolume()).isEqualTo("1999");
-        assertThat(publishers.get(0).getSeries().get(0).getVolumes().get(1).getVolume()).isEqualTo("2005");
-        assertThat(publishers.get(0).getSeries().get(0).getVolumes().get(2).getVolume()).isEqualTo("2011");
+        mvc.perform(MockMvcRequestBuilders.get("/api/publishers")
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$._embedded.publishers.length()").value(1))
+                .andExpect(jsonPath("$._embedded.publishers[0].series.length()").value(1))
+                .andExpect(jsonPath("$._embedded.publishers[0].series[0].volumes.length()").value(3))
+                .andExpect(jsonPath("$._embedded.publishers[0].series[0].volumes[0].volume").value("1999"))
+                .andExpect(jsonPath("$._embedded.publishers[0].series[0].volumes[1].volume").value("2005"))
+                .andExpect(jsonPath("$._embedded.publishers[0].series[0].volumes[2].volume").value("2011"));
     }
 }

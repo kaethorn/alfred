@@ -4,6 +4,7 @@ import de.wasenweg.komix.KomixApplication;
 import de.wasenweg.komix.comics.ComicRepository;
 import de.wasenweg.komix.progress.ProgressRepository;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +17,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -49,13 +49,16 @@ public class ComicsIntegrationTest {
 
     @Before
     public void setup() {
-        comicRepository.deleteAll();
-        progressRepository.deleteAll();
-
         mvc = MockMvcBuilders
           .webAppContextSetup(context)
           .apply(springSecurity())
           .build();
+    }
+
+    @After
+    public void teardown() {
+        comicRepository.deleteAll();
+        progressRepository.deleteAll();
     }
 
     @Test
@@ -65,8 +68,8 @@ public class ComicsIntegrationTest {
                 ComicFixtures.COMIC_V1_2));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics")
-                .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Helpers.getOauth2ClientContext()))
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.comics.length()").value(2))
@@ -84,8 +87,8 @@ public class ComicsIntegrationTest {
         progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
-                .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Helpers.getOauth2ClientContext())
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext())
                 .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
                 .param("series", ComicFixtures.COMIC_V1_1.getSeries())
                 .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -119,8 +122,8 @@ public class ComicsIntegrationTest {
         ));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
-                .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Helpers.getOauth2ClientContext()))
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.comics.length()").value(2))
@@ -139,8 +142,8 @@ public class ComicsIntegrationTest {
         progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
-                .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Helpers.getOauth2ClientContext()))
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.comics.length()").value(1))
@@ -162,9 +165,8 @@ public class ComicsIntegrationTest {
         ));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
-                .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Helpers.getOauth2ClientContext()))
-                .andDo(MockMvcResultHandlers.print())
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.comics").doesNotExist());
@@ -179,8 +181,8 @@ public class ComicsIntegrationTest {
                 ComicFixtures.COMIC_V3_3));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
-                .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Helpers.getOauth2ClientContext()))
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.comics").doesNotExist());
@@ -200,8 +202,8 @@ public class ComicsIntegrationTest {
         ));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
-                .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Helpers.getOauth2ClientContext()))
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.comics.length()").value(1))
@@ -219,8 +221,8 @@ public class ComicsIntegrationTest {
         progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
-                .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Helpers.getOauth2ClientContext()))
+                .with(authentication(OAuth2Mock.getOauthTestAuthentication()))
+                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2Mock.getOauth2ClientContext()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.comics.length()").value(1))

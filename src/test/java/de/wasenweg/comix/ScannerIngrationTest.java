@@ -24,7 +24,7 @@ import java.time.Duration;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = KomixApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = { KomixApplication.class, EmbeddedMongoConfig.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
 public class ScannerIngrationTest {
 

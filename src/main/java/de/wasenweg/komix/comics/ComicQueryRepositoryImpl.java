@@ -8,10 +8,6 @@ import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
 import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 
-import com.mongodb.BasicDBObject;
-
-import de.wasenweg.komix.progress.Progress;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +21,6 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort
 import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.ArrayElemAt.arrayOf;
 import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.Filter.filter;
 import static org.springframework.data.mongodb.core.aggregation.ObjectOperators.MergeObjects.merge;
-import static org.springframework.data.mongodb.core.aggregation.ObjectOperators.valueOf;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class ComicQueryRepositoryImpl implements ComicQueryRepository {

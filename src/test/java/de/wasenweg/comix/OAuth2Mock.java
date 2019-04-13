@@ -20,7 +20,7 @@ import java.util.Set;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class OAuth2Helpers {
+public class OAuth2Mock {
 
     public static final String MOCK_USER_ID = "oauth2-mock-user-id";
 
