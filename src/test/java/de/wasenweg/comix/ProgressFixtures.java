@@ -9,11 +9,7 @@ import java.util.GregorianCalendar;
 
 public class ProgressFixtures {
 
-    public ProgressFixtures() {
-    }
-
-    // FIXME why can't these be static?
-    public Progress comicStarted(final Comic comic) {
+    public static Progress comicStarted(final Comic comic) {
         return Progress.builder()
             .comicId(new ObjectId(comic.getId()))
             .userId(OAuth2Helpers.MOCK_USER_ID)
@@ -22,16 +18,16 @@ public class ProgressFixtures {
             .build();
     }
 
-    public Progress comicRead(final Comic comic) {
-        return comicRead(comic, 0);
-    }
-
-    public Progress comicRead(final Comic comic, final int timeOffset) {
+    public static Progress comicRead(final Comic comic, final int timeOffset) {
         return Progress.builder()
             .comicId(new ObjectId(comic.getId()))
             .userId(OAuth2Helpers.MOCK_USER_ID)
             .read(true)
             .lastRead(new GregorianCalendar(2019, 3, 1 + timeOffset).getTime())
             .build();
+    }
+
+    public static Progress comicRead(final Comic comic) {
+        return comicRead(comic, 0);
     }
 }

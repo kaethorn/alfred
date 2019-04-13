@@ -47,14 +47,11 @@ public class ComicsIntegrationTest {
 
     private MockMvc mvc;
 
-    private ProgressFixtures progressFixtures;
-
     @Before
     public void setup() {
         comicRepository.deleteAll();
         progressRepository.deleteAll();
 
-        progressFixtures = new ProgressFixtures();
         mvc = MockMvcBuilders
           .webAppContextSetup(context)
           .apply(springSecurity())
@@ -84,7 +81,7 @@ public class ComicsIntegrationTest {
                 ComicFixtures.COMIC_V1_2,
                 ComicFixtures.COMIC_V1_3));
 
-        progressRepository.save(progressFixtures.comicRead(ComicFixtures.COMIC_V1_1));
+        progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
                 .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
@@ -116,9 +113,9 @@ public class ComicsIntegrationTest {
                 ComicFixtures.COMIC_V3_3));
 
         progressRepository.saveAll(Arrays.asList(
-                progressFixtures.comicRead(ComicFixtures.COMIC_V1_1, 3),
-                progressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
-                progressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2)
+                ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1, 3),
+                ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
+                ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2)
         ));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
@@ -139,7 +136,7 @@ public class ComicsIntegrationTest {
                 ComicFixtures.COMIC_V1_2,
                 ComicFixtures.COMIC_V1_3));
 
-        progressRepository.save(progressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
+        progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
                 .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
@@ -159,9 +156,9 @@ public class ComicsIntegrationTest {
                 ComicFixtures.COMIC_V3_3)); // read
 
         progressRepository.saveAll(Arrays.asList(
-                progressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
-                progressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2),
-                progressFixtures.comicRead(ComicFixtures.COMIC_V3_3, 3)
+                ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
+                ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2),
+                ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_3, 3)
         ));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
@@ -198,8 +195,8 @@ public class ComicsIntegrationTest {
                 ComicFixtures.COMIC_V3_3));
 
         progressRepository.saveAll(Arrays.asList(
-                progressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
-                progressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2)
+                ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
+                ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2)
         ));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
@@ -219,7 +216,7 @@ public class ComicsIntegrationTest {
                 ComicFixtures.COMIC_V3_2, // read
                 ComicFixtures.COMIC_V3_3));
 
-        progressRepository.save(progressFixtures.comicRead(ComicFixtures.COMIC_V3_2));
+        progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2));
 
         mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume")
                 .with(authentication(OAuth2Helpers.getOauthTestAuthentication()))
