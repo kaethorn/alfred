@@ -16,11 +16,6 @@ public interface ComicRepository extends MongoRepository<Comic, String>, ComicQu
             @Param("series") final String series,
             @Param("volume") final String volume);
 
-    List<Comic> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
-            @Param("publisher") final String publisher,
-            @Param("series") final String series,
-            @Param("volume") final String volume);
-
     Optional<Comic> findFirstByPublisherAndSeriesAndVolumeOrderByPosition(
             @Param("publisher") final String publisher,
             @Param("series") final String series,

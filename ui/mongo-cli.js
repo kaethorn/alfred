@@ -46,8 +46,7 @@ const Progress = mongoose.model('Progress', progressSchema, 'progress');
 const userId = '104414564769351832134';
 const userId2 = '107859401383492803405';
 
-// findAllLastReadPerVolume
-const progressQuery = () => {
+const findAllLastReadPerVolume = () => {
   return Comic.aggregate()
     .sort({ position: 1 })
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
@@ -64,7 +63,7 @@ const progressQuery = () => {
     .project({ progress: 0, comicId: 0, userId: 0 })
     .group({
       _id       : { publisher: '$publisher', series: '$series', volume: '$volume' },
-      volumeRead: { $min: `$read` },
+      volumeRead: { $min: { $cond: [`$read`, true, false] } },
       readCount : { $sum: { $cond:
         [{ $or: [`$currentPage`, `$read`]}, 1, 0 ]
       }},
@@ -161,8 +160,7 @@ const publishers = () => {
     .sort({ publisher: 1 });
 };
 
-// findLastReadForVolume:
-const aggregate = () => {
+const findLastReadForVolume = () => {
   return Comic.aggregate()
     .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2008' })
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
@@ -171,20 +169,41 @@ const aggregate = () => {
         { $arrayElemAt: [{ $filter: {
           input: '$progress',
           as: 'item',
-          cond: { $eq: [ '$$item.userId', userId2 ] }
+          cond: { $eq: [ '$$item.userId', userId ] }
         }}, 0 ]},
         '$$ROOT'
       ]
     })
     .project({ progress: 0, comicId: 0, userId: 0 })
+
     .sort({ position: 1 })
     .match({ read: { $ne: true }})
     .limit(1)
 };
 
-// Simple query:
-const simple = () => {
-  return Comic.find({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' });
+const findAllByPublisherAndSeriesAndVolumeOrderByPosition = () => {
+  return Comic.aggregate()
+    .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
+    .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
+    .replaceRoot({
+      $mergeObjects: [
+        { $arrayElemAt: [{ $filter: {
+          input: '$progress',
+          as: 'item',
+          cond: { $eq: [ '$$item.userId', userId ] }
+        }}, 0 ]},
+        '$$ROOT'
+      ]
+    })
+    .project({ progress: 0, comicId: 0, userId: 0 })
+
+    .sort({ position: 1 })
+};
+
+const markAllAsReadUntil = () => {
+  return Comic.aggregate()
+    .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
+    .match({ position: { $lte: '0002.0'}});
 };
 
 const db = mongoose.connection;
@@ -197,8 +216,8 @@ db.once('open', function () {
 
   switch (process.argv[2]) {
     default:
-    case 'progress':
-      method = progressQuery;
+    case 'findAllLastReadPerVolume':
+      method = findAllLastReadPerVolume;
       break;
     case 'unread':
     case 'u':
@@ -208,13 +227,14 @@ db.once('open', function () {
     case 'p':
       method = publishers;
       break;
-    case 'simple':
-    case 's':
-      method = simple;
+    case 'findAllByPublisherAndSeriesAndVolumeOrderByPosition':
+      method = findAllByPublisherAndSeriesAndVolumeOrderByPosition;
       break;
-    case 'aggregate':
-    case 'a':
-      method = aggregate;
+    case 'findLastReadForVolume':
+      method = findLastReadForVolume;
+      break;
+    case 'markAllAsReadUntil':
+      method = markAllAsReadUntil;
       break;
   }
 

@@ -35,18 +35,16 @@ export class VolumesComponent implements OnInit {
     this.list();
   }
 
-  // FIXME broken:
   markAsRead (comic: Comic): void {
-    comic.read = true;
-    comic.lastRead = new Date();
-    this.updateComic(comic);
+    this.comicsService.markAsRead(comic).subscribe((resultComic) => {
+      this.replaceComic(resultComic);
+    });
   }
 
-  // FIXME broken:
   markAsUnread (comic: Comic): void {
-    comic.read = false;
-    comic.lastRead = null;
-    this.updateComic(comic);
+    this.comicsService.markAsUnread(comic).subscribe((resultComic) => {
+      this.replaceComic(resultComic);
+    });
   }
 
   markAsReadUntil (comic: Comic): void {
@@ -59,14 +57,14 @@ export class VolumesComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
   }
 
-  private updateComic (comic: Comic): void {
-    this.comicsService.update(comic).subscribe(() => {});
-  }
-
   private list (): void {
     this.comicsService.listByVolume(this.publisher, this.series, this.volume)
       .subscribe((data: Comic[]) => {
         this.comics = data;
       });
+  }
+
+  private replaceComic (comic: Comic): void {
+    this.comics[this.comics.findIndex(c => c.id === comic.id)] = comic;
   }
 }

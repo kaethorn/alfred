@@ -1,6 +1,7 @@
 package de.wasenweg.komix.volumes;
 
 import de.wasenweg.komix.comics.Comic;
+import de.wasenweg.komix.progress.ProgressService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,20 +18,20 @@ import java.security.Principal;
 public class VolumeController {
 
     @Autowired
-    private VolumeService service;
+    private ProgressService progressService;
 
     @PutMapping("/markAsRead")
     public void markAsRead(@Valid @RequestBody final Volume volume, final Principal principal) {
-        this.service.updateRead(principal.getName(), volume, true);
+        this.progressService.updateVolume(principal.getName(), volume, true);
     }
 
     @PutMapping("/markAsUnread")
     public void markAsUnread(@Valid @RequestBody final Volume volume, final Principal principal) {
-        this.service.updateRead(principal.getName(), volume, false);
+        this.progressService.updateVolume(principal.getName(), volume, false);
     }
 
     @PutMapping("/markAllAsReadUntil")
     public void markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
-        this.service.updateReadUntil(principal.getName(), comic);
+        this.progressService.updateVolumeUntil(principal.getName(), comic);
     }
 }

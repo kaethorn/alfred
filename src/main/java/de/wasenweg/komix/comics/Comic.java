@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -60,6 +62,12 @@ public class Comic {
     private String locations;
 
     private byte[] thumbnail;
+
+    @Builder.Default
+    private boolean read = false;
+    @Builder.Default
+    private Short currentPage = (short) 0;
+    private Date lastRead;
 
     @Override
     public String toString() {

@@ -30,7 +30,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
 
     // Lists issues for volumes that are in progress, aka bookmarks.
     @Override
-    public List<ComicDTO> findAllLastReadPerVolume(final String userId) {
+    public List<Comic> findAllLastReadPerVolume(final String userId) {
         return mongoTemplate.aggregate(Aggregation.newAggregation(
             // Merge progress flags for the current user
             lookup("progress", "_id", "comicId", "progress"),
@@ -44,7 +44,10 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             // Collect volumes with aggregated read stats and a list of issues
             sort(Sort.Direction.ASC, "position"),
             group("publisher", "series", "volume")
-                .min("read").as("volumeRead")
+                .min(ConditionalOperators
+                    .when(where("read").is(true))
+                    .then(true).otherwise(false))
+                    .as("volumeRead")
                 .sum(ConditionalOperators
                     // Consider either partly read or completed issues.
                     .when(new Criteria().orOperator(
@@ -69,7 +72,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             // Replace the group hierarchy with the found comic.
             replaceRoot("comic"),
             sort(Sort.Direction.DESC, "lastRead")
-        ), Comic.class, ComicDTO.class).getMappedResults();
+        ), Comic.class, Comic.class).getMappedResults();
     }
 
     // Returns the last unread or in progress issue in the given volume, aka resume volume.
@@ -79,7 +82,11 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
     // 3. A volume with issues that are not in progress while some have been completed will result in the next unread
     // 4. A volume that has been completed should result in last issue of that volume.
     @Override
-    public Optional<ComicDTO> findLastReadForVolume(final String userId, final String publisher, final String series, final String volume) {
+    public Optional<Comic> findLastReadForVolume(
+            final String userId,
+            final String publisher,
+            final String series,
+            final String volume) {
         return Optional.ofNullable(mongoTemplate.aggregate(Aggregation.newAggregation(
             match(where("publisher").is(publisher).and("series").is(series).and("volume").is(volume)),
 
@@ -95,6 +102,28 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             sort(Sort.Direction.ASC, "position"),
             match(where("read").ne(true)),
             limit(1)
-        ), Comic.class, ComicDTO.class).getUniqueMappedResult());
+        ), Comic.class, Comic.class).getUniqueMappedResult());
+    }
+
+    @Override
+    public List<Comic> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+            final String userId,
+            final String publisher,
+            final String series,
+            final String volume) {
+        return mongoTemplate.aggregate(Aggregation.newAggregation(
+            match(where("publisher").is(publisher).and("series").is(series).and("volume").is(volume)),
+
+            // Merge progress flags for the current user
+            lookup("progress", "_id", "comicId", "progress"),
+            replaceRoot().withValueOf(valueOf(arrayOf(
+                    filter("progress")
+                        .as("item")
+                        .by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId)))
+                    .elementAt(0)).mergeWith(Aggregation.ROOT)),
+            project().andExclude("progress", "comicId", "userId"),
+
+            sort(Sort.Direction.ASC, "position")
+        ), Comic.class, Comic.class).getMappedResults();
     }
 }
