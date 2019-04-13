@@ -55,7 +55,7 @@ public class VolumesIntegrationTest {
         final Traverson traverson = new Traverson(new URI("http://localhost:" + port + "/api/"), MediaTypes.HAL_JSON);
 
         final List<Publisher> publishers = traverson
-                .follow("comics", "search", "findVolumesBySeriesAndPublishers")
+                .follow("publishers")
                 .toObject(new ParameterizedTypeReference<Resources<Publisher>>() { })
                 .getContent()
                 .stream().collect(Collectors.toList());

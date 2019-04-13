@@ -8,6 +8,10 @@ import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
 import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import com.mongodb.BasicDBObject;
+
+import de.wasenweg.komix.progress.Progress;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +24,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.repl
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.ArrayElemAt.arrayOf;
 import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.Filter.filter;
+import static org.springframework.data.mongodb.core.aggregation.ObjectOperators.MergeObjects.merge;
 import static org.springframework.data.mongodb.core.aggregation.ObjectOperators.valueOf;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -34,11 +39,10 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
         return mongoTemplate.aggregate(Aggregation.newAggregation(
             // Merge progress flags for the current user
             lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(valueOf(arrayOf(
-                    filter("progress")
-                        .as("item")
-                        .by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId)))
-                    .elementAt(0)).mergeWith(Aggregation.ROOT)),
+            replaceRoot().withValueOf(merge(Aggregation.ROOT).mergeWithValuesOf(
+                arrayOf(
+                    filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
+                ).elementAt(0))),
             project().andExclude("progress", "comicId", "userId"),
 
             // Collect volumes with aggregated read stats and a list of issues
@@ -48,6 +52,8 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
                     .when(where("read").is(true))
                     .then(true).otherwise(false))
                     .as("volumeRead")
+                .max("lastRead")
+                    .as("lastRead")
                 .sum(ConditionalOperators
                     // Consider either partly read or completed issues.
                     .when(new Criteria().orOperator(
@@ -63,6 +69,12 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             // Skip volumes that where never read.
             match(where("readCount").gt(0)),
 
+            // Sort by volume aggregated `lastRead` attribute as the comic
+            // specific `lastRead` attribute might not be set, e.g. when
+            // the next comic has not yet been started but the previous one
+            // is set to `read`.
+            sort(Sort.Direction.DESC, "lastRead"),
+
             // Search issues of each volume and return the first unread.
             project().and(filter("comics").as("comic")
                         .by(ComparisonOperators.Ne.valueOf("comic.read").notEqualToValue(true)))
@@ -70,8 +82,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             project().and(arrayOf("comics").elementAt(0)).as("comic"),
 
             // Replace the group hierarchy with the found comic.
-            replaceRoot("comic"),
-            sort(Sort.Direction.DESC, "lastRead")
+            replaceRoot("comic")
         ), Comic.class, Comic.class).getMappedResults();
     }
 
@@ -87,16 +98,16 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             final String publisher,
             final String series,
             final String volume) {
+
         return Optional.ofNullable(mongoTemplate.aggregate(Aggregation.newAggregation(
             match(where("publisher").is(publisher).and("series").is(series).and("volume").is(volume)),
 
             // Merge progress flags for the current user
             lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(valueOf(arrayOf(
-                    filter("progress")
-                        .as("item")
-                        .by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId)))
-                    .elementAt(0)).mergeWith(Aggregation.ROOT)),
+            replaceRoot().withValueOf(merge(Aggregation.ROOT).mergeWithValuesOf(
+                arrayOf(
+                    filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
+                ).elementAt(0))),
             project().andExclude("progress", "comicId", "userId"),
 
             sort(Sort.Direction.ASC, "position"),
@@ -116,11 +127,10 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
 
             // Merge progress flags for the current user
             lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(valueOf(arrayOf(
-                    filter("progress")
-                        .as("item")
-                        .by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId)))
-                    .elementAt(0)).mergeWith(Aggregation.ROOT)),
+            replaceRoot().withValueOf(merge(Aggregation.ROOT).mergeWithValuesOf(
+                arrayOf(
+                    filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
+                ).elementAt(0))),
             project().andExclude("progress", "comicId", "userId"),
 
             sort(Sort.Direction.ASC, "position")

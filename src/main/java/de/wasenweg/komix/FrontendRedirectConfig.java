@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @Configuration
-public class KomixApplicationConfiguration {
+public class FrontendRedirectConfig {
 
     @Bean
     ErrorViewResolver redirectViewUrls() {

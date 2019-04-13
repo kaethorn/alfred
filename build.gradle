@@ -70,7 +70,7 @@ dependencies {
 
   compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
   compile 'org.projectlombok:lombok'
-  
+
   compile 'org.webjars:webjars-locator-core'
   compile 'org.webjars:sockjs-client:1.0.2'
 
@@ -78,6 +78,7 @@ dependencies {
   testCompile 'org.springframework.boot:spring-boot-starter-test'
   testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
   testCompile 'io.projectreactor:reactor-test'
+  testCompile 'org.springframework.security:spring-security-test'
 
   implementation(project(':ui'))
 }
