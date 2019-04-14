@@ -3,7 +3,6 @@ package de.wasenweg.komix.comics;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +13,6 @@ import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Document
@@ -68,6 +66,11 @@ public class Comic {
     @Builder.Default
     private Short currentPage = (short) 0;
     private Date lastRead;
+
+    public Comic() {
+        this.read = false;
+        this.currentPage = (short) 0;
+    }
 
     @Override
     public String toString() {
