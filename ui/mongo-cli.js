@@ -162,16 +162,17 @@ const publishers = () => {
 
 const findLastReadForVolume = () => {
   return Comic.aggregate()
-    .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
+    .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2009' })
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
     .replaceRoot({
       $mergeObjects: [
+        '$$ROOT',
         { $arrayElemAt: [{ $filter: {
           input: '$progress',
           as: 'item',
           cond: { $eq: [ '$$item.userId', userId ] }
         }}, 0 ]},
-        '$$ROOT'
+        { _id: '$$ROOT._id' },
       ]
     })
     .project({ progress: 0, comicId: 0, userId: 0 })

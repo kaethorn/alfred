@@ -1,5 +1,7 @@
 package de.wasenweg.komix.comics;
 
+import com.mongodb.BasicDBObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,12 +34,17 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
     @Override
     public List<Comic> findAllLastReadPerVolume(final String userId) {
         return mongoTemplate.aggregate(Aggregation.newAggregation(
+            // FIXME DRY (used three times in this Controller)
             // Merge progress flags for the current user
             lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(merge(Aggregation.ROOT).mergeWithValuesOf(
-                arrayOf(
-                    filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
-                ).elementAt(0))),
+            replaceRoot().withValueOf(
+                merge(Aggregation.ROOT)
+                .mergeWithValuesOf(
+                    arrayOf(
+                        filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
+                    ).elementAt(0))
+                // Restore comic _id previously overwritten with progress _id.
+                .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
             project().andExclude("progress", "comicId", "userId"),
 
             // Collect volumes with aggregated read stats and a list of issues
@@ -99,10 +106,14 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
 
             // Merge progress flags for the current user
             lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(merge(Aggregation.ROOT).mergeWithValuesOf(
-                arrayOf(
-                    filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
-                ).elementAt(0))),
+            replaceRoot().withValueOf(
+                merge(Aggregation.ROOT)
+                .mergeWithValuesOf(
+                    arrayOf(
+                        filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
+                    ).elementAt(0))
+                // Restore comic _id previously overwritten with progress _id.
+                .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
             project().andExclude("progress", "comicId", "userId"),
 
             sort(Sort.Direction.ASC, "position"),
@@ -122,10 +133,14 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
 
             // Merge progress flags for the current user
             lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(merge(Aggregation.ROOT).mergeWithValuesOf(
-                arrayOf(
-                    filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
-                ).elementAt(0))),
+            replaceRoot().withValueOf(
+                merge(Aggregation.ROOT)
+                .mergeWithValuesOf(
+                    arrayOf(
+                        filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
+                    ).elementAt(0))
+                // Restore comic _id previously overwritten with progress _id.
+                .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
             project().andExclude("progress", "comicId", "userId"),
 
             sort(Sort.Direction.ASC, "position")

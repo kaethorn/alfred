@@ -24,7 +24,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<Publisher> findAll(final String userName) {
+    public List<Publisher> findAll() {
         return mongoTemplate.aggregate(Aggregation.newAggregation(
             sort(Sort.Direction.ASC, "position"),
             group("publisher", "series", "volume")
