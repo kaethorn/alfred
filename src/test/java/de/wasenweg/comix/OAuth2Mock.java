@@ -58,10 +58,9 @@ public class OAuth2Mock {
         final User userPrincipal = new User(MOCK_USER_ID, "", true, true, true, true, authorities);
 
         final HashMap<String, String> details = new HashMap<String, String>();
-        // FIXME
-        details.put("user_name", "bwatkins");
-        details.put("email", "bwatkins@test.org");
-        details.put("name", "Brian Watkins");
+        details.put("user_name", "Foo_Bar");
+        details.put("email", "foo.b@r.com");
+        details.put("name", "Foo Bar");
 
         final TestingAuthenticationToken token = new TestingAuthenticationToken(userPrincipal, null, authorities);
         token.setAuthenticated(true);
