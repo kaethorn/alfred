@@ -9,8 +9,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,12 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { KomixApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = { KomixApplication.class })
 @EnableAutoConfiguration
 public class VolumesIntegrationTest {
-
-    @LocalServerPort
-    private int port;
 
     @Autowired
     private ComicRepository comicRepository;
@@ -41,7 +36,7 @@ public class VolumesIntegrationTest {
     private MockMvc mvc;
 
     @Before
-    public void setup() {
+    public void setUp() {
         mvc = MockMvcBuilders
           .webAppContextSetup(context)
           .apply(springSecurity())

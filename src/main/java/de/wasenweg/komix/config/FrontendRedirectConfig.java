@@ -14,7 +14,7 @@ import java.util.Map;
 public class FrontendRedirectConfig {
 
     @Bean
-    ErrorViewResolver redirectViewUrls() {
+    protected ErrorViewResolver redirectViewUrls() {
         return new ErrorViewResolver() {
             @Override
             public ModelAndView resolveErrorView(
