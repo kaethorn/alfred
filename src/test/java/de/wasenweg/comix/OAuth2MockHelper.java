@@ -1,6 +1,6 @@
 package de.wasenweg.comix;
 
-import de.wasenweg.komix.DevOAuth2Mock;
+import de.wasenweg.komix.config.DevOAuth2Mock;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;

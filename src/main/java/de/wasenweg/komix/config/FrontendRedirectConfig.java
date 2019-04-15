@@ -1,4 +1,4 @@
-package de.wasenweg.komix;
+package de.wasenweg.komix.config;
 
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.context.annotation.Bean;

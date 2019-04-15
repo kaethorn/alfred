@@ -42,7 +42,7 @@ checkstyle {
 task bootRunEmbedded(type: com.github.psxpaul.task.JavaExecFork) {
   classpath = sourceSets.test.runtimeClasspath
   main = 'de.wasenweg.komix.KomixApplication'
-  args = [ '--spring.profiles.active=dev' ]
+  args = [ '--spring.profiles.active=test' ]
   waitForPort = 8080
 }
 

@@ -1,7 +1,7 @@
 package de.wasenweg.comix;
 
-import de.wasenweg.komix.DevOAuth2Mock;
 import de.wasenweg.komix.comics.Comic;
+import de.wasenweg.komix.config.DevOAuth2Mock;
 import de.wasenweg.komix.progress.Progress;
 
 import org.bson.types.ObjectId;
