@@ -8,6 +8,11 @@ spring:
   profiles:
     active: prod
 
+  mongodb:
+    embedded:
+      version: 3.6.12
+      features: NO_HTTP_INTERFACE_ARG
+
 security:
   oauth2:
     client:
