@@ -1,4 +1,4 @@
-package de.wasenweg.comix;
+package de.wasenweg.komix;
 
 import de.wasenweg.komix.scanner.ScannerController;
 import de.wasenweg.komix.scanner.ScannerService;

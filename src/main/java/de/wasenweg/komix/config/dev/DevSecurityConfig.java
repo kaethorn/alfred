@@ -1,4 +1,4 @@
-package de.wasenweg.komix.config;
+package de.wasenweg.komix.config.dev;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,6 +14,7 @@ public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("*").permitAll();
     }

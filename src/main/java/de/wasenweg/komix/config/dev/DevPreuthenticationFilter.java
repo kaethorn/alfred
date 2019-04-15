@@ -1,4 +1,4 @@
-package de.wasenweg.komix.config;
+package de.wasenweg.komix.config.dev;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

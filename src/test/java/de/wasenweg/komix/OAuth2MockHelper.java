@@ -1,10 +1,10 @@
-package de.wasenweg.comix;
-
-import de.wasenweg.komix.config.DevOAuth2Mock;
+package de.wasenweg.komix;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+
+import de.wasenweg.komix.config.dev.DevOAuth2Mock;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

@@ -39,14 +39,22 @@ checkstyle {
   toolVersion '8.11'
 }
 
-task bootRunEmbedded(type: com.github.psxpaul.task.JavaExecFork) {
+// Run the application with embedded MongoDB.
+task bootRunEmbedded(type: JavaExec) {
+  classpath = sourceSets.test.runtimeClasspath
+  main = 'de.wasenweg.komix.KomixApplication'
+  args = [ '--spring.profiles.active=test' ]
+}
+
+// Like above, but continue once it's forked so tests can run against it.
+task bootRunEmbeddedSetup(type: com.github.psxpaul.task.JavaExecFork) {
   classpath = sourceSets.test.runtimeClasspath
   main = 'de.wasenweg.komix.KomixApplication'
   args = [ '--spring.profiles.active=test' ]
   waitForPort = 8080
 }
 
-test.dependsOn bootRunEmbedded
+test.dependsOn bootRunEmbeddedSetup
 
 task unpack(type: Copy) {
   dependsOn bootJar

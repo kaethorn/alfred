@@ -1,4 +1,4 @@
-package de.wasenweg.komix.config;
+package de.wasenweg.komix.config.dev;
 
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;

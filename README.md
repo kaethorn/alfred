@@ -60,3 +60,10 @@ The application will now be available at http://localhost:8080.
 
 * Spring Boot 2 App using MongoDB.
 * Angular 7 UI with Material design.
+
+## Debug
+
+### E2E tests
+
+`./gradlew bootRunEmbedded`
+`cd ui && npm run e2e -- --base-url=http://localhost:8080/ --dev-server-target=`

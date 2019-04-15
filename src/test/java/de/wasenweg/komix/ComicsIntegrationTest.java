@@ -1,6 +1,5 @@
-package de.wasenweg.comix;
+package de.wasenweg.komix;
 
-import de.wasenweg.komix.KomixApplication;
 import de.wasenweg.komix.comics.ComicRepository;
 import de.wasenweg.komix.progress.ProgressRepository;
 
