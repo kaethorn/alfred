@@ -5,6 +5,8 @@ spring:
     mongodb:
       database: komix
       uri: mongodb://mongo/komix
+  profiles:
+    active: prod
 
 security:
   oauth2:

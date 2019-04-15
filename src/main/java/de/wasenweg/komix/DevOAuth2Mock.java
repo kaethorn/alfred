@@ -1,38 +1,26 @@
-package de.wasenweg.comix;
+package de.wasenweg.komix;
 
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-public class OAuth2Mock {
+public class DevOAuth2Mock {
 
     public static final String MOCK_USER_ID = "oauth2-mock-user-id";
 
     public static Authentication getOauthTestAuthentication() {
         return new OAuth2Authentication(getOauth2Request(), getAuthentication());
-    }
-
-    public static OAuth2ClientContext getOauth2ClientContext() {
-        final OAuth2ClientContext mockClient = mock(OAuth2ClientContext.class);
-        when(mockClient.getAccessToken()).thenReturn(new DefaultOAuth2AccessToken("my-fun-token"));
-
-        return mockClient;
     }
 
     private static OAuth2Request getOauth2Request() {
@@ -57,10 +45,11 @@ public class OAuth2Mock {
 
         final User userPrincipal = new User(MOCK_USER_ID, "", true, true, true, true, authorities);
 
-        final HashMap<String, String> details = new HashMap<String, String>();
+        final LinkedHashMap<String, String> details = new LinkedHashMap<String, String>();
         details.put("user_name", "Foo_Bar");
         details.put("email", "foo.b@r.com");
         details.put("name", "Foo Bar");
+        details.put("picture", "https://foo.bar.com/foo.bar.png");
 
         final TestingAuthenticationToken token = new TestingAuthenticationToken(userPrincipal, null, authorities);
         token.setAuthenticated(true);
