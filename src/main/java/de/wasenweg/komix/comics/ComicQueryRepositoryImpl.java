@@ -89,11 +89,6 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
     }
 
     // Returns the last unread or in progress issue in the given volume, aka resume volume.
-    // FIXME Test:
-    // 1. A volume with an issue in progress should result in that issue.
-    // 2. A volume that has not been started should result in the first issue of that volume.
-    // 3. A volume with issues that are not in progress while some have been completed will result in the next unread
-    // 4. A volume that has been completed should result in last issue of that volume.
     @Override
     public Optional<Comic> findLastReadForVolume(
             final String userId,
@@ -117,7 +112,10 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             project().andExclude("progress", "comicId", "userId"),
 
             sort(Sort.Direction.ASC, "position"),
+
+            // FIXME if the following returns an empty result, pick the first in the volume
             match(where("read").ne(true)),
+
             limit(1)
         ), Comic.class, Comic.class).getUniqueMappedResult());
     }

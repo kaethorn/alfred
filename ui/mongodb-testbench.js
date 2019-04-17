@@ -1,3 +1,5 @@
+// MongoDB testbench, used to develop queries that are later moved to Spring Data MongoDB.
+
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/komix');
 require('node-json-color-stringify');
@@ -45,6 +47,7 @@ const Comic = mongoose.model('Comic', comicSchema, 'comic');
 const Progress = mongoose.model('Progress', progressSchema, 'progress');
 const userId = '104414564769351832134';
 const userId2 = '107859401383492803405';
+const mockUser = 'oauth2-mock-user-id';
 
 const findAllLastReadPerVolume = () => {
   return Comic.aggregate()
@@ -162,7 +165,7 @@ const publishers = () => {
 
 const findLastReadForVolume = () => {
   return Comic.aggregate()
-    .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2009' })
+    .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
     .replaceRoot({
       $mergeObjects: [
@@ -170,7 +173,7 @@ const findLastReadForVolume = () => {
         { $arrayElemAt: [{ $filter: {
           input: '$progress',
           as: 'item',
-          cond: { $eq: [ '$$item.userId', userId ] }
+          cond: { $eq: [ '$$item.userId', mockUser ] }
         }}, 0 ]},
         { _id: '$$ROOT._id' },
       ]
