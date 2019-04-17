@@ -6,6 +6,8 @@
 
 A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
 
+![A Screenshot](docs/screenshots/komix_1.png?raw=true)
+
 ## Requirements
 
 * Java 8
