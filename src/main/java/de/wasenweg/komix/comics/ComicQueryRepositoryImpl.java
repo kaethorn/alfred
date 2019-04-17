@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;
 import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
@@ -30,12 +33,9 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    // Lists issues for volumes that are in progress, aka bookmarks.
-    @Override
-    public List<Comic> findAllLastReadPerVolume(final String userId) {
-        return mongoTemplate.aggregate(Aggregation.newAggregation(
-            // FIXME DRY (used three times in this Controller)
-            // Merge progress flags for the current user
+    // Merge progress flags for the current user
+    private List<AggregationOperation> mergeProgress(final String userId) {
+        return Stream.of(
             lookup("progress", "_id", "comicId", "progress"),
             replaceRoot().withValueOf(
                 merge(Aggregation.ROOT)
@@ -45,8 +45,23 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
                     ).elementAt(0))
                 // Restore comic _id previously overwritten with progress _id.
                 .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
-            project().andExclude("progress", "comicId", "userId"),
+            project().andExclude("progress", "comicId", "userId")
+        ).collect(Collectors.toList());
+    }
 
+    // Syntactic sugar
+    private Aggregation aggregateWithProgress(final String userId, final AggregationOperation... operations) {
+        return Aggregation.newAggregation(
+                Stream.concat(
+                        mergeProgress(userId).stream(),
+                        Stream.of(operations))
+                .collect(Collectors.toList()));
+    }
+
+    // Lists issues for volumes that are in progress, aka bookmarks.
+    @Override
+    public List<Comic> findAllLastReadPerVolume(final String userId) {
+        return mongoTemplate.aggregate(aggregateWithProgress(userId,
             // Collect volumes with aggregated read stats and a list of issues
             sort(Sort.Direction.ASC, "position"),
             group("publisher", "series", "volume")
@@ -96,20 +111,8 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             final String series,
             final String volume) {
 
-        return Optional.ofNullable(mongoTemplate.aggregate(Aggregation.newAggregation(
+        return Optional.ofNullable(mongoTemplate.aggregate(aggregateWithProgress(userId,
             match(where("publisher").is(publisher).and("series").is(series).and("volume").is(volume)),
-
-            // Merge progress flags for the current user
-            lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(
-                merge(Aggregation.ROOT)
-                .mergeWithValuesOf(
-                    arrayOf(
-                        filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
-                    ).elementAt(0))
-                // Restore comic _id previously overwritten with progress _id.
-                .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
-            project().andExclude("progress", "comicId", "userId"),
 
             // If all comics are read, return the first, otherwise the first unread
             sort(Sort.Direction.ASC, "position"),
@@ -125,20 +128,8 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             final String publisher,
             final String series,
             final String volume) {
-        return mongoTemplate.aggregate(Aggregation.newAggregation(
+        return mongoTemplate.aggregate(aggregateWithProgress(userId,
             match(where("publisher").is(publisher).and("series").is(series).and("volume").is(volume)),
-
-            // Merge progress flags for the current user
-            lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(
-                merge(Aggregation.ROOT)
-                .mergeWithValuesOf(
-                    arrayOf(
-                        filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
-                    ).elementAt(0))
-                // Restore comic _id previously overwritten with progress _id.
-                .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
-            project().andExclude("progress", "comicId", "userId"),
 
             sort(Sort.Direction.ASC, "position")
         ), Comic.class, Comic.class).getMappedResults();
