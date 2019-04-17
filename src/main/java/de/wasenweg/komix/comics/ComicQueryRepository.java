@@ -1,15 +1,21 @@
 package de.wasenweg.komix.comics;
 
-import org.springframework.data.repository.query.Param;
-
 import java.util.List;
+import java.util.Optional;
 
 public interface ComicQueryRepository {
 
-    List<Comic> findAllLastReadPerVolume();
+    Optional<Comic> findLastReadForVolume(
+            final String userId,
+            final String publisher,
+            final String series,
+            final String volume);
 
-    Comic findLastReadForVolume(
-            @Param("publisher") final String publisher,
-            @Param("series") final String series,
-            @Param("volume") final String volume);
+    List<Comic> findAllLastReadPerVolume(final String userId);
+
+    List<Comic> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+            final String userId,
+            final String publisher,
+            final String series,
+            final String volume);
 }

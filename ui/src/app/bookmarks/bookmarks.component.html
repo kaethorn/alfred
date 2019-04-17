@@ -23,7 +23,7 @@
             <mat-icon>filter_none</mat-icon>
             <span>View volume</span>
           </button>
-          <button mat-menu-item [routerLink]="['/library', comic.publisher, comic.series]">
+          <button mat-menu-item [routerLink]="['/library']" [queryParams]="{ series: comic.series }">
             <mat-icon>library_books</mat-icon>
             <span>View in library</span>
           </button>

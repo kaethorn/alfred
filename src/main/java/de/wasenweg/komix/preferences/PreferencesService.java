@@ -23,7 +23,6 @@ public class PreferencesService {
 
         defaults.put("comics.path", new Preference("comics.path", "Path", "/comics", "Path to your comic library"));
         defaults.forEach((key, preferenceDefault) -> {
-            // FIXME refactor
             final Optional<String> environmentValue = this.getEnvironmentValue(key);
             if (environmentValue.isPresent()) {
                 preferenceDefault.setValue(environmentValue.get());

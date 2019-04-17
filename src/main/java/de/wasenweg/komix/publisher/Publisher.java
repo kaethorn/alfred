@@ -1,4 +1,4 @@
-package de.wasenweg.komix.volumes;
+package de.wasenweg.komix.publisher;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,10 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Series {
+public class Publisher {
 
     private String id;
 
-    private String series;
-    private List<Volume> volumes;
+    private String publisher;
+    private List<Series> series;
 }

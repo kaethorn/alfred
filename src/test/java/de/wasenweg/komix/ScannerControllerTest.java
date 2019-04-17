@@ -1,4 +1,4 @@
-package de.wasenweg.comix;
+package de.wasenweg.komix;
 
 import de.wasenweg.komix.scanner.ScannerController;
 import de.wasenweg.komix.scanner.ScannerService;
@@ -12,6 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,8 +41,8 @@ public class ScannerControllerTest {
                 .andReturn();
 
         // then
-        // FIXME this doesn't work reliably because the controller
-        // calls the service in a new thread.
-        // verify(service).scanComics(Mockito.any());
+        // Wait for scan to start
+        Thread.sleep(500);
+        verify(service).scanComics();
     }
 }

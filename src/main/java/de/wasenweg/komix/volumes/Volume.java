@@ -16,6 +16,6 @@ public class Volume {
     private String publisher;
     private Short issueCount;
     private Short readCount;
-    private Boolean read;
+    private boolean read;
     private byte[] thumbnail;
 }

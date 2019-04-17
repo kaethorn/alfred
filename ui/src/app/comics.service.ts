@@ -18,6 +18,8 @@ export class ComicsService {
   private readonly comicsByVolumeUrl = 'api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition';
   private readonly firstByVolumeUrl = 'api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition';
   private readonly comicUrl = 'api/comics';
+  private readonly comicMarkAsReadUrl = 'api/comics/markAsRead';
+  private readonly comicMarkAsUnreadUrl = 'api/comics/markAsUnread';
 
   private consumeHateoas (): any {
     return map((data: any) => data._embedded.comics);
@@ -94,5 +96,13 @@ export class ComicsService {
 
   update (comic: Comic): Observable<Comic> {
     return this.http.put<Comic>(`${ this.comicUrl }/${ comic.id }`, comic);
+  }
+
+  markAsRead (comic: Comic): Observable<any> {
+    return this.http.put<Comic>(`${ this.comicMarkAsReadUrl }`, comic);
+  }
+
+  markAsUnread (comic: Comic): Observable<any> {
+    return this.http.put<Comic>(`${ this.comicMarkAsUnreadUrl }`, comic);
   }
 }

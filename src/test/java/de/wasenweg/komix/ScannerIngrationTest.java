@@ -1,6 +1,5 @@
-package de.wasenweg.comix;
+package de.wasenweg.komix;
 
-import de.wasenweg.komix.KomixApplication;
 import de.wasenweg.komix.comics.ComicRepository;
 import de.wasenweg.komix.preferences.Preference;
 import de.wasenweg.komix.preferences.PreferenceRepository;
@@ -24,7 +23,7 @@ import java.time.Duration;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = KomixApplication.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = { KomixApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
 public class ScannerIngrationTest {
 
