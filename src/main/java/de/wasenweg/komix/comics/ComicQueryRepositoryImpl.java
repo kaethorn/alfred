@@ -63,7 +63,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
                             where("read").is(true)))
                     .then(1).otherwise(0))
                     .as("readCount")
-                .push("$$ROOT").as("comics"),
+                .push(Aggregation.ROOT).as("comics"),
 
             // Skip volumes where all issues are read.
             match(where("volumeRead").is(false)),
@@ -111,10 +111,9 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
                 .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
             project().andExclude("progress", "comicId", "userId"),
 
+            // If all comics are read, return the first, otherwise the first unread
             sort(Sort.Direction.ASC, "position"),
-
-            // FIXME if the following returns an empty result, pick the first in the volume
-            match(where("read").ne(true)),
+            sort(Sort.Direction.ASC, "read"),
 
             limit(1)
         ), Comic.class, Comic.class).getUniqueMappedResult());

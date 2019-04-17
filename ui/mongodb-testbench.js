@@ -165,7 +165,11 @@ const publishers = () => {
 
 const findLastReadForVolume = () => {
   return Comic.aggregate()
-    .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
+    // should return #1 (all read)
+    //.match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
+    // should return #2 (first read)
+    .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2016' })
+
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
     .replaceRoot({
       $mergeObjects: [
@@ -179,9 +183,8 @@ const findLastReadForVolume = () => {
       ]
     })
     .project({ progress: 0, comicId: 0, userId: 0 })
-
     .sort({ position: 1 })
-    .match({ read: { $ne: true }})
+    .sort({ read: 1 })
     .limit(1)
 };
 
