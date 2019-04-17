@@ -2,7 +2,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/kaethorn/komix/badge)](https://www.codefactor.io/repository/github/kaethorn/komix)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ef19770451cb4dc692488da4382f9ffc)](https://app.codacy.com/app/scf/komix?utm_source=github.com&utm_medium=referral&utm_content=kaethorn/komix&utm_campaign=Badge_Grade_Dashboard)
 
-# KomiX
+# KomX
 
 A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
 
