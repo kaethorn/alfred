@@ -20,8 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/login**", "/error**", "/api/scan-progress")
             .permitAll()
             .anyRequest().authenticated()
-          .and()
-        .logout().logoutUrl("/api/logout").logoutSuccessUrl("/").permitAll()
+        .and().logout().logoutUrl("/api/logout").logoutSuccessUrl("/").permitAll()
         .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 }
