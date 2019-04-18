@@ -60,10 +60,10 @@ public class DevOAuth2Mock {
         final List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("Everything");
         final LinkedHashMap<String, Object> details = new LinkedHashMap<String, Object>();
         details.put("id", MOCK_USER_ID);
-        details.put("user_name", "Foo_Bar");
-        details.put("email", "foo.b@r.com");
-        details.put("name", "Foo Bar");
-        details.put("picture", "https://foo.bar.com/foo.bar.png");
+        details.put("user_name", "B.Wayne");
+        details.put("email", "b.wayne@waynecorp.com");
+        details.put("name", "Bruce Wayne");
+        details.put("picture", "https://img.icons8.com/office/80/000000/batman-old.png");
         return new DefaultOAuth2User(authorities, details, "id");
     }
 
