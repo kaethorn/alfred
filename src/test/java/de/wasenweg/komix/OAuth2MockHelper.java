@@ -18,7 +18,7 @@ public class OAuth2MockHelper {
         return mockClient;
     }
 
-    public static Authentication getOauthTestAuthentication() {
-        return DevOAuth2Mock.getOauthTestAuthentication();
+    public static Authentication getOAuth2LoginAuthenticationToken() {
+        return DevOAuth2Mock.getOAuth2LoginAuthenticationToken();
     }
 }

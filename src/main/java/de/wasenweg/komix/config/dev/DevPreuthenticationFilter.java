@@ -24,7 +24,7 @@ public class DevPreuthenticationFilter extends GenericFilterBean {
             throws IOException, ServletException {
 
         SecurityContextHolder.getContext().setAuthentication(
-                DevOAuth2Mock.getOauthTestAuthentication());
+                DevOAuth2Mock.getOAuth2LoginAuthenticationToken());
 
         chain.doFilter(request, response);
     }

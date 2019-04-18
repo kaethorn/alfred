@@ -13,16 +13,10 @@ spring:
       version: 3.6.12
       features: NO_HTTP_INTERFACE_ARG
 
-security:
-  oauth2:
-    client:
-      client-id: 401455891931-28afa7q3453j1fsdfnlen5tf46oqeadr.apps.googleusercontent.com
-      client-secret: f_AUYbM88Y5B3pj3FKNdvtON
-      scope: https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile
-      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
-      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
-      tokenName: oauth_token
-      authenticationScheme: query
-      clientAuthenticationScheme: form
-    resource:
-      user-info-uri: https://www.googleapis.com/userinfo/v2/me
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 401455891931-28afa7q3453j1fsdfnlen5tf46oqeadr.apps.googleusercontent.com
+            client-secret: f_AUYbM88Y5B3pj3FKNdvtON

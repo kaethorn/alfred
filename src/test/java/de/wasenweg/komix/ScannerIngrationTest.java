@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -25,6 +26,7 @@ import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { KomixApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
+@ActiveProfiles(profiles = "test")
 public class ScannerIngrationTest {
 
     @LocalServerPort

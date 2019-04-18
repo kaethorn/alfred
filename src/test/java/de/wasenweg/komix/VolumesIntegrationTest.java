@@ -61,7 +61,7 @@ public class VolumesIntegrationTest {
         comicRepository.save(ComicFixtures.COMIC_V3_3);
 
         mvc.perform(MockMvcRequestBuilders.get("/api/publishers")
-                .with(authentication(OAuth2MockHelper.getOauthTestAuthentication()))
+                .with(authentication(OAuth2MockHelper.getOAuth2LoginAuthenticationToken()))
                 .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2MockHelper.getOauth2ClientContext()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
