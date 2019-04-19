@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "komix": {
+    "alfred": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,13 +13,16 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/komix",
+            "outputPath": "dist/alfred",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
+              "src/icons/alfred.svg",
+              "src/icons/favicon.ico",
+              "src/icons/favicon-16x16.png",
+              "src/icons/favicon-32x32.png",
               "src/assets"
             ],
             "styles": [
@@ -58,18 +61,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "komix:build"
+            "browserTarget": "alfred:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "komix:build:production"
+              "browserTarget": "alfred:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "komix:build"
+            "browserTarget": "alfred:build"
           }
         },
         "test": {
@@ -85,7 +88,10 @@
             ],
             "scripts": [],
             "assets": [
-              "src/favicon.ico",
+              "src/icons/alfred.svg",
+              "src/icons/favicon.ico",
+              "src/icons/favicon-16x16.png",
+              "src/icons/favicon-32x32.png",
               "src/assets"
             ]
           }
@@ -104,7 +110,7 @@
         }
       }
     },
-    "komix-e2e": {
+    "alfred-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -113,11 +119,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "komix:serve"
+            "devServerTarget": "alfred:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "komix:serve:production"
+              "devServerTarget": "alfred:serve:production"
             }
           }
         },
@@ -133,7 +139,7 @@
       }
     }
   },
-  "defaultProject": "komix",
+  "defaultProject": "alfred",
   "schematics": {
     "@schematics/angular:component": {
       "styleext": "sass"

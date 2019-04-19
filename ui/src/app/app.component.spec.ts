@@ -18,6 +18,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('mat-toolbar').textContent).toContain('KomX');
+    expect(compiled.querySelector('mat-toolbar').textContent).toContain('Alfred');
   });
 });
