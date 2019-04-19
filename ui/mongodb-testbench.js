@@ -97,13 +97,27 @@ const findAllLastReadPerVolume = () => {
 // Publishers -> Series -> Volumes
 const publishers = () => {
   return Comic.aggregate()
+    .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
+    .replaceRoot({
+      $mergeObjects: [
+        '$$ROOT',
+        { $arrayElemAt: [{ $filter: {
+          input: '$progress',
+          as   : 'item',
+          cond : { $eq: [ '$$item.userId', userId ]}
+        }}, 0 ]},
+        { _id: '$$ROOT._id' }
+      ]
+    })
+    .project({ progress: 0, comicId: 0, userId: 0 })
+
     .sort({ position: 1 })
     .group({
       _id       : { publisher: '$publisher', series: '$series', volume: '$volume'  },
       volume    : { $last: '$volume' },
       issueCount: { $sum: 1 },
-      read      : { $min: { $cond: [ '$readState.foo.read', 1, 0 ]}},
-      readCount : { $sum: { $cond: [ '$readState.foo.read', 1, 0 ]}}
+      read      : { $min: '$read' },
+      readCount : { $sum: { $cond: [ '$read', 1, 0 ]}}
     })
     .group({
       _id    : { publisher: '$_id.publisher', series: '$_id.series'  },
@@ -144,6 +158,7 @@ const findLastReadForVolume = () => {
       ]
     })
     .project({ progress: 0, comicId: 0, userId: 0 })
+
     .sort({ position: 1 })
     .sort({ read: 1 })
     .limit(1);
@@ -210,8 +225,8 @@ db.once('open', function () {
       if (err) {
         return logError(`exec error:${ err }`);
       }
-      log(res);
-      // log(JSON.colorStringify(res, null, 2));
+      // log(res);
+      log(JSON.colorStringify(res, null, 2));
       log(`Result length: ${ res.length }`);
       mongoose.connection.close();
     });

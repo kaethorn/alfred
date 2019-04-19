@@ -1,12 +1,12 @@
-<div *ngIf="publishers?.length > 0">
-  <form class="library-filter">
-    <mat-form-field>
-      <span matPrefix><mat-icon>search</mat-icon></span>
-      <input matInput placeholder="Search for series" #libraryFilter
-        (keyup)="filter(libraryFilter.value)">
-    </mat-form-field>
-  </form>
+<form class="library-filter">
+  <mat-form-field>
+    <span matPrefix><mat-icon>search</mat-icon></span>
+    <input matInput placeholder="Search for series" #libraryFilter
+      (keyup)="filter(libraryFilter.value)">
+  </mat-form-field>
+</form>
 
+<div *ngIf="publishers?.length > 0">
   <div *ngFor="let publisher of publishers" class="publisher">
     <h3>{{ publisher.publisher }}</h3>
     <mat-accordion>

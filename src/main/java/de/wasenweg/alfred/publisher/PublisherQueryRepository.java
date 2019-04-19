@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface PublisherQueryRepository {
 
-    List<Publisher> findAll();
+    List<Publisher> findAll(final String userId);
 }
