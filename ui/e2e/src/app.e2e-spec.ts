@@ -9,6 +9,6 @@ describe('AppComponent', () => {
 
   it('should display welcome message', async () => {
     await page.navigateTo();
-    expect(await page.getTitleText()).toContain('KomX');
+    expect(await page.getTitleText()).toContain('Alfred');
   });
 });
