@@ -74,4 +74,4 @@ The application will now be available at http://localhost:8080.
 
 ## Enjoy
 
-![A Screenshot](docs/screenshots/komix_1.png?raw=true)
+![A Screenshot](docs/screenshots/alfred.png?raw=true)
