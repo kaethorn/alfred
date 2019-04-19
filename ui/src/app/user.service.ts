@@ -11,7 +11,7 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   private readonly userUrl = 'api/user';
-  private readonly logoutUrl = 'api/logout';
+  private readonly logoutUrl = '/logout';
 
   get (): Observable<User> {
     return this.http.get<User>(this.userUrl);

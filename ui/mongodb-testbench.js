@@ -1,7 +1,7 @@
 // MongoDB testbench, used to develop queries that are later moved to Spring Data MongoDB.
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/komix');
+mongoose.connect('mongodb://localhost/alfred');
 require('node-json-color-stringify');
 
 // eslint-disable-next-line no-console

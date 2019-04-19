@@ -12,7 +12,7 @@ node {
 jar.dependsOn 'npm_run_buildProd'
 
 jar {
-  from 'dist/komix' into 'static'
+  from 'dist/alfred' into 'static'
 }
 
 test.dependsOn 'npm_run_ciTest'

@@ -21,6 +21,8 @@ export class AppComponent {
   }
 
   logout () {
-    this.userService.logout().subscribe();
+    this.userService.logout().subscribe(() => {
+      window.location.reload();
+    });
   }
 }
