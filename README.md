@@ -5,6 +5,7 @@
 # Alfred
 
 A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
+
 ![Alfred](./ui/src/icons/alfred.svg)
 
 ## Requirements
