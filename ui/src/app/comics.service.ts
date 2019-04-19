@@ -99,10 +99,14 @@ export class ComicsService {
   }
 
   markAsRead (comic: Comic): Observable<any> {
-    return this.http.put<Comic>(`${ this.comicMarkAsReadUrl }`, comic);
+    return this.http.put<Comic>(`${ this.comicMarkAsReadUrl }`, comic).pipe(
+      map((result: Comic) => this.addId(result))
+    );
   }
 
   markAsUnread (comic: Comic): Observable<any> {
-    return this.http.put<Comic>(`${ this.comicMarkAsUnreadUrl }`, comic);
+    return this.http.put<Comic>(`${ this.comicMarkAsUnreadUrl }`, comic).pipe(
+      map((result: Comic) => this.addId(result))
+    );
   }
 }
