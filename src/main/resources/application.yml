@@ -3,8 +3,8 @@ spring:
     rest:
       base-path: /api
     mongodb:
-      database: komix
-      uri: mongodb://mongo/komix
+      database: alfred
+      uri: mongodb://mongo/alfred
   profiles:
     active: prod
 
