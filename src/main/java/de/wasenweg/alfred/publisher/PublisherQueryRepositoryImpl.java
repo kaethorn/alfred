@@ -38,9 +38,10 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
                      .then(1).otherwise(0))
                      .as("readCount")
                 .first("thumbnail").as("thumbnail"),
+            sort(Sort.Direction.ASC, "volume"),
             group("publisher", "series")
                 .last("series").as("series")
-                .addToSet(new BasicDBObject() {{
+                .push(new BasicDBObject() {{
                     put("volume", "$_id.volume");
                     put("series", "$_id.series");
                     put("publisher", "$_id.publisher");
@@ -49,9 +50,10 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
                     put("readCount", "$readCount");
                     put("thumbnail", "$thumbnail");
                 }}).as("volumes"),
+            sort(Sort.Direction.DESC, "series"),
             group("_id.publisher")
                 .last("_id.publisher").as("publisher")
-                .addToSet(new BasicDBObject() {{
+                .push(new BasicDBObject() {{
                     put("series", "$_id.series");
                     put("volumes", "$volumes");
                 }}).as("series"),

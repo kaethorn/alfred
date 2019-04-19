@@ -119,6 +119,7 @@ const publishers = () => {
       read      : { $min: '$read' },
       readCount : { $sum: { $cond: [ '$read', 1, 0 ]}}
     })
+    .sort({ volume: 1 })
     .group({
       _id    : { publisher: '$_id.publisher', series: '$_id.series'  },
       series : { $last: '$_id.series' },
@@ -130,6 +131,7 @@ const publishers = () => {
         read      : '$read'
       }}
     })
+    .sort({ series: -1 })
     .group({
       _id      : { publisher: '$_id.publisher' },
       publisher: { $last: '$_id.publisher' },
