@@ -7,10 +7,12 @@
     "build": "ng build",
     "buildProd": "ng build --prod",
     "test": "ng test",
+    "testHeadless": "ng test --watch=false --progress=false --code-coverage --browsers ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "ciTest": "ng test --watch=false --progress=false --code-coverage --browsers ChromeHeadless",
-    "ciE2e": "ng e2e --base-url=http://localhost:8080/ --protractor-config=e2e/protractor.headless.conf.js --dev-server-target="
+    "e2eHeadless": "ng e2e --protractor-config=e2e/protractor.headless.conf.js --dev-server-target=",
+    "protractor": "protractor e2e/protractor.conf.js",
+    "protractorHeadless": "protractor e2e/protractor.headless.conf.js"
   },
   "private": true,
   "dependencies": {

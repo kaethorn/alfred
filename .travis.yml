@@ -7,4 +7,4 @@ jobs:
   include:
     - stage: test
       script:
-        - ./gradlew check -s
+        - COMICS_PATH=src/test/resources/fixtures/full ./gradlew check -s
