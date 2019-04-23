@@ -3,7 +3,7 @@ import { LibraryPage } from './library.po';
 import { MongoDBTools } from './mongodb.tools';
 
 describe('ScannerComponent', () => {
-  let page: ScannerPage;
+  let scannerPage: ScannerPage;
   let libraryPage: LibraryPage;
 
   beforeAll(async () => {
@@ -11,26 +11,26 @@ describe('ScannerComponent', () => {
   });
 
   beforeEach(async () => {
-    page = new ScannerPage();
+    scannerPage = new ScannerPage();
     libraryPage = new LibraryPage();
   });
 
   it('should display a scan button', async () => {
-    await page.navigateTo();
-    expect(await page.getScanButton().isPresent()).toBe(true);
+    await scannerPage.navigateTo();
+    expect(await scannerPage.getScanButton().isPresent()).toBe(true);
   });
 
   it('starts scanning comics when clicking the button', async () => {
-    await page.getScanButton().click();
-    await page.waitForScanStart();
-    expect(await page.getScanProgress())
+    await scannerPage.getScanButton().click();
+    await scannerPage.waitForScanStart();
+    expect(await scannerPage.getScanProgress())
       .toMatch(/Scanning\ file\ \d+\ of\ \d+\ at\ .*/);
-    expect(await page.getScanErrors().isPresent()).toBe(false);
+    expect(await scannerPage.getScanErrors().isPresent()).toBe(false);
   });
 
   it('displays a list of publishers on completion', async () => {
-    await page.waitForScanEnd();
-    expect(await libraryPage.getComicPublishers())
+    await scannerPage.waitForScanEnd();
+    expect(await libraryPage.getAllPublishers().getText())
       .toEqual(['DC Comics', 'F5 Enteratinment', 'Top Cow']);
   });
 });

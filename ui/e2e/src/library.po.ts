@@ -1,32 +1,51 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
+import { Page } from './page.po';
 
 export class LibraryPage {
 
+  private page: Page;
   private selectSeries = 'app-library .series mat-panel-title';
   private selectVolume = 'mat-expansion-panel.mat-expanded app-volume';
+
+  constructor() {
+    this.page = new Page();
+  }
 
   navigateTo() {
     return browser.get('/library');
   }
 
-  getComicPublishers() {
-    return element.all(by.css('app-library .publisher h3')).getText();
+  getAllPublishers() {
+    return element.all(by.css('app-library .publisher h3'));
   }
 
-  getComicSeries() {
-    return element.all(by.css(this.selectSeries)).getText();
+  getAllSeries() {
+    return element.all(by.css(this.selectSeries));
   }
 
-  getComicVolume(series: string) {
+  getSeries(series: string) {
     return element(by.cssContainingText(this.selectSeries, series));
   }
 
-  getComicVolumes() {
-    return element.all(by.css(`${ this.selectVolume } mat-card-title`)).getText();
+  async waitForSeries(series: string) {
+    await browser.wait(ExpectedConditions.elementToBeClickable(this.getSeries(series)), 200);
   }
 
-  getComicVolumeStats() {
-    return element.all(by.css(`${ this.selectVolume } mat-card-subtitle`)).getText();
+  getVolumeTitles() {
+    return element.all(by.css(`${ this.selectVolume } mat-card-title`));
+  }
+
+  getVolumeStats() {
+    return element.all(by.css(`${ this.selectVolume } mat-card-subtitle`));
+  }
+
+  getUnreadVolumes() {
+    return element.all(by.css(this.selectVolume)).all(by.css('a.mat-badge-hidden'));
+  }
+
+  getListButton(volume: string) {
+    return element(by.cssContainingText(this.selectVolume, volume))
+      .element(by.buttonText('LIST'));
   }
 
   get markVolumeAsReadButton() {
@@ -34,11 +53,6 @@ export class LibraryPage {
   }
 
   async clickVolumeMenuItem(volume: string, item: string) {
-    await element(by.cssContainingText(this.selectVolume, volume))
-      .element(by.cssContainingText('mat-icon', 'more_vert')).click();
-
-    await browser.wait(ExpectedConditions.elementToBeClickable(this.markVolumeAsReadButton), 200);
-
-    await element(by.partialButtonText(item)).click();
+    await this.page.clickMenuItem(element(by.cssContainingText(this.selectVolume, volume)), item);
   }
 }
