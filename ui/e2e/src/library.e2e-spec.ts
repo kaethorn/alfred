@@ -6,10 +6,13 @@ fdescribe('VolumesComponent', () => {
   let scannerPage: ScannerPage;
   let page: LibraryPage;
 
+  beforeAll(async () => {
+    await MongoDBTools.prepare();
+  });
+
   beforeEach(async () => {
     scannerPage = new ScannerPage();
     page = new LibraryPage();
-    await MongoDBTools.prepare();
   });
 
   it('scans for comics', async () => {

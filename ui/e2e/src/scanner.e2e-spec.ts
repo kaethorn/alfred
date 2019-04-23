@@ -6,10 +6,13 @@ describe('ScannerComponent', () => {
   let page: ScannerPage;
   let libraryPage: LibraryPage;
 
+  beforeAll(async () => {
+    await MongoDBTools.prepare();
+  });
+
   beforeEach(async () => {
     page = new ScannerPage();
     libraryPage = new LibraryPage();
-    await MongoDBTools.prepare();
   });
 
   it('should display a scan button', async () => {

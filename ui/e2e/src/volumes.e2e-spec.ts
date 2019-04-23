@@ -4,9 +4,12 @@ import { MongoDBTools } from './mongodb.tools';
 describe('VolumesComponent', () => {
   let scannerPage: ScannerPage;
 
+  beforeAll(async () => {
+    await MongoDBTools.prepare();
+  });
+
   beforeEach(async () => {
     scannerPage = new ScannerPage();
-    await MongoDBTools.prepare();
   });
 
   it('scans for comics', async () => {
