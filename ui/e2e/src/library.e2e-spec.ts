@@ -32,11 +32,14 @@ fdescribe('VolumesComponent', () => {
       .toEqual(['Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016']);
   });
 
-  xit('shows the read issue counter', async () => {
-    // TODO
+  it('shows the read issue counter', async () => {
+    expect(await page.getComicVolumeStats())
+      .toEqual([ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
   });
 
-  xit('can mark a whole volume as read and updates its read issue counter', async () => {
-    // TODO
+  it('updates its read issue counter when marking the volume as read', async () => {
+    await page.clickVolumeMenuItem('Vol. 2000', 'Mark volume as read');
+    expect(await page.getComicVolumeStats())
+      .toEqual([ '73 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
   });
 });

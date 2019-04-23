@@ -1,4 +1,4 @@
-import { browser, by, element } from 'protractor';
+import { browser, by, element, ExpectedConditions } from 'protractor';
 
 export class LibraryPage {
 
@@ -27,5 +27,18 @@ export class LibraryPage {
 
   getComicVolumeStats() {
     return element.all(by.css(`${ this.selectVolume } mat-card-subtitle`)).getText();
+  }
+
+  get markVolumeAsReadButton() {
+    return element(by.partialButtonText('Mark volume as read'));
+  }
+
+  async clickVolumeMenuItem(volume: string, item: string) {
+    await element(by.cssContainingText(this.selectVolume, volume))
+      .element(by.cssContainingText('mat-icon', 'more_vert')).click();
+
+    await browser.wait(ExpectedConditions.elementToBeClickable(this.markVolumeAsReadButton), 200);
+
+    await element(by.partialButtonText(item)).click();
   }
 }

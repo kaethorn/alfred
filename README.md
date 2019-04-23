@@ -69,5 +69,39 @@ The application will now be available at http://localhost:8080.
 
 ### E2E tests
 
-`./gradlew bootRunEmbedded`
-`cd ui && npm run e2e -- --base-url=http://localhost:8080/ --dev-server-target=`
+#### Preparation
+
+Start a test instance
+
+```
+docker network create alfred-net
+docker start mongo
+docker network connect alfred-net mongo
+
+./gradlew build docker -x test
+
+docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
+```
+
+Install dependencies
+
+`cd ui && npm i`
+
+#### Run
+
+Run via the ng-cli wrapper:
+`npm run e2e -- --base-url=http://localhost:8080/ --dev-server-target=`
+
+or directly via protractor:
+
+`npm run protractor`
+
+There is also a headless version:
+
+`npm run protractorHeadless`
+
+#### Debug
+
+In order to debug, add a `debugger;` to the test you want to debug and then run the protractor config manually with node. Example for debugging `library.e2e-spec.ts`:
+
+`node --inspect-brk node_modules/protractor/bin/protractor e2e/protractor.conf.js --specs=e2e/src/library.e2e-spec.ts`
