@@ -19,53 +19,79 @@ A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack]
 
 ### Docker using Gradle
 
-`./gradlew build docker`
-`docker run de.wasenweg/alfred`
+```sh
+./gradlew build docker
+docker run de.wasenweg/alfred
+```
 
 ### Docker manually
 
 This will basically replicate what the Gradle docker plugin manages.
 
 #### 1. Network
+
 Set up a common network:
-`docker network create alfred-net`
+
+```sh
+docker network create alfred-net
+```
 
 #### 2a. New MongoDB
+
 Set up a new MongoDB connected to the network:
-`docker run --name mongo -p 27017:27017 --net=alfred-net mongo`
+
+```sh
+docker run --name mongo -p 27017:27017 --net=alfred-net mongo
+```
 
 #### 2b. Existing MongoDB
+
 If you want to use an existing MongoDB instead, run and connect it to the network:
-`docker start mongo`
-`docker network connect alfred-net mongo`
+
+```sh
+docker start mongo
+docker network connect alfred-net mongo
+```
 
 #### 3. Build
+
 Build the docker image:
-`./gradlew clean build`
-`mkdir target`
-`unzip build/libs/alfred.jar -d target/dependency`
-`docker build -t de.wasenweg/alfred .`
+
+```sh
+./gradlew clean build
+mkdir target
+unzip build/libs/alfred.jar -d target/dependency
+docker build -t de.wasenweg/alfred .
+```
 
 #### 4. Run
+
 Run the image and connect to the MongoDB:
-`docker run -p 5000:8080 --net=alfred-net -v /path/to/comics:/comics alfred`
+
+```sh
+docker run -p 5000:8080 --net=alfred-net -v /path/to/comics:/comics alfred
+```
+
 Replace `/path/to/comics` with the path to your comic library.
 
-The application will now be available at http://localhost:5000.
+The application will now be available at <http://localhost:5000>.
 
 ### Gradle
 
 To run the application on the host system directly, make sure to have a MongoDB running, e.g. on `localhost`, then run:
-`./gradlew clean build && java -jar build/libs/alfred.jar --spring.data.mongodb.uri=mongodb://localhost/alfred`
 
-The application will now be available at http://localhost:8080.
+```sh
+./gradlew clean build && java -jar build/libs/alfred.jar --spring.data.mongodb.uri=mongodb://localhost/alfred
+```
+
+The application will now be available at <http://localhost:8080>.
 
 ## Stack
 
 * Spring Boot 2 App using MongoDB.
 * Angular 7 UI with Material design.
 
-## Debug
+## Develop
 
 ### E2E tests
 
@@ -73,7 +99,7 @@ The application will now be available at http://localhost:8080.
 
 Start a test instance
 
-```
+```sh
 docker network create alfred-net
 docker pull mongo:3.6
 docker run -d --name mongo mongo:3.6
@@ -88,21 +114,31 @@ Install dependencies
 
 `cd ui && npm i`
 
-#### Run
+#### Run tests
 
 Run via the ng-cli wrapper:
-`npm run e2e -- --base-url=http://localhost:8080/ --dev-server-target=`
+
+```sh
+npm run e2e -- --base-url=http://localhost:8080/ --dev-server-target=
+```
 
 or directly via protractor, skipping webdriver update:
 
-`npm run protractor`
+```sh
+npm run protractor
+```
 
 There is also a headless version:
 
-`npm run protractorHeadless`
+```sh
+npm run protractorHeadless
+```
 
-#### Debug
+#### Debug tests
 
 In order to debug, add a `debugger;` to the test you want to debug and then run the protractor config manually with node. Example for debugging `library.e2e-spec.ts`:
 
-`node --inspect-brk node_modules/protractor/bin/protractor e2e/protractor.conf.js --specs=e2e/src/library.e2e-spec.ts`
+```sh
+node --inspect-brk node_modules/protractor/bin/protractor e2e/protractor.conf.js --specs=e2e/src/library.e2e-spec.ts
+```
+
