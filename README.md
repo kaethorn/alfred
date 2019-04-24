@@ -75,12 +75,13 @@ Start a test instance
 
 ```
 docker network create alfred-net
-docker start mongo
+docker pull mongo:3.6
+docker run -d --name mongo mongo:3.6
 docker network connect alfred-net mongo
 
 ./gradlew build docker -x test
 
-docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
+docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
 ```
 
 Install dependencies
@@ -92,7 +93,7 @@ Install dependencies
 Run via the ng-cli wrapper:
 `npm run e2e -- --base-url=http://localhost:8080/ --dev-server-target=`
 
-or directly via protractor:
+or directly via protractor, skipping webdriver update:
 
 `npm run protractor`
 

@@ -14,6 +14,6 @@ jobs:
         - docker network create alfred-net
         - docker run -d --name mongo mongo:3.6
         - docker network connect alfred-net mongo
-        - docker run -d -p 8080:8080 -e SPRING_PROFILES_ACTIVE=test --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
-        - ./gradlew npm_run_protractorHeadless -s
+        - docker run -d -p 8080:8080 -e SPRING_PROFILES_ACTIVE=test -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
+        - ./gradlew npm_run_e2eHeadless -s
 
