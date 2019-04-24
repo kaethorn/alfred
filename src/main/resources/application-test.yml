@@ -1,5 +1,8 @@
 spring:
   profiles: test
+  data:
+    mongodb:
+      uri: mongodb://localhost/alfred
   mongodb:
     embedded:
       version: 3.6.12

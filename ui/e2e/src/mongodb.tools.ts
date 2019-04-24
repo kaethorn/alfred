@@ -15,7 +15,7 @@ export class MongoDBTools {
             collection.insert([{
               key    : 'comics.path',
               name   : 'Path',
-              value  : '/comics',
+              value  : process.env.COMICS_PATH || '/comics',
               comment: 'Path to your comic library'
             }]).then(() => {
               resolve();

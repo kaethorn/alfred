@@ -16,5 +16,6 @@ jar {
 }
 
 test.dependsOn 'npm_run_testHeadless'
+test.dependsOn 'npm_run_protractorHeadless'
 
 check.dependsOn 'npm_run_lint'
