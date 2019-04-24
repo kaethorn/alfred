@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Publisher, Series, Volume } from './publisher';
+import { Publisher, Volume } from './publisher';
 import { Comic } from './comic';
 
 @Injectable({
@@ -17,25 +17,13 @@ export class VolumesService {
   private readonly markAsUnreadUrl = '/api/volumes/markAsUnread';
   private readonly markAllAsReadUntilUrl = 'api/volumes/markAllAsReadUntil';
 
-  private sortSeriesAndVolumes (): any {
-    return map((publishers: Publisher[]) => {
-      return publishers.map((publisher: Publisher) => {
-        publisher.series
-          .sort((a: Series, b: Series) => a.series.localeCompare(b.series))
-          .map((series: Series) => series.volumes.sort((a: Volume, b: Volume) => a.volume.localeCompare(b.volume)));
-        return publisher;
-      });
-    });
-  }
-
   private consumeHateoas (): any {
     return map((data: any) => data._embedded.publishers);
   }
 
   listVolumesByPublisher (): Observable<Publisher[]> {
     return this.http.get(this.volumesByPublisherUrl).pipe(
-      this.consumeHateoas(),
-      this.sortSeriesAndVolumes()
+      this.consumeHateoas()
     );
   }
 

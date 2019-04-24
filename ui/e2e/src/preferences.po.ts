@@ -12,4 +12,8 @@ export class PreferencesPage {
   getSaveButton() {
     return element(by.buttonText('SAVE'));
   }
+
+  getError() {
+    return element(by.css('mat-error'));
+  }
 }

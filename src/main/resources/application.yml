@@ -7,16 +7,3 @@ spring:
       uri: mongodb://mongo/alfred
   profiles:
     active: prod
-
-  mongodb:
-    embedded:
-      version: 3.6.12
-      features: NO_HTTP_INTERFACE_ARG
-
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 401455891931-28afa7q3453j1fsdfnlen5tf46oqeadr.apps.googleusercontent.com
-            client-secret: f_AUYbM88Y5B3pj3FKNdvtON

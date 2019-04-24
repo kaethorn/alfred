@@ -1,40 +1,36 @@
 import { ScannerPage } from './scanner.po';
-import { PreferencesPage } from './preferences.po';
 import { LibraryPage } from './library.po';
+import { MongoDBTools } from './mongodb.tools';
 
 describe('ScannerComponent', () => {
-  let page: ScannerPage;
-  let preferencesPage: PreferencesPage;
+  let scannerPage: ScannerPage;
   let libraryPage: LibraryPage;
 
+  beforeAll(async () => {
+    await MongoDBTools.prepare();
+  });
+
   beforeEach(async () => {
-    page = new ScannerPage();
-    preferencesPage = new PreferencesPage();
+    scannerPage = new ScannerPage();
     libraryPage = new LibraryPage();
   });
 
-  it('sets preferences', async () => {
-    await preferencesPage.navigateTo();
-    await preferencesPage.getComicsPathInput().clear();
-    await preferencesPage.getComicsPathInput().sendKeys('src/test/resources/fixtures/full');
-    await preferencesPage.getSaveButton().click();
-  });
-
   it('should display a scan button', async () => {
-    await page.navigateTo();
-    expect(await page.getScanButton().isPresent()).toBe(true);
+    await scannerPage.navigateTo();
+    expect(await scannerPage.getScanButton().isPresent()).toBe(true);
   });
 
   it('starts scanning comics when clicking the button', async () => {
-    await page.getScanButton().click();
-    await page.waitForScanStart();
-    expect(await page.getScanProgress())
-      .toMatch(/Scanning\ file\ \d+\ of\ \d+\ at\ .*Batman\ \d+\ \(1940\)\.cbz/);
-    expect(await page.getScanErrors().isPresent()).toBe(false);
+    await scannerPage.getScanButton().click();
+    await scannerPage.waitForScanStart();
+    expect(await scannerPage.getScanProgress())
+      .toMatch(/Scanning\ file\ \d+\ of\ \d+\ at\ .*/);
+    expect(await scannerPage.getScanErrors().isPresent()).toBe(false);
   });
 
   it('displays a list of publishers on completion', async () => {
-    await page.waitForScanEnd();
-    expect(await libraryPage.getComicPublishers()).toEqual('DC Comics');
+    await scannerPage.waitForScanEnd();
+    expect(await libraryPage.getAllPublishers().getText())
+      .toEqual(['DC Comics', 'F5 Enteratinment', 'Top Cow']);
   });
 });

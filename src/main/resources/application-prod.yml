@@ -1,0 +1,14 @@
+spring:
+  profiles: prod
+  data:
+    mongodb:
+      database: alfred
+      uri: mongodb://mongo/alfred
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 401455891931-28afa7q3453j1fsdfnlen5tf46oqeadr.apps.googleusercontent.com
+            client-secret: f_AUYbM88Y5B3pj3FKNdvtON
