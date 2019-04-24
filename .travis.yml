@@ -19,6 +19,7 @@ jobs:
         - echo -n "Waiting for Spring Boot app "
         - while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do echo -n . && sleep 1; done;
         - echo " up!"
+        - docker ps
         - ./gradlew npm_run_e2eHeadless -s
         - docker stop alfred
         - docker stop mongo
