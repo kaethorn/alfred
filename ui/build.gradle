@@ -15,7 +15,6 @@ jar {
   from 'dist/alfred' into 'static'
 }
 
-test.dependsOn 'npm_run_ciTest'
-test.dependsOn 'npm_run_ciE2e'
+test.dependsOn 'npm_run_testHeadless'
 
 check.dependsOn 'npm_run_lint'

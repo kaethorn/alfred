@@ -11,6 +11,7 @@
     <h3>{{ publisher.publisher }}</h3>
     <mat-accordion>
       <mat-expansion-panel *ngFor="let series of publisher.series"
+        class="series"
         [expanded]="currentSeries === series.series"
         (opened)="openSeries(series.series)">
         <mat-expansion-panel-header>

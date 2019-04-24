@@ -1,14 +1,14 @@
 import { AppPage } from './app.po';
 
 describe('AppComponent', () => {
-  let page: AppPage;
+  let appPage: AppPage;
 
   beforeEach(() => {
-    page = new AppPage();
+    appPage = new AppPage();
   });
 
   it('should display welcome message', async () => {
-    await page.navigateTo();
-    expect(await page.getTitleText()).toContain('Alfred');
+    await appPage.navigateTo();
+    expect(await appPage.getTitleText()).toContain('Alfred');
   });
 });

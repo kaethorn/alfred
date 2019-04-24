@@ -15,7 +15,7 @@ export class ScannerPage {
   }
 
   waitForScanEnd() {
-    return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 3000);
+    return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 10000);
   }
 
   getScanButton() {
@@ -28,5 +28,16 @@ export class ScannerPage {
 
   getScanErrors() {
     return element(by.css('app-scanner .errors'));
+  }
+
+  async scan() {
+    await this.navigateTo();
+    expect(await this.getScanButton().isPresent()).toBe(true);
+    await this.getScanButton().click();
+    await this.waitForScanStart();
+    expect(await this.getScanProgress())
+      .toMatch(/Scanning\ file\ \d+\ of\ \d+\ at\ .*/);
+    expect(await this.getScanErrors().isPresent()).toBe(false);
+    await this.waitForScanEnd();
   }
 }
