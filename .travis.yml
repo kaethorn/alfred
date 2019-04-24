@@ -9,6 +9,7 @@ jobs:
   include:
     - stage: test
       script:
+        - set -e
         - docker pull mongo:3.6
         - docker network create alfred-net
         - docker run -d --name mongo mongo:3.6
