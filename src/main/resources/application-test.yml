@@ -1,0 +1,9 @@
+spring:
+  profiles: test
+  mongodb:
+    embedded:
+      version: 3.6.12
+      features: NO_HTTP_INTERFACE_ARG
+
+comics:
+  path: src/test/resources/fixtures/full

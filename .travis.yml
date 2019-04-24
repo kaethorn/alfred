@@ -3,8 +3,17 @@ jdk:
   - oraclejdk8
 addons:
   chrome: stable
+services:
+  - docker
 jobs:
   include:
     - stage: test
       script:
-        - COMICS_PATH=src/test/resources/fixtures/full ./gradlew check -s
+        - docker pull mongo:3.6
+        - docker network create alfred-net
+        - docker start mongo
+        - docker network connect alfred-net mongo
+        - ./gradlew check build docker -s
+        - docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=test --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred &
+        - ./gradlew npm_run_protractorHeadless -s
+
