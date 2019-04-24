@@ -141,4 +141,3 @@ In order to debug, add a `debugger;` to the test you want to debug and then run 
 ```sh
 node --inspect-brk node_modules/protractor/bin/protractor e2e/protractor.conf.js --specs=e2e/src/library.e2e-spec.ts
 ```
-
