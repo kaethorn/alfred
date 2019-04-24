@@ -15,12 +15,10 @@ jobs:
         - docker run -d -p 27017:27017 --name mongo mongo:3.6
         - docker network connect alfred-net mongo
         - ./gradlew check build docker -s
-        - docker run -d -p 8080:8080 -e SPRING_PROFILES_ACTIVE=test -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
+        - docker run -d -p 8080:8080 -e SPRING_PROFILES_ACTIVE=test -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v $PWD/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
         - echo -n "Waiting for Spring Boot app "
         - while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do echo -n . && sleep 1; done;
         - echo " up!"
         - docker ps
         - ./gradlew npm_run_e2eHeadless -s
-        - docker stop alfred
-        - docker stop mongo
 
