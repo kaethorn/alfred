@@ -1,0 +1,10 @@
+<ion-list lines="full">
+  <ion-item [routerLink]="['/volumes', comic.publisher, comic.series, comic.volume]">
+    <ion-icon slot="start" name="list"></ion-icon>
+      View volume
+  </ion-item>
+  <ion-item [routerLink]="['/library']" [queryParams]="{ series: comic.series }">
+    <ion-icon slot="start" name="book"></ion-icon>
+    View in library
+  </ion-item>
+</ion-list>

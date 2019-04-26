@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { PopoverController } from '@ionic/angular';
+import { BookmarkActionsComponentComponent } from './bookmark-actions-component/bookmark-actions-component.component';
 
 import { ComicsService } from '../comics.service';
 import { Comic } from '../comic';
@@ -17,7 +19,8 @@ export class BookmarksPage implements OnInit {
   constructor(
     private router: Router,
     private comicsService: ComicsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private popoverController: PopoverController
   ) {}
 
   ngOnInit() {
@@ -32,5 +35,15 @@ export class BookmarksPage implements OnInit {
 
   thumbnail (comic: Comic): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
+  }
+
+  async presentPopover(ev: any, comic: Comic) {
+    const popover = await this.popoverController.create({
+      component: BookmarkActionsComponentComponent,
+      componentProps: { comic: comic },
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
   }
 }

@@ -5,19 +5,24 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
 import { BookmarksPage } from './bookmarks.page';
+import { BookmarkActionsComponentComponent } from './bookmark-actions-component/bookmark-actions-component.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: BookmarksPage
-      }
-    ])
+    RouterModule.forChild([{
+      path: '',
+      component: BookmarksPage
+    }])
   ],
-  declarations: [BookmarksPage]
+  declarations: [
+    BookmarksPage,
+    BookmarkActionsComponentComponent
+  ],
+  entryComponents: [
+    BookmarkActionsComponentComponent
+  ]
 })
 export class BookmarksPageModule {}

@@ -43,26 +43,12 @@
           <img [src]="thumbnail(comic)">
         </a>
         <ion-item>
-          <ion-icon name="start" slot="start"></ion-icon>
-          <ion-label>resume</ion-label>
-          <ion-button [routerLink]="['/read', comic.id, comic.currentPage]" fill="outline" slot="end">RESUME</ion-button>
+          <ion-button fill="clear" [routerLink]="['/read', comic.id, comic.currentPage]" slot="start">
+            <ion-icon slot="start" name="play"></ion-icon>
+            Resume
+          </ion-button>
+          <ion-icon (click)="presentPopover($event, comic)" slot="end" name="menu"></ion-icon>
         </ion-item>
-        <!-- TODO use ion-popover?
-
-        <button ion-icon-button [matMenuTriggerFor]="menu">
-          <ion-icon>more_vert</ion-icon>
-        </button>
-        <ion-menu #menu="matMenu">
-          <button ion-menu-item [routerLink]="['/volumes', comic.publisher, comic.series, comic.volume]">
-            <ion-icon>filter_none</ion-icon>
-            <span>View volume</span>
-          </button>
-          <button ion-menu-item [routerLink]="['/library']" [queryParams]="{ series: comic.series }">
-            <ion-icon>library_books</ion-icon>
-            <span>View in library</span>
-          </button>
-        </ion-menu>
-        -->
       </ion-card>
     </ion-card-content>
   </ion-card>
