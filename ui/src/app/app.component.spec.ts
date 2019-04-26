@@ -1,23 +1,39 @@
-import { TestBed, async } from '@angular/core/testing';
-import { TestModule } from './../testing/test.module';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TestModule } from './../testing/test.module';
+import { UserServiceMocks as userService } from './../testing/user.service.mocks';
+
+import { UserService } from './user.service';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async(() => {
-    TestBed.configureTestingModule(TestModule()).compileComponents();
+    const testModule: any = TestModule();
+    testModule.providers.push({
+      provide: UserService, useValue: userService
+    });
+    TestBed.configureTestingModule(testModule).compileComponents();
   }));
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
   it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('mat-toolbar').textContent).toContain('Alfred');
+  });
+
+  it('retries user info on startup', () => {
+    expect(component.user.email).toEqual('foo@bar.com');
   });
 });
