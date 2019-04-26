@@ -1,0 +1,26 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Settings</mat-card-title>
+  </mat-card-header>
+
+  <form (ngSubmit)="onSubmit()" #preferencesForm="ngForm">
+    <mat-card-content>
+      <p *ngFor="let preference of preferences">
+        <mat-form-field>
+          <input matInput placeholder="{{ preference.name }}"
+            required
+            [(ngModel)]="preference.value" name="{{ preference.key }}"
+            #value="ngModel">
+          <mat-hint align="start">{{ preference.comment }}</mat-hint>
+        </mat-form-field>
+      </p>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button type="submit" color="primary" mat-button [disabled]="!preferencesForm.form.valid">
+        SAVE
+      </button>
+      <mat-error *ngIf="updateError">Error while updating </mat-error>
+    </mat-card-actions>
+  </form>
+</mat-card>

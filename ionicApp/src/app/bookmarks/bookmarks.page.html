@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Bookmarks
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="comics?.length == 0">
+    <ion-card-header>
+      <ion-card-subtitle>No comics found</ion-card-subtitle>
+      <ion-card-title>Nothing here yet</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      Comic volumes will appear here once you start reading.
+    </ion-card-content>
+
+    <ion-item>
+      <ion-button href="/library">
+        <ion-icon slot="start" name="play"></ion-icon>
+        Start now
+      </ion-button>
+    </ion-item>
+  </ion-card>
+
+  <ion-card *ngIf="comics?.length > 0">
+    <ion-card-header>
+      <ion-card-subtitle>continue where you left off</ion-card-subtitle>
+      <ion-card-title>Currently reading</ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="comic-tiles">
+      <ion-card *ngFor="let comic of comics" class="comic-tile">
+        <ion-card-header>
+          <ion-card-title>{{ comic.series }} #{{ comic.number }}</ion-card-title>
+          <ion-card-subtitle>Vol. {{ comic.volume }}</ion-card-subtitle>
+        </ion-card-header>
+        <a [routerLink]="['/read', comic.id, comic.currentPage]">
+          <img [src]="thumbnail(comic)">
+        </a>
+        <ion-item>
+          <ion-icon name="start" slot="start"></ion-icon>
+          <ion-label>resume</ion-label>
+          <ion-button [routerLink]="['/read', comic.id, comic.currentPage]" fill="outline" slot="end">RESUME</ion-button>
+        </ion-item>
+        <!-- TODO use ion-popover?
+
+        <button ion-icon-button [matMenuTriggerFor]="menu">
+          <ion-icon>more_vert</ion-icon>
+        </button>
+        <ion-menu #menu="matMenu">
+          <button ion-menu-item [routerLink]="['/volumes', comic.publisher, comic.series, comic.volume]">
+            <ion-icon>filter_none</ion-icon>
+            <span>View volume</span>
+          </button>
+          <button ion-menu-item [routerLink]="['/library']" [queryParams]="{ series: comic.series }">
+            <ion-icon>library_books</ion-icon>
+            <span>View in library</span>
+          </button>
+        </ion-menu>
+        -->
+      </ion-card>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
