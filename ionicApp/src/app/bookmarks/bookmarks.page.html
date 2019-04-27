@@ -6,6 +6,11 @@
     <ion-title>
       Bookmarks
     </ion-title>
+    <ion-buttons slot="end">
+      <a class="logo" [routerLink]="['/library']">
+        <img src="assets/icons/alfred.svg" />
+      </a>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -47,7 +52,7 @@
             <ion-icon slot="start" name="play"></ion-icon>
             Resume
           </ion-button>
-          <ion-icon (click)="presentPopover($event, comic)" slot="end" name="menu"></ion-icon>
+          <ion-icon (click)="presentPopover($event, comic)" slot="end" name="more"></ion-icon>
         </ion-item>
       </ion-card>
     </ion-card-content>
