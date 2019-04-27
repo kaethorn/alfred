@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', redirectTo: 'bookmarks', pathMatch: 'full' },
   { path: 'bookmarks', loadChildren: './bookmarks/bookmarks.module#BookmarksPageModule' },
-  { path: 'home', loadChildren: './home/home.module#HomePageModule' }
+  { path: 'settings', loadChildren: './preferences/preferences.module#PreferencesPageModule' }
 ];
 
 @NgModule({

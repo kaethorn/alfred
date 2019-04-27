@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
-import { BookmarkActionsComponentComponent } from './bookmark-actions-component/bookmark-actions-component.component';
+import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
 
 import { ComicsService } from '../comics.service';
 import { Comic } from '../comic';
@@ -39,7 +39,7 @@ export class BookmarksPage implements OnInit {
 
   async presentPopover(ev: any, comic: Comic) {
     const popover = await this.popoverController.create({
-      component: BookmarkActionsComponentComponent,
+      component: BookmarkActionsComponent,
       componentProps: { comic: comic },
       event: ev,
       translucent: true

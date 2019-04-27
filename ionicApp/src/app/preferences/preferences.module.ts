@@ -4,20 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
-import { HomePage } from './home.page';
+import { PreferencesPage } from './preferences.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: HomePage
-      }
-    ])
+    RouterModule.forChild([{
+      path: '',
+      component: PreferencesPage
+    }])
   ],
-  declarations: [HomePage]
+  declarations: [
+    PreferencesPage
+  ]
 })
-export class HomePageModule {}
+export class PreferencesPageModule {}

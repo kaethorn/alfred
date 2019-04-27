@@ -16,8 +16,7 @@ export class AppComponent {
   public appPages = [
     { title: 'Bookmarks', url: '/bookmarks', icon: 'bookmarks' },
     { title: 'Library', url: '/library', icon: 'book' },
-    { title: 'Settings', url: '/settings', icon: 'settings' },
-    { title: 'Home', url: '/home', icon: 'home' }
+    { title: 'Settings', url: '/settings', icon: 'settings' }
   ];
 
   user: User;

@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
 import { BookmarksPage } from './bookmarks.page';
-import { BookmarkActionsComponentComponent } from './bookmark-actions-component/bookmark-actions-component.component';
+import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
 
 @NgModule({
   imports: [
@@ -19,10 +19,10 @@ import { BookmarkActionsComponentComponent } from './bookmark-actions-component/
   ],
   declarations: [
     BookmarksPage,
-    BookmarkActionsComponentComponent
+    BookmarkActionsComponent
   ],
   entryComponents: [
-    BookmarkActionsComponentComponent
+    BookmarkActionsComponent
   ]
 })
 export class BookmarksPageModule {}
