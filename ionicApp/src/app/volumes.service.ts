@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Publisher, Volume } from './publisher';
+import { Publisher } from './publisher';
+import { Series } from './series';
+import { Volume } from './volume';
 import { Comic } from './comic';
 
 @Injectable({
@@ -12,18 +14,30 @@ import { Comic } from './comic';
 export class VolumesService {
   constructor(private http: HttpClient) {}
 
-  private readonly volumesByPublisherUrl = '/api/publishers';
+  private readonly publishersUrl = '/api/publishers';
   private readonly markAsReadUrl = '/api/volumes/markAsRead';
   private readonly markAsUnreadUrl = '/api/volumes/markAsUnread';
   private readonly markAllAsReadUntilUrl = 'api/volumes/markAllAsReadUntil';
 
-  private consumeHateoas (): any {
-    return map((data: any) => data._embedded.publishers);
+  private consumeHateoas (namespace: string): any {
+    return map((data: any) => data._embedded[namespace]);
   }
 
-  listVolumesByPublisher (): Observable<Publisher[]> {
-    return this.http.get(this.volumesByPublisherUrl).pipe(
-      this.consumeHateoas()
+  listPublishers (): Observable<Publisher[]> {
+    return this.http.get(this.publishersUrl).pipe(
+      this.consumeHateoas('publishers')
+    );
+  }
+
+  listSeries(publisher: string): Observable<Series[]> {
+    return this.http.get(`${ this.publishersUrl }/${ publisher }/series`).pipe(
+      this.consumeHateoas('series')
+    );
+  }
+
+  listVolumes(publisher: string, series: string): Observable<Volume[]> {
+    return this.http.get(`${ this.publishersUrl }/${ publisher }/series/${ series }/volumes`).pipe(
+      this.consumeHateoas('volumes')
     );
   }
 

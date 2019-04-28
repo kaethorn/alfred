@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { LibraryPage } from './library.page';
 import { PublishersComponent } from './publishers/publishers.component';
 import { SeriesComponent } from './series/series.component';
+import { VolumesComponent } from './volumes/volumes.component';
 
 @NgModule({
   imports: [
@@ -20,8 +21,11 @@ import { SeriesComponent } from './series/series.component';
         path: 'publishers',
         component: PublishersComponent
       }, {
-        path: 'series',
+        path: 'publishers/:publisher/series',
         component: SeriesComponent
+      }, {
+        path: 'publishers/:publisher/series/:series/volumes',
+        component: VolumesComponent
       }, {
         path: '',
         redirectTo: '/library/publishers',
@@ -32,7 +36,8 @@ import { SeriesComponent } from './series/series.component';
   declarations: [
     LibraryPage,
     PublishersComponent,
-    SeriesComponent
+    SeriesComponent,
+    VolumesComponent
   ],
   entryComponents: [
   ]

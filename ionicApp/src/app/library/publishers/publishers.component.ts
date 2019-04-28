@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
+import { VolumesService } from './../../volumes.service';
 import { Publisher } from './../../publisher';
 
 @Component({
@@ -7,24 +8,27 @@ import { Publisher } from './../../publisher';
   templateUrl: './publishers.component.html',
   styleUrls: ['./publishers.component.sass'],
 })
-export class PublishersComponent implements OnInit {
+export class PublishersComponent {
 
-  publishersData: Publisher[] = [];
+  private publishersData: Publisher[] = [];
+  publishers: Publisher[] = [];
 
-  @Input() publishers: Publisher[]
+  constructor(
+    private volumesService: VolumesService
+  ) {
+    this.list();
+  }
 
-  constructor() { }
-
-  ngOnInit() {
-    this.publishersData = this.publishers;
+  private list () {
+    this.volumesService.listPublishers()
+      .subscribe((data: Publisher[]) => {
+        this.publishersData = data;
+        this.publishers = this.publishersData;
+      });
   }
 
   protected filter (value: string) {
-    this.publishersData = this.publishers
-      .filter(publisher => publisher.series.filter(series => series.series.match(value)).length)
-      .map(publisher => ({
-        ...publisher,
-        series: publisher.series.filter(series => series.series.match(value))
-      }));
+    this.publishers = this.publishersData
+      .filter(publisher => publisher.publisher.match(value));
   }
 }

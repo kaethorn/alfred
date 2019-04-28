@@ -1,31 +1,50 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 import { VolumesService } from '../../volumes.service';
 import { ComicsService } from '../../comics.service';
-import { Volume } from '../../publisher';
+import { Volume } from '../../volume';
 import { Comic } from '../../comic';
 
 @Component({ selector: 'app-volume',
-  templateUrl: './volume.component.html',
-  styleUrls: ['./volume.component.sass']
+  templateUrl: './volumes.component.html',
+  styleUrls: ['./volumes.component.sass']
 })
-export class VolumeComponent {
+export class VolumesComponent implements OnInit {
 
-  @Input() volume: Volume;
+  private volumesData: Volume[] = [];
+  volumes: Volume[] = [];
+  publisher: string = '';
+  series: string = '';
+
   @Output() updated = new EventEmitter<boolean>();
 
   constructor (
     private router: Router,
+    private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private comicsService: ComicsService,
     private volumesService: VolumesService
   ) {
   }
 
-  get thumbnail(): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ this.volume.thumbnail }`);
+  ngOnInit() {
+    this.publisher = this.route.snapshot.params.publisher;
+    this.series = this.route.snapshot.params.series;
+    this.list(this.publisher, this.series);
+  }
+
+  private list (publisher: string, series: string) {
+    this.volumesService.listVolumes(publisher, series)
+      .subscribe((data: Volume[]) => {
+        this.volumesData = data;
+        this.volumes = this.volumesData;
+      });
+  }
+
+  thumbnail(volume: Volume): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ volume.thumbnail }`);
   }
 
   public markAsRead(volume: Volume) {

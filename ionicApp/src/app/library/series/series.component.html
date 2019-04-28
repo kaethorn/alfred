@@ -1,3 +1,23 @@
-<p>
-  series works!
-</p>
+<ion-toolbar>
+  <ion-searchbar placeholder="Search series"
+    #libraryFilter
+    (ionInput)="filter(libraryFilter.value)">
+  </ion-searchbar>
+</ion-toolbar>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-button fill="clear" size="small" color="primary"
+        [routerLink]="['/library/publishers']">
+        {{ publisher }}
+      </ion-button>
+    </ion-item>
+    <ion-item *ngFor="let serie of series" class="serie">
+      <ion-button fill="solid" color="secondary"
+        [routerLink]="['/library/publishers/' + serie.publisher + '/series/' + serie.series + '/volumes']">
+        {{ serie.series }}
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>
