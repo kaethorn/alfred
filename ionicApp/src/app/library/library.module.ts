@@ -8,6 +8,7 @@ import { LibraryPage } from './library.page';
 import { PublishersComponent } from './publishers/publishers.component';
 import { SeriesComponent } from './series/series.component';
 import { VolumesComponent } from './volumes/volumes.component';
+import { VolumeActionsComponent } from './volumes/volume-actions/volume-actions.component';
 
 @NgModule({
   imports: [
@@ -37,9 +38,11 @@ import { VolumesComponent } from './volumes/volumes.component';
     LibraryPage,
     PublishersComponent,
     SeriesComponent,
-    VolumesComponent
+    VolumesComponent,
+    VolumeActionsComponent
   ],
   entryComponents: [
+    VolumeActionsComponent
   ]
 })
 export class LibraryPageModule {}

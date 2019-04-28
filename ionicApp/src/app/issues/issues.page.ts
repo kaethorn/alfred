@@ -7,11 +7,11 @@ import { VolumesService } from './../volumes.service';
 import { Comic } from '../comic';
 
 @Component({
-  selector: 'app-volumes',
-  templateUrl: './volumes.page.html',
-  styleUrls: ['./volumes.page.sass']
+  selector: 'app-issues',
+  templateUrl: './issues.page.html',
+  styleUrls: ['./issues.page.sass']
 })
-export class VolumesPage implements OnInit {
+export class IssuesPage implements OnInit {
 
   private publisher: string;
   private series: string;

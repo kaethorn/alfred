@@ -37,11 +37,11 @@ export class BookmarksPage implements OnInit {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
   }
 
-  async presentPopover(ev: any, comic: Comic) {
+  async openMenu(event: any, comic: Comic) {
     const popover = await this.popoverController.create({
       component: BookmarkActionsComponent,
       componentProps: { comic: comic },
-      event: ev,
+      event: event,
       translucent: true
     });
     return await popover.present();

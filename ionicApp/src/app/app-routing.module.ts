@@ -4,7 +4,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   { path: '', redirectTo: 'library', pathMatch: 'full' },
   { path: 'library', loadChildren: './library/library.module#LibraryPageModule' },
-  { path: 'volumes/:publisher/:series/:volume', loadChildren: './volumes/volumes.module#VolumesPageModule' },
+  { path: 'issues/:publisher/:series/:volume', loadChildren: './issues/issues.module#IssuesPageModule' },
   { path: 'browse/:id/:page', loadChildren: './browser/browser.module#BrowserPageModule' },
   { path: 'read/:id/:page', loadChildren: './reader/reader.module#ReaderPageModule' },
   { path: 'bookmarks', loadChildren: './bookmarks/bookmarks.module#BookmarksPageModule' },
