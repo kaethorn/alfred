@@ -1,0 +1,35 @@
+<ion-searchbar placeholder="Search publishers"
+  #libraryFilter
+  (ionInput)="filter(libraryFilter.value)">
+</ion-searchbar>
+
+<ion-list>
+  <ion-item *ngFor="let publisher of publishers" class="publisher">
+    {{ publisher.publisher }}
+  </ion-item>
+</ion-list>
+
+    <!--
+    <ion-accordion>
+      <ion-expansion-panel *ngFor="let series of publisher.series"
+        class="series"
+        [expanded]="currentSeries === series.series"
+        (opened)="openSeries(series.series)">
+        <ion-expansion-panel-header>
+          <ion-panel-title>
+            {{ series.series }}
+          </ion-panel-title>
+          <ion-panel-description>
+            {{ series.volumes.length }} volumes
+          </ion-panel-description>
+        </ion-expansion-panel-header>
+        <div class="volumes">
+          <app-volume *ngFor="let volume of series.volumes"
+            (updated)="list()"
+            [volume]="volume">
+          </app-volume>
+        </div>
+      </ion-expansion-panel>
+    </ion-accordion>
+    <ion-divider></ion-divider>
+    -->

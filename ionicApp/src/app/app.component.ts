@@ -15,7 +15,7 @@ import { User } from './user';
 export class AppComponent {
   public appPages = [
     { title: 'Bookmarks', url: '/bookmarks', icon: 'bookmarks' },
-    { title: 'Library', url: '/library', icon: 'book' },
+    { title: 'Library', url: '/library/publishers', icon: 'book' },
     { title: 'Settings', url: '/settings', icon: 'settings' }
   ];
 

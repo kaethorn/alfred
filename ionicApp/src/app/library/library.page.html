@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Library
+    </ion-title>
+    <ion-buttons slot="end">
+      <a class="logo" [routerLink]="['/library']">
+        <img src="assets/icons/alfred.svg" />
+      </a>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+
+      <ion-tab-button tab="publishers">
+        <ion-label>Publishers</ion-label>
+        <ion-icon name="business"></ion-icon>
+        <ion-badge>{{ publishers?.length }}</ion-badge>
+      </ion-tab-button>
+
+      <ion-tab-button tab="series/{{ publisher?.series.series }}">
+        <ion-label>Series</ion-label>
+        <ion-icon name="journal"></ion-icon>
+        <ion-badge>{{ publisher?.series.length }}</ion-badge>
+      </ion-tab-button>
+
+      <ion-tab-button tab="volumes/{{ publisher?.series.series }}">
+        <ion-label>Volumes</ion-label>
+        <ion-icon name="filing"></ion-icon>
+        <ion-badge>{{ publisher?.series.length }}</ion-badge>
+      </ion-tab-button>
+
+    </ion-tab-bar>
+  </ion-tabs>
+
+  <div *ngIf="publishers?.length == 0" class="no-comics">
+    No comics found.
+  </div>
+
+  <!-- TODO
+  <app-scanner (scanned)="list()"></app-scanner>
+  -->
+</ion-content>
