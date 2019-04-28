@@ -6,11 +6,6 @@
     <ion-title>
       Bookmarks
     </ion-title>
-    <ion-buttons slot="end">
-      <a class="logo" [routerLink]="['/library']">
-        <img src="assets/icons/alfred.svg" />
-      </a>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -33,28 +28,22 @@
     </ion-item>
   </ion-card>
 
-  <ion-card *ngIf="comics?.length > 0">
-    <ion-card-header>
-      <ion-card-subtitle>continue where you left off</ion-card-subtitle>
-      <ion-card-title>Currently reading</ion-card-title>
-    </ion-card-header>
-    <ion-card-content class="comic-tiles">
-      <ion-card *ngFor="let comic of comics" class="comic-tile">
-        <ion-card-header>
-          <ion-card-title>{{ comic.series }} #{{ comic.number }}</ion-card-title>
-          <ion-card-subtitle>Vol. {{ comic.volume }}</ion-card-subtitle>
-        </ion-card-header>
-        <a [routerLink]="['/read', comic.id, comic.currentPage]">
-          <img [src]="thumbnail(comic)">
-        </a>
-        <ion-item>
-          <ion-button fill="clear" [routerLink]="['/read', comic.id, comic.currentPage]" slot="start">
-            <ion-icon slot="start" name="play"></ion-icon>
-            Resume
-          </ion-button>
-          <ion-icon (click)="presentPopover($event, comic)" slot="end" name="more"></ion-icon>
-        </ion-item>
-      </ion-card>
-    </ion-card-content>
-  </ion-card>
+  <div *ngIf="comics?.length > 0">
+    <ion-card *ngFor="let comic of comics" class="comic-tile">
+      <ion-card-header>
+        <ion-card-title>{{ comic.series }} #{{ comic.number }}</ion-card-title>
+        <ion-card-subtitle>Vol. {{ comic.volume }}</ion-card-subtitle>
+      </ion-card-header>
+      <a [routerLink]="['/read', comic.id, comic.currentPage]">
+        <img [src]="thumbnail(comic)">
+      </a>
+      <ion-item>
+        <ion-button fill="clear" [routerLink]="['/read', comic.id, comic.currentPage]" slot="start">
+          <ion-icon slot="start" name="play"></ion-icon>
+          Resume
+        </ion-button>
+        <ion-icon (click)="presentPopover($event, comic)" slot="end" name="more"></ion-icon>
+      </ion-item>
+    </ion-card>
+  </div>
 </ion-content>
