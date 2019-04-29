@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
 import { PreferencesPage } from './preferences.page';
+import { ScannerComponent } from './scanner/scanner.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { PreferencesPage } from './preferences.page';
     }])
   ],
   declarations: [
-    PreferencesPage
+    PreferencesPage,
+    ScannerComponent
   ]
 })
 export class PreferencesPageModule {}

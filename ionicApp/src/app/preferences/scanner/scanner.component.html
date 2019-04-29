@@ -1,0 +1,33 @@
+<ion-card>
+  <ion-card-header>Library management</ion-card-header>
+  <ion-card-content>
+
+    <ion-list *ngIf="total" class="progress" lines="none">
+      <ion-item>
+        <ion-progress-bar [value]="counter/total"></ion-progress-bar>
+      </ion-item>
+      <ion-item>
+        <ion-badge color="clear">
+          Scanning file {{ counter }} of {{ total }} at {{ file }}
+        </ion-badge>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="errors.length" class="errors">
+      <ion-list-header>Scan errors</ion-list-header>
+      <ion-item *ngFor="let error of errors">
+        <ion-badge color="clear">{{ error.date }}</ion-badge>
+        <ion-badge color="danger">{{ error.message }}</ion-badge>
+      </ion-item>
+    </ion-list>
+
+    <ion-list lines="none">
+      <ion-item>
+        <ion-button slot="end" (click)="scan()" [disabled]="total > 0" color="primary">
+          SCAN
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+  </ion-card-content>
+</ion-card>
