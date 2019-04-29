@@ -28,6 +28,7 @@
     </ion-item>
   </ion-card>
 
+  <!-- FIXME is this check needed, scanner will be moved to settings anyway? -->
   <div *ngIf="comics?.length > 0">
     <ion-card *ngFor="let comic of comics" class="comic-tile">
       <ion-card-header>

@@ -14,6 +14,7 @@ export class VolumeActionsComponent {
 
   comic: Comic;
 
+  // FIXME what's this needed for?
   @Output() updated = new EventEmitter<boolean>();
 
   constructor(
