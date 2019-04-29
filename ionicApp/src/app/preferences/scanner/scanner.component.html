@@ -1,6 +1,15 @@
 <ion-card>
   <ion-card-header>Library management</ion-card-header>
   <ion-card-content>
+    <ion-list>
+      <ion-list-header>
+        Statistics
+      </ion-list-header>
+      <ion-item *ngFor="let stat of stats | keyvalue">
+        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
+        <ion-label>{{ stat.key }}</ion-label>
+      </ion-item>
+    </ion-list>
 
     <ion-list *ngIf="total" class="progress" lines="none">
       <ion-item>

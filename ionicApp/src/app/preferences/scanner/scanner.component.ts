@@ -1,5 +1,8 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 
+import { StatsService } from '../../stats.service';
+import { Stats } from '../../stats';
+
 interface Error {
   message: string;
   date: string;
@@ -18,8 +21,15 @@ export class ScannerComponent {
   file: string;
   counter = 0;
   errors: Error[] = [];
+  stats: Stats;
 
-  constructor() { }
+  constructor(
+    private statsService: StatsService
+  ) {
+    statsService.get().subscribe((stats: Stats) => {
+      this.stats = stats;
+    });
+  }
 
   scan () {
     const scanProgress = new EventSource('/api/scan-progress');
