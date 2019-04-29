@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestModule } from './../../testing/test.module';
-import { PreferencesServiceMocks as preferencesService } from './../../testing/preferences.service.mocks';
+import { TestModule } from '../../testing/test.module';
+import { PreferencesServiceMocks as preferencesService } from '../../testing/preferences.service.mocks';
 
 import { PreferencesService } from '../preferences.service';
-import { PreferencesComponent } from './preferences.component';
+import { PreferencesPage } from './preferences.page';
 
-describe('PreferencesComponent', () => {
-  let component: PreferencesComponent;
-  let fixture: ComponentFixture<PreferencesComponent>;
+describe('PreferencesPage', () => {
+  let component: PreferencesPage;
+  let fixture: ComponentFixture<PreferencesPage>;
 
   beforeEach(async(() => {
     const testModule: any = TestModule();
@@ -19,7 +19,7 @@ describe('PreferencesComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PreferencesComponent);
+    fixture = TestBed.createComponent(PreferencesPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

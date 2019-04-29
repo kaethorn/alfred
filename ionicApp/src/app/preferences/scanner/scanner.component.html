@@ -6,8 +6,8 @@
         Statistics
       </ion-list-header>
       <ion-item *ngFor="let stat of stats | keyvalue">
-        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
         <ion-label>{{ stat.key }}</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
       </ion-item>
     </ion-list>
 

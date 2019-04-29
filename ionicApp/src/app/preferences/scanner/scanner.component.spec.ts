@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestModule } from './../../../testing/test.module';
+import { TestModule } from '../../../testing/test.module';
 
 import { ScannerComponent } from './scanner.component';
 

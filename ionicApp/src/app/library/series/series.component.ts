@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { VolumesService } from './../../volumes.service';
-import { Series } from './../../series';
+import { VolumesService } from '../../volumes.service';
+import { Series } from '../../series';
 
 @Component({
   selector: 'app-series',

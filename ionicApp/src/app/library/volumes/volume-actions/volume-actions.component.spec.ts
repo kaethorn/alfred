@@ -1,22 +1,37 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NavParams } from '@ionic/angular';
 
-import { BookmarkActionsComponentComponent } from './bookmark-actions-component.component';
+import { TestModule } from '../../../../testing/test.module';
 
-describe('BookmarkActionsComponentComponent', () => {
-  let component: BookmarkActionsComponentComponent;
-  let fixture: ComponentFixture<BookmarkActionsComponentComponent>;
+import { VolumeActionsComponent } from './volume-actions.component'
+import { Volume } from '../../../volume';
+
+describe('VolumeActionsComponent', () => {
+  let component: VolumeActionsComponent;
+  let fixture: ComponentFixture<VolumeActionsComponent>;
+  let navParams: NavParams;
+  let volume: Volume;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BookmarkActionsComponentComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+    volume = {
+      volume: 'Vol. 2019',
+      series: 'MockSeries',
+      publisher: 'MockPublisher',
+      issueCount: 4,
+      readCount: 2,
+      read: false,
+      thumbnail: null
+    };
+    navParams = new NavParams({ volume: volume });
+    const testModule: any = TestModule();
+    testModule.providers.push({
+      provide: NavParams, useValue: navParams
+    });
+    TestBed.configureTestingModule(testModule).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BookmarkActionsComponentComponent);
+    fixture = TestBed.createComponent(VolumeActionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

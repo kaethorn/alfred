@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
-import { ComicsService } from './../comics.service';
-import { VolumesService } from './../volumes.service';
+import { ComicsService } from '../comics.service';
+import { VolumesService } from '../volumes.service';
 import { Comic } from '../comic';
 
 @Component({

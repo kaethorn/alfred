@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestModule } from './../../testing/test.module';
-import { ComicsServiceMocks as comicsService } from './../../testing/comics.service.mocks';
+import { TestModule } from '../../testing/test.module';
+import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 
 import { ComicsService } from '../comics.service';
-import { BookmarksComponent } from './bookmarks.component';
+import { BookmarksPage } from './bookmarks.page';
 
-describe('BookmarksComponent', () => {
-  let component: BookmarksComponent;
-  let fixture: ComponentFixture<BookmarksComponent>;
+describe('BookmarksPage', () => {
+  let component: BookmarksPage;
+  let fixture: ComponentFixture<BookmarksPage>;
 
   beforeEach(async(() => {
     const testModule: any = TestModule();
@@ -19,7 +19,7 @@ describe('BookmarksComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BookmarksComponent);
+    fixture = TestBed.createComponent(BookmarksPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

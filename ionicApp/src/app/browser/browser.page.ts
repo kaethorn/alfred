@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ComicsService } from './../comics.service';
-import { NavigatorService } from './../navigator.service';
-import { Comic } from './../comic';
+import { ComicsService } from '../comics.service';
+import { NavigatorService } from '../navigator.service';
+import { Comic } from '../comic';
 
 @Component({
   selector: 'app-browser',

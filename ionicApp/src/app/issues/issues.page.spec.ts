@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestModule } from './../../testing/test.module';
-import { ComicsServiceMocks as comicsService } from './../../testing/comics.service.mocks';
+import { TestModule } from '../../testing/test.module';
+import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 
 import { ComicsService } from '../comics.service';
-import { VolumesComponent } from './volumes.component';
+import { IssuesPage } from './issues.page';
 
-describe('VolumesComponent', () => {
-  let component: VolumesComponent;
-  let fixture: ComponentFixture<VolumesComponent>;
+describe('IssuesPage', () => {
+  let component: IssuesPage;
+  let fixture: ComponentFixture<IssuesPage>;
 
   beforeEach(async(() => {
     const testModule: any = TestModule();
@@ -19,7 +19,7 @@ describe('VolumesComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VolumesComponent);
+    fixture = TestBed.createComponent(IssuesPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

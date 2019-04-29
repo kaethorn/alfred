@@ -1,16 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed, async } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { Platform } from '@ionic/angular';
+import { RouterTestingModule } from '@angular/router/testing';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { RouterTestingModule } from '@angular/router/testing';
 
+import { TestModule } from './../testing/test.module';
+import { UserServiceMocks as userService } from './../testing/user.service.mocks';
+
+import { UserService } from './user.service';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
 
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
 
   beforeEach(async(() => {
     statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
@@ -25,19 +31,23 @@ describe('AppComponent', () => {
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
+        { provide: UserService, useValue: userService }
       ],
       imports: [ RouterTestingModule.withRoutes([])],
     }).compileComponents();
   }));
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
   it('should create the app', async () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
   it('should initialize the app', async () => {
-    TestBed.createComponent(AppComponent);
     expect(platformSpy.ready).toHaveBeenCalled();
     await platformReadySpy;
     expect(statusBarSpy.styleDefault).toHaveBeenCalled();
@@ -45,23 +55,26 @@ describe('AppComponent', () => {
   });
 
   it('should have menu labels', async () => {
-    const fixture = await TestBed.createComponent(AppComponent);
-    await fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(2);
-    expect(menuItems[0].textContent).toContain('Home');
-    expect(menuItems[1].textContent).toContain('List');
+    expect(menuItems.length).toEqual(4);
+    expect(menuItems[0].textContent).toContain('Foo Barfoo@bar.com');
+    expect(menuItems[1].textContent).toContain('Bookmarks');
+    expect(menuItems[2].textContent).toContain('Library');
+    expect(menuItems[3].textContent).toContain('Settings');
   });
 
-  it('should have urls', async () => {
-    const fixture = await TestBed.createComponent(AppComponent);
-    await fixture.detectChanges();
+  it('should have URLs', async () => {
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(2);
-    expect(menuItems[0].getAttribute('ng-reflect-router-link')).toEqual('/home');
-    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual('/list');
+    expect(menuItems.length).toEqual(4);
+    expect(menuItems[0].getAttribute('ng-reflect-router-link')).toBe(null);
+    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual('/bookmarks');
+    expect(menuItems[2].getAttribute('ng-reflect-router-link')).toEqual('/library/publishers');
+    expect(menuItems[3].getAttribute('ng-reflect-router-link')).toEqual('/settings');
   });
 
+  it('retrieves user info on startup', () => {
+    expect(component.user.email).toEqual('foo@bar.com');
+  });
 });

@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TestModule } from './../../../testing/test.module';
-import { VolumeComponent } from './volume.component';
+import { TestModule } from '../../../testing/test.module';
+import { VolumesComponent } from './volumes.component';
 
-describe('VolumeComponent', () => {
-  let component: VolumeComponent;
-  let fixture: ComponentFixture<VolumeComponent>;
+describe('VolumesComponent', () => {
+  let component: VolumesComponent;
+  let fixture: ComponentFixture<VolumesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule(TestModule()).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VolumeComponent);
+    fixture = TestBed.createComponent(VolumesComponent);
     component = fixture.componentInstance;
-    component.volume = {
+    component.volumes = [{
       volume: '1999',
       thumbnail: '',
       series: 'Batgirl',
@@ -21,7 +21,7 @@ describe('VolumeComponent', () => {
       read: false,
       issueCount: 10,
       readCount: 0
-    };
+    }];
     fixture.detectChanges();
   });
 

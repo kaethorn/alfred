@@ -4,16 +4,16 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { defer } from 'rxjs';
 
-import { TestModule } from './../../testing/test.module';
-import { ComicsServiceMocks as comicsService } from './../../testing/comics.service.mocks';
-import { comic1 as comic } from './../../testing/comic.fixtures';
+import { TestModule } from '../../testing/test.module';
+import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
+import { comic1 as comic } from '../../testing/comic.fixtures';
 
 import { ComicsService } from '../comics.service';
-import { ReaderComponent } from './reader.component';
+import { ReaderPage } from './reader.page';
 
-describe('ReaderComponent', () => {
-  let component: ReaderComponent;
-  let fixture: ComponentFixture<ReaderComponent>;
+describe('ReaderPage', () => {
+  let component: ReaderPage;
+  let fixture: ComponentFixture<ReaderPage>;
   let router;
   const clickRightSide = () => {
     fixture.debugElement.query(By.css('.layer'))
@@ -50,7 +50,7 @@ describe('ReaderComponent', () => {
     testModule.imports.pop();
     testModule.imports.push(
       RouterTestingModule.withRoutes([
-        { path: 'read/:id/:page', component: ReaderComponent }
+        { path: 'read/:id/:page', component: ReaderPage }
       ])
     );
 
@@ -61,7 +61,7 @@ describe('ReaderComponent', () => {
     // Allow steering ComicsService response:
     comicsService.get.and.returnValue(defer(() => Promise.resolve(comic)));
 
-    fixture = TestBed.createComponent(ReaderComponent);
+    fixture = TestBed.createComponent(ReaderPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

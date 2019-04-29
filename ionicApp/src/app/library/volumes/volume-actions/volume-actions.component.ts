@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { PopoverController, NavParams } from '@ionic/angular';
 
 import { Volume } from '../../../volume';
-import { Comic } from '../../../comic';
 import { VolumesService } from '../../../volumes.service';
 
 @Component({
@@ -12,7 +11,7 @@ import { VolumesService } from '../../../volumes.service';
 })
 export class VolumeActionsComponent {
 
-  comic: Comic;
+  volume: Volume;
 
   // FIXME what's this needed for?
   @Output() updated = new EventEmitter<boolean>();
@@ -22,7 +21,7 @@ export class VolumeActionsComponent {
     private volumesService: VolumesService,
     private navParams: NavParams
   ) {
-    this.comic = navParams.get('volume');
+    this.volume = navParams.get('volume');
   }
 
   public markAsRead(volume: Volume) {

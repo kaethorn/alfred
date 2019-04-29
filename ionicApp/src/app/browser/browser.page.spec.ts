@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestModule } from './../../testing/test.module';
-import { ComicsServiceMocks as comicsService } from './../../testing/comics.service.mocks';
+import { TestModule } from '../../testing/test.module';
+import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 
 import { ComicsService } from '../comics.service';
-import { BrowserComponent } from './browser.component';
+import { BrowserPage } from './browser.page';
 
-describe('BrowserComponent', () => {
-  let component: BrowserComponent;
-  let fixture: ComponentFixture<BrowserComponent>;
+describe('BrowserPage', () => {
+  let component: BrowserPage;
+  let fixture: ComponentFixture<BrowserPage>;
 
   beforeEach(async(() => {
     const testModule: any = TestModule();
@@ -19,7 +19,7 @@ describe('BrowserComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BrowserComponent);
+    fixture = TestBed.createComponent(BrowserPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

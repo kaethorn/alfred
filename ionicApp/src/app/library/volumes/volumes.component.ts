@@ -64,7 +64,7 @@ export class VolumesComponent implements OnInit {
   async openMenu(event: any, volume: Volume) {
     const popover = await this.popoverController.create({
       component: VolumeActionsComponent,
-      componentProps: { volume: volume},
+      componentProps: { volume: volume },
       event: event,
       translucent: true
     });
