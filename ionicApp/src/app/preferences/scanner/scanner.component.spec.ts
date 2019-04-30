@@ -2,6 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TestModule } from '../../../testing/test.module';
 
+import { StatsServiceMocks as statsService } from '../../../testing/stats.service.mocks';
+import { StatsService } from '../../stats.service';
+
 import { ScannerComponent } from './scanner.component';
 
 describe('ScannerComponent', () => {
@@ -9,7 +12,11 @@ describe('ScannerComponent', () => {
   let fixture: ComponentFixture<ScannerComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule(TestModule()).compileComponents();
+    const testModule: any = TestModule();
+    testModule.providers.push({
+      provide: StatsService, useValue: statsService
+    });
+    TestBed.configureTestingModule(testModule).compileComponents();
   }));
 
   beforeEach(() => {

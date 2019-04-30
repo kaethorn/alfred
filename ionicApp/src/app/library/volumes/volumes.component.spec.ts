@@ -1,5 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { TestModule } from '../../../testing/test.module';
+import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
+
+import { VolumesService } from '../../volumes.service';
 import { VolumesComponent } from './volumes.component';
 
 describe('VolumesComponent', () => {
@@ -7,21 +11,16 @@ describe('VolumesComponent', () => {
   let fixture: ComponentFixture<VolumesComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule(TestModule()).compileComponents();
+    const testModule: any = TestModule();
+    testModule.providers.push({
+      provide: VolumesService, useValue: volumesService
+    });
+    TestBed.configureTestingModule(testModule).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(VolumesComponent);
     component = fixture.componentInstance;
-    component.volumes = [{
-      volume: '1999',
-      thumbnail: '',
-      series: 'Batgirl',
-      publisher: 'DC Comics',
-      read: false,
-      issueCount: 10,
-      readCount: 0
-    }];
     fixture.detectChanges();
   });
 

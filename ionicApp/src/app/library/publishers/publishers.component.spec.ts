@@ -1,6 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TestModule } from '../../../testing/test.module';
+
 import { PublishersComponent } from './publishers.component';
 
 describe('PublishersComponent', () => {
@@ -8,11 +10,8 @@ describe('PublishersComponent', () => {
   let fixture: ComponentFixture<PublishersComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PublishersComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+    const testModule: any = TestModule();
+    TestBed.configureTestingModule(testModule).compileComponents();
   }));
 
   beforeEach(() => {
