@@ -123,11 +123,13 @@
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
     "use-host-property-decorator": true,
+    "space-before-function-paren": true,
     "no-input-rename": true,
     "no-output-rename": true,
+    "object-literal-shorthand": true,
     "use-life-cycle-interface": true,
     "use-pipe-transform-interface": true,
-    "component-class-suffix": true,
+    "component-class-suffix": [ true, "Component", "Page" ],
     "directive-class-suffix": true
   }
 }

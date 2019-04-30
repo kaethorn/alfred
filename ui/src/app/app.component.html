@@ -1,25 +1,37 @@
-<mat-toolbar color="primary">
-  <mat-toolbar-row>
-    <a class="logo" [routerLink]="['/library']">
-      <img src="icons/alfred.svg" />
-      <span>Alfred</span>
-    </a>
-    <span class="flex-spacer"></span>
-    <button mat-button [routerLink]="['/bookmarks']">
-      <mat-icon>book</mat-icon>
-    </button>
-    <button mat-button [routerLink]="['/library']">
-      <mat-icon>library_books</mat-icon>
-    </button>
-    <button mat-button [routerLink]="['/preferences']">
-      <mat-icon>settings</mat-icon>
-    </button>
-    <button mat-button [matMenuTriggerFor]="userMenu" *ngIf="user">
-      <img class="avatar" matTooltip="Logged in as {{ user.name }}" [src]="user.picture" />
-    </button>
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item (click)="logout()">Logout</button>
-    </mat-menu>
-  </mat-toolbar-row>
-</mat-toolbar>
-<router-outlet></router-outlet>
+<ion-app>
+  <ion-menu>
+    <ion-header>
+      <ion-toolbar>
+        <ion-menu-toggle auto-hide="false">
+          <ion-item lines="none">
+            <ion-avatar slot="start">
+              <ion-img class="avatar" [src]="user?.picture"></ion-img>
+            </ion-avatar>
+            <ion-label>
+              <h3>{{ user?.name }}</h3>
+              <p>{{ user?.email }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-buttons slot="end">
+          <ion-button (click)="logout()">
+            <ion-icon slot="start" name="log-out"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list lines="none">
+        <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+          <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
+            <ion-icon slot="start" [name]="p.icon"></ion-icon>
+            <ion-label>
+              {{p.title}}
+            </ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet main></ion-router-outlet>
+</ion-app>

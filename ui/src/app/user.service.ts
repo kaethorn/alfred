@@ -8,7 +8,7 @@ import { User } from './user';
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private http: HttpClient) {}
+  constructor (private http: HttpClient) {}
 
   private readonly userUrl = 'api/user';
   private readonly logoutUrl = '/logout';

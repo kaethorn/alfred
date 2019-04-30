@@ -1,19 +1,19 @@
 import { browser, by, element } from 'protractor';
 
 export class PreferencesPage {
-  navigateTo() {
+  navigateTo () {
     return browser.get('/preferences');
   }
 
-  getComicsPathInput() {
+  getComicsPathInput () {
     return element(by.css('input[Placeholder="Path"]'));
   }
 
-  getSaveButton() {
+  getSaveButton () {
     return element(by.buttonText('SAVE'));
   }
 
-  getError() {
+  getError () {
     return element(by.css('mat-error'));
   }
 }

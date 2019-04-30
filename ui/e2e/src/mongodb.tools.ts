@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 export class MongoDBTools {
 
   // Drop DB and set it up it for E2E tests.
-  static prepare(): Promise<any> {
+  static prepare (): Promise<any> {
     return new Promise((resolve, reject) => {
       mongoose.connect('mongodb://localhost/alfred');
       mongoose.connection.on('error', error => {

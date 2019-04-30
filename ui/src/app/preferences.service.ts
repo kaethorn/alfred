@@ -9,7 +9,7 @@ import { Preference } from './preference';
   providedIn: 'root'
 })
 export class PreferencesService {
-  constructor(private http: HttpClient) {}
+  constructor (private http: HttpClient) {}
 
   private readonly listUrl = 'api/preferences';
   private readonly getUrl = 'api/preferences/search/findByKey?key=';
@@ -18,7 +18,7 @@ export class PreferencesService {
     return map((data: any) => data._embedded.preferences);
   }
 
-  private addId(item: any): any {
+  private addId (item: any): any {
     item.id = item._links.self.href.split('/').pop();
     return item;
   }

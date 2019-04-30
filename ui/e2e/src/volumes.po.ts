@@ -5,28 +5,28 @@ export class VolumesPage {
 
   private page: Page;
 
-  constructor() {
+  constructor () {
     this.page = new Page();
   }
 
-  getIssues() {
+  getIssues () {
     return element.all(by.css('app-volumes mat-card'));
   }
 
-  getUnreadIssues() {
+  getUnreadIssues () {
     return this.getIssues().all(by.css('a.mat-badge-hidden'));
   }
 
-  getMarkAsReadButton(issue: number) {
+  getMarkAsReadButton (issue: number) {
     return this.getIssues().get(issue)
       .all(by.css('mat-card-actions .read-toggle')).first();
   }
 
-  get markReadUntilHereButton() {
+  get markReadUntilHereButton () {
     return element(by.partialButtonText('Mark read until here'));
   }
 
-  async clickIssueMenuItem(issue: number, item: string) {
+  async clickIssueMenuItem (issue: number, item: string) {
     await this.page.clickMenuItem(this.getIssues().get(issue), item);
   }
 }

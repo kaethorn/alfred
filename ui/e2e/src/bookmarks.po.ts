@@ -5,23 +5,23 @@ export class BookmarksPage {
 
   private page: Page;
 
-  constructor() {
+  constructor () {
     this.page = new Page();
   }
 
-  navigateTo() {
+  navigateTo () {
     return browser.get('/bookmarks');
   }
 
-  getBookmarks() {
+  getBookmarks () {
     return element.all(by.css('app-bookmarks .comic-tile'));
   }
 
-  getBookmarkTitles() {
+  getBookmarkTitles () {
     return this.getBookmarks().all(by.css('mat-card-header'));
   }
 
-  async clickBookmarkMenuItem(volume: number, item: string) {
+  async clickBookmarkMenuItem (volume: number, item: string) {
     await this.page.clickMenuItem(this.getBookmarks().get(volume), item);
   }
 }

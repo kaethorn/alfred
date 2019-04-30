@@ -7,52 +7,52 @@ export class LibraryPage {
   private selectSeries = 'app-library .series mat-panel-title';
   private selectVolume = 'mat-expansion-panel.mat-expanded app-volume';
 
-  constructor() {
+  constructor () {
     this.page = new Page();
   }
 
-  navigateTo() {
+  navigateTo () {
     return browser.get('/library');
   }
 
-  getAllPublishers() {
+  getAllPublishers () {
     return element.all(by.css('app-library .publisher h3'));
   }
 
-  getAllSeries() {
+  getAllSeries () {
     return element.all(by.css(this.selectSeries));
   }
 
-  getSeries(series: string) {
+  getSeries (series: string) {
     return element(by.cssContainingText(this.selectSeries, series));
   }
 
-  async waitForSeries(series: string) {
+  async waitForSeries (series: string) {
     await browser.wait(ExpectedConditions.elementToBeClickable(this.getSeries(series)), 200);
   }
 
-  getVolumeTitles() {
+  getVolumeTitles () {
     return element.all(by.css(`${ this.selectVolume } mat-card-title`));
   }
 
-  getVolumeStats() {
+  getVolumeStats () {
     return element.all(by.css(`${ this.selectVolume } mat-card-subtitle`));
   }
 
-  getUnreadVolumes() {
+  getUnreadVolumes () {
     return element.all(by.css(this.selectVolume)).all(by.css('a.mat-badge-hidden'));
   }
 
-  getListButton(volume: string) {
+  getListButton (volume: string) {
     return element(by.cssContainingText(this.selectVolume, volume))
       .element(by.buttonText('LIST'));
   }
 
-  get markVolumeAsReadButton() {
+  get markVolumeAsReadButton () {
     return element(by.partialButtonText('Mark volume as read'));
   }
 
-  async clickVolumeMenuItem(volume: string, item: string) {
+  async clickVolumeMenuItem (volume: string, item: string) {
     await this.page.clickMenuItem(element(by.cssContainingText(this.selectVolume, volume)), item);
   }
 }

@@ -6,31 +6,31 @@ export class ScannerPage {
     return element(by.css('app-scanner .progress'));
   }
 
-  navigateTo() {
+  navigateTo () {
     return browser.get('/library');
   }
 
-  waitForScanStart() {
+  waitForScanStart () {
     return browser.wait(ExpectedConditions.presenceOf(this.progress), 200);
   }
 
-  waitForScanEnd() {
+  waitForScanEnd () {
     return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 10000);
   }
 
-  getScanButton() {
+  getScanButton () {
     return element(by.buttonText('SCAN'));
   }
 
-  getScanProgress() {
+  getScanProgress () {
     return this.progress.getText();
   }
 
-  getScanErrors() {
+  getScanErrors () {
     return element(by.css('app-scanner .errors'));
   }
 
-  async scan() {
+  async scan () {
     await this.navigateTo();
     expect(await this.getScanButton().isPresent()).toBe(true);
     await this.getScanButton().click();
