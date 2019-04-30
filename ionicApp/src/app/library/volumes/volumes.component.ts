@@ -17,8 +17,8 @@ export class VolumesComponent implements OnInit {
 
   private volumesData: Volume[] = [];
   volumes: Volume[] = [];
-  publisher: string = '';
-  series: string = '';
+  publisher = '';
+  series = '';
 
   constructor (
     private router: Router,
@@ -29,7 +29,7 @@ export class VolumesComponent implements OnInit {
     private popoverController: PopoverController
   ) { }
 
-  ngOnInit() {
+  ngOnInit () {
     this.publisher = this.route.snapshot.params.publisher;
     this.series = this.route.snapshot.params.series;
     this.list(this.publisher, this.series);
@@ -43,11 +43,11 @@ export class VolumesComponent implements OnInit {
       });
   }
 
-  thumbnail(volume: Volume): SafeUrl {
+  thumbnail (volume: Volume): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ volume.thumbnail }`);
   }
 
-  public resumeVolume(volume: Volume): void {
+  public resumeVolume (volume: Volume): void {
     if (volume.read) {
       this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {
@@ -61,11 +61,11 @@ export class VolumesComponent implements OnInit {
     }
   }
 
-  async openMenu(event: any, volume: Volume) {
+  async openMenu (event: any, volume: Volume) {
     const popover = await this.popoverController.create({
       component: VolumeActionsComponent,
-      componentProps: { volume: volume },
-      event: event,
+      componentProps: { volume },
+      event,
       translucent: true
     });
     return await popover.present();

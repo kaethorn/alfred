@@ -10,7 +10,7 @@ import { PublishersComponent } from '../app/library/publishers/publishers.compon
 import { SeriesComponent } from '../app/library/series/series.component';
 import { ScannerComponent } from '../app/preferences/scanner/scanner.component';
 import { VolumesComponent } from '../app/library/volumes/volumes.component';
-import { VolumeActionsComponent } from '../app/library/volumes/volume-actions/volume-actions.component'
+import { VolumeActionsComponent } from '../app/library/volumes/volume-actions/volume-actions.component';
 import { BookmarkActionsComponent } from '../app/bookmarks/bookmark-actions/bookmark-actions.component';
 
 import { LibraryPage } from '../app/library/library.page';

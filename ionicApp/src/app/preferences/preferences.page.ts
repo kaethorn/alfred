@@ -11,7 +11,7 @@ import { Preference } from '../preference';
 })
 export class PreferencesPage {
 
-  constructor(
+  constructor (
     private preferencesService: PreferencesService,
     private toastController: ToastController
   ) {
@@ -34,8 +34,8 @@ export class PreferencesPage {
 
   private async showToast (message: string, duration: number = 3000) {
     const toast = await this.toastController.create({
-      message: message,
-      duration: duration
+      message,
+      duration
     });
     toast.present();
   }

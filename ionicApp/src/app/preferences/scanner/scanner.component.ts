@@ -23,7 +23,7 @@ export class ScannerComponent {
   errors: Error[] = [];
   stats: Stats;
 
-  constructor(
+  constructor (
     private statsService: StatsService
   ) {
     statsService.get().subscribe((stats: Stats) => {

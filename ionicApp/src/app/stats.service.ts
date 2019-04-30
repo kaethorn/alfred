@@ -10,11 +10,11 @@ import { Stats } from './stats';
 })
 export class StatsService {
 
-  constructor(
+  constructor (
     private http: HttpClient
   ) {}
 
-  get(): Observable<Stats> {
+  get (): Observable<Stats> {
     return this.http.get<Stats>('api/stats').pipe(
       map((stats: any) => {
         return {
@@ -25,6 +25,6 @@ export class StatsService {
           users: stats.users
         };
       })
-    )
+    );
   }
 }

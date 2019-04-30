@@ -16,7 +16,7 @@ export class ReaderPage implements OnInit {
   imagePathLeft: string;
   imagePathRight: string;
 
-  constructor(
+  constructor (
     private route: ActivatedRoute,
     private router: Router,
     private comicsService: ComicsService,
@@ -26,7 +26,7 @@ export class ReaderPage implements OnInit {
   @ViewChild('layer') layer: ElementRef;
 
   @HostListener('document:keyup.esc', ['$event'])
-  handleEscape() {
+  handleEscape () {
     this.router.navigate(['/browse', this.comic.id, NavigatorService.page ]);
   }
 
@@ -49,7 +49,7 @@ export class ReaderPage implements OnInit {
         (event.clientX > (<HTMLElement>event.currentTarget).offsetWidth / 2) ?  1 : -1));
   }
 
-  public onSwipe(offset) {
+  public onSwipe (offset) {
     this.navigate(this.navigator.go(offset));
   }
 

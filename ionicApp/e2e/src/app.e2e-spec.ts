@@ -1,19 +1,14 @@
 import { AppPage } from './app.po';
 
-describe('new App', () => {
-  let page: AppPage;
+describe('AppComponent', () => {
+  let appPage: AppPage;
 
   beforeEach(() => {
-    page = new AppPage();
+    appPage = new AppPage();
   });
-  describe('default screen', () => {
-    beforeEach(() => {
-      page.navigateTo('/home');
-    });
-    it('should have a title saying Home', () => {
-      page.getPageOneTitleText().then(title => {
-        expect(title).toEqual('Home');
-      });
-    });
+
+  it('should display welcome message', async () => {
+    await appPage.navigateTo();
+    expect(await appPage.getTitleText()).toContain('Alfred');
   });
 });

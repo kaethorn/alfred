@@ -13,7 +13,7 @@ export class PublishersComponent {
   private publishersData: Publisher[] = [];
   publishers: Publisher[] = [];
 
-  constructor(
+  constructor (
     private volumesService: VolumesService
   ) {
     this.list();

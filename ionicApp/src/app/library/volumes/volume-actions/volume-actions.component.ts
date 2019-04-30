@@ -16,7 +16,7 @@ export class VolumeActionsComponent {
   // FIXME what's this needed for?
   @Output() updated = new EventEmitter<boolean>();
 
-  constructor(
+  constructor (
     private popoverCtrl: PopoverController,
     private volumesService: VolumesService,
     private navParams: NavParams
@@ -24,7 +24,7 @@ export class VolumeActionsComponent {
     this.volume = navParams.get('volume');
   }
 
-  public markAsRead(volume: Volume) {
+  public markAsRead (volume: Volume) {
     this.volumesService.markAsRead(volume)
       .subscribe(() => {
         this.updated.emit(true);
@@ -32,7 +32,7 @@ export class VolumeActionsComponent {
       });
   }
 
-  public markAsUnread(volume: Volume) {
+  public markAsUnread (volume: Volume) {
     this.volumesService.markAsUnread(volume)
       .subscribe(() => {
         this.updated.emit(true);

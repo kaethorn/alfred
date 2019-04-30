@@ -13,14 +13,14 @@ export class SeriesComponent implements OnInit {
 
   private seriesData: Series[] = [];
   series: Series[] = [];
-  publisher: string = '';
+  publisher = '';
 
-  constructor(
+  constructor (
     private route: ActivatedRoute,
     private volumesService: VolumesService
   ) { }
 
-  ngOnInit() {
+  ngOnInit () {
     this.publisher = this.route.snapshot.params.publisher;
     this.list(this.publisher);
   }

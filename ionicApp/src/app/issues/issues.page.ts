@@ -19,7 +19,7 @@ export class IssuesPage implements OnInit {
 
   comics: Array<Comic> = [];
 
-  constructor(
+  constructor (
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private comicsService: ComicsService,
@@ -27,7 +27,7 @@ export class IssuesPage implements OnInit {
     ) {
   }
 
-  ngOnInit() {
+  ngOnInit () {
     this.publisher = this.route.snapshot.params.publisher;
     this.series = this.route.snapshot.params.series;
     this.volume = this.route.snapshot.params.volume;

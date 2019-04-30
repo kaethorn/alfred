@@ -4,7 +4,7 @@ import { NavParams } from '@ionic/angular';
 import { TestModule } from '../../../../testing/test.module';
 import { volume1 as volume } from '../../../../testing/volume.fixtures';
 
-import { VolumeActionsComponent } from './volume-actions.component'
+import { VolumeActionsComponent } from './volume-actions.component';
 import { Volume } from '../../../volume';
 
 describe('VolumeActionsComponent', () => {

@@ -10,7 +10,7 @@ import { Comic } from './comic';
 })
 export class ComicsService {
 
-  constructor(
+  constructor (
     private http: HttpClient
   ) {}
 
@@ -35,12 +35,12 @@ export class ComicsService {
   listByVolume (publisher: string, series: string, volume: string): Observable<Comic[]> {
     const params = new HttpParams({
       fromObject: {
-        publisher: publisher,
-        series: series,
-        volume: volume
+        publisher,
+        series,
+        volume
       }
     });
-    return this.http.get('api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition', { params: params }).pipe(
+    return this.http.get('api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition', { params }).pipe(
       this.consumeHateoas(),
       map((data: any) => data.map((comic) => this.addId(comic)))
     );
@@ -55,12 +55,12 @@ export class ComicsService {
   getLastUnreadByVolume (publisher: string, series: string, volume: string): Observable<Comic> {
     const params = new HttpParams({
       fromObject: {
-        publisher: publisher,
-        series: series,
-        volume: volume
+        publisher,
+        series,
+        volume
       }
     });
-    return this.http.get<Comic>('api/comics/search/findLastReadForVolume', { params: params }).pipe(
+    return this.http.get<Comic>('api/comics/search/findLastReadForVolume', { params }).pipe(
       map((comic: any) => this.addId(comic))
     );
   }
@@ -68,12 +68,12 @@ export class ComicsService {
   getFirstByVolume (publisher: string, series: string, volume: string): Observable<Comic> {
     const params = new HttpParams({
       fromObject: {
-        publisher: publisher,
-        series: series,
-        volume: volume
+        publisher,
+        series,
+        volume
       }
     });
-    return this.http.get<Comic>('api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition', { params: params }).pipe(
+    return this.http.get<Comic>('api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition', { params }).pipe(
       map((comic: any) => this.addId(comic))
     );
   }

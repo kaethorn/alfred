@@ -16,14 +16,14 @@ export class BookmarksPage implements OnInit {
 
   comics: Comic[];
 
-  constructor(
+  constructor (
     private router: Router,
     private comicsService: ComicsService,
     private sanitizer: DomSanitizer,
     private popoverController: PopoverController
   ) {}
 
-  ngOnInit() {
+  ngOnInit () {
     this.list();
   }
 
@@ -37,11 +37,11 @@ export class BookmarksPage implements OnInit {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
   }
 
-  async openMenu(event: any, comic: Comic) {
+  async openMenu (event: any, comic: Comic) {
     const popover = await this.popoverController.create({
       component: BookmarkActionsComponent,
-      componentProps: { comic: comic },
-      event: event,
+      componentProps: { comic },
+      event,
       translucent: true
     });
     return await popover.present();

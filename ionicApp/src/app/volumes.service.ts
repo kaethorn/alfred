@@ -12,7 +12,7 @@ import { Comic } from './comic';
   providedIn: 'root'
 })
 export class VolumesService {
-  constructor(private http: HttpClient) {}
+  constructor (private http: HttpClient) {}
 
   private readonly publishersUrl = '/api/publishers';
   private readonly markAsReadUrl = '/api/volumes/markAsRead';
@@ -29,13 +29,13 @@ export class VolumesService {
     );
   }
 
-  listSeries(publisher: string): Observable<Series[]> {
+  listSeries (publisher: string): Observable<Series[]> {
     return this.http.get(`${ this.publishersUrl }/${ publisher }/series`).pipe(
       this.consumeHateoas('series')
     );
   }
 
-  listVolumes(publisher: string, series: string): Observable<Volume[]> {
+  listVolumes (publisher: string, series: string): Observable<Volume[]> {
     return this.http.get(`${ this.publishersUrl }/${ publisher }/series/${ series }/volumes`).pipe(
       this.consumeHateoas('volumes')
     );

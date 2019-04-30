@@ -13,7 +13,7 @@ export class BookmarkActionsComponent {
 
   comic: Comic;
 
-  constructor(
+  constructor (
     private popoverCtrl: PopoverController,
     private router: Router,
     private navParams: NavParams

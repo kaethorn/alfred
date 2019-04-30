@@ -16,14 +16,14 @@ export class BrowserPage implements OnInit {
   imagePath: string;
   currentPage = 0;
 
-  constructor(
+  constructor (
     private route: ActivatedRoute,
     private router: Router,
     private comicsService: ComicsService,
     private navigator: NavigatorService
   ) {}
 
-  ngOnInit() {
+  ngOnInit () {
     this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10) || 0;
     this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
       this.comic = data;
@@ -42,7 +42,7 @@ export class BrowserPage implements OnInit {
     this.navigate();
   }
 
-  private navigate(): void {
+  private navigate (): void {
     this.router.navigate(['/browse', this.comic.id, NavigatorService.page]);
     this.imagePath = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
   }
