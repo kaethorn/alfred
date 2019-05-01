@@ -4,7 +4,7 @@ import { Page } from './page.po';
 export class LibraryPage {
 
   private page: Page;
-  private selectSeries = 'app-library .series mat-panel-title';
+  private selectSeries = 'app-series ion-item.series';
   private selectVolume = 'mat-expansion-panel.mat-expanded app-volume';
 
   constructor () {
@@ -16,7 +16,7 @@ export class LibraryPage {
   }
 
   getAllPublishers () {
-    return element.all(by.css('app-library .publisher h3'));
+    return element.all(by.css('app-publishers ion-item.publisher'));
   }
 
   getAllSeries () {

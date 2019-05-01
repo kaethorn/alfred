@@ -32,7 +32,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
             group("publisher")
                 .last("_id.publisher").as("publisher")
                 .count().as("seriesCount"),
-            sort(Sort.Direction.DESC, "publisher")
+            sort(Sort.Direction.ASC, "publisher")
         ), Comic.class, Publisher.class).getMappedResults();
     }
 
@@ -46,7 +46,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
                 .last("_id.series").as("series")
                 .last("publisher").as("publisher")
                 .count().as("volumesCount"),
-            sort(Sort.Direction.DESC, "series")
+            sort(Sort.Direction.ASC, "series")
         ), Comic.class, Series.class).getMappedResults();
     }
 

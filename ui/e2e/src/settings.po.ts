@@ -1,13 +1,24 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
 
-export class ScannerPage {
+export class SettingsPage {
+  navigateTo () {
+    return browser.get('/settings');
+  }
+
+  getComicsPathInput () {
+    return element(by.css('input[Placeholder="Path"]'));
+  }
+
+  getSaveButton () {
+    return element(by.buttonText('SAVE'));
+  }
+
+  getError () {
+    return element(by.css('mat-error'));
+  }
 
   private get progress () {
     return element(by.css('app-scanner .progress'));
-  }
-
-  navigateTo () {
-    return browser.get('/library');
   }
 
   waitForScanStart () {
@@ -15,11 +26,11 @@ export class ScannerPage {
   }
 
   waitForScanEnd () {
-    return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 10000);
+    return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 20000);
   }
 
   getScanButton () {
-    return element(by.buttonText('SCAN'));
+    return element(by.cssContainingText('app-scanner ion-button', 'SCAN'));
   }
 
   getScanProgress () {
@@ -28,6 +39,10 @@ export class ScannerPage {
 
   getScanErrors () {
     return element(by.css('app-scanner .errors'));
+  }
+
+  getStats () {
+    return element.all(by.css('app-scanner ion-list.stats ion-item')).getText();
   }
 
   async scan () {

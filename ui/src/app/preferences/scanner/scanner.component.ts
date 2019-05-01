@@ -26,7 +26,11 @@ export class ScannerComponent {
   constructor (
     private statsService: StatsService
   ) {
-    statsService.get().subscribe((stats: Stats) => {
+    this.getStats();
+  }
+
+  private getStats () {
+    this.statsService.get().subscribe((stats: Stats) => {
       this.stats = stats;
     });
   }
@@ -51,6 +55,7 @@ export class ScannerComponent {
       this.counter = 0;
       this.total = 0;
       this.scanned.emit(true);
+      this.getStats();
       scanProgress.close();
     });
   }

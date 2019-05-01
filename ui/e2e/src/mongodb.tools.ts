@@ -12,12 +12,12 @@ export class MongoDBTools {
       mongoose.connection.once('open', () => {
         mongoose.connection.db.dropDatabase().then(() => {
           mongoose.connection.db.createCollection('preference').then(collection => {
-            collection.insert([{
+            collection.insertOne({
               key    : 'comics.path',
               name   : 'Path',
               value  : '/comics',
               comment: 'Path to your comic library'
-            }]).then(() => {
+            }).then(() => {
               resolve();
             });
           });
