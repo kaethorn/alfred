@@ -100,7 +100,7 @@ The application will now be available at <http://localhost:8080>.
 
 ## Develop
 
-### E2E tests
+### End-to-end tests
 
 #### Preparation
 
@@ -114,7 +114,7 @@ docker network connect alfred-net mongo
 
 ./gradlew build docker -x test
 
-docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
+docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=test -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v $PWD/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
 ```
 
 Install dependencies
