@@ -13,7 +13,6 @@ import { VolumesComponent } from '../app/library/volumes/volumes.component';
 import { VolumeActionsComponent } from '../app/library/volumes/volume-actions/volume-actions.component';
 import { BookmarkActionsComponent } from '../app/bookmarks/bookmark-actions/bookmark-actions.component';
 
-import { LibraryPage } from '../app/library/library.page';
 import { BrowserPage } from '../app/browser/browser.page';
 import { PreferencesPage } from '../app/preferences/preferences.page';
 import { ReaderPage } from '../app/reader/reader.page';
@@ -34,7 +33,6 @@ export const TestModule = () => {
       BookmarkActionsComponent,
 
       IssuesPage,
-      LibraryPage,
       BrowserPage,
       ReaderPage,
       PreferencesPage,

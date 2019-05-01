@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
-import { LibraryPage } from './library.page';
 import { PublishersComponent } from './publishers/publishers.component';
 import { SeriesComponent } from './series/series.component';
 import { VolumesComponent } from './volumes/volumes.component';
@@ -17,7 +16,6 @@ import { VolumeActionsComponent } from './volumes/volume-actions/volume-actions.
     IonicModule,
     RouterModule.forChild([{
       path: '',
-      component: LibraryPage,
       children: [{
         path: 'publishers',
         component: PublishersComponent
@@ -35,7 +33,6 @@ import { VolumeActionsComponent } from './volumes/volume-actions/volume-actions.
     }])
   ],
   declarations: [
-    LibraryPage,
     PublishersComponent,
     SeriesComponent,
     VolumesComponent,
