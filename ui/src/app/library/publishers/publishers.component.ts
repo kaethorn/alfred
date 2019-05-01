@@ -27,7 +27,7 @@ export class PublishersComponent {
       });
   }
 
-  protected filter (value: string) {
+  filter (value: string) {
     this.publishers = this.publishersData
       .filter(publisher => publisher.publisher.match(value));
   }

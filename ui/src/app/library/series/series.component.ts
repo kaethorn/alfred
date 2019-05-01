@@ -33,7 +33,7 @@ export class SeriesComponent implements OnInit {
       });
   }
 
-  protected filter (value: string) {
+  filter (value: string) {
     this.series = this.seriesData
       .filter(series => series.series.match(value));
   }
