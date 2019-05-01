@@ -4,9 +4,21 @@
 
 # Alfred
 
-A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
+A web based comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
 
 ![Alfred](./alfred.svg)
+
+## Features
+
+* Browse and read comics on your network.
+* Web application.
+* Mobile application (Android or iOS).
+
+## Stack
+
+* Spring Boot 2.
+* MongoDB.
+* Ionic v4 application.
 
 ## Requirements
 
@@ -85,11 +97,6 @@ To run the application on the host system directly, make sure to have a MongoDB 
 ```
 
 The application will now be available at <http://localhost:8080>.
-
-## Stack
-
-* Spring Boot 2 App using MongoDB.
-* Angular 7 UI with Material design.
 
 ## Develop
 
