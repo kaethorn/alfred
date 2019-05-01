@@ -14,14 +14,18 @@ export class BookmarksPage {
   }
 
   getBookmarks () {
-    return element.all(by.css('app-bookmarks .comic-tile'));
+    return element(by.css('app-bookmarks'));
+  }
+
+  getBookmarkItems () {
+    return this.getBookmarks().all(by.css('.comic-tile'));
   }
 
   getBookmarkTitles () {
-    return this.getBookmarks().all(by.css('mat-card-header'));
+    return this.getBookmarkItems().all(by.css('ion-card-title'));
   }
 
   async clickBookmarkMenuItem (volume: number, item: string) {
-    await this.page.clickMenuItem(this.getBookmarks().get(volume), item);
+    await this.page.clickMenuItem(this.getBookmarkItems().get(volume), item);
   }
 }

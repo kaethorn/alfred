@@ -1,7 +1,7 @@
 import { by, element } from 'protractor';
 import { Page } from './page.po';
 
-export class VolumesPage {
+export class IssuesPage {
 
   private page: Page;
 
@@ -10,7 +10,7 @@ export class VolumesPage {
   }
 
   getIssues () {
-    return element.all(by.css('app-volumes mat-card'));
+    return element.all(by.css('app-issues ion-card'));
   }
 
   getUnreadIssues () {
@@ -19,14 +19,15 @@ export class VolumesPage {
 
   getMarkAsReadButton (issue: number) {
     return this.getIssues().get(issue)
-      .all(by.css('mat-card-actions .read-toggle')).first();
+      .element(by.css('ion-button.read-toggle'));
   }
 
   get markReadUntilHereButton () {
     return element(by.partialButtonText('Mark read until here'));
   }
 
-  async clickIssueMenuItem (issue: number, item: string) {
-    await this.page.clickMenuItem(this.getIssues().get(issue), item);
+  getViewInLibraryButton (issue: number) {
+    return this.getIssues().get(issue)
+      .element(by.cssContainingText('ion-button', 'View in library'));
   }
 }

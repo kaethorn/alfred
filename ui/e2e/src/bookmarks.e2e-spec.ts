@@ -1,14 +1,14 @@
 import { BookmarksPage } from './bookmarks.po';
 import { LibraryPage } from './library.po';
-import { ScannerPage } from './scanner.po';
-import { VolumesPage } from './volumes.po';
+import { SettingsPage } from './settings.po';
+import { IssuesPage } from './issues.po';
 import { MongoDBTools } from './mongodb.tools';
 
 describe('BookmarksComponent', () => {
 
   let bookmarksPage: BookmarksPage;
-  let volumesPage: VolumesPage;
-  let scannerPage: ScannerPage;
+  let issuesPage: IssuesPage;
+  let settingsPage: SettingsPage;
   let libraryPage: LibraryPage;
 
   beforeAll(async () => {
@@ -17,33 +17,37 @@ describe('BookmarksComponent', () => {
 
   beforeEach(async () => {
     bookmarksPage = new BookmarksPage();
-    volumesPage = new VolumesPage();
-    scannerPage = new ScannerPage();
+    issuesPage = new IssuesPage();
+    settingsPage = new SettingsPage();
     libraryPage = new LibraryPage();
   });
 
   it('scans for comics', async () => {
-    await scannerPage.scan();
+    await settingsPage.scan();
   });
 
   it('shows no bookmarks by default', async () => {
     await bookmarksPage.navigateTo();
     expect(await bookmarksPage.getBookmarkTitles().count()).toBe(0);
+    expect(await bookmarksPage.getBookmarks().getText()).toContain('No comics found');
+    expect(await bookmarksPage.getBookmarks().getText()).toContain('START NOW');
   });
 
   describe('with a started volume', () => {
 
-    beforeAll(async () => {
+    it('starts a volume', async () => {
       await libraryPage.navigateTo();
+      await libraryPage.getPublisher('DC Comics').click();
+      await libraryPage.waitForSeries();
       await libraryPage.getSeries('Batgirl').click();
-      await libraryPage.waitForSeries('Batgirl');
-      await libraryPage.getListButton('Vol. 2008').click();
-      await volumesPage.getMarkAsReadButton(0).click();
+      await libraryPage.waitForVolumes();
+      await libraryPage.getVolumeListButton('Vol. 2008').click();
+      await issuesPage.getMarkAsReadButton(0).click();
     });
 
     it('updates the read issue counter', async () => {
-      await volumesPage.clickIssueMenuItem(0, 'View in library');
-      await libraryPage.waitForSeries('Batgirl');
+      await issuesPage.getViewInLibraryButton(0).click();
+      await libraryPage.waitForVolumes();
       expect(await libraryPage.getVolumeStats().getText())
         .toEqual([ '0 of 73 issues read', '1 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
     });
@@ -51,7 +55,7 @@ describe('BookmarksComponent', () => {
     it('shows that volume in the bookmarks', async () => {
       await bookmarksPage.navigateTo();
       expect(await bookmarksPage.getBookmarkTitles().count()).toBe(1);
-      expect(await bookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2\nVol. 2008' ]);
+      expect(await bookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
     });
   });
 
@@ -59,7 +63,7 @@ describe('BookmarksComponent', () => {
 
     beforeAll(async () => {
       await bookmarksPage.clickBookmarkMenuItem(0, 'View in library');
-      await libraryPage.waitForSeries('Batgirl');
+      // await libraryPage.waitForSeries('Batgirl');
       await libraryPage.clickVolumeMenuItem('Vol. 2009', 'Mark volume as read');
     });
 
