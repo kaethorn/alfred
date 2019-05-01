@@ -20,7 +20,9 @@ export class VolumesService {
   private readonly markAllAsReadUntilUrl = 'api/volumes/markAllAsReadUntil';
 
   private consumeHateoas (namespace: string): any {
-    return map((data: any) => data._embedded[namespace]);
+    return map((data: any) => {
+      return (data._embedded ? data._embedded[namespace] : []);
+    });
   }
 
   listPublishers (): Observable<Publisher[]> {

@@ -70,4 +70,9 @@ export class VolumesComponent implements OnInit {
     });
     return await popover.present();
   }
+
+  filter (value: string) {
+    this.volumes = this.volumesData
+      .filter(volume => volume.volume.match(value));
+  }
 }

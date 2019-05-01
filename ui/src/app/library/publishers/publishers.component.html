@@ -1,3 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Publishers
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-toolbar>
   <ion-searchbar placeholder="Search publishers"
     #libraryFilter
@@ -6,7 +17,21 @@
 </ion-toolbar>
 
 <ion-content>
-  <ion-list>
+  <ion-card *ngIf="publishers?.length == 0">
+    <ion-card-header>
+      <ion-card-subtitle>Empty library</ion-card-subtitle>
+      <ion-card-title>No comics found</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-button expand="block" href="/settings">
+        <ion-icon name="search"></ion-icon>
+        Scan for comics
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list *ngIf="publishers?.length > 0">
     <ion-item *ngFor="let publisher of publishers" class="publisher">
       <ion-button fill="solid" color="primary"
         [routerLink]="['/library/publishers/' + publisher.publisher + '/series']">
