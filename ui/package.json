@@ -9,9 +9,12 @@
     "build": "ng build",
     "buildProd": "ng build --prod",
     "test": "ng test",
+    "testHeadless": "ng test --prod --watch=false --progress=false --code-coverage --browsers ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "e2eHeadless": "ng e2e --protractor-config=e2e/protractor.headless.conf.js --dev-server-target="
+    "e2eHeadless": "ng e2e --protractor-config=e2e/protractor.headless.conf.js --dev-server-target=",
+    "protractor": "protractor e2e/protractor.conf.js",
+    "protractorHeadless": "protractor e2e/protractor.headless.conf.js"
   },
   "private": true,
   "dependencies": {
@@ -55,6 +58,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "mongoose": "^5.5.5",
     "protractor": "~5.4.0",
     "ts-node": "~8.1.0",
     "tslint": "~5.16.0",
