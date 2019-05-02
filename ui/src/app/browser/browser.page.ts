@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from '../comics.service';
@@ -10,7 +10,7 @@ import { Comic } from '../comic';
   templateUrl: './browser.page.html',
   styleUrls: ['./browser.page.sass']
 })
-export class BrowserPage implements OnInit {
+export class BrowserPage {
 
   comic: Comic = {} as Comic;
   imagePath: string;
@@ -21,9 +21,9 @@ export class BrowserPage implements OnInit {
     private router: Router,
     private comicsService: ComicsService,
     private navigator: NavigatorService
-  ) {}
+  ) { }
 
-  ngOnInit () {
+  ionViewDidEnter () {
     this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10) || 0;
     this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
       this.comic = data;

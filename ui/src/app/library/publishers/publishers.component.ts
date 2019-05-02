@@ -10,8 +10,8 @@ import { Publisher } from '../../publisher';
 })
 export class PublishersComponent {
 
-  private publishersData: Publisher[] = [];
-  publishers: Publisher[] = [];
+  private publishersData: Publisher[];
+  publishers: Publisher[];
 
   constructor (
     private volumesService: VolumesService

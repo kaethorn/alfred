@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { VolumesService } from '../../volumes.service';
@@ -9,10 +9,10 @@ import { Series } from '../../series';
   templateUrl: './series.component.html',
   styleUrls: ['./series.component.sass'],
 })
-export class SeriesComponent implements OnInit {
+export class SeriesComponent {
 
-  private seriesData: Series[] = [];
-  series: Series[] = [];
+  private seriesData: Series[];
+  series: Series[];
   publisher = '';
 
   constructor (
@@ -20,7 +20,7 @@ export class SeriesComponent implements OnInit {
     private volumesService: VolumesService
   ) { }
 
-  ngOnInit () {
+  ionViewDidEnter () {
     this.publisher = this.route.snapshot.params.publisher;
     this.list(this.publisher);
   }

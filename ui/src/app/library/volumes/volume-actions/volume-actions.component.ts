@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { PopoverController, NavParams } from '@ionic/angular';
 
 import { Volume } from '../../../volume';
@@ -13,9 +13,6 @@ export class VolumeActionsComponent {
 
   volume: Volume;
 
-  // FIXME what's this needed for?
-  @Output() updated = new EventEmitter<boolean>();
-
   constructor (
     private popoverCtrl: PopoverController,
     private volumesService: VolumesService,
@@ -27,7 +24,6 @@ export class VolumeActionsComponent {
   public markAsRead (volume: Volume) {
     this.volumesService.markAsRead(volume)
       .subscribe(() => {
-        this.updated.emit(true);
         this.popoverCtrl.dismiss();
       });
   }
@@ -35,7 +31,6 @@ export class VolumeActionsComponent {
   public markAsUnread (volume: Volume) {
     this.volumesService.markAsUnread(volume)
       .subscribe(() => {
-        this.updated.emit(true);
         this.popoverCtrl.dismiss();
       });
   }

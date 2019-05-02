@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
@@ -9,14 +9,15 @@ import { Volume } from '../../volume';
 import { Comic } from '../../comic';
 import { VolumeActionsComponent } from './volume-actions/volume-actions.component';
 
-@Component({ selector: 'app-volume',
+@Component({
+  selector: 'app-volumes',
   templateUrl: './volumes.component.html',
   styleUrls: ['./volumes.component.sass']
 })
-export class VolumesComponent implements OnInit {
+export class VolumesComponent {
 
-  private volumesData: Volume[] = [];
-  volumes: Volume[] = [];
+  private volumesData: Volume[];
+  volumes: Volume[];
   publisher = '';
   series = '';
 
@@ -29,7 +30,7 @@ export class VolumesComponent implements OnInit {
     private popoverController: PopoverController
   ) { }
 
-  ngOnInit () {
+  ionViewDidEnter () {
     this.publisher = this.route.snapshot.params.publisher;
     this.series = this.route.snapshot.params.series;
     this.list(this.publisher, this.series);
@@ -67,6 +68,9 @@ export class VolumesComponent implements OnInit {
       componentProps: { volume },
       event,
       translucent: true
+    });
+    popover.onWillDismiss().finally(() => {
+      this.list(this.publisher, this.series);
     });
     return await popover.present();
   }

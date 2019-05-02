@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from '../comics.service';
@@ -10,7 +10,7 @@ import { Comic } from '../comic';
   templateUrl: './reader.page.html',
   styleUrls: ['./reader.page.sass']
 })
-export class ReaderPage implements OnInit {
+export class ReaderPage {
 
   comic: Comic = {} as Comic;
   imagePathLeft: string;
@@ -21,7 +21,7 @@ export class ReaderPage implements OnInit {
     private router: Router,
     private comicsService: ComicsService,
     private navigator: NavigatorService
-  ) {}
+  ) { }
 
   @ViewChild('layer') layer: ElementRef;
 
@@ -30,7 +30,7 @@ export class ReaderPage implements OnInit {
     this.router.navigate(['/browse', this.comic.id, NavigatorService.page ]);
   }
 
-  ngOnInit () {
+  ionViewDidEnter () {
     this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
       this.comic = data;
       const parentElement = this.layer.nativeElement.parentElement;

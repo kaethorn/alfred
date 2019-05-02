@@ -66,7 +66,7 @@
       </ion-button>
       <ion-button
         color="tertiary" fill="clear"
-        [routerLink]="['/library']" [queryParams]="{ series: comic.series }">
+        [routerLink]="['/library/publishers', comic.publisher, 'series', comic.series, 'volumes']">
         <ion-icon name="book"></ion-icon>
         <span>View in library</span>
       </ion-button>

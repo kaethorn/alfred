@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
@@ -11,7 +11,7 @@ import { Comic } from '../comic';
   templateUrl: './issues.page.html',
   styleUrls: ['./issues.page.sass']
 })
-export class IssuesPage implements OnInit {
+export class IssuesPage {
 
   private publisher: string;
   private series: string;
@@ -24,10 +24,9 @@ export class IssuesPage implements OnInit {
     private route: ActivatedRoute,
     private comicsService: ComicsService,
     private volumesService: VolumesService
-    ) {
-  }
+    ) { }
 
-  ngOnInit () {
+  ionViewDidEnter () {
     this.publisher = this.route.snapshot.params.publisher;
     this.series = this.route.snapshot.params.series;
     this.volume = this.route.snapshot.params.volume;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
@@ -12,7 +12,7 @@ import { Comic } from '../comic';
   templateUrl: './bookmarks.page.html',
   styleUrls: ['./bookmarks.page.sass']
 })
-export class BookmarksPage implements OnInit {
+export class BookmarksPage {
 
   comics: Comic[];
 
@@ -21,9 +21,9 @@ export class BookmarksPage implements OnInit {
     private comicsService: ComicsService,
     private sanitizer: DomSanitizer,
     private popoverController: PopoverController
-  ) {}
+  ) { }
 
-  ngOnInit () {
+  ionViewDidEnter () {
     this.list();
   }
 
@@ -43,6 +43,9 @@ export class BookmarksPage implements OnInit {
       componentProps: { comic },
       event,
       translucent: true
+    });
+    popover.onWillDismiss().finally(() => {
+      this.list();
     });
     return await popover.present();
   }

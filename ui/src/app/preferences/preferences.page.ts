@@ -11,15 +11,17 @@ import { Preference } from '../preference';
 })
 export class PreferencesPage {
 
+  preferences: Preference[] = [];
+  updateError: any;
+
   constructor (
     private preferencesService: PreferencesService,
     private toastController: ToastController
-  ) {
+  ) { }
+
+  ionViewWillEnter () {
     this.list();
   }
-
-  preferences: Preference[] = [];
-  updateError: any;
 
   onSubmit () {
     for (const preference of this.preferences) {
