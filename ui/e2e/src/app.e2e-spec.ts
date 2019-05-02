@@ -1,10 +1,15 @@
 import { AppPage } from './app.po';
+import { MongoDBTools } from './mongodb.tools';
 
 describe('AppComponent', () => {
   let appPage: AppPage;
 
   beforeEach(() => {
     appPage = new AppPage();
+  });
+
+  beforeAll(async () => {
+    await MongoDBTools.prepare();
   });
 
   it('displays the top level library view', async () => {

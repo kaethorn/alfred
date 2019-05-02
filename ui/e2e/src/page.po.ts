@@ -20,6 +20,11 @@ export class Page {
 
   async waitForText (target: ElementFinder, text: string) {
     await this.waitForElement(target);
-    await browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2000);
+    await browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2500);
+  }
+
+  async scrollIntoView (target: ElementFinder) {
+    await browser.executeScript('arguments[0].scrollIntoView(true)', target.getWebElement());
+    await browser.sleep(200);
   }
 }

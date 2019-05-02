@@ -40,11 +40,12 @@ describe('BookmarksComponent', () => {
       await libraryPage.clickPublisher('DC Comics');
       await libraryPage.clickSeries('Batgirl');
       await libraryPage.clickVolumeListButton('Vol. 2008');
-      await issuesPage.clickMarkAsReadButton(0);
+      await issuesPage.wait();
+      await issuesPage.toggleMarkAsRead(0);
     });
 
     it('updates the read issue counter', async () => {
-      await issuesPage.getViewInLibraryButton(0).click();
+      await issuesPage.clickButtonByLabel(3, 'View in library');
       await libraryPage.expectVolumeStats(
         [ '0 of 73 issues read', '1 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
     });
@@ -64,7 +65,6 @@ describe('BookmarksComponent', () => {
     });
 
     it('updates the read issue counter', async () => {
-      debugger;
       await libraryPage.expectVolumeStats(
         [ '0 of 73 issues read', '1 of 6 issues read', '24 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
     });

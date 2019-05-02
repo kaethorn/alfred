@@ -1,4 +1,4 @@
-import { browser, by, element } from 'protractor';
+import { browser, by, element, ElementFinder } from 'protractor';
 import { Page } from './page.po';
 
 export class LibraryPage {
@@ -29,17 +29,17 @@ export class LibraryPage {
   }
 
   async clickPublisher (publisher: string) {
-    await this.page.waitForElement(this.getAllPublishers().first());
+    await this.waitForPublishers();
     await element(by.cssContainingText(this.selectPublisher, publisher)).click();
   }
 
   async clickSeries (series: string) {
-    await this.page.waitForElement(this.getAllSeries().first());
+    await this.waitForSeries();
     await element(by.cssContainingText(this.selectSeries, series)).click();
   }
 
   async clickVolumeListButton (volume: string) {
-    await this.page.waitForElement(this.getAllVolumes().first());
+    await this.waitForVolumes();
     await element(by.cssContainingText(this.selectVolumes, volume))
       .element(by.cssContainingText('ion-button', 'List')).click();
   }
@@ -64,7 +64,9 @@ export class LibraryPage {
   }
 
   getUnreadVolumes () {
-    return element.all(by.css(this.selectVolumes)).all(by.css('a.mat-badge-hidden'));
+    return this.getAllVolumes().filter((e, index) => {
+      return e.element(by.css('ion-badge.read-badge')).isPresent().then(present => !present);
+    });
   }
 
   get markVolumeAsReadButton () {
@@ -73,5 +75,17 @@ export class LibraryPage {
 
   async clickVolumeMenuItem (volume: string, item: string) {
     await this.page.clickMenuItem(element(by.cssContainingText(this.selectVolumes, volume)), item);
+  }
+
+  waitForPublishers () {
+    return this.page.waitForElement(this.getAllPublishers().first());
+  }
+
+  waitForSeries () {
+    return this.page.waitForElement(this.getAllSeries().first());
+  }
+
+  waitForVolumes () {
+    return this.page.waitForElement(this.getAllVolumes().first());
   }
 }

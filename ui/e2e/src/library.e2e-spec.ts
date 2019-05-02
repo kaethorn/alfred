@@ -1,9 +1,9 @@
 import { LibraryPage } from './library.po';
-import { ScannerPage } from './scanner.po';
+import { SettingsPage } from './settings.po';
 import { MongoDBTools } from './mongodb.tools';
 
 describe('LibraryComponent', () => {
-  let scannerPage: ScannerPage;
+  let settingsPage: SettingsPage;
   let libraryPage: LibraryPage;
 
   beforeAll(async () => {
@@ -11,34 +11,37 @@ describe('LibraryComponent', () => {
   });
 
   beforeEach(async () => {
-    scannerPage = new ScannerPage();
+    settingsPage = new SettingsPage();
     libraryPage = new LibraryPage();
   });
 
   it('scans for comics', async () => {
-    await scannerPage.scan();
+    await settingsPage.scan();
   });
 
   it('sorts publishers alphabetically', async () => {
+    await libraryPage.navigateTo();
     expect(await libraryPage.getAllPublishers().getText())
-      .toEqual(['DC Comics', 'F5 Enteratinment', 'Top Cow']);
+      .toEqual(['DC COMICS', 'F5 ENTERATINMENT', 'TOP COW']);
   });
 
   it('sorts series alphabetically', async () => {
+    await libraryPage.clickPublisher('DC Comics');
+    await libraryPage.waitForSeries();
     expect(await libraryPage.getAllSeries().getText())
-      .toEqual([ 'Batman', 'Batgirl', 'The Tenth: Resurrected', 'The Tenth', 'Rising Stars' ]);
+      .toEqual([ 'BATGIRL', 'BATMAN' ]);
   });
 
   it('sorts volumes alphabetically', async () => {
-    await libraryPage.getSeries('Batgirl').click();
-    await libraryPage.waitForSeries('Batgirl');
+    await libraryPage.clickSeries('Batgirl');
+    await libraryPage.waitForVolumes();
     expect(await libraryPage.getVolumeTitles().getText())
       .toEqual(['Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016']);
   });
 
   it('shows the read issue counter', async () => {
-    expect(await libraryPage.getVolumeStats())
-      .toEqual([ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
+    await libraryPage.expectVolumeStats(
+      [ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
   });
 
   it('shows no read icon', async () => {
