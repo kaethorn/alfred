@@ -1,4 +1,4 @@
-import { by, element } from 'protractor';
+import { browser, by, element } from 'protractor';
 import { Page } from './page.po';
 
 export class IssuesPage {
@@ -17,9 +17,10 @@ export class IssuesPage {
     return this.getIssues().all(by.css('a.mat-badge-hidden'));
   }
 
-  getMarkAsReadButton (issue: number) {
-    return this.getIssues().get(issue)
-      .element(by.css('ion-button.read-toggle'));
+  async clickMarkAsReadButton (issue: number) {
+    await this.page.waitForElement(this.getIssues().first());
+    await this.getIssues().get(issue)
+      .element(by.css('ion-button.read-toggle')).click();
   }
 
   get markReadUntilHereButton () {

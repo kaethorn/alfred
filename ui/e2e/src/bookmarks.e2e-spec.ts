@@ -35,21 +35,18 @@ describe('BookmarksComponent', () => {
 
   describe('with a started volume', () => {
 
-    it('starts a volume', async () => {
+    beforeAll(async () => {
       await libraryPage.navigateTo();
-      await libraryPage.getPublisher('DC Comics').click();
-      await libraryPage.waitForSeries();
-      await libraryPage.getSeries('Batgirl').click();
-      await libraryPage.waitForVolumes();
-      await libraryPage.getVolumeListButton('Vol. 2008').click();
-      await issuesPage.getMarkAsReadButton(0).click();
+      await libraryPage.clickPublisher('DC Comics');
+      await libraryPage.clickSeries('Batgirl');
+      await libraryPage.clickVolumeListButton('Vol. 2008');
+      await issuesPage.clickMarkAsReadButton(0);
     });
 
     it('updates the read issue counter', async () => {
       await issuesPage.getViewInLibraryButton(0).click();
-      await libraryPage.waitForVolumes();
-      expect(await libraryPage.getVolumeStats().getText())
-        .toEqual([ '0 of 73 issues read', '1 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
+      await libraryPage.expectVolumeStats(
+        [ '0 of 73 issues read', '1 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
     });
 
     it('shows that volume in the bookmarks', async () => {
@@ -63,19 +60,19 @@ describe('BookmarksComponent', () => {
 
     beforeAll(async () => {
       await bookmarksPage.clickBookmarkMenuItem(0, 'View in library');
-      // await libraryPage.waitForSeries('Batgirl');
       await libraryPage.clickVolumeMenuItem('Vol. 2009', 'Mark volume as read');
     });
 
     it('updates the read issue counter', async () => {
-      expect(await libraryPage.getVolumeStats().getText())
-        .toEqual([ '0 of 73 issues read', '1 of 6 issues read', '24 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
+      debugger;
+      await libraryPage.expectVolumeStats(
+        [ '0 of 73 issues read', '1 of 6 issues read', '24 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
     });
 
     it('does not show that volume in the bookmarks', async () => {
       await bookmarksPage.navigateTo();
       expect(await bookmarksPage.getBookmarkTitles().count()).toBe(1);
-      expect(await bookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2\nVol. 2008' ]);
+      expect(await bookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
     });
   });
 });

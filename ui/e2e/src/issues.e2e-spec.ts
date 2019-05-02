@@ -24,8 +24,7 @@ describe('VolumesComponent', () => {
   });
 
   it('opens the list view for a volume', async () => {
-    await libraryPage.getSeries('Batgirl').click();
-    await libraryPage.waitForSeries('Batgirl');
+    await libraryPage.clickSeries('Batgirl');
     await libraryPage.getListButton('Vol. 2000').click();
     expect(await volumesPage.getIssues().count()).toBe(73);
   });

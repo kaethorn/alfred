@@ -25,7 +25,7 @@ export class BookmarksPage {
     return this.getBookmarkItems().all(by.css('ion-card-title'));
   }
 
-  async clickBookmarkMenuItem (volume: number, item: string) {
-    await this.page.clickMenuItem(this.getBookmarkItems().get(volume), item);
+  clickBookmarkMenuItem (volume: number, item: string) {
+    return this.page.clickMenuItem(this.getBookmarkItems().get(volume), item);
   }
 }

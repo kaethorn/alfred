@@ -37,7 +37,7 @@ describe('LibraryComponent', () => {
   });
 
   it('shows the read issue counter', async () => {
-    expect(await libraryPage.getVolumeStats().getText())
+    expect(await libraryPage.getVolumeStats())
       .toEqual([ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
   });
 
@@ -52,7 +52,7 @@ describe('LibraryComponent', () => {
     });
 
     it('updates its read issue counter', async () => {
-      expect(await libraryPage.getVolumeStats().getText())
+      expect(await libraryPage.getVolumeStats())
         .toEqual([ '73 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
     });
 
@@ -68,7 +68,7 @@ describe('LibraryComponent', () => {
     });
 
     it('updates its read issue counter', async () => {
-      expect(await libraryPage.getVolumeStats().getText())
+      expect(await libraryPage.getVolumeStats())
         .toEqual([ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
     });
 

@@ -1,4 +1,4 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { browser, by, element } from 'protractor';
 import { Page } from './page.po';
 
 export class LibraryPage {
@@ -28,29 +28,43 @@ export class LibraryPage {
     return element.all(by.css(this.selectVolumes));
   }
 
-  getPublisher (publisher: string) {
-    return element(by.cssContainingText(this.selectPublisher, publisher));
+  async clickPublisher (publisher: string) {
+    await this.page.waitForElement(this.getAllPublishers().first());
+    await element(by.cssContainingText(this.selectPublisher, publisher)).click();
   }
 
-  getSeries (series: string) {
-    return element(by.cssContainingText(this.selectSeries, series));
+  async clickSeries (series: string) {
+    await this.page.waitForElement(this.getAllSeries().first());
+    await element(by.cssContainingText(this.selectSeries, series)).click();
+  }
+
+  async clickVolumeListButton (volume: string) {
+    await this.page.waitForElement(this.getAllVolumes().first());
+    await element(by.cssContainingText(this.selectVolumes, volume))
+      .element(by.cssContainingText('ion-button', 'List')).click();
   }
 
   getVolumeTitles () {
     return element.all(by.css(`${ this.selectVolumes } ion-card-title`));
   }
 
-  getVolumeStats () {
+  getVolumeSubtitles () {
     return element.all(by.css(`${ this.selectVolumes } ion-card-subtitle`));
+  }
+
+  getVolumeStats () {
+    return this.getVolumeSubtitles().getText();
+  }
+
+  async expectVolumeStats (stats: string[]) {
+    for (let index = 0; index < stats.length; index++) {
+      await this.page.waitForText(this.getVolumeSubtitles().get(index), stats[index]);
+    }
+    expect(await this.getVolumeStats()).toEqual(stats);
   }
 
   getUnreadVolumes () {
     return element.all(by.css(this.selectVolumes)).all(by.css('a.mat-badge-hidden'));
-  }
-
-  getVolumeListButton (volume: string) {
-    return element(by.cssContainingText(this.selectVolumes, volume))
-      .element(by.cssContainingText('ion-button', 'List'));
   }
 
   get markVolumeAsReadButton () {
@@ -59,13 +73,5 @@ export class LibraryPage {
 
   async clickVolumeMenuItem (volume: string, item: string) {
     await this.page.clickMenuItem(element(by.cssContainingText(this.selectVolumes, volume)), item);
-  }
-
-  async waitForSeries () {
-    await browser.wait(ExpectedConditions.elementToBeClickable(this.getAllSeries().first()), 200);
-  }
-
-  async waitForVolumes () {
-    await browser.wait(ExpectedConditions.elementToBeClickable(this.getAllVolumes().first()), 200);
   }
 }
