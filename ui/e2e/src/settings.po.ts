@@ -1,6 +1,14 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { browser, by, element, ExpectedConditions, WebElement } from 'protractor';
+import { Page } from './page.po';
 
 export class SettingsPage {
+
+  private page: Page;
+
+  constructor () {
+    this.page = new Page();
+  }
+
   navigateTo () {
     return browser.get('/settings');
   }
@@ -10,11 +18,12 @@ export class SettingsPage {
   }
 
   getSaveButton () {
-    return element(by.buttonText('SAVE'));
+    return element(by.cssContainingText('app-preferences ion-button', 'SAVE'));
   }
 
-  getError () {
-    return element(by.css('mat-error'));
+  async getConfirmationMessage () {
+    await browser.sleep(300);
+    return (await this.page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
   }
 
   private get progress () {

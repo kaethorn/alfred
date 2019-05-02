@@ -1,7 +1,12 @@
 import { SettingsPage } from './settings.po';
+import { MongoDBTools } from './mongodb.tools';
 
 describe('SettingsPage', () => {
   let settingsPage: SettingsPage;
+
+  beforeAll(async () => {
+    await MongoDBTools.prepare();
+  });
 
   beforeEach(async () => {
     settingsPage = new SettingsPage();
@@ -14,13 +19,12 @@ describe('SettingsPage', () => {
   });
 
   it('sets preferences', async () => {
-    await settingsPage.navigateTo();
     await settingsPage.getComicsPathInput().clear();
     await settingsPage.getComicsPathInput().sendKeys('some-other-path');
     await settingsPage.getSaveButton().click();
   });
 
-  it('does not produce an error', async () => {
-    expect(await settingsPage.getError().isPresent()).toBe(false);
+  it('confirms that settings are saved', async () => {
+    expect(await settingsPage.getConfirmationMessage()).toEqual('Settings saved.');
   });
 });

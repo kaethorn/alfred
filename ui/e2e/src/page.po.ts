@@ -27,4 +27,11 @@ export class Page {
     await browser.executeScript('arguments[0].scrollIntoView(true)', target.getWebElement());
     await browser.sleep(200);
   }
+
+  // Work around broken by.deepCss
+  getShadowRoot (parentSelector: string, childSelector: string) {
+    return browser.executeScript(
+      'return document.querySelector(arguments[0]).shadowRoot.querySelector(arguments[1]);',
+      parentSelector, childSelector);
+  }
 }
