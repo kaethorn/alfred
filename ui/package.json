@@ -9,10 +9,10 @@
     "build": "ng build",
     "buildProd": "ng build --prod",
     "test": "ng test",
-    "testHeadless": "ng test --prod --watch=false --progress=false --code-coverage --browsers ChromeHeadless",
+    "testHeadless": "ng test -c ci",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "e2eHeadless": "ng e2e --protractor-config=e2e/protractor.headless.conf.js --dev-server-target=",
+    "e2eHeadless": "ng e2e -c ci",
     "protractor": "protractor e2e/protractor.conf.js",
     "protractorHeadless": "protractor e2e/protractor.headless.conf.js"
   },
