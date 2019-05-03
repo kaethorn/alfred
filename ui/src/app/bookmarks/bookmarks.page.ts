@@ -47,6 +47,6 @@ export class BookmarksPage {
     popover.onWillDismiss().finally(() => {
       this.list();
     });
-    return await popover.present();
+    await popover.present();
   }
 }

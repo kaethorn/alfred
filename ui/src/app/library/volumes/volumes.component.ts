@@ -72,7 +72,7 @@ export class VolumesComponent {
     popover.onWillDismiss().finally(() => {
       this.list(this.publisher, this.series);
     });
-    return await popover.present();
+    await popover.present();
   }
 
   filter (value: string) {
