@@ -9,10 +9,10 @@ import { Preference } from './preference';
   providedIn: 'root'
 })
 export class PreferencesService {
-  constructor (private http: HttpClient) {}
 
-  private readonly listUrl = 'api/preferences';
-  private readonly getUrl = 'api/preferences/search/findByKey?key=';
+  constructor (
+    private http: HttpClient
+  ) { }
 
   private consumeHateoas (): any {
     return map((data: any) => data._embedded.preferences);
@@ -24,19 +24,19 @@ export class PreferencesService {
   }
 
   list (): Observable<Preference[]> {
-    return this.http.get(this.listUrl).pipe(
+    return this.http.get('api/preferences').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map((item) => this.addId(item)))
     );
   }
 
   get (key: string): Observable<Preference> {
-    return this.http.get<Preference>(`${ this.getUrl }${ key }`).pipe(
+    return this.http.get<Preference>(`api/preferences/search/findByKey?key=${ key }`).pipe(
       map((item: any) => this.addId(item))
     );
   }
 
   update (preference: Preference): Observable<Preference> {
-    return this.http.put<Preference>(`${ this.listUrl }/${ preference.id }`, preference);
+    return this.http.put<Preference>(`api/preferences/${ preference.id }`, preference);
   }
 }

@@ -12,7 +12,7 @@ export class StatsService {
 
   constructor (
     private http: HttpClient
-  ) {}
+  ) { }
 
   get (): Observable<Stats> {
     return this.http.get<Stats>('api/stats').pipe(

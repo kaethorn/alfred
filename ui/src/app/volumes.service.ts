@@ -12,7 +12,10 @@ import { Comic } from './comic';
   providedIn: 'root'
 })
 export class VolumesService {
-  constructor (private http: HttpClient) {}
+
+  constructor (
+    private http: HttpClient
+  ) { }
 
   private consumeHateoas (namespace: string): any {
     return map((data: any) => {
@@ -21,32 +24,32 @@ export class VolumesService {
   }
 
   listPublishers (): Observable<Publisher[]> {
-    return this.http.get(this.publishersUrl).pipe(
+    return this.http.get('/api/publishers').pipe(
       this.consumeHateoas('publishers')
     );
   }
 
   listSeries (publisher: string): Observable<Series[]> {
-    return this.http.get(`${ this.publishersUrl }/${ publisher }/series`).pipe(
+    return this.http.get(`/api/publishers/${ publisher }/series`).pipe(
       this.consumeHateoas('series')
     );
   }
 
   listVolumes (publisher: string, series: string): Observable<Volume[]> {
-    return this.http.get(`${ this.publishersUrl }/${ publisher }/series/${ series }/volumes`).pipe(
+    return this.http.get(`/api/publishers/${ publisher }/series/${ series }/volumes`).pipe(
       this.consumeHateoas('volumes')
     );
   }
 
   markAsRead (volume: Volume): Observable<Volume> {
-    return this.http.put<Volume>(`${ this.markAsReadUrl }`, volume);
+    return this.http.put<Volume>('/api/volumes/markAsRead', volume);
   }
 
   markAsUnread (volume: Volume): Observable<Volume> {
-    return this.http.put<Volume>(`${ this.markAsUnreadUrl }`, volume);
+    return this.http.put<Volume>('/api/volumes/markAsUnread', volume);
   }
 
   markAllAsReadUntil (comic: Comic): Observable<any> {
-    return this.http.put(this.markAllAsReadUntilUrl, comic);
+    return this.http.put('api/volumes/markAllAsReadUntil', comic);
   }
 }
