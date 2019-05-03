@@ -1,4 +1,4 @@
-export interface Preference {
+export interface Setting {
   id: string;
   key: string;
   name: string;

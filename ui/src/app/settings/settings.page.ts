@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
-import { PreferencesService } from '../preferences.service';
-import { Preference } from '../preference';
+import { SettingsService } from '../settings.service';
+import { Setting } from '../setting';
 
 @Component({
-  selector: 'app-preferences',
-  templateUrl: './preferences.page.html',
-  styleUrls: ['./preferences.page.sass']
+  selector: 'app-settings',
+  templateUrl: './settings.page.html',
+  styleUrls: ['./settings.page.sass']
 })
-export class PreferencesPage {
+export class SettingsPage {
 
-  preferences: Preference[] = [];
+  settings: Setting[] = [];
   updateError: any;
 
   constructor (
-    private preferencesService: PreferencesService,
+    private settingsService: SettingsService,
     private toastController: ToastController
   ) { }
 
@@ -24,8 +24,8 @@ export class PreferencesPage {
   }
 
   onSubmit () {
-    for (const preference of this.preferences) {
-      this.preferencesService.update(preference)
+    for (const setting of this.settings) {
+      this.settingsService.update(setting)
         .subscribe(
           () => this.showToast('Settings saved.'),
           (error) => this
@@ -43,9 +43,9 @@ export class PreferencesPage {
   }
 
   private list () {
-    this.preferencesService.list()
-      .subscribe((data: Preference[]) => {
-        this.preferences = data;
+    this.settingsService.list()
+      .subscribe((data: Setting[]) => {
+        this.settings = data;
       });
   }
 }

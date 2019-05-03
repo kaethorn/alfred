@@ -1,4 +1,4 @@
-package de.wasenweg.alfred.preferences;
+package de.wasenweg.alfred.settings;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Document
-public class Preference {
+public class Setting {
 
     @Id
     private String id;
@@ -31,7 +31,7 @@ public class Preference {
     @Override
     public String toString() {
         return String.format(
-                "Preference[id=%s, key='%s', value='%s']",
+                "Setting[id=%s, key='%s', value='%s']",
                 id, key, value);
     }
 }

@@ -18,7 +18,7 @@ export class SettingsPage {
   }
 
   getSaveButton () {
-    return element(by.cssContainingText('app-preferences ion-button', 'SAVE'));
+    return element(by.cssContainingText('app-settings ion-button', 'SAVE'));
   }
 
   async getConfirmationMessage () {

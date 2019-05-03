@@ -2,7 +2,7 @@ package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
-import de.wasenweg.alfred.preferences.PreferencesService;
+import de.wasenweg.alfred.settings.SettingsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
@@ -29,7 +29,7 @@ public class ScannerService {
     private ComicRepository comicRepository;
 
     @Autowired
-    private PreferencesService preferencesService;
+    private SettingsService preferencesService;
 
     private void sendEvent(final String data, final String name) {
         emitter.onNext(

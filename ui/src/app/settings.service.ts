@@ -3,19 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Preference } from './preference';
+import { Setting } from './setting';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PreferencesService {
+export class SettingsService {
 
   constructor (
     private http: HttpClient
   ) { }
 
   private consumeHateoas (): any {
-    return map((data: any) => data._embedded.preferences);
+    return map((data: any) => data._embedded.settings);
   }
 
   private addId (item: any): any {
@@ -23,20 +23,20 @@ export class PreferencesService {
     return item;
   }
 
-  list (): Observable<Preference[]> {
-    return this.http.get('api/preferences').pipe(
+  list (): Observable<Setting[]> {
+    return this.http.get('api/settings').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map((item) => this.addId(item)))
     );
   }
 
-  get (key: string): Observable<Preference> {
-    return this.http.get<Preference>(`api/preferences/search/findByKey?key=${ key }`).pipe(
+  get (key: string): Observable<Setting> {
+    return this.http.get<Setting>(`api/settings/search/findByKey?key=${ key }`).pipe(
       map((item: any) => this.addId(item))
     );
   }
 
-  update (preference: Preference): Observable<Preference> {
-    return this.http.put<Preference>(`api/preferences/${ preference.id }`, preference);
+  update (setting: Setting): Observable<Setting> {
+    return this.http.put<Setting>(`api/settings/${ setting.id }`, setting);
   }
 }

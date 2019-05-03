@@ -12,13 +12,13 @@ describe('SettingsPage', () => {
     settingsPage = new SettingsPage();
   });
 
-  it('has default preferences', async () => {
+  it('has default settings', async () => {
     await settingsPage.navigateTo();
-    const preference: string = await settingsPage.getComicsPathInput().getAttribute('value');
-    expect(preference.length).toBeGreaterThan(0);
+    const setting: string = await settingsPage.getComicsPathInput().getAttribute('value');
+    expect(setting.length).toBeGreaterThan(0);
   });
 
-  it('sets preferences', async () => {
+  it('sets settings', async () => {
     await settingsPage.getComicsPathInput().clear();
     await settingsPage.getComicsPathInput().sendKeys('some-other-path');
     await settingsPage.getSaveButton().click();

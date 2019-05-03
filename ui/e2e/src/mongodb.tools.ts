@@ -11,7 +11,7 @@ export class MongoDBTools {
       });
       mongoose.connection.once('open', () => {
         mongoose.connection.db.dropDatabase().then(() => {
-          mongoose.connection.db.createCollection('preference').then(collection => {
+          mongoose.connection.db.createCollection('setting').then(collection => {
             collection.insertOne({
               key    : 'comics.path',
               name   : 'Path',

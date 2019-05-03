@@ -8,7 +8,7 @@ const routes: Routes = [
   { path: 'browse/:id/:page', loadChildren: './browser/browser.module#BrowserPageModule' },
   { path: 'read/:id/:page', loadChildren: './reader/reader.module#ReaderPageModule' },
   { path: 'bookmarks', loadChildren: './bookmarks/bookmarks.module#BookmarksPageModule' },
-  { path: 'settings', loadChildren: './preferences/preferences.module#PreferencesPageModule' }
+  { path: 'settings', loadChildren: './settings/settings.module#SettingsPageModule' }
 ];
 
 @NgModule({

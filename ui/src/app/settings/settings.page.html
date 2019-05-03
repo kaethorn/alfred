@@ -13,20 +13,20 @@
   <ion-card>
     <ion-card-header>Server settings</ion-card-header>
     <ion-card-content>
-      <form (ngSubmit)="onSubmit()" #preferencesForm="ngForm">
+      <form (ngSubmit)="onSubmit()" #settingsForm="ngForm">
         <ion-list lines="none">
-          <ion-item *ngFor="let preference of preferences">
+          <ion-item *ngFor="let setting of settings">
             <ion-label position="floating">
-              <p>{{ preference.comment }}</p>
+              <p>{{ setting.comment }}</p>
             </ion-label>
-            <ion-input placeholder="{{ preference.name }}" required
-              [(ngModel)]="preference.value" name="{{ preference.key }}"
+            <ion-input placeholder="{{ setting.name }}" required
+              [(ngModel)]="setting.value" name="{{ setting.key }}"
               #value="ngModel">
             </ion-input>
           </ion-item>
           <ion-item>
             <ion-button type="submit" color="primary" slot="end"
-              [disabled]="!preferencesForm.form.valid">
+              [disabled]="!settingsForm.form.valid">
               SAVE
             </ion-button>
           </ion-item>

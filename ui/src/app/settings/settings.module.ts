@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
-import { PreferencesPage } from './preferences.page';
+import { SettingsPage } from './settings.page';
 import { ScannerComponent } from './scanner/scanner.component';
 
 @NgModule({
@@ -14,12 +14,12 @@ import { ScannerComponent } from './scanner/scanner.component';
     IonicModule,
     RouterModule.forChild([{
       path: '',
-      component: PreferencesPage
+      component: SettingsPage
     }])
   ],
   declarations: [
-    PreferencesPage,
+    SettingsPage,
     ScannerComponent
   ]
 })
-export class PreferencesPageModule {}
+export class SettingsPageModule {}
