@@ -21,6 +21,7 @@ describe('IssuesPage', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(IssuesPage);
     component = fixture.componentInstance;
+    component.ionViewDidEnter();
     fixture.detectChanges();
   });
 

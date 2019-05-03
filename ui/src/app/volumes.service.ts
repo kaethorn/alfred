@@ -14,11 +14,6 @@ import { Comic } from './comic';
 export class VolumesService {
   constructor (private http: HttpClient) {}
 
-  private readonly publishersUrl = '/api/publishers';
-  private readonly markAsReadUrl = '/api/volumes/markAsRead';
-  private readonly markAsUnreadUrl = '/api/volumes/markAsUnread';
-  private readonly markAllAsReadUntilUrl = 'api/volumes/markAllAsReadUntil';
-
   private consumeHateoas (namespace: string): any {
     return map((data: any) => {
       return (data._embedded ? data._embedded[namespace] : []);

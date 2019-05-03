@@ -21,6 +21,7 @@ describe('BrowserPage', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BrowserPage);
     component = fixture.componentInstance;
+    component.ionViewDidEnter();
     fixture.detectChanges();
   });
 

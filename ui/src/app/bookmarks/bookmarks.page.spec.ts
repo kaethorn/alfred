@@ -21,6 +21,7 @@ describe('BookmarksPage', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BookmarksPage);
     component = fixture.componentInstance;
+    component.ionViewDidEnter();
     fixture.detectChanges();
   });
 

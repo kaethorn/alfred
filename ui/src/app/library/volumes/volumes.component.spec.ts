@@ -21,6 +21,7 @@ describe('VolumesComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(VolumesComponent);
     component = fixture.componentInstance;
+    component.ionViewDidEnter();
     fixture.detectChanges();
   });
 
