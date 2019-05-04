@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="100mm"
+   height="100mm"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg3925"
+   inkscape:version="0.92.2 2405546, 2018-03-11"
+   sodipodi:docname="alfred-splash.svg"
+   inkscape:export-filename="/home/falko/src/alfred/alfred-splash.png"
+   inkscape:export-xdpi="2032"
+   inkscape:export-ydpi="2032">
+  <defs
+     id="defs3919" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8187642"
+     inkscape:cx="94.982104"
+     inkscape:cy="181.66438"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2556"
+     inkscape:window-height="1404"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="0"
+     inkscape:snap-object-midpoints="true"
+     inkscape:snap-center="true"
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-page="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:bbox-nodes="true"
+     inkscape:bbox-paths="true"
+     inkscape:snap-bbox-midpoints="true"
+     showguides="false" />
+  <metadata
+     id="metadata3922">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-54.376828,-67.275865)">
+    <g
+       id="g4642"
+       transform="matrix(0.680257,0,0,0.680257,33.373761,36.253922)">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3992"
+         d="m 79.513068,134.2154 c -0.924991,-0.3787 -0.854388,1.1501 -0.854388,-18.50031 0,-19.114386 -0.03249,-18.222886 0.685986,-18.818216 0.175261,-0.14522 1.386703,-0.83528 2.692091,-1.53346 l 2.373437,-1.26942 0.395527,0.68695 c 0.21754,0.37783 4.723701,8.508906 10.01369,18.069056 5.289989,9.56014 9.660909,17.34093 9.713149,17.29063 0.0827,-0.0796 4.61523,-8.26461 16.81845,-30.371136 2.84272,-5.14968 3.1723,-5.69079 3.36957,-5.53207 0.12024,0.0968 1.2629,0.95324 2.53922,1.90327 1.8603,1.38472 2.37116,1.83216 2.57563,2.25583 0.24676,0.5113 0.25516,1.09045 0.258,17.795146 0.004,19.17514 0.0777,17.65231 -0.88094,18.02908 -0.65878,0.25895 -49.066627,0.25373 -49.699422,-0.006 z M 103.11,116.62214 c -2.4784,-1.16301 -2.46725,-4.45166 0.019,-5.61321 0.35566,-0.16617 0.79778,-0.23909 1.44943,-0.23909 0.78352,0 1.04152,0.0574 1.56941,0.34933 1.95869,1.08311 2.25859,3.48976 0.61906,4.96815 -0.24591,0.22173 -0.67121,0.49107 -0.94511,0.59854 -0.70646,0.27718 -2.05277,0.24555 -2.71182,-0.0637 z m 0.5969,-10.19133 c -1.50129,-0.42958 -2.43707,-1.60292 -2.43707,-3.05577 0,-1.2204 0.80247,-2.36148 1.98855,-2.82766 0.58912,-0.23156 1.94672,-0.21982 2.56344,0.0222 1.04128,0.40855 1.85544,1.4567 1.99547,2.56893 0.25888,2.05617 -2.02827,3.88816 -4.11039,3.29236 z M 91.605841,95.355364 c -0.195593,-0.20331 -0.22169,-0.66208 -0.22169,-3.89727 0,-3.97509 0.0159,-4.06286 0.736604,-4.06286 0.173587,0 2.222933,0.45715 4.554106,1.01588 l 4.238499,1.01588 0.53128,-0.56778 c 0.79915,-0.85404 1.81708,-1.27592 3.06684,-1.27105 1.29212,0.005 2.17047,0.35795 3.02185,1.21417 l 0.62042,0.62395 4.28497,-1.02287 c 2.35674,-0.56258 4.44429,-1.00539 4.63897,-0.98402 0.63901,0.0701 0.69095,0.37239 0.6931,4.03369 0.002,3.5155 -0.056,3.92702 -0.57518,4.08206 -0.15566,0.0465 -2.11472,-0.36133 -4.65915,-0.96985 l -4.39057,-1.05003 -0.52768,0.56393 c -1.22079,1.30465 -3.32149,1.67348 -4.98484,0.87523 -0.30984,-0.1487 -0.82933,-0.52781 -1.15442,-0.84246 l -0.59108,-0.57211 -4.348532,1.02297 c -2.391691,0.56264 -4.430267,1.02297 -4.530169,1.02297 -0.0999,0 -0.281399,-0.10369 -0.403328,-0.23043 z"
+         style="fill:#000000;stroke-width:0.1299198" />
+      <text
+         id="text4618"
+         y="150.77478"
+         x="78.514336"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.93333244px;line-height:1.25;font-family:Sinaloa;-inkscape-font-specification:'Sinaloa, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.93333244px;font-family:Sinaloa;-inkscape-font-specification:'Sinaloa, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.26458332"
+           y="150.77478"
+           x="78.514336"
+           id="tspan4616"
+           sodipodi:role="line">Alfred</tspan></text>
+    </g>
+  </g>
+</svg>

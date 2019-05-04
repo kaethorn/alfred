@@ -27,9 +27,9 @@ export class AppComponent {
     private statusBar: StatusBar,
     private userService: UserService
   ) {
-    this.initializeApp();
     this.userService.get().subscribe((user: User) => {
       this.user = user;
+      this.initializeApp();
     });
   }
 
