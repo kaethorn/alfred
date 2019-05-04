@@ -4,9 +4,21 @@
 
 # Alfred
 
-A [Plex](https://www.plex.tv/) like comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
+A web based comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
 
 ![Alfred](./alfred.svg)
+
+## Features
+
+* Browse and read comics on your network.
+* Web application.
+* Mobile application (Android or iOS).
+
+## Stack
+
+* Spring Boot 2.
+* MongoDB.
+* Ionic v4 application.
 
 ## Requirements
 
@@ -86,14 +98,9 @@ To run the application on the host system directly, make sure to have a MongoDB 
 
 The application will now be available at <http://localhost:8080>.
 
-## Stack
-
-* Spring Boot 2 App using MongoDB.
-* Angular 7 UI with Material design.
-
 ## Develop
 
-### E2E tests
+### End-to-end tests
 
 #### Preparation
 
@@ -107,7 +114,7 @@ docker network connect alfred-net mongo
 
 ./gradlew build docker -x test
 
-docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v /home/falko/src/comix/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
+docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=test -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v $PWD/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
 ```
 
 Install dependencies

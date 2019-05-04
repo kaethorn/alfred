@@ -1,9 +1,8 @@
 package de.wasenweg.alfred.publisher;
 
-import com.mongodb.BasicDBObject;
-
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.progress.ProgressHelper;
+import de.wasenweg.alfred.volumes.Volume;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -26,11 +26,39 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<Publisher> findAll(final String userId) {
+    public List<Publisher> findAllPublishers(final String userId) {
         return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+            group("publisher", "series"),
+            group("publisher")
+                .last("_id.publisher").as("publisher")
+                .count().as("seriesCount"),
+            sort(Sort.Direction.ASC, "publisher")
+        ), Comic.class, Publisher.class).getMappedResults();
+    }
+
+    @Override
+    public List<Series> findAllSeries(final String userId, final String publisher) {
+        return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+            match(where("publisher").is(publisher)),
+            group("series", "volume")
+                .last("publisher").as("publisher"),
+            group("series")
+                .last("_id.series").as("series")
+                .last("publisher").as("publisher")
+                .count().as("volumesCount"),
+            sort(Sort.Direction.ASC, "series")
+        ), Comic.class, Series.class).getMappedResults();
+    }
+
+    @Override
+    public List<Volume> findAllVolumes(final String userId, final String publisher, final String series) {
+        return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+            match(where("publisher").is(publisher).and("series").is(series)),
             sort(Sort.Direction.ASC, "position"),
-            group("publisher", "series", "volume")
+            group("volume")
                 .last("volume").as("volume")
+                .last("series").as("series")
+                .last("publisher").as("publisher")
                 .count().as("issueCount")
                 .min("read").as("read")
                 .sum(ConditionalOperators
@@ -38,26 +66,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
                      .then(1).otherwise(0))
                      .as("readCount")
                 .first("thumbnail").as("thumbnail"),
-            sort(Sort.Direction.ASC, "volume"),
-            group("publisher", "series")
-                .last("series").as("series")
-                .push(new BasicDBObject() {{
-                    put("volume", "$_id.volume");
-                    put("series", "$_id.series");
-                    put("publisher", "$_id.publisher");
-                    put("issueCount", "$issueCount");
-                    put("read", "$read");
-                    put("readCount", "$readCount");
-                    put("thumbnail", "$thumbnail");
-                }}).as("volumes"),
-            sort(Sort.Direction.DESC, "series"),
-            group("_id.publisher")
-                .last("_id.publisher").as("publisher")
-                .push(new BasicDBObject() {{
-                    put("series", "$_id.series");
-                    put("volumes", "$volumes");
-                }}).as("series"),
-            sort(Sort.Direction.ASC, "publisher")
-        ), Comic.class, Publisher.class).getMappedResults();
+            sort(Sort.Direction.ASC, "volume")
+        ), Comic.class, Volume.class).getMappedResults();
     }
 }

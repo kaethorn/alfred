@@ -1,11 +1,15 @@
 import { browser, by, element } from 'protractor';
 
 export class AppPage {
-  navigateTo() {
+  navigateTo () {
     return browser.get('/');
   }
 
-  getTitleText() {
-    return element(by.css('app-root mat-toolbar mat-toolbar-row')).getText();
+  getTitleText () {
+    return element(by.css('app-root ion-toolbar ion-title')).getText();
+  }
+
+  getPublishersText () {
+    return element(by.css('app-publishers')).getText();
   }
 }

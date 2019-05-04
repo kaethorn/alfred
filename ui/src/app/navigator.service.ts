@@ -8,7 +8,7 @@ export class NavigatorService {
   private pageCount: number;
   private sideBySide: boolean;
 
-  constructor() {}
+  constructor () {}
 
   set (pageCount: number, currentPage: number, sideBySide: boolean) {
     NavigatorService.page = currentPage;
