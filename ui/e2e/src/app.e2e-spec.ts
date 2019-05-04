@@ -1,4 +1,5 @@
 import { AppPage } from './app.po';
+import { MongoDBTools } from './mongodb.tools';
 
 describe('AppComponent', () => {
   let appPage: AppPage;
@@ -7,8 +8,17 @@ describe('AppComponent', () => {
     appPage = new AppPage();
   });
 
-  it('should display welcome message', async () => {
+  beforeAll(async () => {
+    await MongoDBTools.prepare();
+  });
+
+  it('displays the top level library view', async () => {
     await appPage.navigateTo();
-    expect(await appPage.getTitleText()).toContain('Alfred');
+    expect(await appPage.getTitleText()).toContain('Publishers');
+  });
+
+  it('informs the user how to populate the library', async () => {
+    expect(await appPage.getPublishersText()).toContain('No comics found');
+    expect(await appPage.getPublishersText()).toContain('SCAN FOR COMICS');
   });
 });

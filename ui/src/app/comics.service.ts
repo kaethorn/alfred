@@ -9,29 +9,24 @@ import { Comic } from './comic';
   providedIn: 'root'
 })
 export class ComicsService {
-  constructor(private http: HttpClient) {}
 
-  private readonly scanUrl = 'api/scan';
-  private readonly comicsUrl = 'api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc';
-  private readonly lastUnreadsUrl = 'api/comics/search/findAllLastReadPerVolume';
-  private readonly lastUnreadUrl = 'api/comics/search/findLastReadForVolume';
-  private readonly comicsByVolumeUrl = 'api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition';
-  private readonly firstByVolumeUrl = 'api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition';
-  private readonly comicUrl = 'api/comics';
-  private readonly comicMarkAsReadUrl = 'api/comics/markAsRead';
-  private readonly comicMarkAsUnreadUrl = 'api/comics/markAsUnread';
+  constructor (
+    private http: HttpClient
+  ) {}
 
   private consumeHateoas (): any {
-    return map((data: any) => data._embedded.comics);
+    return map((data: any) => {
+      return (data._embedded ? data._embedded.comics : []);
+    });
   }
 
-  private addId(item: any): any {
+  private addId (item: any): any {
     item.id = item._links.self.href.split('/').pop();
     return item;
   }
 
   list (): Observable<Comic[]> {
-    return this.http.get(this.comicsUrl).pipe(
+    return this.http.get('api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map((comic) => this.addId(comic)))
     );
@@ -40,72 +35,72 @@ export class ComicsService {
   listByVolume (publisher: string, series: string, volume: string): Observable<Comic[]> {
     const params = new HttpParams({
       fromObject: {
-        publisher: publisher,
-        series: series,
-        volume: volume
+        publisher,
+        series,
+        volume
       }
     });
-    return this.http.get(this.comicsByVolumeUrl, { params: params }).pipe(
+    return this.http.get('api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition', { params }).pipe(
       this.consumeHateoas(),
       map((data: any) => data.map((comic) => this.addId(comic)))
     );
   }
 
   get (id: string): Observable<Comic> {
-    return this.http.get<Comic>(`${ this.comicUrl }/${ id }`).pipe(
+    return this.http.get<Comic>(`api/comics/${ id }`).pipe(
       map((comic: any) => this.addId(comic))
     );
   }
 
-  getLastUnreadByVolume(publisher: string, series: string, volume: string): Observable<Comic> {
+  getLastUnreadByVolume (publisher: string, series: string, volume: string): Observable<Comic> {
     const params = new HttpParams({
       fromObject: {
-        publisher: publisher,
-        series: series,
-        volume: volume
+        publisher,
+        series,
+        volume
       }
     });
-    return this.http.get<Comic>(this.lastUnreadUrl, { params: params }).pipe(
+    return this.http.get<Comic>('api/comics/search/findLastReadForVolume', { params }).pipe(
       map((comic: any) => this.addId(comic))
     );
   }
 
-  getFirstByVolume(publisher: string, series: string, volume: string): Observable<Comic> {
+  getFirstByVolume (publisher: string, series: string, volume: string): Observable<Comic> {
     const params = new HttpParams({
       fromObject: {
-        publisher: publisher,
-        series: series,
-        volume: volume
+        publisher,
+        series,
+        volume
       }
     });
-    return this.http.get<Comic>(this.firstByVolumeUrl, { params: params }).pipe(
+    return this.http.get<Comic>('api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition', { params }).pipe(
       map((comic: any) => this.addId(comic))
     );
   }
 
   scan (): Observable<any> {
-    return this.http.get(this.scanUrl);
+    return this.http.get('api/scan');
   }
 
-  listLastReadByVolume(): Observable<Comic[]> {
-    return this.http.get(this.lastUnreadsUrl).pipe(
+  listLastReadByVolume (): Observable<Comic[]> {
+    return this.http.get('api/comics/search/findAllLastReadPerVolume').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map((comic) => this.addId(comic)))
     );
   }
 
   update (comic: Comic): Observable<Comic> {
-    return this.http.put<Comic>(`${ this.comicUrl }/${ comic.id }`, comic);
+    return this.http.put<Comic>(`api/comics/${ comic.id }`, comic);
   }
 
   markAsRead (comic: Comic): Observable<any> {
-    return this.http.put<Comic>(`${ this.comicMarkAsReadUrl }`, comic).pipe(
+    return this.http.put<Comic>('api/comics/markAsRead', comic).pipe(
       map((result: Comic) => this.addId(result))
     );
   }
 
   markAsUnread (comic: Comic): Observable<any> {
-    return this.http.put<Comic>(`${ this.comicMarkAsUnreadUrl }`, comic).pipe(
+    return this.http.put<Comic>('api/comics/markAsUnread', comic).pipe(
       map((result: Comic) => this.addId(result))
     );
   }

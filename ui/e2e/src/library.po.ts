@@ -1,58 +1,91 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { browser, by, element, ElementFinder } from 'protractor';
 import { Page } from './page.po';
 
 export class LibraryPage {
 
   private page: Page;
-  private selectSeries = 'app-library .series mat-panel-title';
-  private selectVolume = 'mat-expansion-panel.mat-expanded app-volume';
+  private selectPublisher = 'app-publishers ion-item.publisher ion-button';
+  private selectSeries = 'app-series ion-item.serie ion-button';
+  private selectVolumes = 'app-volumes ion-card.volume';
 
-  constructor() {
+  constructor () {
     this.page = new Page();
   }
 
-  navigateTo() {
-    return browser.get('/library');
+  navigateTo () {
+    return browser.get('/library/publishers');
   }
 
-  getAllPublishers() {
-    return element.all(by.css('app-library .publisher h3'));
+  getAllPublishers () {
+    return element.all(by.css(this.selectPublisher));
   }
 
-  getAllSeries() {
+  getAllSeries () {
     return element.all(by.css(this.selectSeries));
   }
 
-  getSeries(series: string) {
-    return element(by.cssContainingText(this.selectSeries, series));
+  getAllVolumes () {
+    return element.all(by.css(this.selectVolumes));
   }
 
-  async waitForSeries(series: string) {
-    await browser.wait(ExpectedConditions.elementToBeClickable(this.getSeries(series)), 200);
+  async clickPublisher (publisher: string) {
+    await this.waitForPublishers();
+    await element(by.cssContainingText(this.selectPublisher, publisher)).click();
   }
 
-  getVolumeTitles() {
-    return element.all(by.css(`${ this.selectVolume } mat-card-title`));
+  async clickSeries (series: string) {
+    await this.waitForSeries();
+    await element(by.cssContainingText(this.selectSeries, series)).click();
   }
 
-  getVolumeStats() {
-    return element.all(by.css(`${ this.selectVolume } mat-card-subtitle`));
+  async clickVolumeListButton (volume: string) {
+    await this.waitForVolumes();
+    await element(by.cssContainingText(this.selectVolumes, volume))
+      .element(by.cssContainingText('ion-button', 'List')).click();
   }
 
-  getUnreadVolumes() {
-    return element.all(by.css(this.selectVolume)).all(by.css('a.mat-badge-hidden'));
+  getVolumeTitles () {
+    return element.all(by.css(`${ this.selectVolumes } ion-card-title`));
   }
 
-  getListButton(volume: string) {
-    return element(by.cssContainingText(this.selectVolume, volume))
-      .element(by.buttonText('LIST'));
+  getVolumeSubtitles () {
+    return element.all(by.css(`${ this.selectVolumes } ion-card-subtitle`));
   }
 
-  get markVolumeAsReadButton() {
-    return element(by.partialButtonText('Mark volume as read'));
+  getVolumeStats () {
+    return this.getVolumeSubtitles().getText();
   }
 
-  async clickVolumeMenuItem(volume: string, item: string) {
-    await this.page.clickMenuItem(element(by.cssContainingText(this.selectVolume, volume)), item);
+  async expectVolumeStats (stats: string[]) {
+    for (let index = 0; index < stats.length; index++) {
+      await this.page.waitForText(this.getVolumeSubtitles().get(index), stats[index]);
+    }
+    expect(await this.getVolumeStats()).toEqual(stats);
+  }
+
+  getUnreadVolumes () {
+    return this.getAllVolumes().filter((e, index) => {
+      return e.element(by.css('ion-badge.read-badge')).isPresent().then(present => !present);
+    });
+  }
+
+  get markVolumeAsReadButton () {
+    return element(by.cssContainingText('ion-button', 'Mark volume as read'));
+  }
+
+  async clickVolumeMenuItem (volume: string, item: string) {
+    await this.page.clickMenuItem(element(by.cssContainingText(this.selectVolumes, volume)), item);
+  }
+
+  waitForPublishers () {
+    return this.page.waitForElement(this.getAllPublishers().first());
+  }
+
+  waitForSeries () {
+    return this.page.waitForElement(this.getAllSeries().first());
+  }
+
+  waitForVolumes () {
+    return this.page.waitForElement(this.getAllVolumes().first());
   }
 }

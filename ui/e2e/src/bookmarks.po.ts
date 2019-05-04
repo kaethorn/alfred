@@ -5,23 +5,27 @@ export class BookmarksPage {
 
   private page: Page;
 
-  constructor() {
+  constructor () {
     this.page = new Page();
   }
 
-  navigateTo() {
+  navigateTo () {
     return browser.get('/bookmarks');
   }
 
-  getBookmarks() {
-    return element.all(by.css('app-bookmarks .comic-tile'));
+  getBookmarks () {
+    return element(by.css('app-bookmarks'));
   }
 
-  getBookmarkTitles() {
-    return this.getBookmarks().all(by.css('mat-card-header'));
+  getBookmarkItems () {
+    return this.getBookmarks().all(by.css('.comic-tile'));
   }
 
-  async clickBookmarkMenuItem(volume: number, item: string) {
-    await this.page.clickMenuItem(this.getBookmarks().get(volume), item);
+  getBookmarkTitles () {
+    return this.getBookmarkItems().all(by.css('ion-card-title'));
+  }
+
+  clickBookmarkMenuItem (volume: number, item: string) {
+    return this.page.clickMenuItem(this.getBookmarkItems().get(volume), item);
   }
 }

@@ -8,16 +8,16 @@ import { User } from './user';
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private http: HttpClient) {}
 
-  private readonly userUrl = 'api/user';
-  private readonly logoutUrl = '/logout';
+  constructor (
+    private http: HttpClient
+  ) { }
 
   get (): Observable<User> {
-    return this.http.get<User>(this.userUrl);
+    return this.http.get<User>('api/user');
   }
 
   logout (): Observable<any> {
-    return this.http.post(this.logoutUrl, {}, { responseType: 'text' });
+    return this.http.post('/logout', {}, { responseType: 'text' });
   }
 }

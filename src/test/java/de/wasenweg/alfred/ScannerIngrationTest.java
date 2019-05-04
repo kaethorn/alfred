@@ -1,8 +1,8 @@
 package de.wasenweg.alfred;
 
 import de.wasenweg.alfred.comics.ComicRepository;
-import de.wasenweg.alfred.preferences.Preference;
-import de.wasenweg.alfred.preferences.PreferenceRepository;
+import de.wasenweg.alfred.settings.Setting;
+import de.wasenweg.alfred.settings.SettingRepository;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,14 +34,14 @@ public class ScannerIngrationTest {
     private int port;
 
     @Autowired
-    private PreferenceRepository preferenceRepository;
+    private SettingRepository preferenceRepository;
 
     @Autowired
     private ComicRepository comicRepository;
 
     @Before
     public void setUp() {
-        final Preference comicsPath = preferenceRepository.findByKey("comics.path").get();
+        final Setting comicsPath = preferenceRepository.findByKey("comics.path").get();
         comicsPath.setValue("src/test/resources/fixtures/simple");
         preferenceRepository.save(comicsPath);
     }

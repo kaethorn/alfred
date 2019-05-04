@@ -1,11 +1,37 @@
-import { browser, by, element, ElementFinder } from 'protractor';
+import { browser, by, element, ExpectedConditions, ElementFinder } from 'protractor';
 
 export class Page {
 
-  async clickMenuItem(target: ElementFinder, item: string) {
-    await target.element(by.cssContainingText('mat-icon', 'more_vert')).click();
+  async clickMenuItem (target: ElementFinder, item: string) {
+    await target.element(by.css('ion-icon[name="more"]')).click();
+    const button = element(by.cssContainingText('ion-item', item));
+    await this.waitForElement(button);
+    await element(by.cssContainingText('ion-item', item)).click();
+  }
 
-    await browser.sleep(500);
-    await element(by.partialButtonText(item)).click();
+  /**
+   * Waits for the given element to be clickable, especially
+   * when it's already in the DOM due to being on another
+   * page.
+   */
+  async waitForElement (target: ElementFinder) {
+    await browser.wait(ExpectedConditions.elementToBeClickable(target), 2000);
+  }
+
+  async waitForText (target: ElementFinder, text: string) {
+    await this.waitForElement(target);
+    await browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2500);
+  }
+
+  async scrollIntoView (target: ElementFinder) {
+    await browser.executeScript('arguments[0].scrollIntoView(true)', target.getWebElement());
+    await browser.sleep(200);
+  }
+
+  // Work around broken by.deepCss
+  getShadowRoot (parentSelector: string, childSelector: string) {
+    return browser.executeScript(
+      'return document.querySelector(arguments[0]).shadowRoot.querySelector(arguments[1]);',
+      parentSelector, childSelector);
   }
 }

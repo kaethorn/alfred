@@ -1,25 +1,20 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-
-import { LibraryComponent } from './library/library.component';
-import { VolumesComponent } from './volumes/volumes.component';
-import { BrowserComponent } from './browser/browser.component';
-import { PreferencesComponent } from './preferences/preferences.component';
-import { ReaderComponent } from './reader/reader.component';
-import { BookmarksComponent } from './bookmarks/bookmarks.component';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/bookmarks', pathMatch: 'full' },
-  { path: 'library', component: LibraryComponent },
-  { path: 'volumes/:publisher/:series/:volume', component: VolumesComponent },
-  { path: 'browse/:id/:page', component: BrowserComponent },
-  { path: 'read/:id/:page', component: ReaderComponent },
-  { path: 'preferences', component: PreferencesComponent },
-  { path: 'bookmarks', component: BookmarksComponent }
+  { path: '', redirectTo: 'library', pathMatch: 'full' },
+  { path: 'library', loadChildren: './library/library.module#LibraryPageModule' },
+  { path: 'issues/:publisher/:series/:volume', loadChildren: './issues/issues.module#IssuesPageModule' },
+  { path: 'browse/:id/:page', loadChildren: './browser/browser.module#BrowserPageModule' },
+  { path: 'read/:id/:page', loadChildren: './reader/reader.module#ReaderPageModule' },
+  { path: 'bookmarks', loadChildren: './bookmarks/bookmarks.module#BookmarksPageModule' },
+  { path: 'settings', loadChildren: './settings/settings.module#SettingsPageModule' }
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
-  exports: [ RouterModule ]
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+  ],
+  exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
