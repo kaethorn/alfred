@@ -1,9 +1,10 @@
 {
-  "name": "ionicApp",
+  "name": "Alfred",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Falko Schmidt <scf@panter.ch>",
+  "homepage": "https://alfred.cx/",
   "scripts": {
+    "ionic": "ionic",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -28,9 +29,11 @@
     "@angular/router": "^7.2.2",
     "@angular/service-worker": "^7.2.2",
     "@ionic-native/core": "^5.0.0",
-    "@ionic-native/splash-screen": "^5.0.0",
+    "@ionic-native/splash-screen": "^5.5.1",
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^4.1.0",
+    "cordova-android": "8.0.0",
+    "cordova-plugin-splashscreen": "5.0.2",
     "core-js": "^2.5.4",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
@@ -50,6 +53,12 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~10.14.2",
     "codelyzer": "~4.5.0",
+    "cordova": "^9.0.0",
+    "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-ionic-keyboard": "^2.1.3",
+    "cordova-plugin-ionic-webview": "^4.0.1",
+    "cordova-plugin-statusbar": "^2.4.2",
+    "cordova-plugin-whitelist": "^1.3.3",
     "hammerjs": "^2.0.8",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -65,5 +74,20 @@
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "~3.1.6"
   },
-  "description": "An Ionic project"
+  "description": "Manage and read your comics.",
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
+      "cordova-plugin-ionic-keyboard": {}
+    },
+    "platforms": [
+      "android"
+    ]
+  }
 }
