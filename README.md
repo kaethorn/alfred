@@ -151,4 +151,6 @@ node --inspect-brk node_modules/protractor/bin/protractor e2e/protractor.conf.js
 
 ## Enjoy
 
-![A Screenshot](docs/screenshots/alfred.png?raw=true)
+![Screenhot 1](docs/screenshots/alfred1.png?raw=true)
+![Screenhot 2](docs/screenshots/alfred2.png?raw=true)
+![Screenhot 3](docs/screenshots/alfred3.png?raw=true)
