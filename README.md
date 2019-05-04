@@ -2,45 +2,41 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/kaethorn/alfred/badge)](https://www.codefactor.io/repository/github/kaethorn/alfred)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ef19770451cb4dc692488da4382f9ffc)](https://app.codacy.com/app/scf/alfred?utm_source=github.com&utm_medium=referral&utm_content=kaethorn/alfred&utm_campaign=Badge_Grade_Dashboard)
 
-# Alfred
+# Features
 
 A web based comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
-
-![Alfred](art/alfred.svg)
-
-## Features
 
 * Browse and read comics on your network.
 * Web application.
 * Mobile application (Android or iOS).
 
-## Stack
+# Stack
 
 * Spring Boot 2.
 * MongoDB.
 * Ionic v4 application.
 
-## Requirements
+# Requirements
 
 * Java 8
 * A MongoDB
 * (optional) Docker
 * Zipped comic book files (.cbz) containing embedded `ComicInfo.xml` metadata files from ComicRack, see [docs](http://comicrack.cyolito.com/software/windows/windows-documentation/7-meta-data-in-comic-files).
 
-## Run
+# Run
 
-### Docker using Gradle
+## Docker using Gradle
 
 ```sh
 ./gradlew build docker
 docker run de.wasenweg/alfred
 ```
 
-### Docker manually
+## Docker manually
 
 This will basically replicate what the Gradle docker plugin manages.
 
-#### 1. Network
+### 1. Network
 
 Set up a common network:
 
@@ -48,7 +44,7 @@ Set up a common network:
 docker network create alfred-net
 ```
 
-#### 2a. New MongoDB
+### 2a. New MongoDB
 
 Set up a new MongoDB connected to the network:
 
@@ -56,7 +52,7 @@ Set up a new MongoDB connected to the network:
 docker run --name mongo -p 27017:27017 --net=alfred-net mongo
 ```
 
-#### 2b. Existing MongoDB
+### 2b. Existing MongoDB
 
 If you want to use an existing MongoDB instead, run and connect it to the network:
 
@@ -65,7 +61,7 @@ docker start mongo
 docker network connect alfred-net mongo
 ```
 
-#### 3. Build
+### 3. Build
 
 Build the docker image:
 
@@ -76,7 +72,7 @@ unzip build/libs/alfred.jar -d target/dependency
 docker build -t de.wasenweg/alfred .
 ```
 
-#### 4. Run
+### 4. Run
 
 Run the image and connect to the MongoDB:
 
@@ -88,7 +84,7 @@ Replace `/path/to/comics` with the path to your comic library.
 
 The application will now be available at <http://localhost:5000>.
 
-### Gradle
+## Gradle
 
 To run the application on the host system directly, make sure to have a MongoDB running, e.g. on `localhost`, then run:
 
@@ -98,11 +94,11 @@ To run the application on the host system directly, make sure to have a MongoDB 
 
 The application will now be available at <http://localhost:8080>.
 
-## Develop
+# Develop
 
-### End-to-end tests
+## End-to-end tests
 
-#### Preparation
+### Preparation
 
 Start a test instance
 
@@ -121,7 +117,7 @@ Install dependencies
 
 `cd ui && npm i`
 
-#### Run tests
+### Run tests
 
 Run via the ng-cli wrapper:
 
@@ -141,7 +137,7 @@ There is also a headless version:
 npm run protractorHeadless
 ```
 
-#### Debug tests
+### Debug tests
 
 In order to debug, add a `debugger;` to the test you want to debug and then run the protractor config manually with node. Example for debugging `library.e2e-spec.ts`:
 
@@ -149,16 +145,16 @@ In order to debug, add a `debugger;` to the test you want to debug and then run 
 node --inspect-brk node_modules/protractor/bin/protractor e2e/protractor.conf.js --specs=e2e/src/library.e2e-spec.ts
 ```
 
-## Enjoy
+# Enjoy
 
-### Library view
+## Library view
 
 ![Library](docs/screenshots/alfred1.png?raw=true){: style="max-width:500px"}
 
-### Settings and menu
+## Settings and menu
 
 ![Settings and menu](docs/screenshots/alfred2.png?raw=true){: style="max-width:500px"}
 
-### Volume view
+## Volume view
 
 ![Volume](docs/screenshots/alfred3.png?raw=true){: style="max-width:500px"}

@@ -1,0 +1,36 @@
+---
+---
+
+@import 'jekyll-theme-cayman';
+@import url('https://fonts.googleapis.com/css?family=Playball');
+
+.page-header {
+  color: #393939;
+  background-color: #d7dddd;
+  background-image: none;
+
+  h1 {
+    font-family: 'Playball', cursive;
+    font-size: 6rem;
+    padding-bottom: 10rem;
+    background-image: url(/art/alfred.svg);
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: 10rem;
+  }
+
+  .btn {
+    color: #393939;
+    border-color: #393939;
+  }
+}
+
+.main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
+  color: #393939;
+}
+
+@media screen and (min-width: 64em) {
+  .page-header {
+    padding: 1rem 6rem;
+  }
+}
