@@ -6,7 +6,7 @@
 
 A web based comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
 
-![Alfred](./alfred.svg)
+![Alfred](art/alfred.svg)
 
 ## Features
 
