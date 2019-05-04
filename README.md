@@ -151,6 +151,14 @@ node --inspect-brk node_modules/protractor/bin/protractor e2e/protractor.conf.js
 
 ## Enjoy
 
-![Screenhot 1](docs/screenshots/alfred1.png?raw=true)
-![Screenhot 2](docs/screenshots/alfred2.png?raw=true)
-![Screenhot 3](docs/screenshots/alfred3.png?raw=true)
+### Library view
+
+![Library](docs/screenshots/alfred1.png?raw=true){: style="max-width:500px"}
+
+### Settings and menu
+
+![Settings and menu](docs/screenshots/alfred2.png?raw=true){: style="max-width:500px"}
+
+### Volume view
+
+![Volume](docs/screenshots/alfred3.png?raw=true){: style="max-width:500px"}
