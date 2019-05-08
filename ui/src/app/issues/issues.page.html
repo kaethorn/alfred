@@ -19,7 +19,8 @@
     <ion-card-content>
       <div class="comic-summary">
         <div class="thumbnail">
-          <a [routerLink]="['/read', comic.id, 0]">
+          <a [routerLink]="['/read', comic.id]"
+             [queryParams]="{ page: 0 }">
             <ion-badge *ngIf="comic.read"
              class="read-badge" color="secondary">
               &#10004;
@@ -32,7 +33,8 @@
 
       <ion-button
         color="primary" fill="clear"
-        [routerLink]="['/browse', comic.id, 0]">
+        [routerLink]="['/browse', comic.id]"
+        [queryParams]="{ page: 0 }">
         <ion-icon name="search"></ion-icon>
         Browse
       </ion-button>
