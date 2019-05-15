@@ -1,0 +1,19 @@
+<ion-list lines="none">
+  <ion-item [routerLink]="['/browse', comic.id]"
+    [queryParams]="{ page: 0 }">
+    <ion-icon slot="start" name="search"></ion-icon>
+    Browse
+  </ion-item>
+  <ion-item (click)="download()" href="/api/download/{{ comic.id }}">
+    <ion-icon slot="start" name="save"></ion-icon>
+    Download
+  </ion-item>
+  <ion-item (click)="markAsReadUntil(comic)">
+    <ion-icon slot="start" name="done-all"></ion-icon>
+    Mark read until here
+  </ion-item>
+  <ion-item (click)="goToLibrary(comic)">
+    <ion-icon slot="start" name="book"></ion-icon>
+    View in library
+  </ion-item>
+</ion-list>

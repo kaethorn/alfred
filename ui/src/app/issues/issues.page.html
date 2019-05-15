@@ -17,61 +17,39 @@
     </ion-card-header>
 
     <ion-card-content>
-      <div class="comic-summary">
-        <div class="thumbnail">
-          <a [routerLink]="['/read', comic.id]"
-             [queryParams]="{ page: 0 }">
-            <ion-badge *ngIf="comic.read"
-             class="read-badge" color="secondary">
-              &#10004;
-            </ion-badge>
-            <img [src]="thumbnail(comic)">
-          </a>
-        </div>
-        <p>{{ comic.summary }}</p>
+      <div class="thumbnail">
+        <a [routerLink]="['/read', comic.id]"
+           [queryParams]="{ page: 0 }">
+          <ion-badge *ngIf="comic.read"
+           class="read-badge" color="secondary">
+            &#10004;
+          </ion-badge>
+          <img [src]="thumbnail(comic)">
+        </a>
       </div>
 
-      <ion-button
-        color="primary" fill="clear"
-        [routerLink]="['/browse', comic.id]"
-        [queryParams]="{ page: 0 }">
-        <ion-icon name="search"></ion-icon>
-        Browse
-      </ion-button>
-      <ion-button
-        color="primary" fill="clear"
-        href="/api/download/{{ comic.id }}">
-        <ion-icon name="save"></ion-icon>
-        Download
-      </ion-button>
       <ion-button *ngIf="comic.read; else notRead"
         class="read-toggle"
-        color="secondary" fill="clear"
+        color="primary" fill="clear"
         (click)="markAsUnread(comic)">
         <ion-icon name="qr-scanner"></ion-icon>
         Mark as unread
       </ion-button>
       <ng-template #notRead>
         <ion-button
-          color="secondary" fill="clear"
+          color="primary" fill="clear"
           class="read-toggle"
           (click)="markAsRead(comic)">
           <ion-icon name="checkmark"></ion-icon>
           Mark as read
         </ion-button>
       </ng-template>
-      <ion-button
-        color="secondary" fill="clear"
-        (click)="markAsReadUntil(comic)">
-        <ion-icon name="done-all"></ion-icon>
-        <span>Mark read until here</span>
-      </ion-button>
-      <ion-button
-        color="tertiary" fill="clear"
-        [routerLink]="['/library/publishers', comic.publisher, 'series', comic.series, 'volumes']">
-        <ion-icon name="book"></ion-icon>
-        <span>View in library</span>
-      </ion-button>
+      <ion-icon (click)="openMenu($event, comic)" slot="end" name="more"></ion-icon>
+
+      <div class="comic-summary">
+        <p>{{ comic.summary }}</p>
+      </div>
+
     </ion-card-content>
   </ion-card>
 </ion-content>
