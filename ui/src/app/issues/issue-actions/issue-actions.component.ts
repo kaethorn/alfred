@@ -30,10 +30,7 @@ export class IssueActionsComponent {
   }
 
   markAsReadUntil (comic: Comic): void {
-    this.volumesService.markAllAsReadUntil(comic).subscribe(() => {
-      this.list();
-    });
-    this.popoverCtrl.dismiss();
+    this.popoverCtrl.dismiss({ markAsReadUntil: comic });
   }
 
   goToLibrary (comic: Comic): void {

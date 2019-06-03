@@ -1,6 +1,5 @@
 <ion-list lines="none">
-  <ion-item [routerLink]="['/browse', comic.id]"
-    [queryParams]="{ page: 0 }">
+  <ion-item (click)="browse(comic)">
     <ion-icon slot="start" name="search"></ion-icon>
     Browse
   </ion-item>

@@ -49,6 +49,13 @@ export class IssuesPage {
     });
   }
 
+  markAsReadUntil (comic: Comic): void {
+    this.volumesService.markAllAsReadUntil(comic).subscribe(() => {
+      this.list();
+    });
+  }
+
+
   thumbnail (comic: Comic): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
   }
@@ -60,8 +67,10 @@ export class IssuesPage {
       event,
       translucent: true
     });
-    popover.onWillDismiss().finally(() => {
-      this.list();
+    popover.onDidDismiss().then((action: any) => {
+      if (action.data.markAsReadUntil) {
+        this.markAsReadUntil(action.data.markAsReadUntil);
+      }
     });
     await popover.present();
   }
