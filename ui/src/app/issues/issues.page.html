@@ -28,27 +28,31 @@
         </a>
       </div>
 
-      <ion-button *ngIf="comic.read; else notRead"
-        class="read-toggle"
-        color="primary" fill="clear"
-        (click)="markAsUnread(comic)">
-        <ion-icon name="qr-scanner"></ion-icon>
-        Mark as unread
-      </ion-button>
-      <ng-template #notRead>
-        <ion-button
-          color="primary" fill="clear"
+      <ion-item>
+        <ion-button *ngIf="comic.read; else notRead"
           class="read-toggle"
-          (click)="markAsRead(comic)">
-          <ion-icon name="checkmark"></ion-icon>
-          Mark as read
+          color="primary" fill="clear"
+          (click)="markAsUnread(comic)">
+          <ion-icon name="qr-scanner"></ion-icon>
+          Mark as unread
         </ion-button>
-      </ng-template>
-      <ion-icon (click)="openMenu($event, comic)" slot="end" name="more"></ion-icon>
+        <ng-template #notRead>
+          <ion-button
+            color="primary" fill="clear"
+            class="read-toggle"
+            (click)="markAsRead(comic)">
+            <ion-icon name="checkmark"></ion-icon>
+            Mark as read
+          </ion-button>
+        </ng-template>
+        <ion-icon (click)="openMenu($event, comic)" slot="end" name="more"></ion-icon>
+      </ion-item>
 
-      <div class="comic-summary">
-        <p>{{ comic.summary }}</p>
-      </div>
+      <ion-item lines="none">
+        <div [ngClass]="{'expanded': comic.summaryExpanded}" class="comic-summary" (click)="comic.summaryExpanded = !comic.summaryExpanded">
+          {{ comic.summary }}
+        </div>
+      </ion-item>
 
     </ion-card-content>
   </ion-card>
