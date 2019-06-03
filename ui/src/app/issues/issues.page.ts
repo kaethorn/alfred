@@ -68,7 +68,7 @@ export class IssuesPage {
       translucent: true
     });
     popover.onDidDismiss().then((action: any) => {
-      if (action.data.markAsReadUntil) {
+      if (action.data && action.data.markAsReadUntil) {
         this.markAsReadUntil(action.data.markAsReadUntil);
       }
     });
