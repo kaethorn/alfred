@@ -24,12 +24,12 @@ export class BrowserPage {
   ) { }
 
   ionViewDidEnter () {
-    this.currentPage = Number.parseInt(this.route.snapshot.params.page, 10) || 0;
+    this.currentPage = Number.parseInt(this.route.snapshot.queryParams.page, 10) || 0;
     this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
       this.comic = data;
       this.navigator.set(
         this.comic.pageCount,
-        Number.parseInt(this.route.snapshot.params.page, 10) || 0,
+        this.currentPage,
         false
       );
       this.navigator.go();
@@ -43,7 +43,7 @@ export class BrowserPage {
   }
 
   private navigate (): void {
-    this.router.navigate(['/browse', this.comic.id, NavigatorService.page]);
+    this.router.navigate(['/browse', this.comic.id], { queryParams: { page: NavigatorService.page } });
     this.imagePath = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
   }
 }

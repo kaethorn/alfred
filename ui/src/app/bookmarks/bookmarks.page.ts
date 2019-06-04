@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
-import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
 
+import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
 import { ComicsService } from '../comics.service';
 import { Comic } from '../comic';
 

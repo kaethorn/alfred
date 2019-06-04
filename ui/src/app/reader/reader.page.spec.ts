@@ -12,20 +12,28 @@ import { ComicsService } from '../comics.service';
 import { ReaderPage } from './reader.page';
 
 describe('ReaderPage', () => {
+
   let component: ReaderPage;
   let fixture: ComponentFixture<ReaderPage>;
   let router;
   const clickRightSide = () => {
-    fixture.debugElement.query(By.css('.layer'))
+    fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
-        clientX      : 500,
+        clientX      : 700,
         currentTarget: { offsetWidth: 800 }
       });
   };
   const clickLeftSide = () => {
-    fixture.debugElement.query(By.css('.layer'))
+    fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
-        clientX      : 300,
+        clientX      : 100,
+        currentTarget: { offsetWidth: 800 }
+      });
+  };
+  const clickCenter = () => {
+    fixture.debugElement.query(By.css('.pages-layer'))
+      .triggerEventHandler('click', {
+        clientX      : 500,
         currentTarget: { offsetWidth: 800 }
       });
   };
@@ -38,10 +46,13 @@ describe('ReaderPage', () => {
       provide: ComicsService, useValue: comicsService
     });
     testModule.providers.push({
-      provide: ActivatedRoute, useValue: { snapshot: { params: {
-        id: '493',
-        page: '0'
-      }}}
+      provide: ActivatedRoute,
+      useValue: {
+        snapshot: {
+          params: { id: '493' },
+          queryParams: { page: 0 }
+        }
+      }
     });
     testModule.providers.push({
       provide: Router, useValue: router
@@ -50,7 +61,7 @@ describe('ReaderPage', () => {
     testModule.imports.pop();
     testModule.imports.push(
       RouterTestingModule.withRoutes([
-        { path: 'read/:id/:page', component: ReaderPage }
+        { path: 'read/:id', component: ReaderPage }
       ])
     );
 
@@ -63,7 +74,6 @@ describe('ReaderPage', () => {
 
     fixture = TestBed.createComponent(ReaderPage);
     component = fixture.componentInstance;
-    component.ionViewDidEnter();
     fixture.detectChanges();
   });
 
@@ -80,7 +90,23 @@ describe('ReaderPage', () => {
       fixture.detectChanges();
 
       expect(component.comic.id).toBe('923');
-      expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 0]);
+      expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);
+    });
+
+    describe('when clicking the center', () => {
+
+      it('shows the controls when clicking in the center', () => {
+        expect(fixture.debugElement.query(By.css('.control-layer'))).toBeNull();
+        clickCenter();
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('.control-layer'))).not.toBeNull();
+      });
+
+      it('does not navigate', () => {
+        router.navigate.calls.reset();
+        clickCenter();
+        expect(router.navigate).not.toHaveBeenCalled();
+      });
     });
 
     describe('in single page mode', () => {
@@ -89,7 +115,7 @@ describe('ReaderPage', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        component.layer = {
+        component.pagesLayer = {
           nativeElement: {
             parentElement: {
               clientWidth : 1000,
@@ -106,7 +132,7 @@ describe('ReaderPage', () => {
         });
 
         it('sets the current page and updates the route', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 1]);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
         });
       });
 
@@ -119,9 +145,9 @@ describe('ReaderPage', () => {
         });
 
         it('does not exceed the last page', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
           clickRightSide();
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
         });
       });
     });
@@ -132,7 +158,7 @@ describe('ReaderPage', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        component.layer = {
+        component.pagesLayer = {
           nativeElement: {
             parentElement: {
               clientWidth : 2000,
@@ -153,7 +179,7 @@ describe('ReaderPage', () => {
         });
 
         it('sets the current page and updates the route', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 1]);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
         });
 
         it('displays two pages', () => {
@@ -176,9 +202,9 @@ describe('ReaderPage', () => {
         });
 
         it('does not exceed the last page', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
           clickRightSide();
-          expect(router.navigate).not.toHaveBeenCalledWith(['/read', '923', 4]);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
         });
       });
     });

@@ -52,12 +52,16 @@ export class VolumesComponent {
     if (volume.read) {
       this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {
-          this.router.navigate(['/read', comic.id, comic.currentPage]);
+          this.router.navigate(['/read', comic.id], {
+            queryParams: { page: comic.currentPage }
+          });
         });
     } else {
       this.comicsService.getLastUnreadByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {
-          this.router.navigate(['/read', comic.id, comic.currentPage]);
+          this.router.navigate(['/read', comic.id], {
+            queryParams: { page: comic.currentPage }
+          });
         });
     }
   }

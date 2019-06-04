@@ -12,6 +12,7 @@ import { ScannerComponent } from '../app/settings/scanner/scanner.component';
 import { VolumesComponent } from '../app/library/volumes/volumes.component';
 import { VolumeActionsComponent } from '../app/library/volumes/volume-actions/volume-actions.component';
 import { BookmarkActionsComponent } from '../app/bookmarks/bookmark-actions/bookmark-actions.component';
+import { IssueActionsComponent } from '../app/issues/issue-actions/issue-actions.component';
 
 import { BrowserPage } from '../app/browser/browser.page';
 import { SettingsPage } from '../app/settings/settings.page';
@@ -31,6 +32,7 @@ export const TestModule = () => {
       VolumesComponent,
       VolumeActionsComponent,
       BookmarkActionsComponent,
+      IssueActionsComponent,
 
       IssuesPage,
       BrowserPage,

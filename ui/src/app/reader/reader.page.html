@@ -1,5 +1,7 @@
-<div class="layer" #layer
-  (click)="onClick($event)" (swipeleft)="onSwipe(1)" (swiperight)="onSwipe(-1)">
+<div class="pages-layer" #pagesLayer
+  (click)="onClick($event)"
+  (swipeleft)="onSwipe(1)"
+  (swiperight)="onSwipe(-1)">
   <div class="wrapper">
     <img *ngIf="imagePathLeft" [src]="imagePathLeft" class="left"
          alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
@@ -7,5 +9,20 @@
   <div class="wrapper">
     <img *ngIf="imagePathRight" [src]="imagePathRight" class="right"
          alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
+  </div>
+</div>
+<div class="control-layer" *ngIf="showControl" (click)="onControlClick($event)">
+  <div class="top">
+    <ion-button (click)="back()">
+      <ion-icon name="close"></ion-icon>
+    </ion-button>
+  </div>
+  <div class="bottom">
+    <ion-button (click)="go(-1)">
+      <ion-icon name="skip-backward"></ion-icon>
+    </ion-button>
+    <ion-button (click)="go(+1)">
+      <ion-icon name="skip-forward"></ion-icon>
+    </ion-button>
   </div>
 </div>

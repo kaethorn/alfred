@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { PopoverController } from '@ionic/angular';
 
+import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 import { ComicsService } from '../comics.service';
 import { VolumesService } from '../volumes.service';
 import { Comic } from '../comic';
@@ -23,7 +25,8 @@ export class IssuesPage {
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private comicsService: ComicsService,
-    private volumesService: VolumesService
+    private volumesService: VolumesService,
+    private popoverController: PopoverController
     ) { }
 
   ionViewDidEnter () {
@@ -52,8 +55,24 @@ export class IssuesPage {
     });
   }
 
+
   thumbnail (comic: Comic): SafeUrl {
     return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
+  }
+
+  async openMenu (event: any, comic: Comic) {
+    const popover = await this.popoverController.create({
+      component: IssueActionsComponent,
+      componentProps: { comic },
+      event,
+      translucent: true
+    });
+    popover.onDidDismiss().then((action: any) => {
+      if (action.data && action.data.markAsReadUntil) {
+        this.markAsReadUntil(action.data.markAsReadUntil);
+      }
+    });
+    await popover.present();
   }
 
   private list (): void {

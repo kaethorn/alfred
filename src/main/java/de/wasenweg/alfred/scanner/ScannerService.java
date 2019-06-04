@@ -52,8 +52,8 @@ public class ScannerService {
         this.sendEvent("", "done");
     }
 
-    private void reportError(final String error) {
-        this.sendEvent(error, "error");
+    private void reportError(final Exception exception) {
+        this.sendEvent(exception.getClass().getSimpleName() + ": " + exception.getMessage(), "error");
     }
 
     private Comic createOrUpdateComic(final Path path) {
@@ -70,15 +70,15 @@ public class ScannerService {
             file = new ZipFile(path.toString());
             MetaDataReader.set(file, comic);
             ThumbnailReader.set(file, comic);
-        } catch (final Exception e) {
-            e.printStackTrace();
-            reportError(e.getMessage());
+        } catch (final Exception exception) {
+            exception.printStackTrace();
+            reportError(exception);
         } finally {
             try {
                 file.close();
-            } catch (final IOException e) {
-                e.printStackTrace();
-                reportError(e.getMessage());
+            } catch (final IOException exception) {
+                exception.printStackTrace();
+                reportError(exception);
             }
         }
 
@@ -117,9 +117,9 @@ public class ScannerService {
                         .filter(comic -> !comicFilePaths.contains(comic.getPath()))
                         .collect(Collectors.toList());
                 comicRepository.deleteAll(toDelete);
-            } catch (final IOException e) {
-                e.printStackTrace();
-                reportError(e.getMessage());
+            } catch (final IOException exception) {
+                exception.printStackTrace();
+                reportError(exception);
             }
 
             reportFinish();

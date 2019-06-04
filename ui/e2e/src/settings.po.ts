@@ -31,7 +31,7 @@ export class SettingsPage {
   }
 
   waitForScanStart () {
-    return browser.wait(ExpectedConditions.presenceOf(this.progress), 500);
+    return browser.wait(ExpectedConditions.presenceOf(this.progress), 1000);
   }
 
   waitForScanEnd () {
