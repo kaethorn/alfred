@@ -21,7 +21,7 @@ describe('IssueActionsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BookmarkActionsComponent);
+    fixture = TestBed.createComponent(IssueActionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
