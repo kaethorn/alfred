@@ -38,4 +38,8 @@ export class IssuesPage {
     await this.getIssues().get(issue)
       .element(by.cssContainingText('ion-button', label)).click();
   }
+
+  clickIssueMenuItem (issue: number, item: string) {
+    return this.page.clickMenuItem(this.getIssues().get(issue), item);
+  }
 }
