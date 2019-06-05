@@ -33,5 +33,13 @@
       </ion-list>
     </ion-content>
   </ion-menu>
+
   <ion-router-outlet main></ion-router-outlet>
+
+  <div class="login-overlay" *ngIf="!user">
+    <ion-button id="signin-button">
+      Sign in with Google
+      <ion-icon slot="start" name="logo-google"></ion-icon>
+    </ion-button>
+  </div>
 </ion-app>
