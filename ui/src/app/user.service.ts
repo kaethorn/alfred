@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { User } from './user';
@@ -9,15 +8,24 @@ import { User } from './user';
 })
 export class UserService {
 
-  constructor (
-    private http: HttpClient
-  ) { }
+  private user: Observable<User>;
 
-  get (): Observable<User> {
-    return this.http.get<User>('api/user');
+  private updateUser: Function;
+
+  constructor (
+  ) {
+    this.user = new Observable<User>((observer) => {
+      this.updateUser = (user) => {
+        observer.next(user);
+      };
+    });
   }
 
-  logout (): Observable<any> {
-    return this.http.post('/logout', {}, { responseType: 'text' });
+  set (user: User) {
+    this.updateUser(user);
+  }
+
+  get (): Observable<User> {
+    return this.user;
   }
 }
