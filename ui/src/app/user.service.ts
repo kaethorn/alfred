@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { User } from './user';
 
@@ -8,12 +9,12 @@ import { User } from './user';
 })
 export class UserService {
 
-  private user: Observable<User>;
+  private user: BehaviorSubject<User> = new BehaviorSubject<User>(null);
   private auth2: gapi.auth2.GoogleAuth;
-  private updateUser: Function;
 
   constructor (
     private ngZone: NgZone,
+    private http: HttpClient
   ) {
     gapi.load('auth2', () => {
       this.ngZone.run(() => {
@@ -31,29 +32,17 @@ export class UserService {
         }
       });
     });
-
-    this.user = new Observable<User>((observer) => {
-      this.updateUser = (user) => {
-        observer.next(user);
-      };
-    });
   }
 
   private login (googleUser: gapi.auth2.GoogleUser) {
     const token = googleUser.getAuthResponse().id_token;
-    const user = googleUser.getBasicProfile();
-    this.set({
-      email:  user.getEmail(),
-      name: user.getName(),
-      picture: user.getImageUrl()
+    this.http.post<User>(`api/verify/${ token }`, null).subscribe((user: User) => {
+      this.user.next(user);
+      localStorage.setItem('token', user.token);
     });
   }
 
-  set (user: User) {
-    this.updateUser(user);
-  }
-
-  get (): Observable<User> {
+  get (): BehaviorSubject<User> {
     return this.user;
   }
 
