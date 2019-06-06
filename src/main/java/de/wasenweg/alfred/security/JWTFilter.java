@@ -1,9 +1,13 @@
 package de.wasenweg.alfred.security;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,22 +18,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
 
 public class JWTFilter implements Filter {
 
-    private static String HEADER_PREFIX = "Bearer ";
+    private static final String HEADER_PREFIX = "Bearer ";
     private String jwtSecret;
 
-    public JWTFilter(String jwtSecret){
+    public JWTFilter(final String jwtSecret) {
         this.jwtSecret = jwtSecret;
     }
 
@@ -38,10 +37,13 @@ public class JWTFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(
+            final ServletRequest req,
+            final ServletResponse res,
+            final FilterChain chain) throws IOException, ServletException {
 
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response =(HttpServletResponse) res;
+        final HttpServletRequest request = (HttpServletRequest) req;
+        final HttpServletResponse response = (HttpServletResponse) res;
 
         final Optional<String> token = Optional.ofNullable(request.getHeader("Authorization"));
 
@@ -54,26 +56,26 @@ public class JWTFilter implements Filter {
         Boolean verified = false;
 
         try {
-            Algorithm algorithm = Algorithm.HMAC256(this.jwtSecret);
-            JWTVerifier verifier = JWT.require(algorithm)
+            final Algorithm algorithm = Algorithm.HMAC256(this.jwtSecret);
+            final JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("alfred.cx")
                     .build();
-            DecodedJWT jwt = verifier.verify(token.get().replace(HEADER_PREFIX, ""));
+            final DecodedJWT jwt = verifier.verify(token.get().replace(HEADER_PREFIX, ""));
             verified = jwt.getClaim("API_ALLOWED").asBoolean();
-            Map<String, Claim> roles = jwt.getClaims();
+            final Map<String, Claim> roles = jwt.getClaims();
 
-            String subject = jwt.getSubject();
+            final String subject = jwt.getSubject();
 
-            ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-            for (String role: roles.keySet()){
+            final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+            for (final String role: roles.keySet()) {
                 authorities.add(new SimpleGrantedAuthority(role));
             }
 
-            final UsernamePasswordAuthenticationToken newAuth = 
+            final UsernamePasswordAuthenticationToken newAuth =
                     new UsernamePasswordAuthenticationToken(subject, "", authorities);
 
             SecurityContextHolder.getContext().setAuthentication(newAuth);
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
 
         if (verified) {
@@ -85,6 +87,6 @@ public class JWTFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {
+    public void init(final FilterConfig arg0) throws ServletException {
     }
 }

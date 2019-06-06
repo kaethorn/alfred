@@ -20,7 +20,7 @@ public class SecurityConfig {
     public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
-        protected void configure(HttpSecurity http) throws Exception {
+        protected void configure(final HttpSecurity http) throws Exception {
 
             http.antMatcher("/api/verify/**").authorizeRequests().anyRequest().permitAll();
             http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
@@ -36,7 +36,7 @@ public class SecurityConfig {
         private String jwtSecret;
 
         @Override
-        protected void configure(HttpSecurity http) throws Exception {
+        protected void configure(final HttpSecurity http) throws Exception {
             http.addFilterAfter(new JWTFilter(jwtSecret), BasicAuthenticationFilter.class);
 
             http.authorizeRequests()
