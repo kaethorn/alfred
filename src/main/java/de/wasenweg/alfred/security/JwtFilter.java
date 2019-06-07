@@ -12,14 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-public class JWTFilter implements Filter {
+public class JwtFilter implements Filter {
 
     private static final String HEADER_PREFIX = "Bearer ";
 
-    private String jwtSecret;
+    private String secret;
 
-    public JWTFilter(final String jwtSecret) {
-        this.jwtSecret = jwtSecret;
+    private IJwtService jwtService;
+
+    public JwtFilter(final String secret, final IJwtService jwtService) {
+        this.secret = secret;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class JWTFilter implements Filter {
             return;
         }
 
-        if (JWTService.verifyToken(token.get().replace(HEADER_PREFIX, ""), this.jwtSecret)) {
+        if (this.jwtService.verifyToken(token.get().replace(HEADER_PREFIX, ""), this.secret)) {
             chain.doFilter(req, res);
         } else {
             res.reset();

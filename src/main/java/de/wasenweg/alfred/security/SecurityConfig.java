@@ -1,5 +1,6 @@
 package de.wasenweg.alfred.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,6 +15,9 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 @Profile({"prod"})
 public class SecurityConfig {
+
+    @Autowired
+    private IJwtService jwtService;
 
     @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
     private String jwtSecret;
@@ -35,7 +39,7 @@ public class SecurityConfig {
 
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
-            http.addFilterAfter(new JWTFilter(jwtSecret), BasicAuthenticationFilter.class);
+            http.addFilterAfter(new JwtFilter(jwtSecret, jwtService), BasicAuthenticationFilter.class);
             http.authorizeRequests()
                 .antMatchers("/**").permitAll();
 

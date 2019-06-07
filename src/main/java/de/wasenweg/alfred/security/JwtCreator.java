@@ -9,11 +9,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Service
-public class JWTCreator {
+public class JwtCreator {
 
     private Algorithm algorithm = null;
 
-    public JWTCreator() { }
+    public JwtCreator() { }
 
     public String issueToken(final String[] claims, final String subject, Date expiryDate, final String jwtSecret) {
 

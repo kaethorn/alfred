@@ -60,7 +60,7 @@ dependencies {
   
   compile 'com.google.api-client:google-api-client:1.29.2'
   compile 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
-  compile group: 'com.auth0', name: 'java-jwt', version: '3.8.1'
+  compile 'com.auth0:java-jwt:3.8.1'
 
   compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
   compile 'org.projectlombok:lombok'

@@ -5,8 +5,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import de.wasenweg.alfred.security.JWTCreator;
-import de.wasenweg.alfred.security.JWTService;
+
+import de.wasenweg.alfred.security.IJwtService;
+import de.wasenweg.alfred.security.JwtCreator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,14 +29,17 @@ import java.util.Collections;
 public class UserController {
 
     @Autowired
-    private JWTCreator tokenCreator;
+    private JwtCreator tokenCreator;
+
+    @Autowired
+    private IJwtService jwtService;
 
     @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
     private String jwtSecret;
 
     @GetMapping("/verify/{token}")
     public ResponseEntity<?> verify(@PathVariable("token") final String token) {
-        if (JWTService.verifyToken(token, this.jwtSecret)) {
+        if (this.jwtService.verifyToken(token, this.jwtSecret)) {
             final User user = User.builder()
                     .token(token)
                     .build();
@@ -83,7 +87,6 @@ public class UserController {
                         .build();
 
                 return new ResponseEntity<User>(user, HttpStatus.OK);
-
             } else {
                 System.out.println("Invalid ID token: " + token);
             }
