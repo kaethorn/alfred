@@ -55,16 +55,8 @@ export class UserService {
     });
   }
 
-  logout (): Promise<void> {
-    return new Promise((resolve) => {
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      gapi.auth2.getAuthInstance().signOut().then(() => {
-        this.ngZone.run(() => {
-          this.user.next(null);
-          resolve();
-        });
-      });
-    });
+  logout () {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
   }
 }
