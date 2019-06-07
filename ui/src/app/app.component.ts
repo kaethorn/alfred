@@ -27,11 +27,9 @@ export class AppComponent {
     private statusBar: StatusBar,
     private userService: UserService
   ) {
-    this.userService.get().subscribe((user: User) => {
-      if (user) {
-        this.user = user;
-        this.initializeApp();
-      }
+    this.initializeApp();
+    this.userService.user.subscribe((user: User) => {
+      this.user = user;
     });
   }
 

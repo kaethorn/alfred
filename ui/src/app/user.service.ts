@@ -9,33 +9,29 @@ import { User } from './user';
 })
 export class UserService {
 
-  private user: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+  public user: BehaviorSubject<User> = new BehaviorSubject<User>(null);
   private auth2: gapi.auth2.GoogleAuth;
 
   constructor (
     private ngZone: NgZone,
     private http: HttpClient
   ) {
-    this.setup();
-    this.verifyCurentUser();
+    this.verifyCurrentUser();
   }
 
-  // Check if user is already signed in
-  private verifyCurentUser () {
+  verifyCurrentUser () {
     const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
     if (!currentUser.token) {
+      this.user.next(null);
       return;
     }
 
-    this.http.get<User>(`api/user/verify/${ currentUser.token }`).subscribe((user: User) => {
+    this.http.get(`api/user/verify/${ currentUser.token }`).subscribe(() => {
       this.user.next(currentUser);
-    }, () => {
-      this.user.next(null);
     });
   }
 
-  // Set up Google Sign-In
-  private setup () {
+  setupGoogleSignIn () {
     gapi.load('auth2', () => {
       this.ngZone.run(() => {
         this.auth2 = gapi.auth2.init({
@@ -49,7 +45,7 @@ export class UserService {
             localStorage.setItem('user', JSON.stringify(user));
           });
         }, (errorData) => {
-          console.log(`Login failure: ${ errorData }`);
+          console.log(`Login failure: ${ JSON.stringify(errorData, null, 2) }`);
         });
 
         if (this.auth2.isSignedIn.get() === true) {
@@ -59,12 +55,10 @@ export class UserService {
     });
   }
 
-  get (): BehaviorSubject<User> {
-    return this.user;
-  }
-
   logout (): Promise<void> {
     return new Promise((resolve) => {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
       gapi.auth2.getAuthInstance().signOut().then(() => {
         this.ngZone.run(() => {
           this.user.next(null);
