@@ -15,30 +15,27 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Profile({"prod"})
 public class SecurityConfig {
 
+    @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
+    private String jwtSecret;
+
     @Configuration
     @Order(1)
     public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
-
-            http.antMatcher("/api/verify/**").authorizeRequests().anyRequest().permitAll();
+            http.antMatcher("/api/user/**").authorizeRequests().anyRequest().permitAll();
             http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
     }
-
 
     @Configuration
     @Order(2)
     public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
 
-        @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
-        private String jwtSecret;
-
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
             http.addFilterAfter(new JWTFilter(jwtSecret), BasicAuthenticationFilter.class);
-
             http.authorizeRequests()
                 // TODO:
                 .antMatchers("/actuator/*").hasAuthority("ACTUATOR")

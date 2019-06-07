@@ -28,8 +28,10 @@ export class AppComponent {
     private userService: UserService
   ) {
     this.userService.get().subscribe((user: User) => {
-      this.user = user;
-      this.initializeApp();
+      if (user) {
+        this.user = user;
+        this.initializeApp();
+      }
     });
   }
 
@@ -41,7 +43,7 @@ export class AppComponent {
   }
 
   logout () {
-    this.userService.logout().subscribe(() => {
+    this.userService.logout().then(() => {
       window.location.reload();
     });
   }

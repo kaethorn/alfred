@@ -6,10 +6,13 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import de.wasenweg.alfred.security.JWTCreator;
+import de.wasenweg.alfred.security.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,15 +23,30 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
     @Autowired
     private JWTCreator tokenCreator;
 
-    @PostMapping("/verify/{token}")
+    @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
+    private String jwtSecret;
+
+    @GetMapping("/verify/{token}")
     public ResponseEntity<?> verify(@PathVariable("token") final String token) {
+        if (JWTService.verifyToken(token, this.jwtSecret)) {
+            final User user = User.builder()
+                    .token(token)
+                    .build();
+            return new ResponseEntity<User>(user, HttpStatus.OK);
+        } else {
+           return new ResponseEntity<Error>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/sign-in/{token}")
+    public ResponseEntity<?> signIn(@PathVariable("token") final String token) {
 
         final ApacheHttpTransport transport = new ApacheHttpTransport();
         final JacksonFactory jsonFactory = new JacksonFactory();
