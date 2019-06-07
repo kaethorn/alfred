@@ -72,7 +72,7 @@ public class UserController {
                     claims = new String[]{"ANONYMOUS"};
                 }
 
-                final String apiToken = tokenCreator.issueToken(claims, userId, null);
+                final String apiToken = tokenCreator.issueToken(claims, userId, null, this.jwtSecret);
 
                 final User user = User.builder()
                         .id(userId)

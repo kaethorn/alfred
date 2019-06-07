@@ -3,7 +3,6 @@ package de.wasenweg.alfred.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator.Builder;
 import com.auth0.jwt.algorithms.Algorithm;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -12,14 +11,11 @@ import java.util.Date;
 @Service
 public class JWTCreator {
 
-    @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
-    private String jwtSecret;
-
     private Algorithm algorithm = null;
 
     public JWTCreator() { }
 
-    public String issueToken(final String[] claims, final String subject, Date expiryDate) {
+    public String issueToken(final String[] claims, final String subject, Date expiryDate, final String jwtSecret) {
 
         this.algorithm = Algorithm.HMAC256(jwtSecret);
 

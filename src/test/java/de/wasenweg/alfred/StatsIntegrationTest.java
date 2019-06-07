@@ -20,7 +20,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -72,9 +71,7 @@ public class StatsIntegrationTest {
 
     @Test
     public void getStats() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/api/stats")
-                .with(authentication(OAuth2MockHelper.getOAuth2LoginAuthenticationToken()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2MockHelper.getOauth2ClientContext()))
+        mvc.perform(MockMvcRequestBuilders.get("/api/stats"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._links.self.href").value("http://localhost/api/stats"))

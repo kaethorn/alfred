@@ -37,8 +37,6 @@ public class SecurityConfig {
         protected void configure(final HttpSecurity http) throws Exception {
             http.addFilterAfter(new JWTFilter(jwtSecret), BasicAuthenticationFilter.class);
             http.authorizeRequests()
-                // TODO:
-                .antMatchers("/actuator/*").hasAuthority("ACTUATOR")
                 .antMatchers("/**").permitAll();
 
         }
