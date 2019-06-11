@@ -19,6 +19,7 @@ import { SettingsPage } from '../app/settings/settings.page';
 import { ReaderPage } from '../app/reader/reader.page';
 import { IssuesPage } from '../app/issues/issues.page';
 import { BookmarksPage } from '../app/bookmarks/bookmarks.page';
+import { LoginPage } from '../app/login/login.page';
 
 export const TestModule = () => {
   return {
@@ -38,14 +39,16 @@ export const TestModule = () => {
       BrowserPage,
       ReaderPage,
       SettingsPage,
-      BookmarksPage
+      BookmarksPage,
+      LoginPage
     ],
     imports: [
       IonicModule.forRoot(),
       FormsModule,
       HttpClientModule,
       RouterTestingModule.withRoutes([
-        { path: 'browse/:id/:page', component: MockComponent }
+        { path: 'browse/:id', component: MockComponent },
+        { path: 'library', component: MockComponent }
       ])
     ],
     providers: [

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, CanActivate, Router } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { UserService } from './user.service';
@@ -15,13 +15,13 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) { }
 
-  canActivate (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+  canActivate (): Observable<boolean> | Promise<boolean> | boolean {
     return new Promise<boolean>((resolve, reject) => {
       this.userService.user.subscribe((user: User) => {
         if (user) {
           resolve(true);
         } else {
-          this.router.navigate(['login']);
+          this.router.navigate(['/login']);
           resolve(false);
         }
       });
