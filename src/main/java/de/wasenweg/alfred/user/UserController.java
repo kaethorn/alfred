@@ -70,7 +70,7 @@ public class UserController {
                 final String pictureUrl = (String) payload.get("picture");
                 final String[] claims = new String[]{"API_ALLOWED"};
 
-                final String apiToken = tokenCreator.issueToken(claims, userId, null, this.jwtSecret);
+                final String apiToken = tokenCreator.issueToken(claims, userId, this.jwtSecret);
 
                 final User user = User.builder()
                         .id(userId)

@@ -11,16 +11,14 @@ import java.util.Date;
 @Service
 public class JwtCreator {
 
-    public String issueToken(final String[] claims, final String subject, Date expiryDate, final String jwtSecret) {
+    public String issueToken(final String[] claims, final String subject, final String jwtSecret) {
 
         final Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
 
-        if (expiryDate == null) {
-            final Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.HOUR_OF_DAY, 24);
-            expiryDate = calendar.getTime();
-        }
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MONTH, 1);
+        final Date expiryDate = calendar.getTime();
 
         final Builder tokenBuilder = JWT.create()
                 .withIssuer("alfred.cx")
