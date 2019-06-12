@@ -28,8 +28,8 @@ public class SecurityConfig {
 
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
-            http.antMatcher("/api/user/**").authorizeRequests().anyRequest().permitAll();
-            http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+            http.antMatcher("/api/user/**").authorizeRequests().anyRequest().permitAll()
+                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
     }
 
@@ -39,10 +39,9 @@ public class SecurityConfig {
 
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
-            http.addFilterAfter(new JwtFilter(jwtSecret, jwtService), BasicAuthenticationFilter.class);
-            http.authorizeRequests()
-                .antMatchers("/**").permitAll();
-
+            http.addFilterAfter(new JwtFilter(jwtSecret, jwtService), BasicAuthenticationFilter.class)
+                .authorizeRequests().antMatchers("/**").permitAll()
+                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
     }
 }
