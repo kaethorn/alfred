@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { TestBed, async, inject } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -33,7 +33,7 @@ describe('AuthGuard', () => {
       userService.user = of({});
       authGuard = new AuthGuard((userService as any), (router as any));
 
-      expect(await (authGuard.canActivate() as Promise<boolean>)).toBe(true);
+      expect(await (authGuard.canActivate(new ActivatedRouteSnapshot(), ({ url: '/settings' } as any)) as Promise<boolean>)).toBe(true);
     });
 
     it('should navigate to home for a logged out user', async () => {
@@ -41,8 +41,8 @@ describe('AuthGuard', () => {
       authGuard = new AuthGuard((userService as any), (router as any));
       spyOn(router, 'navigate');
 
-      expect(await (authGuard.canActivate() as Promise<boolean>)).toBe(false);
-      expect(router.navigate).toHaveBeenCalledWith(['/login']);
+      expect(await (authGuard.canActivate(({} as any), ({ url: '/settings' } as any)) as Promise<boolean>)).toBe(false);
+      expect(router.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { target: '/settings' } });
     });
   });
 });
