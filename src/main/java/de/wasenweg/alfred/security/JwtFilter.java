@@ -2,7 +2,6 @@ package de.wasenweg.alfred.security;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -23,10 +22,6 @@ public class JwtFilter implements Filter {
     public JwtFilter(final String secret, final IJwtService jwtService) {
         this.secret = secret;
         this.jwtService = jwtService;
-    }
-
-    @Override
-    public void destroy() {
     }
 
     @Override
@@ -52,9 +47,5 @@ public class JwtFilter implements Filter {
             res.reset();
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
-    }
-
-    @Override
-    public void init(final FilterConfig arg0) throws ServletException {
     }
 }

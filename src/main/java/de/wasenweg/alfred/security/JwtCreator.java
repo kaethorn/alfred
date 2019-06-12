@@ -11,13 +11,9 @@ import java.util.Date;
 @Service
 public class JwtCreator {
 
-    private Algorithm algorithm = null;
-
-    public JwtCreator() { }
-
     public String issueToken(final String[] claims, final String subject, Date expiryDate, final String jwtSecret) {
 
-        this.algorithm = Algorithm.HMAC256(jwtSecret);
+        final Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
 
         if (expiryDate == null) {
             final Calendar calendar = Calendar.getInstance();

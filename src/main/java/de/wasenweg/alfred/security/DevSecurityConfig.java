@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -26,10 +25,6 @@ import java.util.ArrayList;
 public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private class DevJWTFilter implements Filter {
-
-        @Override
-        public void destroy() {
-        }
 
         @Override
         public void doFilter(
@@ -49,10 +44,6 @@ public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
             SecurityContextHolder.getContext().setAuthentication(mockAuth);
 
             chain.doFilter(req, res);
-        }
-
-        @Override
-        public void init(final FilterConfig arg0) throws ServletException {
         }
     }
 

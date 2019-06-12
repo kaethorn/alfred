@@ -68,13 +68,7 @@ public class UserController {
                 final String email = payload.getEmail();
                 final String name = (String) payload.get("name");
                 final String pictureUrl = (String) payload.get("picture");
-                final String[] claims;
-
-                if (email.equals("kaethorn@gmail.com")) {
-                    claims = new String[]{"API_ALLOWED"};
-                } else {
-                    claims = new String[]{"ANONYMOUS"};
-                }
+                final String[] claims = new String[]{"API_ALLOWED"};
 
                 final String apiToken = tokenCreator.issueToken(claims, userId, null, this.jwtSecret);
 
