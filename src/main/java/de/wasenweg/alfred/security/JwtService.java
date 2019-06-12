@@ -43,6 +43,7 @@ public class JwtService implements IJwtService {
 
             SecurityContextHolder.getContext().setAuthentication(newAuth);
         } catch (final Exception e) {
+            verified = false;
         }
 
         return verified;
