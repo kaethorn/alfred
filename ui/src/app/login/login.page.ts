@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { UserService } from '../user.service';
 import { User } from '../user';
@@ -15,12 +15,17 @@ export class LoginPage {
     private userService: UserService,
     private ngZone: NgZone,
     private router: Router,
+    private route: ActivatedRoute
   ) {
     this.userService.setupGoogleSignIn();
     this.userService.user.subscribe((user: User) => {
       if (user) {
         this.ngZone.run(() => {
-          this.router.navigate(['/library']);
+          if (this.route.snapshot.queryParams.target) {
+            this.router.navigate([this.route.snapshot.queryParams.target]);
+          } else {
+            this.router.navigate(['/library']);
+          }
         });
       }
     });
