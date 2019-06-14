@@ -28,8 +28,9 @@ public class SecurityConfig {
 
         @Override
         protected void configure(final HttpSecurity http) throws Exception {
-            http.antMatcher("/api/user/**").authorizeRequests().anyRequest().permitAll()
-                .and().antMatcher("/api/scan-progress").authorizeRequests().anyRequest().permitAll()
+            http.requestMatchers()
+                    .antMatchers("/api/user/**", "/api/scan-progress").and()
+                    .authorizeRequests().anyRequest().permitAll()
                 .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         }
     }

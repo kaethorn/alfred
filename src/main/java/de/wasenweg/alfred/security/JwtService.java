@@ -28,7 +28,13 @@ public class JwtService implements IJwtService {
                     .withIssuer("alfred.cx")
                     .build();
             final DecodedJWT jwt = verifier.verify(token);
-            verified = jwt.getClaim("API_ALLOWED").asBoolean();
+
+            final Claim claim = jwt.getClaim("API_ALLOWED");
+            if (claim.isNull()) {
+                return false;
+            }
+            verified = claim.asBoolean();
+
             final Map<String, Claim> roles = jwt.getClaims();
 
             final String subject = jwt.getSubject();

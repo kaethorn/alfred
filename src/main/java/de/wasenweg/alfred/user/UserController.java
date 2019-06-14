@@ -8,7 +8,9 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 import de.wasenweg.alfred.security.IJwtService;
 import de.wasenweg.alfred.security.JwtCreator;
+import de.wasenweg.alfred.settings.SettingsService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -33,6 +38,9 @@ public class UserController {
 
     @Autowired
     private IJwtService jwtService;
+
+    @Autowired
+    private SettingsService settingsService;
 
     @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
     private String jwtSecret;
@@ -54,9 +62,11 @@ public class UserController {
 
         final ApacheHttpTransport transport = new ApacheHttpTransport();
         final JacksonFactory jsonFactory = new JacksonFactory();
+        final String clientId = this.settingsService.get("auth.client.id");
+        final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","));
 
         final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-                .setAudience(Collections.singletonList("401455891931-28afa7q3453j1fsdfnlen5tf46oqeadr.apps.googleusercontent.com"))
+                .setAudience(Collections.singletonList(clientId))
                 .build();
 
         try {
@@ -68,9 +78,16 @@ public class UserController {
                 final String email = payload.getEmail();
                 final String name = (String) payload.get("name");
                 final String pictureUrl = (String) payload.get("picture");
-                final String[] claims = new String[]{"API_ALLOWED"};
+                final List<String> claims = new ArrayList<String>();
+                claims.add("ANONYMOUS");
 
-                final String apiToken = tokenCreator.issueToken(claims, userId, this.jwtSecret);
+                if (users.contains(email)) {
+                    claims.add("API_ALLOWED");
+                } else {
+                    return new ResponseEntity<Error>(HttpStatus.FORBIDDEN);
+                }
+
+                final String apiToken = tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
 
                 final User user = User.builder()
                         .id(userId)
