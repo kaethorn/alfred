@@ -24,10 +24,10 @@ exports.config = {
     await browser.get('/');
     await browser.executeScript(function () {
       const mockUser = {
-        email: 'b.wayne@waynecorp.com',
-        name: 'B.Wayne',
+        email  : 'b.wayne@waynecorp.com',
+        name   : 'B.Wayne',
         picture: 'https://img.icons8.com/office/80/000000/batman-old.png',
-        token: 'mock-123'
+        token  : 'mock-123'
       };
       localStorage.setItem('token', mockUser.token);
       localStorage.setItem('user', JSON.stringify(mockUser));
