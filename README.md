@@ -1,6 +1,4 @@
 [![Build Status](https://travis-ci.org/kaethorn/alfred.svg?branch=master)](https://travis-ci.org/kaethorn/alfred)
-[![CodeFactor](https://www.codefactor.io/repository/github/kaethorn/alfred/badge)](https://www.codefactor.io/repository/github/kaethorn/alfred)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ef19770451cb4dc692488da4382f9ffc)](https://app.codacy.com/app/scf/alfred?utm_source=github.com&utm_medium=referral&utm_content=kaethorn/alfred&utm_campaign=Badge_Grade_Dashboard)
 
 # Alfred
 
