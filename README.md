@@ -26,6 +26,30 @@ A web based comic management system for your [ComicRack](http://comicrack.cyolit
 * A MongoDB
 * (optional) Docker
 * Zipped comic book files (.cbz) containing embedded `ComicInfo.xml` metadata files from ComicRack, see [docs](http://comicrack.cyolito.com/software/windows/windows-documentation/7-meta-data-in-comic-files).
+* A Client ID for Google Sign-In.
+
+
+## Configuration
+
+Apart from the JWT secret (`auth.jwt.secret`), all settings can initially be passed to the application via [Spring's configuration options](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html). They're then stored and maintained in the MongoDB `settings` collection and take precedence over configuration options. Once the application is running, settings can be changed on the `settings` page.
+
+### Comics path (`comics.path`)
+
+The default comics path is `/comics` which allows you to associate it via a Docker volume mount.
+
+### Client ID (`auth.client.id`)
+
+Create a set of client credentials in the [Google API console](https://console.developers.google.com/apis/credentials). Configure the `Authorized JavaScript origins` as well as `Authorized redirect URIs` to reflect the host name of your Alfred instance. The Client ID format should be `000000.apps.googleusercontent.com`.
+
+Then pass that client ID as `auth.client.id` to the application. There are [various ways](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) to achieve that. Running the application via docker, you could pass an environment variable: `docker run -e AUTH.CLIENT.ID=000000.apps.googleusercontent.com ...`.
+
+### Allowed users (`auth.users`)
+
+Users are identified through their email addresses and the initial set of allowed users must be passed to the application on the inital run. They're a comma separated list of email addresses associated with a Google ID. Only users with the email addresses specified in this property will be allowed to use the application and its API.
+
+### JWT secret (`auth.jwt.secret`)
+
+Once the application authenticates the user, it issues its own JWT authentication token which requires a secret key. A default key is supplied but should be overridden whenever the application is run (it's not stored in the DB).
 
 ## Run
 

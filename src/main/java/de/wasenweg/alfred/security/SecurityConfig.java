@@ -19,7 +19,7 @@ public class SecurityConfig {
     @Autowired
     private IJwtService jwtService;
 
-    @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
+    @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
     private String jwtSecret;
 
     @Configuration

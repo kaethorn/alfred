@@ -42,7 +42,7 @@ public class UserController {
     @Autowired
     private SettingsService settingsService;
 
-    @Value("${jwtSecret:zY5MzUxODMyMTM0IiwiZW}")
+    @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
     private String jwtSecret;
 
     @GetMapping("/verify/{token}")
