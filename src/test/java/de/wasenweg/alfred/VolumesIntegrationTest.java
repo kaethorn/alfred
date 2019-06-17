@@ -19,7 +19,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -65,9 +64,7 @@ public class VolumesIntegrationTest {
 
     @Test
     public void findAllPublishers() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/api/publishers")
-                .with(authentication(OAuth2MockHelper.getOAuth2LoginAuthenticationToken()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2MockHelper.getOauth2ClientContext()))
+        mvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.publishers.length()").value(1))
@@ -79,9 +76,7 @@ public class VolumesIntegrationTest {
     @Test
     public void findAllSeries() throws Exception {
         mvc.perform(MockMvcRequestBuilders
-                .get("/api/publishers/" + ComicFixtures.COMIC_V1_1.getPublisher() + "/series")
-                .with(authentication(OAuth2MockHelper.getOAuth2LoginAuthenticationToken()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2MockHelper.getOauth2ClientContext()))
+                .get("/api/publishers/" + ComicFixtures.COMIC_V1_1.getPublisher() + "/series"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.series.length()").value(1))
@@ -97,9 +92,7 @@ public class VolumesIntegrationTest {
         mvc.perform(MockMvcRequestBuilders
                 .get("/api/publishers/"
                     + ComicFixtures.COMIC_V1_1.getPublisher() + "/series/"
-                    + ComicFixtures.COMIC_V1_1.getSeries() + "/volumes")
-                .with(authentication(OAuth2MockHelper.getOAuth2LoginAuthenticationToken()))
-                .sessionAttr("scopedTarget.oauth2ClientContext", OAuth2MockHelper.getOauth2ClientContext()))
+                    + ComicFixtures.COMIC_V1_1.getSeries() + "/volumes"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$._embedded.volumes.length()").value(3))

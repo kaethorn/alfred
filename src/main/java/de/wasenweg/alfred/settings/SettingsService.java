@@ -4,14 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
 public class SettingsService {
 
-    private final Map<String, Setting> defaults = new HashMap<String, Setting>();
+    private final ArrayList<Setting> defaults = new ArrayList<Setting>();
 
     private final SettingRepository settingRepository;
     private final Environment environment;
@@ -21,14 +20,20 @@ public class SettingsService {
         this.settingRepository = settingRepository;
         this.environment = environment;
 
-        defaults.put("comics.path", new Setting("comics.path", "Path", "/comics", "Path to your comic library"));
-        defaults.forEach((key, settingDefault) -> {
-            final Optional<String> environmentValue = this.getEnvironmentValue(key);
+        // Built in defaults:
+        defaults.add(new Setting("comics.path", "Path", "/comics", "Path to your comic library"));
+        defaults.add(new Setting("auth.users", "Users", "", "Users authorized to access this server"));
+        defaults.add(new Setting("auth.client.id", "Google client ID", "", "Google client ID to use for this server"));
+
+        defaults.forEach((settingDefault) -> {
+            // Defaults passed in via a property override built in defaults
+            final Optional<String> environmentValue = this.getEnvironmentValue(settingDefault.getKey());
             if (environmentValue.isPresent()) {
                 settingDefault.setValue(environmentValue.get());
             }
 
-            final Optional<Setting> hasSetting = this.settingRepository.findByKey(key);
+            // Defaults are ignored if values for the given key already exist
+            final Optional<Setting> hasSetting = this.settingRepository.findByKey(settingDefault.getKey());
             if (!hasSetting.isPresent()) {
                 this.settingRepository.save(settingDefault);
             } else {

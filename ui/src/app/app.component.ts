@@ -27,9 +27,9 @@ export class AppComponent {
     private statusBar: StatusBar,
     private userService: UserService
   ) {
-    this.userService.get().subscribe((user: User) => {
+    this.initializeApp();
+    this.userService.user.subscribe((user: User) => {
       this.user = user;
-      this.initializeApp();
     });
   }
 
@@ -41,8 +41,7 @@ export class AppComponent {
   }
 
   logout () {
-    this.userService.logout().subscribe(() => {
-      window.location.reload();
-    });
+    this.userService.logout();
+    window.location.reload();
   }
 }

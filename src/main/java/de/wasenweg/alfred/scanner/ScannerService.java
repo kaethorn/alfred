@@ -29,7 +29,7 @@ public class ScannerService {
     private ComicRepository comicRepository;
 
     @Autowired
-    private SettingsService preferencesService;
+    private SettingsService settingsService;
 
     private void sendEvent(final String data, final String name) {
         emitter.onNext(
@@ -92,7 +92,7 @@ public class ScannerService {
      * not available anymore.
      */
     public Flux<ServerSentEvent<String>> scanComics() {
-        final Path comicsPath = Paths.get(this.preferencesService.get("comics.path"));
+        final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
