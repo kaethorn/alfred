@@ -7,6 +7,46 @@ describe('ComicsService', () => {
   let service: ComicsService;
   let httpMock: HttpTestingController;
 
+  const mockComics = {
+    _embedded: {
+      comics: [{
+        path: '/batman 1.cbz',
+        title: 'Batman One',
+        series: 'Batman',
+        number: 1,
+        position: '1',
+        volume: '1940',
+        year: 1940,
+        month: 4,
+        publisher: 'DC Comics',
+        pageCount: 20,
+        thumbnail: '',
+        _links: {
+          self: {
+            href: 'foo.bar/1'
+          }
+        }
+      }, {
+        path: '/batman 2.cbz',
+        title: 'Batman Two',
+        series: 'Batman',
+        number: 2,
+        position: '2',
+        volume: '1940',
+        year: 1940,
+        month: 5,
+        publisher: 'DC Comics',
+        pageCount: 20,
+        thumbnail: '',
+        _links: {
+          self: {
+            href: 'foo.bar/2'
+          }
+        }
+      }]
+    },
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ]
@@ -22,49 +62,7 @@ describe('ComicsService', () => {
 
   describe('#list', () => {
 
-    beforeEach(function () {
-      this.mockComics = {
-        _embedded: {
-          comics: [{
-            path: '/batman 1.cbz',
-            title: 'Batman One',
-            series: 'Batman',
-            number: 1,
-            position: '1',
-            volume: '1940',
-            year: 1940,
-            month: 4,
-            publisher: 'DC Comics',
-            pageCount: 20,
-            thumbnail: '',
-            _links: {
-              self: {
-                href: 'foo.bar/1'
-              }
-            }
-          }, {
-            path: '/batman 2.cbz',
-            title: 'Batman Two',
-            series: 'Batman',
-            number: 2,
-            position: '2',
-            volume: '1940',
-            year: 1940,
-            month: 5,
-            publisher: 'DC Comics',
-            pageCount: 20,
-            thumbnail: '',
-            _links: {
-              self: {
-                href: 'foo.bar/2'
-              }
-            }
-          }]
-        },
-      };
-    });
-
-    it('lists all comics', function () {
+    it('lists all comics', () => {
       service.list().subscribe(comics => {
         expect(comics.length).toBe(2);
         expect(comics[0].id).toEqual('1');
@@ -75,55 +73,13 @@ describe('ComicsService', () => {
 
       const req = httpMock.expectOne('api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc');
       expect(req.request.method).toBe('GET');
-      req.flush(this.mockComics);
+      req.flush(mockComics);
     });
   });
 
   describe('#listByVolume', () => {
 
-    beforeEach(function () {
-      this.mockComics = {
-        _embedded: {
-          comics: [{
-            path: '/batman 1.cbz',
-            title: 'Batman One',
-            series: 'Batman',
-            number: 1,
-            position: '1',
-            volume: '1940',
-            year: 1940,
-            month: 4,
-            publisher: 'DC Comics',
-            pageCount: 20,
-            thumbnail: '',
-            _links: {
-              self: {
-                href: 'foo.bar/1'
-              }
-            }
-          }, {
-            path: '/batman 2.cbz',
-            title: 'Batman Two',
-            series: 'Batman',
-            number: 2,
-            position: '2',
-            volume: '1940',
-            year: 1940,
-            month: 5,
-            publisher: 'DC Comics',
-            pageCount: 20,
-            thumbnail: '',
-            _links: {
-              self: {
-                href: 'foo.bar/2'
-              }
-            }
-          }]
-        },
-      };
-    });
-
-    it('lists comics for the given volume', function () {
+    it('lists comics for the given volume', () => {
       service.listByVolume('DC Comics', 'Batman', '1940').subscribe(comics => {
         expect(comics.length).toBe(2);
         expect(comics[0].id).toEqual('1');
@@ -135,7 +91,7 @@ describe('ComicsService', () => {
       const req = httpMock
         .expectOne('api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition?publisher=DC%20Comics&series=Batman&volume=1940');
       expect(req.request.method).toBe('GET');
-      req.flush(this.mockComics);
+      req.flush(mockComics);
     });
   });
 });

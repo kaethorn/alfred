@@ -31,8 +31,10 @@ describe('ScannerComponent', () => {
 
   describe('#scan', () => {
 
-    beforeEach(function () {
-      this.addEventListenerSpy = spyOn(EventSource.prototype, 'addEventListener');
+    let addEventListenerSpy;
+
+    beforeEach(() => {
+      addEventListenerSpy = spyOn(EventSource.prototype, 'addEventListener');
       spyOn(EventSource.prototype, 'close');
       component.scan();
     });
@@ -50,8 +52,8 @@ describe('ScannerComponent', () => {
 
     describe('when complete', () => {
 
-      beforeEach(function () {
-        const doneCallback = this.addEventListenerSpy.calls.mostRecent().args[1];
+      beforeEach(() => {
+        const doneCallback = addEventListenerSpy.calls.mostRecent().args[1];
         spyOn(component.scanned, 'emit');
         doneCallback();
       });

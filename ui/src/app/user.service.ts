@@ -28,6 +28,9 @@ export class UserService {
 
     this.http.get(`api/user/verify/${ currentUser.token }`).subscribe(() => {
       this.user.next(currentUser);
+    }, () => {
+      this.logout();
+      this.user.next(null);
     });
   }
 
