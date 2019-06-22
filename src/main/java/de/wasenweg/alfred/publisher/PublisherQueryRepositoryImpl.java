@@ -50,6 +50,18 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
         ), Comic.class, Series.class).getMappedResults();
     }
 
+    public List<Series> findAllSeries(final String userId) {
+        return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+            group("series", "volume")
+                .last("publisher").as("publisher"),
+            group("series")
+                .last("_id.series").as("series")
+                .last("publisher").as("publisher")
+                .count().as("volumesCount"),
+            sort(Sort.Direction.ASC, "series")
+        ), Comic.class, Series.class).getMappedResults();
+    }
+
     @Override
     public List<Volume> findAllVolumes(final String userId, final String publisher, final String series) {
         return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
