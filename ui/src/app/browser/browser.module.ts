@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
+import { SecureModule } from '../secure/secure.module';
 import { BrowserPage } from './browser.page';
 
 @NgModule({
@@ -11,6 +12,7 @@ import { BrowserPage } from './browser.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    SecureModule,
     RouterModule.forChild([{
       path: '',
       component: BrowserPage

@@ -29,7 +29,7 @@
     <div class="image-container">
       <a [routerLink]="['/read', comic.id]"
          [queryParams]="{ page: currentPage }">
-        <img *ngIf="imagePath" [src]="imagePath"
+        <img *ngIf="imagePath" [src]="imagePath | secure | async"
              alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
       </a>
     </div>
