@@ -4,6 +4,8 @@ import { APP_BASE_HREF } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { SecureModule } from '../app/secure/secure.module';
+
 import { MockComponent } from './mock.component';
 import { AppComponent } from '../app/app.component';
 import { PublishersComponent } from '../app/library/publishers/publishers.component';
@@ -46,6 +48,7 @@ export const TestModule = () => {
       IonicModule.forRoot(),
       FormsModule,
       HttpClientModule,
+      SecureModule,
       RouterTestingModule.withRoutes([
         { path: 'browse/:id', component: MockComponent },
         { path: 'library', component: MockComponent }
