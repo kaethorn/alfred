@@ -31,8 +31,8 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-list *ngFor="let publisher of publishers" class="publisher">
-    <ion-item>
+  <ion-list *ngFor="let publisher of publishers">
+    <ion-item class="publisher">
       <ion-button fill="clear" size="small" color="primary"
         [routerLink]="['/library/publishers/' + publisher.publisher + '/series']">
         {{ publisher.publisher }}

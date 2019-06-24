@@ -25,6 +25,11 @@ describe('LibraryComponent', () => {
       .toEqual(['DC COMICS', 'F5 ENTERATINMENT', 'TOP COW']);
   });
 
+  it('sorts nested series alphabetically', async () => {
+    expect(await libraryPage.getAllPublisherSeries().getText())
+      .toEqual([ 'BATGIRL', 'BATMAN', 'THE TENTH', 'THE TENTH: RESURRECTED', 'RISING STARS' ]);
+  });
+
   it('sorts series alphabetically', async () => {
     await libraryPage.clickPublisher('DC Comics');
     await libraryPage.waitForSeries();
