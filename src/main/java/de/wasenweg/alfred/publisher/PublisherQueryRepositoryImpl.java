@@ -29,13 +29,13 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
     @Override
     public List<Publisher> findAllPublishers(final String userId) {
         return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
-            sort(Sort.Direction.ASC, "series"),
             group("series", "volume")
                 .last("publisher").as("publisher"),
             group("series")
                 .last("_id.series").as("series")
                 .last("publisher").as("publisher")
                 .count().as("volumesCount"),
+            sort(Sort.Direction.ASC, "series"),
             group("publisher")
                 .last("publisher").as("publisher")
                 .push(Aggregation.ROOT).as("series")
