@@ -37,20 +37,6 @@ public class PublisherController {
                 linkTo(PublisherController.class).withSelfRel());
     }
 
-    @GetMapping("/series")
-    public Resources<Resource<Series>> findAllSeries(
-            final Principal principal) {
-        final List<Series> series = this.repository.findAllSeries(principal.getName());
-        return new Resources<Resource<Series>>(
-                series.stream()
-                    .map(serie -> {
-                        return new Resource<Series>(
-                            serie,
-                            getVolumeLink(serie.getPublisher(), serie.getSeries()));
-                    }).collect(Collectors.toList()),
-                getSeriesLink());
-    }
-
     @GetMapping("/{publisher}/series")
     public Resources<Resource<Series>> findAllSeriesByPublisher(
             final Principal principal,
@@ -74,10 +60,6 @@ public class PublisherController {
         final List<Volume> volumes = this.repository.findAllVolumes(principal.getName(), publisher, series);
         final Link link = linkTo(PublisherController.class).slash(publisher).slash("series").slash(series).slash("volumes").withSelfRel();
         return new Resources<Volume>(volumes, link);
-    }
-
-    private Link getSeriesLink() {
-        return linkTo(PublisherController.class).slash("series").withSelfRel();
     }
 
     private Link getSeriesLink(final String publisher) {

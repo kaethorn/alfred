@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-toolbar>
-  <ion-searchbar placeholder="Search publishers"
+  <ion-searchbar placeholder="Search series"
     #libraryFilter
     (ionInput)="filter(libraryFilter.value)">
   </ion-searchbar>
@@ -31,11 +31,17 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-list *ngIf="publishers?.length > 0">
-    <ion-item *ngFor="let publisher of publishers" class="publisher">
-      <ion-button fill="solid" color="primary"
+  <ion-list *ngFor="let publisher of publishers" class="publisher">
+    <ion-item>
+      <ion-button fill="clear" size="small" color="primary"
         [routerLink]="['/library/publishers/' + publisher.publisher + '/series']">
         {{ publisher.publisher }}
+      </ion-button>
+    </ion-item>
+    <ion-item *ngFor="let serie of publisher.series" class="serie">
+      <ion-button fill="solid" color="secondary"
+        [routerLink]="['/library/publishers/' + serie.publisher + '/series/' + serie.series + '/volumes']">
+        {{ serie.series }}
       </ion-button>
     </ion-item>
   </ion-list>

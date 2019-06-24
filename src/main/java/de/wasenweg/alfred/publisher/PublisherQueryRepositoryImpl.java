@@ -7,6 +7,7 @@ import de.wasenweg.alfred.volumes.Volume;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
@@ -28,9 +29,16 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
     @Override
     public List<Publisher> findAllPublishers(final String userId) {
         return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
-            group("publisher", "series"),
+            sort(Sort.Direction.ASC, "series"),
+            group("series", "volume")
+                .last("publisher").as("publisher"),
+            group("series")
+                .last("_id.series").as("series")
+                .last("publisher").as("publisher")
+                .count().as("volumesCount"),
             group("publisher")
-                .last("_id.publisher").as("publisher")
+                .last("publisher").as("publisher")
+                .push(Aggregation.ROOT).as("series")
                 .count().as("seriesCount"),
             sort(Sort.Direction.ASC, "publisher")
         ), Comic.class, Publisher.class).getMappedResults();
@@ -46,19 +54,8 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
                 .last("_id.series").as("series")
                 .last("publisher").as("publisher")
                 .count().as("volumesCount"),
-            sort(Sort.Direction.ASC, "series")
-        ), Comic.class, Series.class).getMappedResults();
-    }
-
-    public List<Series> findAllSeries(final String userId) {
-        return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
-            group("series", "volume")
-                .last("publisher").as("publisher"),
-            group("series")
-                .last("_id.series").as("series")
-                .last("publisher").as("publisher")
-                .count().as("volumesCount"),
-            sort(Sort.Direction.ASC, "series")
+            sort(Sort.Direction.ASC, "series"),
+            sort(Sort.Direction.ASC, "publisher")
         ), Comic.class, Series.class).getMappedResults();
     }
 
