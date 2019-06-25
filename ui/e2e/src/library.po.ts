@@ -5,6 +5,7 @@ export class LibraryPage {
 
   private page: Page;
   private selectPublisher = 'app-publishers ion-item.publisher ion-button';
+  private selectPublisherSeries = 'app-publishers ion-item.serie ion-button';
   private selectSeries = 'app-series ion-item.serie ion-button';
   private selectVolumes = 'app-volumes ion-card.volume';
 
@@ -26,6 +27,10 @@ export class LibraryPage {
 
   getAllVolumes () {
     return element.all(by.css(this.selectVolumes));
+  }
+
+  getAllPublisherSeries () {
+    return element.all(by.css(this.selectPublisherSeries));
   }
 
   async clickPublisher (publisher: string) {

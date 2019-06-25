@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { VolumesService } from '../../volumes.service';
+import { Series } from '../../series';
 import { Publisher } from '../../publisher';
 
 @Component({
@@ -29,6 +30,16 @@ export class PublishersComponent {
 
   filter (value: string) {
     this.publishers = this.publishersData
-      .filter(publisher => publisher.publisher.match(value));
+      .reduce((result: Publisher[], publisher: Publisher): Publisher[] => {
+        const series = publisher.series.filter((serie: Series) => serie.series.match(value));
+        if (series.length) {
+          result.push({
+            publisher: publisher.publisher,
+            seriesCount: publisher.seriesCount,
+            series
+          });
+        }
+        return result;
+      }, []);
   }
 }

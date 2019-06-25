@@ -36,6 +36,8 @@ export class ScannerComponent {
   }
 
   scan () {
+    this.errors = [];
+
     const scanProgress = new EventSource('/api/scan-progress');
 
     scanProgress.addEventListener('total', (event: any) => {

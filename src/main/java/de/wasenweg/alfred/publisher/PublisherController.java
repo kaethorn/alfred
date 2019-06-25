@@ -38,7 +38,7 @@ public class PublisherController {
     }
 
     @GetMapping("/{publisher}/series")
-    public Resources<Resource<Series>> findAllSeries(
+    public Resources<Resource<Series>> findAllSeriesByPublisher(
             final Principal principal,
             @PathVariable final String publisher) {
         final List<Series> series = this.repository.findAllSeries(principal.getName(), publisher);
@@ -53,7 +53,7 @@ public class PublisherController {
     }
 
     @GetMapping("/{publisher}/series/{series}/volumes")
-    public Resources<Volume> findAllVolumes(
+    public Resources<Volume> findAllVolumesByPublisherAndSeries(
             final Principal principal,
             @PathVariable final String publisher,
             @PathVariable final String series) {

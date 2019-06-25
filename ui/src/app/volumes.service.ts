@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, GroupedObservable } from 'rxjs';
+import { map, groupBy } from 'rxjs/operators';
 
 import { Publisher } from './publisher';
 import { Series } from './series';
@@ -25,6 +25,12 @@ export class VolumesService {
 
   listPublishers (): Observable<Publisher[]> {
     return this.http.get('/api/publishers').pipe(
+      this.consumeHateoas('publishers')
+    );
+  }
+
+  listPublishersWithSeries (): Observable<Publisher[]> {
+    return this.http.get(`/api/publishers/series`).pipe(
       this.consumeHateoas('publishers')
     );
   }
