@@ -1,10 +1,12 @@
 import { LibraryPage } from './library.po';
 import { SettingsPage } from './settings.po';
+import { AppPage } from './app.po';
 import { MongoDBTools } from './mongodb.tools';
 
 describe('LibraryComponent', () => {
   let settingsPage: SettingsPage;
   let libraryPage: LibraryPage;
+  let appPage: AppPage;
 
   beforeAll(async () => {
     await MongoDBTools.prepare();
@@ -13,6 +15,7 @@ describe('LibraryComponent', () => {
   beforeEach(async () => {
     settingsPage = new SettingsPage();
     libraryPage = new LibraryPage();
+    appPage = new AppPage();
   });
 
   it('scans for comics', async () => {
@@ -21,6 +24,7 @@ describe('LibraryComponent', () => {
 
   it('sorts publishers alphabetically', async () => {
     await libraryPage.navigateTo();
+    expect(await appPage.getTitleText()).toContain('Series');
     expect(await libraryPage.getAllPublishers().getText())
       .toEqual(['DC COMICS', 'F5 ENTERATINMENT', 'TOP COW']);
   });
@@ -33,6 +37,7 @@ describe('LibraryComponent', () => {
   it('sorts series alphabetically', async () => {
     await libraryPage.clickPublisher('DC Comics');
     await libraryPage.waitForSeries();
+    expect(await appPage.getTitleText()).toContain('DC Comics series');
     expect(await libraryPage.getAllSeries().getText())
       .toEqual([ 'BATGIRL', 'BATMAN' ]);
   });
@@ -40,6 +45,7 @@ describe('LibraryComponent', () => {
   it('sorts volumes alphabetically', async () => {
     await libraryPage.clickSeries('Batgirl');
     await libraryPage.waitForVolumes();
+    expect(await appPage.getTitleText()).toContain('Batgirl volumes');
     expect(await libraryPage.getVolumeTitles().getText())
       .toEqual(['Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016']);
   });

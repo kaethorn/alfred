@@ -6,7 +6,7 @@ export class AppPage {
   }
 
   getTitleText () {
-    return element(by.css('app-root ion-toolbar ion-title')).getText();
+    return element.all(by.css('app-root ion-toolbar ion-title')).last().getText();
   }
 
   getPublishersText () {

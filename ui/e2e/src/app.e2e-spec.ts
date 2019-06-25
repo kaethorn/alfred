@@ -14,7 +14,7 @@ describe('AppComponent', () => {
 
   it('displays the top level library view', async () => {
     await appPage.navigateTo();
-    expect(await appPage.getTitleText()).toContain('Publishers');
+    expect(await appPage.getTitleText()).toContain('Series');
   });
 
   it('informs the user how to populate the library', async () => {
