@@ -57,6 +57,7 @@ export class ReaderPage implements OnInit {
       case '/issues':
         this.parent = [parent, comic.publisher, comic.series, comic.volume];
         break;
+      // FIXME this isn't really a route. Is there better way to pass one the angular way?
       case '/volumes':
         this.parent = ['/library/publishers', comic.publisher, 'series', comic.series, 'volumes'];
         break;
