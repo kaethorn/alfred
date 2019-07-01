@@ -19,7 +19,7 @@
     <ion-card-content>
       <div class="thumbnail">
         <a [routerLink]="['/read', comic.id]"
-           [queryParams]="{ page: 0 }">
+           [queryParams]="{ page: 0, parent: '/issues' }">
           <ion-badge *ngIf="comic.read"
            class="read-badge" color="secondary">
             &#10004;

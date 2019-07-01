@@ -17,12 +17,13 @@ export class ReaderPage implements OnInit {
   imagePathRight: string;
   showPageControls = false;
   showComicControls = false;
+  parent: string[];
 
   constructor (
     private route: ActivatedRoute,
     private router: Router,
     private comicsService: ComicsService,
-    private navigator: NavigatorService
+    private navigator: NavigatorService,
   ) { }
 
   @ViewChild('pagesLayer') pagesLayer: ElementRef;
@@ -39,6 +40,7 @@ export class ReaderPage implements OnInit {
   ngOnInit () {
     this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
       this.comic = data;
+      this.setParent(this.comic);
       const parentElement = this.pagesLayer.nativeElement.parentElement;
       this.navigator.set(
         this.comic.pageCount,
@@ -47,6 +49,21 @@ export class ReaderPage implements OnInit {
       );
       this.navigate(this.navigator.go());
     });
+  }
+
+  private setParent (comic: Comic) {
+    const parent = this.route.snapshot.queryParams.parent;
+    switch (parent) {
+      case '/issues':
+        this.parent = [parent, comic.publisher, comic.series, comic.volume];
+        break;
+      case '/volumes':
+        this.parent = ['/library/publishers', comic.publisher, 'series', comic.series, 'volumes'];
+        break;
+      default:
+        this.parent = ['/library/publishers'];
+        break;
+    }
   }
 
   public onClick (event: MouseEvent): void {
@@ -82,8 +99,8 @@ export class ReaderPage implements OnInit {
     this.navigate(this.navigator.go(direction));
   }
 
-  public back (event: MouseEvent): void {
-    this.router.navigate(['/issues', this.comic.publisher, this.comic.series, this.comic.volume]);
+  public back (): void {
+    this.router.navigate(this.parent);
   }
 
   private navigate (instruction: NavigationInstruction) {
@@ -95,6 +112,9 @@ export class ReaderPage implements OnInit {
           queryParamsHandling: 'merge'
         });
         this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
+        // FIXME When `sideBySide` is `false`, `this.imagePathRight` is `null` but is still
+        // rendered in the view, resulting in error:
+        // `GET http://localhost:4200/null 404 (Not Found)`.
         this.imagePathRight = instruction.sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
         break;
       case AdjacentComic.next:

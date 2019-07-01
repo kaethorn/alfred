@@ -15,6 +15,7 @@ export class BrowserPage {
   comic: Comic = {} as Comic;
   imagePath: string;
   currentPage = 0;
+  parent: string;
 
   constructor (
     private route: ActivatedRoute,
@@ -24,6 +25,7 @@ export class BrowserPage {
   ) { }
 
   ionViewDidEnter () {
+    this.parent = this.route.snapshot.queryParams.parent;
     this.currentPage = Number.parseInt(this.route.snapshot.queryParams.page, 10) || 0;
     this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
       this.comic = data;
