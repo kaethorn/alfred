@@ -4,43 +4,35 @@
   (swiperight)="onSwipe(-1)">
   <div class="wrapper" *ngIf="imagePathLeft">
     <img [src]="imagePathLeft | secure | async" class="left"
-         alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
+         alt="{{ comic.title }} # {{ comic.number }}">
   </div>
   <div class="wrapper" *ngIf="imagePathRight">
     <img [src]="imagePathRight | secure | async" class="right"
-         alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
+         alt="{{ comic.title }} # {{ comic.number }}">
   </div>
 </div>
 
-<div class="control-layer" *ngIf="showPageControls" (click)="onControlClick($event)">
+<div class="control-layer" *ngIf="showControls" (click)="toggleControls()">
   <div class="top">
     <ion-button (click)="back()">
-      <ion-icon name="close"></ion-icon>
+      <ion-icon name="close-circle-outline"></ion-icon>
     </ion-button>
+  </div>
+  <div class="center">
+    <div class="volume">{{ comic.series }} Vol. {{ comic.volume }} #{{ comic.number }}</div>
+    <div class="title">{{ comic.title }}</div>
   </div>
   <div class="bottom">
     <ion-button (click)="go(-1)">
       <ion-icon name="skip-backward"></ion-icon>
     </ion-button>
-    <ion-button (click)="go(+1)">
-      <ion-icon name="skip-forward"></ion-icon>
-    </ion-button>
-  </div>
-</div>
-
-<div class="control-layer" *ngIf="showComicControls" (click)="onControlClick($event)">
-  <div class="top">
-    <ion-button (click)="back()">
-      <ion-icon name="close"></ion-icon>
-    </ion-button>
-  </div>
-  <div class="bottom">
     <ion-button (click)="go(-1)">
-      Open previous comic
-      <ion-icon name="skip-backward"></ion-icon>
+      <ion-icon name="arrow-round-back"></ion-icon>
     </ion-button>
     <ion-button (click)="go(+1)">
-      Open next comic
+      <ion-icon name="arrow-round-forward"></ion-icon>
+    </ion-button>
+    <ion-button (click)="go(+1)">
       <ion-icon name="skip-forward"></ion-icon>
     </ion-button>
   </div>

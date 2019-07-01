@@ -15,8 +15,7 @@ export class ReaderPage implements OnInit {
   comic: Comic = {} as Comic;
   imagePathLeft: string;
   imagePathRight: string;
-  showPageControls = false;
-  showComicControls = false;
+  showControls = false;
   parent: string[];
 
   constructor (
@@ -70,15 +69,10 @@ export class ReaderPage implements OnInit {
   public onClick (event: MouseEvent): void {
     const direction = this.getDirection(event);
     if (direction === 0) {
-      this.togglePageControls();
+      this.toggleControls();
     } else {
       this.go(direction);
     }
-  }
-
-  public onControlClick (event: MouseEvent): void {
-    this.showComicControls = false;
-    this.showPageControls = false;
   }
 
   public go (direction: number, event?: MouseEvent): void {
@@ -88,12 +82,8 @@ export class ReaderPage implements OnInit {
     }
   }
 
-  private togglePageControls (): void {
-    this.showPageControls = !this.showPageControls;
-  }
-
-  private toggleComicControls (): void {
-    this.showComicControls = !this.showComicControls;
+  public toggleControls (): void {
+    this.showControls = !this.showControls;
   }
 
   public onSwipe (direction): void {
@@ -119,10 +109,10 @@ export class ReaderPage implements OnInit {
         this.imagePathRight = instruction.sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
         break;
       case AdjacentComic.next:
-        this.toggleComicControls();
+        this.toggleControls();
         break;
       case AdjacentComic.previous:
-        this.toggleComicControls();
+        this.toggleControls();
         break;
     }
   }

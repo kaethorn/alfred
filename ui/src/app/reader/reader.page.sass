@@ -4,23 +4,37 @@
   height: 100%
 
   .control-layer
+    background-color: #ffffffba
     z-index: 2
     position: fixed
     display: flex
     flex-direction: column
-    justify-content: space-between
     width: 100vw
-    height: 100vh
+    bottom: 0
 
     .top
       flex-direction: column
       align-items: flex-end
       display: flex
+      margin: 1em
 
     .bottom
       flex-direction: row
       justify-content: space-between
       display: flex
+      margin: 1em
+
+    .center
+      flex-direction: column
+      display: flex
+      font-size: 1.6em
+      color: #3880ff
+      font-weight: 800
+      text-align: center
+      text-shadow: 0 0 0.2em white
+
+      .title
+        font-size: 1.2em
 
   .pages-layer
     z-index: 1
