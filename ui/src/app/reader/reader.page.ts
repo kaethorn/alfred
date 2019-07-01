@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, HostListener, OnInit } from '@angular
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from '../comics.service';
-import { NavigatorService } from '../navigator.service';
+import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -15,7 +15,8 @@ export class ReaderPage implements OnInit {
   comic: Comic = {} as Comic;
   imagePathLeft: string;
   imagePathRight: string;
-  showControl = false;
+  showPageControls = false;
+  showComicControls = false;
 
   constructor (
     private route: ActivatedRoute,
@@ -49,45 +50,60 @@ export class ReaderPage implements OnInit {
   }
 
   public onClick (event: MouseEvent): void {
-    const offset = this.getDirection(event);
-    if (offset === 0) {
-      this.toggleControls();
+    const direction = this.getDirection(event);
+    if (direction === 0) {
+      this.togglePageControls();
     } else {
-      this.go(offset);
+      this.go(direction);
     }
   }
 
   public onControlClick (event: MouseEvent): void {
-    this.toggleControls();
+    this.showComicControls = false;
+    this.showPageControls = false;
   }
 
-  public go (offset: number, event?: MouseEvent): void {
-    this.navigate(this.navigator.go(offset));
+  public go (direction: number, event?: MouseEvent): void {
+    this.navigate(this.navigator.go(direction));
     if (event) {
       event.stopPropagation();
     }
   }
 
-  private toggleControls (): void {
-    this.showControl = !this.showControl;
+  private togglePageControls (): void {
+    this.showPageControls = !this.showPageControls;
   }
 
-  public onSwipe (offset): void {
-    this.navigate(this.navigator.go(offset));
+  private toggleComicControls (): void {
+    this.showComicControls = !this.showComicControls;
+  }
+
+  public onSwipe (direction): void {
+    this.navigate(this.navigator.go(direction));
   }
 
   public back (event: MouseEvent): void {
     this.router.navigate(['/issues', this.comic.publisher, this.comic.series, this.comic.volume]);
   }
 
-  private navigate (sideBySide: boolean) {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { page: NavigatorService.page },
-      queryParamsHandling: 'merge'
-    });
-    this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
-    this.imagePathRight = sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
+  private navigate (instruction: NavigationInstruction) {
+    switch (instruction.adjacent) {
+      case AdjacentComic.same:
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { page: NavigatorService.page },
+          queryParamsHandling: 'merge'
+        });
+        this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
+        this.imagePathRight = instruction.sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
+        break;
+      case AdjacentComic.next:
+        this.toggleComicControls();
+        break;
+      case AdjacentComic.previous:
+        this.toggleComicControls();
+        break;
+    }
   }
 
   /**
