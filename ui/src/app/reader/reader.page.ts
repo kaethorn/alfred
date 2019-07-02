@@ -29,11 +29,16 @@ export class ReaderPage implements OnInit {
 
   @HostListener('document:keyup.esc', ['$event'])
   handleEscape () {
-    this.router.navigate(['/browse', this.comic.id], {
-      relativeTo: this.route,
-      queryParams: { page: NavigatorService.page },
-      queryParamsHandling: 'merge'
-    });
+    this.router.navigate([this.parent]);
+  }
+
+  @HostListener('document:keyup.arrowleft', ['$event'])
+  handleLeft () {
+    this.go(-1);
+  }
+  @HostListener('document:keyup.arrowright', ['$event'])
+  handleRight () {
+    this.go(1);
   }
 
   ngOnInit () {
