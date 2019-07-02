@@ -18,6 +18,7 @@ export class IssuesPage {
   private publisher: string;
   private series: string;
   private volume: string;
+  public currentRoute: string;
 
   comics: Array<Comic> = [];
 
@@ -33,6 +34,7 @@ export class IssuesPage {
     this.publisher = this.route.snapshot.params.publisher;
     this.series = this.route.snapshot.params.series;
     this.volume = this.route.snapshot.params.volume;
+    this.currentRoute = `/issues/${ this.publisher }/${ this.series }/${ this.volume }`;
 
     this.list();
   }

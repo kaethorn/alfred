@@ -53,14 +53,14 @@ export class VolumesComponent {
       this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {
           this.router.navigate(['/read', comic.id], {
-            queryParams: { page: comic.currentPage, parent: '/volumes' }
+            queryParams: { page: comic.currentPage, parent: `/library/publishers/${ comic.publisher }/series/${ comic.series }/volumes` }
           });
         });
     } else {
       this.comicsService.getLastUnreadByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {
           this.router.navigate(['/read', comic.id], {
-            queryParams: { page: comic.currentPage, parent: '/volumes' }
+            queryParams: { page: comic.currentPage, parent: `/library/publishers/${ comic.publisher }/series/${ comic.series }/volumes` }
           });
         });
     }

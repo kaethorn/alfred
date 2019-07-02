@@ -16,7 +16,7 @@ export class ReaderPage implements OnInit {
   imagePathLeft: string;
   imagePathRight: string;
   showControls = false;
-  parent: string[];
+  parent: string;
 
   constructor (
     private route: ActivatedRoute,
@@ -39,7 +39,7 @@ export class ReaderPage implements OnInit {
   ngOnInit () {
     this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
       this.comic = data;
-      this.setParent(this.comic);
+      this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
       const parentElement = this.pagesLayer.nativeElement.parentElement;
       this.navigator.set(
         this.comic.pageCount,
@@ -48,22 +48,6 @@ export class ReaderPage implements OnInit {
       );
       this.navigate(this.navigator.go());
     });
-  }
-
-  private setParent (comic: Comic) {
-    const parent = this.route.snapshot.queryParams.parent;
-    switch (parent) {
-      case '/issues':
-        this.parent = [parent, comic.publisher, comic.series, comic.volume];
-        break;
-      // FIXME this isn't really a route. Is there better way to pass one the angular way?
-      case '/volumes':
-        this.parent = ['/library/publishers', comic.publisher, 'series', comic.series, 'volumes'];
-        break;
-      default:
-        this.parent = ['/library/publishers'];
-        break;
-    }
   }
 
   public onClick (event: MouseEvent): void {
@@ -91,7 +75,7 @@ export class ReaderPage implements OnInit {
   }
 
   public back (): void {
-    this.router.navigate(this.parent);
+    this.router.navigate([this.parent]);
   }
 
   private navigate (instruction: NavigationInstruction) {
