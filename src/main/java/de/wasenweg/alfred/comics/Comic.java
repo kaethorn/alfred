@@ -61,6 +61,9 @@ public class Comic {
 
     private byte[] thumbnail;
 
+    private String nextId;
+    private String previousId;
+
     @Builder.Default
     private boolean read = false;
     @Builder.Default

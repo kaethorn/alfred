@@ -3,7 +3,10 @@ package de.wasenweg.alfred.scanner;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.settings.SettingsService;
+import de.wasenweg.alfred.volumes.Volume;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
@@ -24,6 +28,8 @@ import java.util.zip.ZipFile;
 public class ScannerService {
 
     private final EmitterProcessor<ServerSentEvent<String>> emitter = EmitterProcessor.create();
+
+    Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
     @Autowired
     private ComicRepository comicRepository;
@@ -96,6 +102,8 @@ public class ScannerService {
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
+                this.logger.info("Reading comics in {}", comicsPath.toString());
+
                 final List<Path> comicFiles = Files.walk(comicsPath)
                         .filter(path -> Files.isRegularFile(path))
                         .filter(path -> path.getFileName().toString().endsWith(".cbz"))
@@ -103,11 +111,16 @@ public class ScannerService {
 
                 reportTotal(comicFiles.size());
 
+                this.logger.info("Parsing {} comics.", comicFiles.size());
+
                 comicFiles.stream()
                         .map(path -> createOrUpdateComic(path))
                         .forEach(comic -> {
                             comicRepository.save(comic);
                         });
+
+                this.logger.info("Parsed {} comics.", comicFiles.size());
+                this.logger.info("Purging orphaned comics.");
 
                 // Purge comics from the DB that don't have a corresponding file.
                 final List<String> comicFilePaths = comicFiles.stream()
@@ -117,6 +130,27 @@ public class ScannerService {
                         .filter(comic -> !comicFilePaths.contains(comic.getPath()))
                         .collect(Collectors.toList());
                 comicRepository.deleteAll(toDelete);
+
+                this.logger.info("Associating volumes.");
+
+                // Associate volume IDs
+                // Find all volumes
+                final List<Comic> comics = comicRepository
+                  .findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc();
+                final Map<Volume, List<Comic>> volumes = comics.stream()
+                    .collect(Collectors.groupingBy(comic -> { final Volume volume = new Volume();
+                        volume.setPublisher(comic.getPublisher());
+                        volume.setSeries(comic.getSeries());
+                        volume.setVolume(comic.getVolume());
+                        return volume;
+                    }));
+
+                // Traverse each volume
+                volumes.forEach((volume, volumeComics) -> {
+                    this.logger.info("Associating comics for {}.", volume.toString());
+                    // TODO
+
+                });
             } catch (final IOException exception) {
                 exception.printStackTrace();
                 reportError(exception);

@@ -10,7 +10,7 @@ public interface ComicRepository extends MongoRepository<Comic, String>, ComicQu
 
     Optional<Comic> findByPath(@Param("path") final String path);
 
-    List<Comic> findAllByOrderBySeriesAscVolumeAscPositionAsc();
+    List<Comic> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc();
 
     List<Comic> findAllBySeriesAndVolumeOrderByPosition(
             @Param("series") final String series,

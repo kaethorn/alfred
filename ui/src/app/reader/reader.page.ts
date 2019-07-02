@@ -71,6 +71,14 @@ export class ReaderPage implements OnInit {
     }
   }
 
+  public openNext () {
+    // TODO
+  }
+
+  public openPrevious () {
+    // TODO
+  }
+
   public toggleControls (): void {
     this.showControls = !this.showControls;
   }
