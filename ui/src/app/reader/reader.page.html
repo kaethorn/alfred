@@ -14,25 +14,31 @@
 
 <div class="control-layer" *ngIf="showControls" (click)="toggleControls()">
   <div class="top">
-    <ion-button (click)="back()">
-      <ion-icon name="close-circle-outline"></ion-icon>
+    <ion-button color="secondary" (click)="back()">
+      <ion-icon name="close"></ion-icon>
     </ion-button>
   </div>
   <div class="center">
-    <div class="volume">{{ comic.series }} Vol. {{ comic.volume }} #{{ comic.number }}</div>
-    <div class="title">{{ comic.title }}</div>
+    <div class="volume">
+      <ion-text color="primary">{{ comic.series }} Vol. {{ comic.volume }} #{{ comic.number }}</ion-text>
+    </div>
+    <div class="title">
+      <ion-text color="primary">
+        {{ comic.title }}
+      </ion-text>
+    </div>
   </div>
   <div class="bottom">
-    <ion-button (click)="go(-1)">
+    <ion-button color="secondary" (click)="go(-1)">
       <ion-icon name="skip-backward"></ion-icon>
     </ion-button>
-    <ion-button (click)="go(-1)">
+    <ion-button color="secondary" (click)="go(-1)">
       <ion-icon name="arrow-round-back"></ion-icon>
     </ion-button>
-    <ion-button (click)="go(+1)">
+    <ion-button color="secondary" (click)="go(+1)">
       <ion-icon name="arrow-round-forward"></ion-icon>
     </ion-button>
-    <ion-button (click)="go(+1)">
+    <ion-button color="secondary" (click)="go(+1)">
       <ion-icon name="skip-forward"></ion-icon>
     </ion-button>
   </div>
