@@ -72,11 +72,15 @@ export class ReaderPage implements OnInit {
   }
 
   public openNext () {
-    // TODO
+    if (this.comic.nextId) {
+      this.router.navigate(['/read', this.comic.nextId]);
+    }
   }
 
   public openPrevious () {
-    // TODO
+    if (this.comic.previousId) {
+      this.router.navigate(['/read', this.comic.previousId]);
+    }
   }
 
   public toggleControls (): void {

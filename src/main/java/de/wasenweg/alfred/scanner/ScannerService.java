@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.zip.ZipFile;
 
 @Service
@@ -120,37 +121,9 @@ public class ScannerService {
                         });
 
                 this.logger.info("Parsed {} comics.", comicFiles.size());
-                this.logger.info("Purging orphaned comics.");
-
-                // Purge comics from the DB that don't have a corresponding file.
-                final List<String> comicFilePaths = comicFiles.stream()
-                        .map(path -> path.toAbsolutePath().toString())
-                        .collect(Collectors.toList());
-                final List<Comic> toDelete = comicRepository.findAll().stream()
-                        .filter(comic -> !comicFilePaths.contains(comic.getPath()))
-                        .collect(Collectors.toList());
-                comicRepository.deleteAll(toDelete);
-
-                this.logger.info("Associating volumes.");
-
-                // Associate volume IDs
-                // Find all volumes
-                final List<Comic> comics = comicRepository
-                  .findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc();
-                final Map<Volume, List<Comic>> volumes = comics.stream()
-                    .collect(Collectors.groupingBy(comic -> { final Volume volume = new Volume();
-                        volume.setPublisher(comic.getPublisher());
-                        volume.setSeries(comic.getSeries());
-                        volume.setVolume(comic.getVolume());
-                        return volume;
-                    }));
-
-                // Traverse each volume
-                volumes.forEach((volume, volumeComics) -> {
-                    this.logger.info("Associating comics for {}.", volume.toString());
-                    // TODO
-
-                });
+                this.cleanOrphans(comicFiles);
+                this.associateVolumes();
+                this.logger.info("Done scanning.");
             } catch (final IOException exception) {
                 exception.printStackTrace();
                 reportError(exception);
@@ -160,5 +133,60 @@ public class ScannerService {
         });
 
         return emitter.log();
+    }
+
+    private void cleanOrphans(final List<Path> comicFiles) {
+        this.logger.info("Purging orphaned comics.");
+
+        // Purge comics from the DB that don't have a corresponding file.
+        final List<String> comicFilePaths = comicFiles.stream()
+                .map(path -> path.toAbsolutePath().toString())
+                .collect(Collectors.toList());
+        final List<Comic> toDelete = comicRepository.findAll().stream()
+                .filter(comic -> !comicFilePaths.contains(comic.getPath()))
+                .collect(Collectors.toList());
+        comicRepository.deleteAll(toDelete);
+    }
+
+    /**
+     * Associates comics within a volume.
+     *
+     * Sets the `previousId` and `nextId` attributes for each comic which point to the
+     * previous and next comic within the current volume.
+     */
+    private void associateVolumes() {
+        this.logger.info("Associating volumes.");
+
+        // Get all comics, grouped by volume.
+        final Map<Volume, List<Comic>> volumes = comicRepository
+            .findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc().stream()
+            .collect(Collectors.groupingBy(comic -> {
+                final Volume volume = new Volume();
+                volume.setPublisher(comic.getPublisher());
+                volume.setSeries(comic.getSeries());
+                volume.setVolume(comic.getVolume());
+                return volume;
+            }));
+
+        // Traverse each volume
+        volumes.forEach((volume, comics) -> {
+            this.logger.info("Associating {} comics for {}.", comics.size(), volume.toString());
+            // Traverse each comic in the volume
+            IntStream.range(0, comics.size()).forEach(index -> {
+                final Comic comic = comics.get(index);
+                this.logger.info("Associating comic {}.", comic.getPosition());
+                if (index > 0) {
+                    final Comic previousComic = comics.get(index - 1);
+                    comic.setPreviousId(previousComic.getId());
+                    this.logger.info("Associating comic {} with previous comic {}", comic.getPosition(), previousComic.getPosition());
+                }
+                if (index < (comics.size() - 1)) {
+                    final Comic nextComic = comics.get(index + 1);
+                    comic.setNextId(nextComic.getId());
+                    this.logger.info("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
+                }
+                comicRepository.save(comic);
+            });
+        });
     }
 }

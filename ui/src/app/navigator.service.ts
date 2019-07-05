@@ -49,8 +49,6 @@ export class NavigatorService {
       }
     }
 
-    // FIXME reset direction to `same` if the issue is the first or last in the volume.
-    // TODO suggest to open next or previous volume instead? Or return to volumes view.
     return {
       sideBySide: this.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (this.pageCount - 1),
       adjacent: direction
