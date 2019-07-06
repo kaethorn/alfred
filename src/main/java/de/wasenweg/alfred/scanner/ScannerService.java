@@ -30,7 +30,7 @@ public class ScannerService {
 
     private final EmitterProcessor<ServerSentEvent<String>> emitter = EmitterProcessor.create();
 
-    Logger logger = LoggerFactory.getLogger(ScannerService.class);
+    private Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
     @Autowired
     private ComicRepository comicRepository;
