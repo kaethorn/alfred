@@ -50,10 +50,10 @@ public class ReaderController {
             final List<ZipEntry> sortedEntries = ZipReader.getImages(file);
             final ZipEntry entry = sortedEntries.get(page);
             final String fileName = entry.getName();
-            result.stream = file.getInputStream(entry);
-            result.size = entry.getSize();
-            result.type = URLConnection.guessContentTypeFromName(fileName);
-            result.name = fileName;
+            result.setStream(file.getInputStream(entry));
+            result.setSize(entry.getSize());
+            result.setType(URLConnection.guessContentTypeFromName(fileName));
+            result.setName(fileName);
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -114,17 +114,17 @@ public class ReaderController {
         final StreamingResponseBody responseBody = outputStream -> {
             int numberOfBytesToWrite;
             final byte[] data = new byte[1024];
-            while ((numberOfBytesToWrite = comicPage.stream.read(data, 0, data.length)) != -1) {
+            while ((numberOfBytesToWrite = comicPage.getStream().read(data, 0, data.length)) != -1) {
                 outputStream.write(data, 0, numberOfBytesToWrite);
             }
-            comicPage.stream.close();
+            comicPage.getStream().close();
         };
 
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + comicPage.name)
-                .contentLength(comicPage.size)
-                .contentType(MediaType.parseMediaType(comicPage.type))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + comicPage.getName())
+                .contentLength(comicPage.getSize())
+                .contentType(MediaType.parseMediaType(comicPage.getType()))
                 .body(responseBody);
     }
 
