@@ -10,13 +10,13 @@ import java.util.zip.ZipFile;
 
 public class ThumbnailReader {
 
-    public static void set(final ZipFile file, final Comic comic)
-            throws IOException {
+  public static void set(final ZipFile file, final Comic comic)
+      throws IOException {
 
-        final List<ZipEntry> sortedEntries = ZipReader.getImages(file);
+    final List<ZipEntry> sortedEntries = ZipReader.getImages(file);
 
-        if (sortedEntries.size() > 0) {
-            comic.setThumbnail(Thumbnail.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
-        }
+    if (sortedEntries.size() > 0) {
+      comic.setThumbnail(Thumbnail.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
     }
+  }
 }

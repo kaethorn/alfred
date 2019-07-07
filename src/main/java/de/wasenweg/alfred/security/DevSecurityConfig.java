@@ -24,35 +24,35 @@ import java.util.ArrayList;
 @Profile({"dev", "test"})
 public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private class DevJWTFilter implements Filter {
-
-        @Override
-        public void doFilter(
-                final ServletRequest req,
-                final ServletResponse res,
-                final FilterChain chain) throws IOException, ServletException {
-
-            final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-            authorities.add(new SimpleGrantedAuthority("iss"));
-            authorities.add(new SimpleGrantedAuthority("sub"));
-            authorities.add(new SimpleGrantedAuthority("API_ALLOWED"));
-            authorities.add(new SimpleGrantedAuthority("exp"));
-
-            final UsernamePasswordAuthenticationToken mockAuth =
-                    new UsernamePasswordAuthenticationToken("mock-user-1", "", authorities);
-
-            SecurityContextHolder.getContext().setAuthentication(mockAuth);
-
-            chain.doFilter(req, res);
-        }
-    }
+  private class DevJwtFilter implements Filter {
 
     @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        http.addFilterAfter(new DevJWTFilter(), BasicAuthenticationFilter.class);
+    public void doFilter(
+        final ServletRequest req,
+        final ServletResponse res,
+        final FilterChain chain) throws IOException, ServletException {
 
-        http.csrf().disable()
-            .authorizeRequests()
-            .antMatchers("*").permitAll();
+      final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+      authorities.add(new SimpleGrantedAuthority("iss"));
+      authorities.add(new SimpleGrantedAuthority("sub"));
+      authorities.add(new SimpleGrantedAuthority("API_ALLOWED"));
+      authorities.add(new SimpleGrantedAuthority("exp"));
+
+      final UsernamePasswordAuthenticationToken mockAuth =
+          new UsernamePasswordAuthenticationToken("mock-user-1", "", authorities);
+
+      SecurityContextHolder.getContext().setAuthentication(mockAuth);
+
+      chain.doFilter(req, res);
     }
+  }
+
+  @Override
+  protected void configure(final HttpSecurity http) throws Exception {
+    http.addFilterAfter(new DevJwtFilter(), BasicAuthenticationFilter.class);
+
+    http.csrf().disable()
+    .authorizeRequests()
+    .antMatchers("*").permitAll();
+  }
 }

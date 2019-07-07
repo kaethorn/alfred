@@ -31,54 +31,54 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class StatsIntegrationTest {
 
-    @Autowired
-    private ComicRepository comicRepository;
+  @Autowired
+  private ComicRepository comicRepository;
 
-    @Autowired
-    private ProgressRepository progressRepository;
+  @Autowired
+  private ProgressRepository progressRepository;
 
-    @Autowired
-    private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
-    private MockMvc mvc;
+  private MockMvc mvc;
 
-    @Before
-    public void setUp() {
-        mvc = MockMvcBuilders
-          .webAppContextSetup(context)
-          .apply(springSecurity())
-          .build();
+  @Before
+  public void setUp() {
+    mvc = MockMvcBuilders
+        .webAppContextSetup(context)
+        .apply(springSecurity())
+        .build();
 
-        comicRepository.saveAll(Arrays.asList(
-                ComicFixtures.COMIC_V1_1,
-                ComicFixtures.COMIC_V1_2,
-                ComicFixtures.COMIC_V1_3,
-                ComicFixtures.COMIC_V2_1,
-                ComicFixtures.COMIC_V2_2,
-                ComicFixtures.COMIC_V2_3,
-                ComicFixtures.COMIC_V3_1,
-                ComicFixtures.COMIC_V3_2,
-                ComicFixtures.COMIC_V3_3));
+    comicRepository.saveAll(Arrays.asList(
+        ComicFixtures.COMIC_V1_1,
+        ComicFixtures.COMIC_V1_2,
+        ComicFixtures.COMIC_V1_3,
+        ComicFixtures.COMIC_V2_1,
+        ComicFixtures.COMIC_V2_2,
+        ComicFixtures.COMIC_V2_3,
+        ComicFixtures.COMIC_V3_1,
+        ComicFixtures.COMIC_V3_2,
+        ComicFixtures.COMIC_V3_3));
 
-        progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
-    }
+    progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
+  }
 
-    @After
-    public void tearDown() {
-        comicRepository.deleteAll();
-        progressRepository.deleteAll();
-    }
+  @After
+  public void tearDown() {
+    comicRepository.deleteAll();
+    progressRepository.deleteAll();
+  }
 
-    @Test
-    public void getStats() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/api/stats"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$._links.self.href").value("http://localhost/api/stats"))
-                .andExpect(jsonPath("$.issues").value(9))
-                .andExpect(jsonPath("$.publishers").value(1))
-                .andExpect(jsonPath("$.series").value(1))
-                .andExpect(jsonPath("$.volumes").value(3))
-                .andExpect(jsonPath("$.users").value(1));
-    }
+  @Test
+  public void getStats() throws Exception {
+    mvc.perform(MockMvcRequestBuilders.get("/api/stats"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$._links.self.href").value("http://localhost/api/stats"))
+        .andExpect(jsonPath("$.issues").value(9))
+        .andExpect(jsonPath("$.publishers").value(1))
+        .andExpect(jsonPath("$.series").value(1))
+        .andExpect(jsonPath("$.volumes").value(3))
+        .andExpect(jsonPath("$.users").value(1));
+  }
 }

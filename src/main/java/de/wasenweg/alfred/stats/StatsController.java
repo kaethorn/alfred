@@ -13,16 +13,16 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @RestController
 public class StatsController {
 
-    @Autowired
-    private StatsService service;
+  @Autowired
+  private StatsService service;
 
-    @GetMapping()
-    public Resource<Stats> getStats() {
-        return addLink(this.service.getStats());
-    }
+  @GetMapping()
+  public Resource<Stats> getStats() {
+    return addLink(this.service.getStats());
+  }
 
-    private Resource<Stats> addLink(final Stats stats) {
-        final Link link = linkTo(StatsController.class).withSelfRel();
-        return new Resource<Stats>(stats, link);
-    }
+  private Resource<Stats> addLink(final Stats stats) {
+    final Link link = linkTo(StatsController.class).withSelfRel();
+    return new Resource<Stats>(stats, link);
+  }
 }

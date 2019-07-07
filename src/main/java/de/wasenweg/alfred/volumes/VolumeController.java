@@ -17,21 +17,21 @@ import java.security.Principal;
 @RestController
 public class VolumeController {
 
-    @Autowired
-    private ProgressService progressService;
+  @Autowired
+  private ProgressService progressService;
 
-    @PutMapping("/markAsRead")
-    public void markAsRead(@Valid @RequestBody final Volume volume, final Principal principal) {
-        this.progressService.updateVolume(principal.getName(), volume, true);
-    }
+  @PutMapping("/markAsRead")
+  public void markAsRead(@Valid @RequestBody final Volume volume, final Principal principal) {
+    this.progressService.updateVolume(principal.getName(), volume, true);
+  }
 
-    @PutMapping("/markAsUnread")
-    public void markAsUnread(@Valid @RequestBody final Volume volume, final Principal principal) {
-        this.progressService.updateVolume(principal.getName(), volume, false);
-    }
+  @PutMapping("/markAsUnread")
+  public void markAsUnread(@Valid @RequestBody final Volume volume, final Principal principal) {
+    this.progressService.updateVolume(principal.getName(), volume, false);
+  }
 
-    @PutMapping("/markAllAsReadUntil")
-    public void markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
-        this.progressService.updateVolumeUntil(principal.getName(), comic);
-    }
+  @PutMapping("/markAllAsReadUntil")
+  public void markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
+    this.progressService.updateVolumeUntil(principal.getName(), comic);
+  }
 }

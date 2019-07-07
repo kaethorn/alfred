@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @RepositoryRestResource(collectionResourceRel = "settings", path = "settings")
 public interface SettingRepository extends MongoRepository<Setting, String> {
-    Optional<Setting> findByKey(@Param("key") String key);
+  Optional<Setting> findByKey(@Param("key") String key);
 }

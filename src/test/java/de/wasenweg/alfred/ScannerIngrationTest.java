@@ -30,43 +30,43 @@ import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 @ActiveProfiles(profiles = "test")
 public class ScannerIngrationTest {
 
-    @LocalServerPort
-    private int port;
+  @LocalServerPort
+  private int port;
 
-    @Autowired
-    private SettingRepository preferenceRepository;
+  @Autowired
+  private SettingRepository preferenceRepository;
 
-    @Autowired
-    private ComicRepository comicRepository;
+  @Autowired
+  private ComicRepository comicRepository;
 
-    @Before
-    public void setUp() {
-        final Setting comicsPath = preferenceRepository.findByKey("comics.path").get();
-        comicsPath.setValue("src/test/resources/fixtures/simple");
-        preferenceRepository.save(comicsPath);
-    }
+  @Before
+  public void setUp() {
+    final Setting comicsPath = preferenceRepository.findByKey("comics.path").get();
+    comicsPath.setValue("src/test/resources/fixtures/simple");
+    preferenceRepository.save(comicsPath);
+  }
 
-    @After
-    public void tearDown() {
-        comicRepository.deleteAll();
-    }
+  @After
+  public void tearDown() {
+    comicRepository.deleteAll();
+  }
 
-    @Test
-    public void emittsScanProgressEvents() throws Exception {
-        final WebClient client = WebClient
-                .create("http://localhost:" + port + "/api");
+  @Test
+  public void emittsScanProgressEvents() throws Exception {
+    final WebClient client = WebClient
+        .create("http://localhost:" + port + "/api");
 
-        final Flux<String> result = client.get()
-            .uri("/scan-progress")
-            .accept(TEXT_EVENT_STREAM)
-            .retrieve()
-            .bodyToFlux(new ParameterizedTypeReference<String>() { });
+    final Flux<String> result = client.get()
+        .uri("/scan-progress")
+        .accept(TEXT_EVENT_STREAM)
+        .retrieve()
+        .bodyToFlux(new ParameterizedTypeReference<String>() { });
 
-        StepVerifier.create(result)
-            .expectNext("1")
-            .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz")
-            .expectNext("")
-            .thenCancel()
-            .verify(Duration.ofSeconds(2L));
-    }
+    StepVerifier.create(result)
+        .expectNext("1")
+        .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz")
+        .expectNext("")
+        .thenCancel()
+        .verify(Duration.ofSeconds(2L));
+  }
 }

@@ -16,34 +16,34 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Profile({"prod"})
 public class SecurityConfig {
 
-    @Autowired
-    private IJwtService jwtService;
+  @Autowired
+  private IJwtService jwtService;
 
-    @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
-    private String jwtSecret;
+  @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
+  private String jwtSecret;
 
-    @Configuration
-    @Order(1)
-    public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
+  @Configuration
+  @Order(1)
+  public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
-        @Override
-        protected void configure(final HttpSecurity http) throws Exception {
-            http.requestMatchers()
-                    .antMatchers("/api/user/**", "/api/scan-progress").and()
-                    .authorizeRequests().anyRequest().permitAll()
-                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-        }
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+      http.requestMatchers()
+      .antMatchers("/api/user/**", "/api/scan-progress").and()
+      .authorizeRequests().anyRequest().permitAll()
+      .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
+  }
 
-    @Configuration
-    @Order(2)
-    public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
+  @Configuration
+  @Order(2)
+  public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
 
-        @Override
-        protected void configure(final HttpSecurity http) throws Exception {
-            http.addFilterAfter(new JwtFilter(jwtSecret, jwtService), BasicAuthenticationFilter.class)
-                .authorizeRequests().antMatchers("/**").permitAll()
-                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-        }
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+      http.addFilterAfter(new JwtFilter(jwtSecret, jwtService), BasicAuthenticationFilter.class)
+      .authorizeRequests().antMatchers("/**").permitAll()
+      .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
+  }
 }

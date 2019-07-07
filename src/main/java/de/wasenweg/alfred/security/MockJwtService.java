@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Profile({"dev", "test"})
 public class MockJwtService implements IJwtService {
 
-    public Boolean verifyToken(final String token, final String secret) {
-        return true;
-    }
+  public Boolean verifyToken(final String token, final String secret) {
+    return true;
+  }
 }

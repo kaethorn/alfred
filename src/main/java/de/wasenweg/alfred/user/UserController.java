@@ -33,80 +33,80 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private JwtCreator tokenCreator;
+  @Autowired
+  private JwtCreator tokenCreator;
 
-    @Autowired
-    private IJwtService jwtService;
+  @Autowired
+  private IJwtService jwtService;
 
-    @Autowired
-    private SettingsService settingsService;
+  @Autowired
+  private SettingsService settingsService;
 
-    @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
-    private String jwtSecret;
+  @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
+  private String jwtSecret;
 
-    @GetMapping("/verify/{token}")
-    public ResponseEntity<?> verify(@PathVariable("token") final String token) {
-        if (this.jwtService.verifyToken(token, this.jwtSecret)) {
-            final User user = User.builder()
-                    .token(token)
-                    .build();
-            return new ResponseEntity<User>(user, HttpStatus.OK);
+  @GetMapping("/verify/{token}")
+  public ResponseEntity<?> verify(@PathVariable("token") final String token) {
+    if (this.jwtService.verifyToken(token, this.jwtSecret)) {
+      final User user = User.builder()
+          .token(token)
+          .build();
+      return new ResponseEntity<User>(user, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<Error>(HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @PostMapping("/sign-in/{token}")
+  public ResponseEntity<?> signIn(@PathVariable("token") final String token) {
+
+    final ApacheHttpTransport transport = new ApacheHttpTransport();
+    final JacksonFactory jsonFactory = new JacksonFactory();
+    final String clientId = this.settingsService.get("auth.client.id");
+    final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","));
+
+    final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+        .setAudience(Collections.singletonList(clientId))
+        .build();
+
+    try {
+      final GoogleIdToken idToken = verifier.verify(token);
+      if (idToken != null) {
+        final Payload payload = idToken.getPayload();
+
+        final String userId = payload.getSubject();
+        final String email = payload.getEmail();
+        final String name = (String) payload.get("name");
+        final String pictureUrl = (String) payload.get("picture");
+        final List<String> claims = new ArrayList<String>();
+        claims.add("ANONYMOUS");
+
+        if (users.contains(email)) {
+          claims.add("API_ALLOWED");
         } else {
-           return new ResponseEntity<Error>(HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-    @PostMapping("/sign-in/{token}")
-    public ResponseEntity<?> signIn(@PathVariable("token") final String token) {
-
-        final ApacheHttpTransport transport = new ApacheHttpTransport();
-        final JacksonFactory jsonFactory = new JacksonFactory();
-        final String clientId = this.settingsService.get("auth.client.id");
-        final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","));
-
-        final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-                .setAudience(Collections.singletonList(clientId))
-                .build();
-
-        try {
-            final GoogleIdToken idToken = verifier.verify(token);
-            if (idToken != null) {
-                final Payload payload = idToken.getPayload();
-
-                final String userId = payload.getSubject();
-                final String email = payload.getEmail();
-                final String name = (String) payload.get("name");
-                final String pictureUrl = (String) payload.get("picture");
-                final List<String> claims = new ArrayList<String>();
-                claims.add("ANONYMOUS");
-
-                if (users.contains(email)) {
-                    claims.add("API_ALLOWED");
-                } else {
-                    return new ResponseEntity<Error>(HttpStatus.FORBIDDEN);
-                }
-
-                final String apiToken = tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
-
-                final User user = User.builder()
-                        .id(userId)
-                        .email(email)
-                        .name(name)
-                        .picture(pictureUrl)
-                        .token(apiToken)
-                        .build();
-
-                return new ResponseEntity<User>(user, HttpStatus.OK);
-            } else {
-                System.out.println("Invalid ID token: " + token);
-            }
-        } catch (final GeneralSecurityException e) {
-            e.printStackTrace();
-        } catch (final IOException e) {
-            e.printStackTrace();
+          return new ResponseEntity<Error>(HttpStatus.FORBIDDEN);
         }
 
-        return new ResponseEntity<Error>(HttpStatus.INTERNAL_SERVER_ERROR);
+        final String apiToken = tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
+
+        final User user = User.builder()
+            .id(userId)
+            .email(email)
+            .name(name)
+            .picture(pictureUrl)
+            .token(apiToken)
+            .build();
+
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+      } else {
+        System.out.println("Invalid ID token: " + token);
+      }
+    } catch (final GeneralSecurityException e) {
+      e.printStackTrace();
+    } catch (final IOException e) {
+      e.printStackTrace();
     }
+
+    return new ResponseEntity<Error>(HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }

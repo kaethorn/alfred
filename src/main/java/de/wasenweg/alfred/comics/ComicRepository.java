@@ -8,16 +8,16 @@ import java.util.Optional;
 
 public interface ComicRepository extends MongoRepository<Comic, String>, ComicQueryRepository {
 
-    Optional<Comic> findByPath(@Param("path") final String path);
+  Optional<Comic> findByPath(@Param("path") final String path);
 
-    List<Comic> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc();
+  List<Comic> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc();
 
-    List<Comic> findAllBySeriesAndVolumeOrderByPosition(
-            @Param("series") final String series,
-            @Param("volume") final String volume);
+  List<Comic> findAllBySeriesAndVolumeOrderByPosition(
+      @Param("series") final String series,
+      @Param("volume") final String volume);
 
-    Optional<Comic> findFirstByPublisherAndSeriesAndVolumeOrderByPosition(
-            @Param("publisher") final String publisher,
-            @Param("series") final String series,
-            @Param("volume") final String volume);
+  Optional<Comic> findFirstByPublisherAndSeriesAndVolumeOrderByPosition(
+      @Param("publisher") final String publisher,
+      @Param("series") final String series,
+      @Param("volume") final String volume);
 }

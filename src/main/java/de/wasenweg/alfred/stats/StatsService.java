@@ -11,18 +11,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class StatsService {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+  @Autowired
+  private MongoTemplate mongoTemplate;
 
-    public Stats getStats() {
-        final Stats stats = Stats.builder()
-                .issues(mongoTemplate.count(new Query(), Comic.class))
-                .publishers(mongoTemplate.findDistinct("publisher", Comic.class, String.class).size())
-                .series(mongoTemplate.findDistinct("series", Comic.class, String.class).size())
-                .volumes(mongoTemplate.findDistinct("volume", Comic.class, String.class).size())
-                .users(mongoTemplate.findDistinct("userId", Progress.class, String.class).size())
-                .build();
+  public Stats getStats() {
+    final Stats stats = Stats.builder()
+        .issues(mongoTemplate.count(new Query(), Comic.class))
+        .publishers(mongoTemplate.findDistinct("publisher", Comic.class, String.class).size())
+        .series(mongoTemplate.findDistinct("series", Comic.class, String.class).size())
+        .volumes(mongoTemplate.findDistinct("volume", Comic.class, String.class).size())
+        .users(mongoTemplate.findDistinct("userId", Progress.class, String.class).size())
+        .build();
 
-        return stats;
-    }
+    return stats;
+  }
 }

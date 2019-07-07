@@ -18,67 +18,67 @@ import java.util.Date;
 @Document
 public class Comic {
 
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    @NonNull
-    private String path;
-    @NonNull
-    private String title;
-    @NonNull
-    private String series;
-    @NonNull
-    private String volume;
-    @NonNull
-    private String number;
-    @NonNull
-    private String position;
-    @NonNull
-    private Short year;
-    @NonNull
-    private Short month;
-    @NonNull
-    private String publisher;
+  @NonNull
+  private String path;
+  @NonNull
+  private String title;
+  @NonNull
+  private String series;
+  @NonNull
+  private String volume;
+  @NonNull
+  private String number;
+  @NonNull
+  private String position;
+  @NonNull
+  private Short year;
+  @NonNull
+  private Short month;
+  @NonNull
+  private String publisher;
 
-    private String summary;
-    private String notes;
+  private String summary;
+  private String notes;
 
-    private String writer;
-    private String penciller;
-    private String inker;
-    private String colorist;
-    private String letterer;
-    private String coverArtist;
-    private String editor;
-    private String web;
+  private String writer;
+  private String penciller;
+  private String inker;
+  private String colorist;
+  private String letterer;
+  private String coverArtist;
+  private String editor;
+  private String web;
 
-    private Short pageCount;
-    private boolean manga;
+  private Short pageCount;
+  private boolean manga;
 
-    private String characters;
-    private String teams;
-    private String locations;
+  private String characters;
+  private String teams;
+  private String locations;
 
-    private byte[] thumbnail;
+  private byte[] thumbnail;
 
-    private String nextId;
-    private String previousId;
+  private String nextId;
+  private String previousId;
 
-    @Builder.Default
-    private boolean read = false;
-    @Builder.Default
-    private Short currentPage = (short) 0;
-    private Date lastRead;
+  @Builder.Default
+  private boolean read = false;
+  @Builder.Default
+  private Short currentPage = (short) 0;
+  private Date lastRead;
 
-    public Comic() {
-        this.read = false;
-        this.currentPage = (short) 0;
-    }
+  public Comic() {
+    this.read = false;
+    this.currentPage = (short) 0;
+  }
 
-    @Override
-    public String toString() {
-        return String.format(
-                "Comic[id=%s, series='%s', volume='%s', number='%s']",
-                id, series, volume, number);
-    }
+  @Override
+  public String toString() {
+    return String.format(
+        "Comic[id=%s, series='%s', volume='%s', number='%s']",
+        id, series, volume, number);
+  }
 }
