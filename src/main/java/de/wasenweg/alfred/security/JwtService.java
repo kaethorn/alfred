@@ -19,39 +19,39 @@ import java.util.Map;
 @Profile({"prod"})
 public class JwtService implements IJwtService {
 
-    public Boolean verifyToken(final String token, final String secret) {
-        Boolean verified = false;
+  public Boolean verifyToken(final String token, final String secret) {
+    Boolean verified = false;
 
-        try {
-            final Algorithm algorithm = Algorithm.HMAC256(secret);
-            final JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("alfred.cx")
-                    .build();
-            final DecodedJWT jwt = verifier.verify(token);
+    try {
+      final Algorithm algorithm = Algorithm.HMAC256(secret);
+      final JWTVerifier verifier = JWT.require(algorithm)
+          .withIssuer("alfred.cx")
+          .build();
+      final DecodedJWT jwt = verifier.verify(token);
 
-            final Claim claim = jwt.getClaim("API_ALLOWED");
-            if (claim.isNull()) {
-                return false;
-            }
-            verified = claim.asBoolean();
+      final Claim claim = jwt.getClaim("API_ALLOWED");
+      if (claim.isNull()) {
+        return false;
+      }
+      verified = claim.asBoolean();
 
-            final Map<String, Claim> roles = jwt.getClaims();
+      final Map<String, Claim> roles = jwt.getClaims();
 
-            final String subject = jwt.getSubject();
+      final String subject = jwt.getSubject();
 
-            final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-            for (final String role: roles.keySet()) {
-                authorities.add(new SimpleGrantedAuthority(role));
-            }
+      final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+      for (final String role: roles.keySet()) {
+        authorities.add(new SimpleGrantedAuthority(role));
+      }
 
-            final UsernamePasswordAuthenticationToken newAuth =
-                    new UsernamePasswordAuthenticationToken(subject, "", authorities);
+      final UsernamePasswordAuthenticationToken newAuth =
+          new UsernamePasswordAuthenticationToken(subject, "", authorities);
 
-            SecurityContextHolder.getContext().setAuthentication(newAuth);
-        } catch (final Exception e) {
-            verified = false;
-        }
-
-        return verified;
+      SecurityContextHolder.getContext().setAuthentication(newAuth);
+    } catch (final Exception e) {
+      verified = false;
     }
+
+    return verified;
+  }
 }

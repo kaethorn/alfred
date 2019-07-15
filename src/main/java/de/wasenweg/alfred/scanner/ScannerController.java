@@ -12,11 +12,11 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/api")
 public class ScannerController {
 
-    @Autowired
-    private ScannerService scannerService;
+  @Autowired
+  private ScannerService scannerService;
 
-    @GetMapping("/scan-progress")
-    Flux<ServerSentEvent<String>> streamScanProgress() {
-        return scannerService.scanComics();
-    }
+  @GetMapping("/scan-progress")
+  Flux<ServerSentEvent<String>> streamScanProgress() {
+    return scannerService.scanComics();
+  }
 }

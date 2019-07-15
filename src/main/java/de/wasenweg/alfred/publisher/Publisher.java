@@ -11,9 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 public class Publisher {
 
-    private String id;
+  private String id;
 
-    private String publisher;
-    private List<Series> series;
-    private Short seriesCount;
+  private String publisher;
+  private List<Series> series;
+  private Short seriesCount;
 }

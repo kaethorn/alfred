@@ -27,73 +27,73 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @RestController
 public class ComicController {
 
-    @Autowired
-    private ProgressService progressService;
+  @Autowired
+  private ProgressService progressService;
 
-    @Autowired
-    private ComicQueryRepositoryImpl queryRepository;
+  @Autowired
+  private ComicQueryRepositoryImpl queryRepository;
 
-    @Autowired
-    private ComicRepository comicRepository;
+  @Autowired
+  private ComicRepository comicRepository;
 
-    @GetMapping("/{comicId}")
-    public Resource<Comic> findById(@PathVariable("comicId") final String comicId) {
-        return addLink(this.comicRepository.findById(comicId));
+  @GetMapping("/{comicId}")
+  public Resource<Comic> findById(@PathVariable("comicId") final String comicId) {
+    return addLink(this.comicRepository.findById(comicId));
+  }
+
+  @GetMapping("/search/findAllLastReadPerVolume")
+  public Resources<Resource<Comic>> findAllLastReadPerVolume(final Principal principal) {
+    return addCollectionLink(this.queryRepository.findAllLastReadPerVolume(principal.getName()));
+  }
+
+  @GetMapping("/search/findLastReadForVolume")
+  public Resource<Comic> findLastReadForVolume(
+      final Principal principal,
+      @Param("publisher") final String publisher,
+      @Param("series") final String series,
+      @Param("volume") final String volume) {
+    return addLink(this.queryRepository.findLastReadForVolume(principal.getName(), publisher, series, volume));
+  }
+
+  @GetMapping("/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition")
+  public Resources<Resource<Comic>> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+      final Principal principal,
+      @Param("publisher") final String publisher,
+      @Param("series") final String series,
+      @Param("volume") final String volume) {
+    return addCollectionLink(this.queryRepository.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+        principal.getName(), publisher, series, volume));
+  }
+
+  @PutMapping("/markAsRead")
+  public Resource<Comic> markAsRead(@Valid @RequestBody final Comic comic, final Principal principal) {
+    return addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, true)));
+  }
+
+  @PutMapping("/markAsUnread")
+  public Resource<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
+    return addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, false)));
+  }
+
+  private Resources<Resource<Comic>> addCollectionLink(final List<Comic> comics) {
+    return new Resources<Resource<Comic>>(
+        comics.stream()
+        .map(comic -> {
+          return addLink(comic);
+        }).collect(Collectors.toList()),
+        linkTo(ComicController.class).withSelfRel());
+  }
+
+  private Resource<Comic> addLink(final Optional<Comic> comic) {
+    if (comic.isPresent()) {
+      return addLink(comic.get());
+    } else {
+      throw new ResourceNotFoundException();
     }
+  }
 
-    @GetMapping("/search/findAllLastReadPerVolume")
-    public Resources<Resource<Comic>> findAllLastReadPerVolume(final Principal principal) {
-        return addCollectionLink(this.queryRepository.findAllLastReadPerVolume(principal.getName()));
-    }
-
-    @GetMapping("/search/findLastReadForVolume")
-    public Resource<Comic> findLastReadForVolume(
-            final Principal principal,
-            @Param("publisher") final String publisher,
-            @Param("series") final String series,
-            @Param("volume") final String volume) {
-        return addLink(this.queryRepository.findLastReadForVolume(principal.getName(), publisher, series, volume));
-    }
-
-    @GetMapping("/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition")
-    public Resources<Resource<Comic>> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
-            final Principal principal,
-            @Param("publisher") final String publisher,
-            @Param("series") final String series,
-            @Param("volume") final String volume) {
-        return addCollectionLink(this.queryRepository.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
-                principal.getName(), publisher, series, volume));
-    }
-
-    @PutMapping("/markAsRead")
-    public Resource<Comic> markAsRead(@Valid @RequestBody final Comic comic, final Principal principal) {
-        return addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, true)));
-    }
-
-    @PutMapping("/markAsUnread")
-    public Resource<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
-        return addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, false)));
-    }
-
-    private Resources<Resource<Comic>> addCollectionLink(final List<Comic> comics) {
-        return new Resources<Resource<Comic>>(
-                comics.stream()
-                    .map(comic -> {
-                        return addLink(comic);
-                    }).collect(Collectors.toList()),
-                linkTo(ComicController.class).withSelfRel());
-    }
-
-    private Resource<Comic> addLink(final Optional<Comic> comic) {
-        if (comic.isPresent()) {
-            return addLink(comic.get());
-        } else {
-            throw new ResourceNotFoundException();
-        }
-    }
-
-    private Resource<Comic> addLink(final Comic comic) {
-        final Link link = linkTo(ComicController.class).slash(comic.getId()).withSelfRel();
-        return new Resource<Comic>(comic, link);
-    }
+  private Resource<Comic> addLink(final Comic comic) {
+    final Link link = linkTo(ComicController.class).slash(comic.getId()).withSelfRel();
+    return new Resource<Comic>(comic, link);
+  }
 }

@@ -16,7 +16,6 @@ import { VolumeActionsComponent } from '../app/library/volumes/volume-actions/vo
 import { BookmarkActionsComponent } from '../app/bookmarks/bookmark-actions/bookmark-actions.component';
 import { IssueActionsComponent } from '../app/issues/issue-actions/issue-actions.component';
 
-import { BrowserPage } from '../app/browser/browser.page';
 import { SettingsPage } from '../app/settings/settings.page';
 import { ReaderPage } from '../app/reader/reader.page';
 import { IssuesPage } from '../app/issues/issues.page';
@@ -38,7 +37,6 @@ export const TestModule = () => {
       IssueActionsComponent,
 
       IssuesPage,
-      BrowserPage,
       ReaderPage,
       SettingsPage,
       BookmarksPage,
@@ -50,7 +48,7 @@ export const TestModule = () => {
       HttpClientModule,
       SecureModule,
       RouterTestingModule.withRoutes([
-        { path: 'browse/:id', component: MockComponent },
+        { path: 'read/:id', component: MockComponent },
         { path: 'library', component: MockComponent }
       ])
     ],

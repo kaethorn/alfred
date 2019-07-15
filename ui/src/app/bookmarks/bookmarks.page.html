@@ -36,13 +36,13 @@
         <ion-card-subtitle>Vol. {{ comic.volume }}</ion-card-subtitle>
       </ion-card-header>
       <a [routerLink]="['/read', comic.id]"
-         [queryParams]="{ page: comic.currentPage }">
+         [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
         <img [src]="thumbnail(comic)">
       </a>
       <ion-item>
         <ion-button fill="clear" slot="start"
           [routerLink]="['/read', comic.id]"
-          [queryParams]="{ page: comic.currentPage }">
+          [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
           <ion-icon slot="start" name="play"></ion-icon>
           Resume
         </ion-button>

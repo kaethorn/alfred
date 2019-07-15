@@ -19,30 +19,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class ScannerControllerTest {
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-    @Mock
-    private ScannerService service;
+  @Mock
+  private ScannerService service;
 
-    @InjectMocks
-    private ScannerController controller;
+  @InjectMocks
+  private ScannerController controller;
 
-    @Before
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .build();
-    }
+  @Before
+  public void setup() {
+    mockMvc = MockMvcBuilders.standaloneSetup(controller)
+        .build();
+  }
 
-    @Test
-    public void startsScanProgressEvents() throws Exception {
-        // when
-        mockMvc.perform(get("/api/scan-progress"))
-                .andExpect(status().isOk())
-                .andReturn();
+  @Test
+  public void startsScanProgressEvents() throws Exception {
+    // when
+    mockMvc.perform(get("/api/scan-progress"))
+        .andExpect(status().isOk())
+        .andReturn();
 
-        // then
-        // Wait for scan to start
-        Thread.sleep(500);
-        verify(service).scanComics();
-    }
+    // then
+    // Wait for scan to start
+    Thread.sleep(500);
+    verify(service).scanComics();
+  }
 }

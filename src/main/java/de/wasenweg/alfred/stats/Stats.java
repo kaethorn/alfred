@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Stats {
 
-    private long issues;
-    private int publishers;
-    private int series;
-    private int volumes;
+  private long issues;
+  private int publishers;
+  private int series;
+  private int volumes;
 
-    private long users;
+  private long users;
 }

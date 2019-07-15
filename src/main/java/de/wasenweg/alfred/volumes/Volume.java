@@ -9,13 +9,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Volume {
 
-    private String id;
+  private String id;
 
-    private String volume;
-    private String series;
-    private String publisher;
-    private Short issueCount;
-    private Short readCount;
-    private boolean read;
-    private byte[] thumbnail;
+  private String volume;
+  private String series;
+  private String publisher;
+  private Short issueCount;
+  private Short readCount;
+  private boolean read;
+  private byte[] thumbnail;
+
+  @Override
+  public String toString() {
+    return String.format(
+        "%s (Vol. %s) by %s",
+        series, volume, publisher);
+  }
 }

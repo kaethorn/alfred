@@ -7,7 +7,6 @@ const routes: Routes = [
   { path: '', redirectTo: 'library', pathMatch: 'full' },
   { path: 'library', loadChildren: './library/library.module#LibraryPageModule', canActivate: [AuthGuard] },
   { path: 'issues/:publisher/:series/:volume', loadChildren: './issues/issues.module#IssuesPageModule', canActivate: [AuthGuard] },
-  { path: 'browse/:id', loadChildren: './browser/browser.module#BrowserPageModule', canActivate: [AuthGuard] },
   { path: 'read/:id', loadChildren: './reader/reader.module#ReaderPageModule', canActivate: [AuthGuard] },
   { path: 'bookmarks', loadChildren: './bookmarks/bookmarks.module#BookmarksPageModule', canActivate: [AuthGuard] },
   { path: 'settings', loadChildren: './settings/settings.module#SettingsPageModule', canActivate: [AuthGuard] },

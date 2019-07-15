@@ -1,5 +1,16 @@
 import { Injectable } from '@angular/core';
 
+export enum AdjacentComic {
+  previous,
+  next,
+  same
+}
+
+export interface NavigationInstruction {
+  sideBySide: boolean;
+  adjacent: AdjacentComic;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,21 +27,31 @@ export class NavigatorService {
     this.sideBySide = sideBySide;
   }
 
-  go (offset: number = 0): boolean {
+  /**
+   * Returns navigation instructions.
+   */
+  go (offset: number = 0): NavigationInstruction {
+    let direction: AdjacentComic = AdjacentComic.same;
+
     if (offset < 0) {
-      NavigatorService.page -= NavigatorService.page > 0 ? 1 : 0;
+      if (NavigatorService.page > 0) {
+        NavigatorService.page -= 1;
+      } else {
+        direction = AdjacentComic.previous;
+      }
       NavigatorService.page -= (this.sideBySide && NavigatorService.page > 0) ? 1 : 0;
     } else if (offset > 0) {
       const increment = (this.sideBySide && NavigatorService.page > 0) ? 2 : 1;
-      NavigatorService.page += (NavigatorService.page + increment) < this.pageCount ? increment : 0;
+      if ((NavigatorService.page + increment) < this.pageCount) {
+        NavigatorService.page += increment;
+      } else {
+        direction = AdjacentComic.next;
+      }
     }
 
-    return this.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (this.pageCount - 1);
-  }
-
-  lastPage (): boolean {
-    if (NavigatorService.page === (this.pageCount - 1)) {
-      return true;
-    }
+    return {
+      sideBySide: this.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (this.pageCount - 1),
+      adjacent: direction
+    };
   }
 }
