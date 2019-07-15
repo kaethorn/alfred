@@ -2,6 +2,7 @@ package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.progress.ProgressHelper;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,6 +28,16 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
 
   @Autowired
   private MongoTemplate mongoTemplate;
+
+  @Override
+  public Optional<Comic> findById(
+      final String userId,
+      final String comicId) {
+    return Optional.ofNullable(mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+        match(where("_id").is(new ObjectId(comicId))),
+        limit(1)
+        ), Comic.class, Comic.class).getUniqueMappedResult());
+  }
 
   // Lists issues for volumes that are in progress, aka bookmarks.
   @Override

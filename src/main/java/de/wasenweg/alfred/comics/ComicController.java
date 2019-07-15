@@ -33,12 +33,11 @@ public class ComicController {
   @Autowired
   private ComicQueryRepositoryImpl queryRepository;
 
-  @Autowired
-  private ComicRepository comicRepository;
-
   @GetMapping("/{comicId}")
-  public Resource<Comic> findById(@PathVariable("comicId") final String comicId) {
-    return addLink(this.comicRepository.findById(comicId));
+  public Resource<Comic> findById(
+      final Principal principal,
+      @PathVariable("comicId") final String comicId) {
+    return addLink(this.queryRepository.findById(principal.getName(), comicId));
   }
 
   @GetMapping("/search/findAllLastReadPerVolume")

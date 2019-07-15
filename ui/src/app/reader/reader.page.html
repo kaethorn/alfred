@@ -3,11 +3,11 @@
   (swipeleft)="onSwipe(1)"
   (swiperight)="onSwipe(-1)">
   <div class="wrapper" *ngIf="imagePathLeft">
-    <img [src]="imagePathLeft | secure | async" class="left"
+    <img [attr.src]="imagePathLeft | secure | async" class="left"
          alt="{{ comic.title }} # {{ comic.number }}">
   </div>
   <div class="wrapper" *ngIf="imagePathRight">
-    <img [src]="imagePathRight | secure | async" class="right"
+    <img [attr.src]="imagePathRight | secure | async" class="right"
          alt="{{ comic.title }} # {{ comic.number }}">
   </div>
 </div>

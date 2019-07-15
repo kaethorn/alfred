@@ -275,5 +275,14 @@ Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
       <property name="illegalPattern" value="true"/>
       <property name="message" value="Trailing whitespace"/>
     </module>
+    <module name="FinalLocalVariable">
+      <property name="tokens" value="VARIABLE_DEF, PARAMETER_DEF"/>
+      <property name="validateEnhancedForLoopVariable" value="true"/>
+    </module>
+    <module name="LocalFinalVariableName"/>
+    <module name="UnusedImports"/>
+    <module name="StaticVariableName"/>
+    <module name="IllegalImport"/>
+    <module name="RedundantImport"/>
   </module>
 </module>

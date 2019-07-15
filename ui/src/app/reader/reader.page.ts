@@ -10,11 +10,11 @@ import { Comic } from '../comic';
   templateUrl: './reader.page.html',
   styleUrls: ['./reader.page.sass']
 })
-export class ReaderPage implements OnInit {
+export class ReaderPage {
 
   comic: Comic = {} as Comic;
-  imagePathLeft: string;
-  imagePathRight: string;
+  imagePathLeft = '';
+  imagePathRight = '';
   showControls = false;
   parent: string;
 
@@ -41,18 +41,25 @@ export class ReaderPage implements OnInit {
     this.go(1);
   }
 
-  ngOnInit () {
+  ionViewDidEnter () {
     this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
       this.comic = data;
       this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
       const parentElement = this.pagesLayer.nativeElement.parentElement;
       this.navigator.set(
         this.comic.pageCount,
-        Number.parseInt(this.route.snapshot.queryParams.page, 10) || 0,
+        this.getPage(this.comic),
         (parentElement.clientWidth > parentElement.clientHeight) ? true : false
       );
       this.navigate(this.navigator.go());
     });
+  }
+
+  private getPage (comic: Comic): number {
+    if (comic.currentPage === null || comic.currentPage === undefined) {
+      return Number.parseInt(this.route.snapshot.queryParams.page, 10) || 0;
+    }
+    return comic.currentPage;
   }
 
   public onClick (event: MouseEvent): void {
@@ -73,13 +80,19 @@ export class ReaderPage implements OnInit {
 
   public openNext () {
     if (this.comic.nextId) {
-      this.router.navigate(['/read', this.comic.nextId]);
+      this.router.navigate(['/read', this.comic.nextId], {
+        relativeTo: this.route,
+        queryParamsHandling: 'merge'
+      });
     }
   }
 
   public openPrevious () {
     if (this.comic.previousId) {
-      this.router.navigate(['/read', this.comic.previousId]);
+      this.router.navigate(['/read', this.comic.previousId], {
+        relativeTo: this.route,
+        queryParamsHandling: 'merge'
+      });
     }
   }
 
@@ -110,10 +123,10 @@ export class ReaderPage implements OnInit {
         this.imagePathRight = instruction.sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
         break;
       case AdjacentComic.next:
-        this.toggleControls();
+        this.openNext();
         break;
       case AdjacentComic.previous:
-        this.toggleControls();
+        this.openPrevious();
         break;
     }
   }
