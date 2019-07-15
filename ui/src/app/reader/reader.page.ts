@@ -117,9 +117,6 @@ export class ReaderPage {
           queryParamsHandling: 'merge'
         });
         this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
-        // FIXME When `sideBySide` is `false`, `this.imagePathRight` is `null` but is still
-        // rendered in the view, resulting in error:
-        // `GET http://localhost:4200/null 404 (Not Found)`.
         this.imagePathRight = instruction.sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
         break;
       case AdjacentComic.next:
