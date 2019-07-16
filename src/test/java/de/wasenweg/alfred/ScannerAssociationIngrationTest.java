@@ -53,10 +53,10 @@ public class ScannerAssociationIngrationTest {
         .verify();
 
     // Then
-    List<Comic> comics = comicRepository.findAll();
+    final List<Comic> comics = comicRepository.findAll();
     assertThat(comics.size()).isEqualTo(305);
 
-    List<Comic> batgirlVol2008 = comicRepository
+    final List<Comic> batgirlVol2008 = comicRepository
         .findAllByPublisherAndSeriesAndVolumeOrderByPosition("", "DC Comics", "Batgirl", "2008");
     assertThat(batgirlVol2008.size()).isEqualTo(6);
 

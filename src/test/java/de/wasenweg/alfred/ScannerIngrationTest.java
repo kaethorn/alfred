@@ -54,7 +54,7 @@ public class ScannerIngrationTest {
         .verify(Duration.ofSeconds(2L));
 
     // Then
-    List<Comic> comics = comicRepository.findAll();
+    final List<Comic> comics = comicRepository.findAll();
     assertThat(comics.size()).isEqualTo(1);
   }
 }
