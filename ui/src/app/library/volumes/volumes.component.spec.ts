@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TestModule } from '../../../testing/test.module';
 import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
@@ -10,15 +10,12 @@ describe('VolumesComponent', () => {
   let component: VolumesComponent;
   let fixture: ComponentFixture<VolumesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     const testModule: any = TestModule();
     testModule.providers.push({
       provide: VolumesService, useValue: volumesService
     });
-    TestBed.configureTestingModule(testModule).compileComponents();
-  }));
-
-  beforeEach(() => {
+    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(VolumesComponent);
     component = fixture.componentInstance;
     component.ionViewDidEnter();

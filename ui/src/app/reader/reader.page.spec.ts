@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -38,7 +38,7 @@ describe('ReaderPage', () => {
       });
   };
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
 
     const testModule: any = TestModule();
@@ -65,10 +65,8 @@ describe('ReaderPage', () => {
       ])
     );
 
-    TestBed.configureTestingModule(testModule).compileComponents();
-  }));
+    TestBed.configureTestingModule(testModule);
 
-  beforeEach(() => {
     // Allow steering ComicsService response:
     comicsService.get.and.returnValue(defer(() => Promise.resolve(comic)));
 

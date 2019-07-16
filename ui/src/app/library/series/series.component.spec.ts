@@ -1,5 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TestModule } from '../../../testing/test.module';
 import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
@@ -11,15 +10,12 @@ describe('SeriesComponent', () => {
   let component: SeriesComponent;
   let fixture: ComponentFixture<SeriesComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     const testModule: any = TestModule();
     testModule.providers.push({
       provide: VolumesService, useValue: volumesService
     });
-    TestBed.configureTestingModule(testModule).compileComponents();
-  }));
-
-  beforeEach(() => {
+    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(SeriesComponent);
     component = fixture.componentInstance;
     component.ionViewDidEnter();

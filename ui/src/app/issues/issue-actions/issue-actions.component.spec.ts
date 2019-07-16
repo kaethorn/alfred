@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavParams } from '@ionic/angular';
 
 import { TestModule } from '../../../testing/test.module';
@@ -11,16 +11,13 @@ describe('IssueActionsComponent', () => {
   let fixture: ComponentFixture<IssueActionsComponent>;
   let navParams: NavParams;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     navParams = new NavParams({ comic });
     const testModule: any = TestModule();
     testModule.providers.push({
       provide: NavParams, useValue: navParams
     });
-    TestBed.configureTestingModule(testModule).compileComponents();
-  }));
-
-  beforeEach(() => {
+    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(IssueActionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
