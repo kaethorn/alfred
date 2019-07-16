@@ -18,7 +18,7 @@ export class VolumeActionsComponent {
     private volumesService: VolumesService,
     private navParams: NavParams
   ) {
-    this.volume = navParams.get('volume');
+    this.volume = this.navParams.get('volume');
   }
 
   public markAsRead (volume: Volume) {

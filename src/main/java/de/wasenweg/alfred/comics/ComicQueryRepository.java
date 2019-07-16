@@ -5,6 +5,8 @@ import java.util.Optional;
 
 public interface ComicQueryRepository {
 
+  Optional<Comic> findById(final String userId, final String comicId);
+
   Optional<Comic> findLastReadForVolume(
       final String userId,
       final String publisher,

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TestModule } from '../../testing/test.module';
 import { SettingsServiceMocks as settingsService } from '../../testing/settings.service.mocks';
@@ -13,7 +13,7 @@ describe('SettingsPage', () => {
   let component: SettingsPage;
   let fixture: ComponentFixture<SettingsPage>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     const testModule: any = TestModule();
     testModule.providers.push({
       provide: SettingsService, useValue: settingsService
@@ -21,10 +21,7 @@ describe('SettingsPage', () => {
     testModule.providers.push({
       provide: StatsService, useValue: statsService
     });
-    TestBed.configureTestingModule(testModule).compileComponents();
-  }));
-
-  beforeEach(() => {
+    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(SettingsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();

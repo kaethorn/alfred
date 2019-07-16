@@ -1,4 +1,4 @@
-import { browser, by, element, ElementFinder } from 'protractor';
+import { by, element } from 'protractor';
 import { Page } from './page.po';
 
 export class IssuesPage {

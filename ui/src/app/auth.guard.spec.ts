@@ -1,5 +1,5 @@
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
-import { TestBed, async, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { UserService } from './user.service';

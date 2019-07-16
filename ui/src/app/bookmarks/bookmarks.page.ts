@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
 
@@ -17,7 +16,6 @@ export class BookmarksPage {
   comics: Comic[];
 
   constructor (
-    private router: Router,
     private comicsService: ComicsService,
     private sanitizer: DomSanitizer,
     private popoverController: PopoverController

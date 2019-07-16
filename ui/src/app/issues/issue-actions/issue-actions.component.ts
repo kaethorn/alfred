@@ -18,7 +18,7 @@ export class IssueActionsComponent {
     private router: Router,
     private navParams: NavParams
   ) {
-    this.comic = navParams.get('comic');
+    this.comic = this.navParams.get('comic');
   }
 
   download () {
