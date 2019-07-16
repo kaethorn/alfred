@@ -1,9 +1,14 @@
 import { Component, ViewChild, ElementRef, HostListener, OnInit } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from '../comics.service';
 import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
 import { Comic } from '../comic';
+
+interface IOpenOptions {
+  showToast?: boolean;
+}
 
 @Component({
   selector: 'app-reader',
@@ -23,6 +28,7 @@ export class ReaderPage {
     private router: Router,
     private comicsService: ComicsService,
     private navigator: NavigatorService,
+    private toastController: ToastController
   ) { }
 
   @ViewChild('pagesLayer') pagesLayer: ElementRef;
@@ -78,22 +84,32 @@ export class ReaderPage {
     }
   }
 
-  public openNext () {
-    if (this.comic.nextId) {
-      this.router.navigate(['/read', this.comic.nextId], {
+  private open (adjacentId, options?: IOpenOptions) {
+    if (this.comic[adjacentId]) {
+      this.router.navigate(['/read', this.comic[adjacentId]], {
         relativeTo: this.route,
         queryParamsHandling: 'merge'
       });
+      if (options.showToast) {
+        this.showToast(`Next up: ${ this.comic.series } (${ this.comic.volume }) #${ this.comic.number }`);
+      }
     }
   }
 
-  public openPrevious () {
-    if (this.comic.previousId) {
-      this.router.navigate(['/read', this.comic.previousId], {
-        relativeTo: this.route,
-        queryParamsHandling: 'merge'
-      });
-    }
+  private async showToast (message: string, duration: number = 3000) {
+    const toast = await this.toastController.create({
+      message,
+      duration
+    });
+    toast.present();
+  }
+
+  public openNext (options?: IOpenOptions) {
+    this.open('nextId', options);
+  }
+
+  public openPrevious (options?: IOpenOptions) {
+    this.open('previousId', options);
   }
 
   public toggleControls (): void {
@@ -120,10 +136,10 @@ export class ReaderPage {
         this.imagePathRight = instruction.sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
         break;
       case AdjacentComic.next:
-        this.openNext();
+        this.openNext({ showToast: true });
         break;
       case AdjacentComic.previous:
-        this.openPrevious();
+        this.openPrevious({ showToast: true });
         break;
     }
   }
