@@ -74,6 +74,7 @@ describe('ReaderPage', () => {
 
     fixture = TestBed.createComponent(ReaderPage);
     component = fixture.componentInstance;
+    component.ionViewDidEnter();
     fixture.detectChanges();
   });
 
