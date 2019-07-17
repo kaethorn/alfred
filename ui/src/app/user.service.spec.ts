@@ -92,12 +92,17 @@ describe('UserService', () => {
     describe('with the Google API', () => {
 
       const auth2 = {
-        attachClickHandler: jasmine.createSpy(),
+        attachClickHandler: jasmine.createSpy().and.callFake((id, options, callback) => callback({
+          getAuthResponse: () => ({
+            id_token: 'mock-google-token-1'
+          })
+        })),
         isSignedIn: {
           get: jasmine.createSpy().and.returnValue(true)
         },
         signIn: jasmine.createSpy()
       };
+      let req;
 
       beforeEach(() => {
         (window as any).gapi = {
@@ -106,34 +111,24 @@ describe('UserService', () => {
             init: () => auth2
           }
         };
+        service.setupGoogleSignIn();
+        req = httpMock.expectOne('api/user/sign-in/mock-google-token-1');
+        expect(req.request.method).toBe('POST');
       });
 
       it('sets up Google Sign-In', () => {
-        service.setupGoogleSignIn();
         expect((window as any).gapi.load).toHaveBeenCalled();
         expect(auth2.attachClickHandler)
           .toHaveBeenCalledWith('signin-button', {}, jasmine.any(Function), jasmine.any(Function));
       });
 
       it('checks if the user is signed in already', () => {
-        service.setupGoogleSignIn();
         expect(auth2.isSignedIn.get).toHaveBeenCalled();
       });
 
       describe('when clicking the sign in button', () => {
 
-        beforeEach(() => {
-          auth2.attachClickHandler.and.callFake((id, options, callback) => callback({
-            getAuthResponse: () => ({
-              id_token: 'mock-google-token-1'
-            })
-          }));
-          service.setupGoogleSignIn();
-        });
-
         it('exchanges the auth token for an app specific JWT', () => {
-          const req = httpMock.expectOne('api/user/sign-in/mock-google-token-1');
-          expect(req.request.method).toBe('POST');
           req.flush({
             email: 'b@c.com',
             token: 'alfred-token-1'
