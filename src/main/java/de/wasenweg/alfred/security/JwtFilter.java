@@ -35,10 +35,10 @@ public class JwtFilter implements Filter {
       final ServletResponse res,
       final FilterChain chain) throws IOException, ServletException {
 
-    this.logger.info("Running filter on URL: {}", ((HttpServletRequest)req).getRequestURL().toString());
-
     final HttpServletRequest request = (HttpServletRequest) req;
     final HttpServletResponse response = (HttpServletResponse) res;
+
+    this.logger.info("Running filter on URL: {}", request.getRequestURL().toString());
 
     final Optional<String> token = Optional.ofNullable(request.getHeader("Authorization"));
 
