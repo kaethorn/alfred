@@ -69,6 +69,7 @@ public class ScannerService {
 
   private Comic createOrUpdateComic(final Path path) {
     reportProgress(path.toString());
+    logger.info("Parsing {}", path.toString());
 
     final String comicPath = path.toAbsolutePath().toString();
 
