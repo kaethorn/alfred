@@ -54,7 +54,6 @@ export class ScannerComponent {
     scanProgress.addEventListener('current-file', (event: any) => {
       this.file = event.data;
       this.counter += 1;
-      console.log(`File ${ this.counter }/${ this.total }`);
     });
 
     scanProgress.addEventListener('cleanUp', (event: any) => {
