@@ -22,6 +22,7 @@ export class ScannerComponent {
   counter = 0;
   errors: Error[] = [];
   stats: Stats;
+  counting = false;
 
   constructor (
     private statsService: StatsService
@@ -40,7 +41,12 @@ export class ScannerComponent {
 
     const scanProgress = new EventSource('/api/scan-progress');
 
+    scanProgress.addEventListener('start', (event: any) => {
+      this.counting = true;
+    });
+
     scanProgress.addEventListener('total', (event: any) => {
+      this.counting = false;
       this.total = this.total || event.data;
     });
 
@@ -54,6 +60,7 @@ export class ScannerComponent {
     });
 
     scanProgress.addEventListener('done', () => {
+      this.counting = false;
       this.counter = 0;
       this.total = 0;
       this.scanned.emit(true);

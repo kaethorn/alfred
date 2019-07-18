@@ -22,6 +22,17 @@
       </ion-item>
     </ion-list>
 
+    <ion-list *ngIf="counting" class="progress" lines="none">
+      <ion-item>
+        <ion-progress-bar type="indeterminate"></ion-progress-bar>
+      </ion-item>
+      <ion-item>
+        <ion-badge color="clear">
+          Counting files
+        </ion-badge>
+      </ion-item>
+    </ion-list>
+
     <ion-list *ngIf="errors.length" class="errors">
       <ion-list-header>Scan errors</ion-list-header>
       <ion-item *ngFor="let error of errors">

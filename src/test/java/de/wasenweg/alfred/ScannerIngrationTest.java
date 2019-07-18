@@ -47,6 +47,7 @@ public class ScannerIngrationTest {
 
     // When
     StepVerifier.create(integrationTestHelper.triggerScan(port))
+        .expectNext("")
         .expectNext("1")
         .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz")
         .expectNext("")

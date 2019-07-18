@@ -47,6 +47,10 @@ public class ScannerService {
     );
   }
 
+  private void reportStart() {
+    this.sendEvent("", "start");
+  }
+
   private void reportProgress(final String path) {
     this.sendEvent(path, "current-file");
   }
@@ -104,6 +108,7 @@ public class ScannerService {
     Executors.newSingleThreadExecutor().execute(() -> {
       try {
         this.logger.info("Reading comics in {}", comicsPath.toString());
+        reportStart();
 
         final List<Path> comicFiles = Files.walk(comicsPath)
             .filter(path -> Files.isRegularFile(path))
