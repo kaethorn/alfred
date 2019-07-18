@@ -49,6 +49,18 @@ Users are identified through their email addresses and the initial set of allowe
 
 Once the application authenticates the user, it issues its own JWT authentication token which requires a secret key. A default key is supplied but should be overridden whenever the application is run (it's not stored in the DB).
 
+## Logging
+
+By default, the application logs only to the console it was started in. In order to output logs to a file, use the `logging.file` application property, e.g. start the app with `LOGGING_FILE=alfred.log`.
+
+In docker, this can be achieved by settings a volume and an environment variable. Starting the container with these parameters
+
+```
+-v $PWD/logs:/logs -e LOGGING_FILE=/logs/alfred.log
+```
+
+will log to `./logs/alfred.log` on the host.
+
 ## Run
 
 ### Docker using Gradle
