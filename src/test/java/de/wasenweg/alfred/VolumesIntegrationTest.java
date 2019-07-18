@@ -1,6 +1,7 @@
 package de.wasenweg.alfred;
 
 import de.wasenweg.alfred.comics.ComicRepository;
+import de.wasenweg.alfred.progress.ProgressRepository;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +35,9 @@ public class VolumesIntegrationTest {
   private ComicRepository comicRepository;
 
   @Autowired
+  private ProgressRepository progressRepository;
+
+  @Autowired
   private WebApplicationContext context;
 
   private MockMvc mvc;
@@ -60,6 +64,7 @@ public class VolumesIntegrationTest {
   @After
   public void tearDown() {
     comicRepository.deleteAll();
+    progressRepository.deleteAll();
   }
 
   @Test

@@ -24,7 +24,7 @@ public class JwtService implements IJwtService {
   private Logger logger = LoggerFactory.getLogger(JwtService.class);
 
   public Boolean verifyToken(final String token, final String secret) {
-    this.logger.info("Verifying token: {}", token);
+    logger.info("Verifying token: {}", token);
     Boolean verified = false;
 
     try {
@@ -36,7 +36,7 @@ public class JwtService implements IJwtService {
 
       final Claim claim = jwt.getClaim("API_ALLOWED");
       if (claim.isNull()) {
-        this.logger.info("Token claim does not contain API_ALLOWED");
+        logger.info("Token claim does not contain API_ALLOWED");
         return false;
       }
       verified = claim.asBoolean();
@@ -55,7 +55,7 @@ public class JwtService implements IJwtService {
 
       SecurityContextHolder.getContext().setAuthentication(newAuth);
     } catch (final Exception e) {
-      this.logger.info("Exception while verifying token: {}", e.getLocalizedMessage());
+      logger.info("Exception while verifying token: {}", e.getLocalizedMessage());
       verified = false;
     }
 

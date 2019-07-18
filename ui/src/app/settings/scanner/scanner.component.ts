@@ -22,7 +22,8 @@ export class ScannerComponent {
   counter = 0;
   errors: Error[] = [];
   stats: Stats;
-  counting = false;
+
+  indeterminate: string;
 
   constructor (
     private statsService: StatsService
@@ -42,17 +43,26 @@ export class ScannerComponent {
     const scanProgress = new EventSource('/api/scan-progress');
 
     scanProgress.addEventListener('start', (event: any) => {
-      this.counting = true;
+      this.indeterminate = 'Counting files';
     });
 
     scanProgress.addEventListener('total', (event: any) => {
-      this.counting = false;
+      this.indeterminate = null;
       this.total = this.total || event.data;
     });
 
     scanProgress.addEventListener('current-file', (event: any) => {
       this.file = event.data;
       this.counter += 1;
+      console.log(`File ${ this.counter }/${ this.total }`);
+    });
+
+    scanProgress.addEventListener('cleanUp', (event: any) => {
+      this.indeterminate = 'Cleaning up';
+    });
+
+    scanProgress.addEventListener('association', (event: any) => {
+      this.indeterminate = 'Bundling volumes';
     });
 
     scanProgress.addEventListener('error', (event: any) => {
@@ -60,7 +70,7 @@ export class ScannerComponent {
     });
 
     scanProgress.addEventListener('done', () => {
-      this.counting = false;
+      this.indeterminate = null;
       this.counter = 0;
       this.total = 0;
       this.scanned.emit(true);

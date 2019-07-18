@@ -2,6 +2,7 @@ package de.wasenweg.alfred;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
+import de.wasenweg.alfred.progress.ProgressRepository;
 
 import org.junit.After;
 import org.junit.Test;
@@ -11,8 +12,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import reactor.test.StepVerifier;
 
 import java.util.List;
@@ -32,24 +35,31 @@ public class ScannerAssociationIngrationTest {
   private ComicRepository comicRepository;
 
   @Autowired
+  private ProgressRepository progressRepository;
+
+  @Autowired
   private IntegrationTestHelper integrationTestHelper;
 
   @After
   public void tearDown() {
     comicRepository.deleteAll();
+    progressRepository.deleteAll();
   }
 
   @Test
+  @DirtiesContext
   public void associatesComics() throws Exception {
     // Given
     integrationTestHelper.setComicsPath("src/test/resources/fixtures/full");
 
     // When
     StepVerifier.create(integrationTestHelper.triggerScan(port))
-        .expectNext("")
+        .expectNext("start")
         .expectNext("305")
         .expectNextCount(305)
-        .expectNext("")
+        .expectNext("cleanUp")
+        .expectNext("association")
+        .expectNext("done")
         .thenCancel()
         .verify();
 

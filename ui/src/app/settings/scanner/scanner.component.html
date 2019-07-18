@@ -22,13 +22,13 @@
       </ion-item>
     </ion-list>
 
-    <ion-list *ngIf="counting" class="progress" lines="none">
+    <ion-list *ngIf="indeterminate" class="progress" lines="none">
       <ion-item>
         <ion-progress-bar type="indeterminate"></ion-progress-bar>
       </ion-item>
       <ion-item>
         <ion-badge color="clear">
-          Counting files
+          {{ indeterminate }}
         </ion-badge>
       </ion-item>
     </ion-list>

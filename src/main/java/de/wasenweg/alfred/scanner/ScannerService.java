@@ -47,20 +47,33 @@ public class ScannerService {
     );
   }
 
-  private void reportStart() {
-    this.sendEvent("", "start");
+  private void reportStart(final String path) {
+    this.sendEvent("start", "start");
+    logger.info("Reading comics in {}", path);
   }
 
   private void reportProgress(final String path) {
     this.sendEvent(path, "current-file");
+    logger.debug("Parsing comic {}", path);
   }
 
   private void reportTotal(final int total) {
     this.sendEvent(String.valueOf(total), "total");
+    logger.info("Found {} comics.", total);
+  }
+
+  private void reportCleanUp() {
+    this.sendEvent("cleanUp", "cleanUp");
+    logger.info("Purging orphaned comics.");
+  }
+
+  private void reportAssociation() {
+    this.sendEvent("association", "association");
+    logger.info("Associating volumes.");
   }
 
   private void reportFinish() {
-    this.sendEvent("", "done");
+    this.sendEvent("done", "done");
   }
 
   private void reportError(final Exception exception) {
@@ -69,7 +82,6 @@ public class ScannerService {
 
   private Comic createOrUpdateComic(final Path path) {
     reportProgress(path.toString());
-    logger.info("Parsing {}", path.toString());
 
     final String comicPath = path.toAbsolutePath().toString();
 
@@ -94,6 +106,7 @@ public class ScannerService {
       }
     }
 
+    comicRepository.save(comic);
     return comic;
   }
 
@@ -108,8 +121,7 @@ public class ScannerService {
 
     Executors.newSingleThreadExecutor().execute(() -> {
       try {
-        this.logger.info("Reading comics in {}", comicsPath.toString());
-        reportStart();
+        reportStart(comicsPath.toString());
 
         final List<Path> comicFiles = Files.walk(comicsPath)
             .filter(path -> Files.isRegularFile(path))
@@ -117,19 +129,13 @@ public class ScannerService {
             .collect(Collectors.toList());
 
         reportTotal(comicFiles.size());
+        comicFiles.forEach(path -> createOrUpdateComic(path));
+        logger.info("Parsed {} comics.", comicFiles.size());
 
-        this.logger.info("Parsing {} comics.", comicFiles.size());
-
-        comicFiles.stream()
-            .map(path -> createOrUpdateComic(path))
-            .forEach(comic -> {
-              comicRepository.save(comic);
-            });
-
-        this.logger.info("Parsed {} comics.", comicFiles.size());
         this.cleanOrphans(comicFiles);
         this.associateVolumes();
-        this.logger.info("Done scanning.");
+
+        logger.info("Done scanning.");
       } catch (final IOException exception) {
         exception.printStackTrace();
         reportError(exception);
@@ -142,7 +148,7 @@ public class ScannerService {
   }
 
   private void cleanOrphans(final List<Path> comicFiles) {
-    this.logger.info("Purging orphaned comics.");
+    reportCleanUp();
 
     // Purge comics from the DB that don't have a corresponding file.
     final List<String> comicFilePaths = comicFiles.stream()
@@ -161,7 +167,7 @@ public class ScannerService {
    * previous and next comic within the current volume.
    */
   private void associateVolumes() {
-    this.logger.info("Associating volumes.");
+    reportAssociation();
 
     // Get all comics, grouped by volume.
     final Map<Volume, List<Comic>> volumes = comicRepository
@@ -176,20 +182,20 @@ public class ScannerService {
 
     // Traverse each volume
     volumes.forEach((volume, comics) -> {
-      this.logger.info("Associating {} comics for {}.", comics.size(), volume.toString());
+      logger.debug("Associating {} comics for {}.", comics.size(), volume.toString());
       // Traverse each comic in the volume
       IntStream.range(0, comics.size()).forEach(index -> {
         final Comic comic = comics.get(index);
-        this.logger.info("Associating comic {}.", comic.getPosition());
+        logger.trace("Associating comic {}.", comic.getPosition());
         if (index > 0) {
           final Comic previousComic = comics.get(index - 1);
           comic.setPreviousId(previousComic.getId());
-          this.logger.info("Associating comic {} with previous comic {}", comic.getPosition(), previousComic.getPosition());
+          logger.trace("Associating comic {} with previous comic {}", comic.getPosition(), previousComic.getPosition());
         }
         if (index < (comics.size() - 1)) {
           final Comic nextComic = comics.get(index + 1);
           comic.setNextId(nextComic.getId());
-          this.logger.info("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
+          logger.trace("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
         }
         comicRepository.save(comic);
       });

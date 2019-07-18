@@ -38,22 +38,22 @@ public class JwtFilter implements Filter {
     final HttpServletRequest request = (HttpServletRequest) req;
     final HttpServletResponse response = (HttpServletResponse) res;
 
-    this.logger.info("Running filter on URL: {}", request.getRequestURL().toString());
+    logger.info("Running filter on URL: {}", request.getRequestURL().toString());
 
     final Optional<String> token = Optional.ofNullable(request.getHeader("Authorization"));
 
     if (!token.isPresent() || !token.get().startsWith(HEADER_PREFIX)) {
-      this.logger.info("No token found in header.");
+      logger.info("No token found in header.");
       res.reset();
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
 
     if (this.jwtService.verifyToken(token.get().replace(HEADER_PREFIX, ""), this.secret)) {
-      this.logger.info("Token is valid.");
+      logger.info("Token is valid.");
       chain.doFilter(req, res);
     } else {
-      this.logger.info("Token is invalid.");
+      logger.info("Token is invalid.");
       res.reset();
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
