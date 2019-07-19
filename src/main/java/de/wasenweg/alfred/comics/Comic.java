@@ -7,6 +7,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -23,21 +24,33 @@ public class Comic {
 
   @NonNull
   private String path;
+
   @NonNull
   private String title;
+
   @NonNull
+  @Indexed
   private String series;
+
   @NonNull
+  @Indexed
   private String volume;
+
   @NonNull
   private String number;
+
   @NonNull
+  @Indexed
   private String position;
+
   @NonNull
   private Short year;
+
   @NonNull
   private Short month;
+
   @NonNull
+  @Indexed
   private String publisher;
 
   private String summary;
@@ -66,8 +79,10 @@ public class Comic {
 
   @Builder.Default
   private boolean read = false;
+
   @Builder.Default
   private Short currentPage = (short) 0;
+
   private Date lastRead;
 
   public Comic() {
