@@ -14,7 +14,7 @@ public class ZipReader {
    * @param The zip file to search through.
    * @return List of image zip entries.
    */
-  public static List<ZipEntry> getImages(final ZipFile file) {
+  public static List<ZipEntry> getImages(final ZipFile file) throws Exception {
     final Comparator<ZipEntry> byName =
         (ze1, ze2) -> ze1.getName().compareTo(ze2.getName());
     final Predicate<ZipEntry> isImage = ze -> ze.getName().matches(".*(png|jpg)$");

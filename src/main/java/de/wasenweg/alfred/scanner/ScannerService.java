@@ -78,7 +78,7 @@ public class ScannerService {
   }
 
   private void reportError(final String path, final Exception exception) {
-    this.sendEvent(path + "|" + exception.getClass().getSimpleName() + ": " + exception.getMessage(), "error");
+    this.sendEvent(path + "|" + exception.getMessage(), "error");
   }
 
   private void reportError(final Exception exception) {
@@ -106,7 +106,7 @@ public class ScannerService {
     try {
       MetaDataReader.set(file, comic);
       ThumbnailReader.set(file, comic);
-    } catch (final SAXException | IOException exception) {
+    } catch (final NoImagesException | SAXException | IOException exception) {
       logger.error(exception.getLocalizedMessage(), exception);
       reportError(pathString, exception);
     } finally {

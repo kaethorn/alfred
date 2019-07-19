@@ -22,7 +22,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.security.Principal;
@@ -54,7 +53,7 @@ public class ReaderController {
       result.setSize(entry.getSize());
       result.setType(URLConnection.guessContentTypeFromName(fileName));
       result.setName(fileName);
-    } catch (final IOException e) {
+    } catch (final Exception e) {
       e.printStackTrace();
     }
 

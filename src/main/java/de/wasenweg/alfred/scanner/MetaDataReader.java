@@ -36,9 +36,11 @@ public class MetaDataReader {
   }
 
   private static Short readShortElement(final Document document, final String elementName) {
+    final String value = readStringElement(document, elementName);
     try {
-      return Short.parseShort(readStringElement(document, "Year"));
-    } catch (final Exception e) {
+      return Short.parseShort(value);
+    } catch (final Exception exception) {
+      logger.warn("Couldn't read " + elementName + " value of '" + value + "'. Falling back to '0'", exception);
       return (short)0;
     }
   }
