@@ -55,7 +55,7 @@ public class MetaDataReader {
 
   private static String mapPosition(final String number) {
     String convertableNumber = number;
-    if (number.equals("½") || number.equals("1/2")) {
+    if ("½".equals(number) || "1/2".equals(number)) {
       convertableNumber = "0.5";
     }
     if (number.endsWith("a")) {
