@@ -95,13 +95,13 @@ public class ScannerService {
       MetaDataReader.set(file, comic);
       ThumbnailReader.set(file, comic);
     } catch (final Exception exception) {
-      exception.printStackTrace();
+      logger.error(exception.getLocalizedMessage(), exception);
       reportError(exception);
     } finally {
       try {
         file.close();
       } catch (final IOException exception) {
-        exception.printStackTrace();
+        logger.error(exception.getLocalizedMessage(), exception);
         reportError(exception);
       }
     }
@@ -137,7 +137,7 @@ public class ScannerService {
 
         logger.info("Done scanning.");
       } catch (final IOException exception) {
-        exception.printStackTrace();
+        logger.error(exception.getLocalizedMessage(), exception);
         reportError(exception);
       }
 
