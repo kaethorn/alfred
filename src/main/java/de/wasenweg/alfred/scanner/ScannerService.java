@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
 
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
@@ -80,7 +81,7 @@ public class ScannerService {
     this.sendEvent(exception.getClass().getSimpleName() + ": " + exception.getMessage(), "error");
   }
 
-  private Comic createOrUpdateComic(final Path path) {
+  private void createOrUpdateComic(final Path path) {
     reportProgress(path.toString());
 
     final String comicPath = path.toAbsolutePath().toString();
@@ -92,9 +93,15 @@ public class ScannerService {
     ZipFile file = null;
     try {
       file = new ZipFile(path.toString());
+    } catch (final IOException exception) {
+      logger.error(exception.getLocalizedMessage(), exception);
+      reportError(exception);
+      return;
+    }
+    try {
       MetaDataReader.set(file, comic);
       ThumbnailReader.set(file, comic);
-    } catch (final Exception exception) {
+    } catch (final SAXException | IOException exception) {
       logger.error(exception.getLocalizedMessage(), exception);
       reportError(exception);
     } finally {
@@ -107,7 +114,6 @@ public class ScannerService {
     }
 
     comicRepository.save(comic);
-    return comic;
   }
 
   /**
@@ -118,11 +124,10 @@ public class ScannerService {
    */
   public Flux<ServerSentEvent<String>> scanComics() {
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
+    reportStart(comicsPath.toString());
 
     Executors.newSingleThreadExecutor().execute(() -> {
       try {
-        reportStart(comicsPath.toString());
-
         final List<Path> comicFiles = Files.walk(comicsPath)
             .filter(path -> Files.isRegularFile(path))
             .filter(path -> path.getFileName().toString().endsWith(".cbz"))
