@@ -1,16 +1,6 @@
 <ion-card>
   <ion-card-header>Library management</ion-card-header>
   <ion-card-content>
-    <ion-list class="stats">
-      <ion-list-header>
-        Statistics
-      </ion-list-header>
-      <ion-item *ngFor="let stat of stats | keyvalue">
-        <ion-label>{{ stat.key }}</ion-label>
-        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
-      </ion-item>
-    </ion-list>
-
     <ion-list *ngIf="total" class="progress" lines="none">
       <ion-item>
         <ion-progress-bar [value]="counter/total"></ion-progress-bar>
@@ -53,5 +43,17 @@
       </ion-item>
     </ion-list>
 
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>Statistics</ion-card-header>
+  <ion-card-content>
+    <ion-list class="stats">
+      <ion-item *ngFor="let stat of stats | keyvalue">
+        <ion-label>{{ stat.key }}</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
+      </ion-item>
+    </ion-list>
   </ion-card-content>
 </ion-card>
