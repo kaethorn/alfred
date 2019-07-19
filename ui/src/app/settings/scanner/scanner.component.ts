@@ -59,6 +59,8 @@ export class ScannerComponent {
     });
 
     this.scanProgress.addEventListener('cleanUp', (event: any) => {
+      this.counter = 0;
+      this.total = 0;
       this.indeterminate = 'Cleaning up';
     });
 
@@ -81,8 +83,6 @@ export class ScannerComponent {
 
     this.scanProgress.addEventListener('done', () => {
       this.indeterminate = null;
-      this.counter = 0;
-      this.total = 0;
       this.scanned.emit(true);
       this.getStats();
 
@@ -91,6 +91,8 @@ export class ScannerComponent {
   }
 
   private close () {
+    this.counter = 0;
+    this.total = 0;
     this.scanProgress.close();
     this.scanProgress = null;
   }
