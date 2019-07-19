@@ -2,6 +2,8 @@ package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -19,6 +21,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class MetaDataReader {
+
+  private static Logger logger = LoggerFactory.getLogger(MetaDataReader.class);
 
   private static DocumentBuilder docBuilder = null;
 
@@ -40,7 +44,19 @@ public class MetaDataReader {
   }
 
   private static String mapPosition(final String number) {
-    final BigDecimal position = new BigDecimal(number.equals("½") ? "0.5" : number);
+    String convertableNumber = number;
+    if (number.equals("½") || number.equals("1/2")) {
+      convertableNumber = "0.5";
+    }
+    if (number.endsWith("a")) {
+      convertableNumber = convertableNumber.replace("a", ".5");
+    }
+    BigDecimal position = new BigDecimal(0);
+    try {
+      position = new BigDecimal(convertableNumber);
+    } catch (final Exception exception) {
+      logger.warn("Couldn't read number '" + number + "'. Falling back to '0'", exception);
+    }
     final String result = new DecimalFormat("0000.0").format(position);
     return result;
   }
