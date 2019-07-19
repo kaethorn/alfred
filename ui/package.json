@@ -37,6 +37,8 @@
     "cordova-android": "8.0.0",
     "cordova-plugin-splashscreen": "5.0.2",
     "core-js": "^2.6.9",
+    "moment": "^2.24.0",
+    "ngx-moment": "^3.4.0",
     "rxjs": "^6.5.2",
     "tslib": "^1.10.0",
     "zone.js": "~0.8.29"

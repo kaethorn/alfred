@@ -26,7 +26,7 @@ public class MetaDataReader {
 
   private static DocumentBuilder docBuilder = null;
 
-  private static String readElement(final Document document, final String elementName) {
+  private static String readStringElement(final Document document, final String elementName) {
     final NodeList element = document.getElementsByTagName(elementName);
     if (element.getLength() > 0) {
       return element.item(0).getTextContent();
@@ -35,8 +35,16 @@ public class MetaDataReader {
     }
   }
 
+  private static Short readShortElement(final Document document, final String elementName) {
+    try {
+      return Short.parseShort(readStringElement(document, "Year"));
+    } catch (final Exception e) {
+      return (short)0;
+    }
+  }
+
   private static Short getPageCount(final Document document) {
-    final String pageCount = readElement(document, "PageCount");
+    final String pageCount = readStringElement(document, "PageCount");
     if (pageCount.isEmpty()) {
       return (short) document.getElementsByTagName("Page").getLength();
     }
@@ -80,28 +88,28 @@ public class MetaDataReader {
     final Document document = documentOptional.get();
 
     document.getDocumentElement().normalize();
-    comic.setTitle(readElement(document, "Title"));
-    comic.setSeries(readElement(document, "Series"));
-    comic.setPublisher(readElement(document, "Publisher"));
-    comic.setNumber(readElement(document, "Number"));
+    comic.setTitle(readStringElement(document, "Title"));
+    comic.setSeries(readStringElement(document, "Series"));
+    comic.setPublisher(readStringElement(document, "Publisher"));
+    comic.setNumber(readStringElement(document, "Number"));
     comic.setPosition(mapPosition(comic.getNumber()));
-    comic.setVolume(readElement(document, "Volume"));
-    comic.setSummary(readElement(document, "Summary"));
-    comic.setNotes(readElement(document, "Notes"));
-    comic.setYear(Short.parseShort(readElement(document, "Year")));
-    comic.setMonth(Short.parseShort(readElement(document, "Month")));
-    comic.setWriter(readElement(document, "Writer"));
-    comic.setPenciller(readElement(document, "Penciller"));
-    comic.setInker(readElement(document, "Inker"));
-    comic.setColorist(readElement(document, "Colorist"));
-    comic.setLetterer(readElement(document, "Letterer"));
-    comic.setEditor(readElement(document, "Editor"));
-    comic.setWeb(readElement(document, "Web"));
+    comic.setVolume(readStringElement(document, "Volume"));
+    comic.setSummary(readStringElement(document, "Summary"));
+    comic.setNotes(readStringElement(document, "Notes"));
+    comic.setYear(readShortElement(document, "Year"));
+    comic.setMonth(readShortElement(document, "Month"));
+    comic.setWriter(readStringElement(document, "Writer"));
+    comic.setPenciller(readStringElement(document, "Penciller"));
+    comic.setInker(readStringElement(document, "Inker"));
+    comic.setColorist(readStringElement(document, "Colorist"));
+    comic.setLetterer(readStringElement(document, "Letterer"));
+    comic.setEditor(readStringElement(document, "Editor"));
+    comic.setWeb(readStringElement(document, "Web"));
     comic.setPageCount(getPageCount(document));
-    comic.setManga(readElement(document, "Manga").equals("Yes"));
-    comic.setCharacters(readElement(document, "Characters"));
-    comic.setTeams(readElement(document, "Teams"));
-    comic.setLocations(readElement(document, "Locations"));
+    comic.setManga(readStringElement(document, "Manga").equals("Yes"));
+    comic.setCharacters(readStringElement(document, "Characters"));
+    comic.setTeams(readStringElement(document, "Teams"));
+    comic.setLocations(readStringElement(document, "Locations"));
   }
 
   public static void set(final ZipFile file, final Comic comic)

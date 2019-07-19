@@ -36,14 +36,18 @@
     <ion-list *ngIf="errors.length" class="errors">
       <ion-list-header>Scan errors</ion-list-header>
       <ion-item *ngFor="let error of errors">
-        <ion-badge color="clear">{{ error.date }}</ion-badge>
-        <ion-badge color="danger">{{ error.message }}</ion-badge>
+        <ion-label>
+          <sub>{{ error.date | amTimeAgo }}</sub>
+          <h4><i>{{ error.message }}</i></h4>
+          <p *ngIf="error.file">{{ error.file }}</p>
+        </ion-label>
+        <ion-icon slot="end" color="danger" name="alert"></ion-icon>
       </ion-item>
     </ion-list>
 
     <ion-list lines="none">
       <ion-item>
-        <ion-button slot="end" (click)="scan()" [disabled]="total > 0" color="primary">
+        <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
           SCAN
         </ion-button>
       </ion-item>

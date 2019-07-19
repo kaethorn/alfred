@@ -77,12 +77,17 @@ public class ScannerService {
     this.sendEvent("done", "done");
   }
 
+  private void reportError(final String path, final Exception exception) {
+    this.sendEvent(path + "|" + exception.getClass().getSimpleName() + ": " + exception.getMessage(), "error");
+  }
+
   private void reportError(final Exception exception) {
-    this.sendEvent(exception.getClass().getSimpleName() + ": " + exception.getMessage(), "error");
+    this.reportError("", exception);
   }
 
   private void createOrUpdateComic(final Path path) {
-    reportProgress(path.toString());
+    final String pathString = path.toString();
+    reportProgress(pathString);
 
     final String comicPath = path.toAbsolutePath().toString();
 
@@ -92,10 +97,10 @@ public class ScannerService {
 
     ZipFile file = null;
     try {
-      file = new ZipFile(path.toString());
+      file = new ZipFile(pathString);
     } catch (final IOException exception) {
       logger.error(exception.getLocalizedMessage(), exception);
-      reportError(exception);
+      reportError(pathString, exception);
       return;
     }
     try {
@@ -103,13 +108,13 @@ public class ScannerService {
       ThumbnailReader.set(file, comic);
     } catch (final SAXException | IOException exception) {
       logger.error(exception.getLocalizedMessage(), exception);
-      reportError(exception);
+      reportError(pathString, exception);
     } finally {
       try {
         file.close();
       } catch (final IOException exception) {
         logger.error(exception.getLocalizedMessage(), exception);
-        reportError(exception);
+        reportError(pathString, exception);
       }
     }
 

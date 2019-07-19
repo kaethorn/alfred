@@ -5,6 +5,7 @@ import { Stats } from '../../stats';
 
 interface Error {
   message: string;
+  file?: string;
   date: string;
 }
 
@@ -24,6 +25,7 @@ export class ScannerComponent {
   stats: Stats;
 
   indeterminate: string;
+  scanProgress: EventSource;
 
   constructor (
     private statsService: StatsService
@@ -40,41 +42,56 @@ export class ScannerComponent {
   scan () {
     this.errors = [];
 
-    const scanProgress = new EventSource('/api/scan-progress');
+    this.scanProgress = new EventSource('/api/scan-progress');
 
-    scanProgress.addEventListener('start', (event: any) => {
+    this.scanProgress.addEventListener('start', (event: any) => {
       this.indeterminate = 'Counting files';
     });
 
-    scanProgress.addEventListener('total', (event: any) => {
+    this.scanProgress.addEventListener('total', (event: any) => {
       this.indeterminate = null;
       this.total = this.total || event.data;
     });
 
-    scanProgress.addEventListener('current-file', (event: any) => {
+    this.scanProgress.addEventListener('current-file', (event: any) => {
       this.file = event.data;
       this.counter += 1;
     });
 
-    scanProgress.addEventListener('cleanUp', (event: any) => {
+    this.scanProgress.addEventListener('cleanUp', (event: any) => {
       this.indeterminate = 'Cleaning up';
     });
 
-    scanProgress.addEventListener('association', (event: any) => {
+    this.scanProgress.addEventListener('association', (event: any) => {
       this.indeterminate = 'Bundling volumes';
     });
 
-    scanProgress.addEventListener('error', (event: any) => {
-      this.errors.push({ message: event.data, date: new Date().toISOString() });
+    this.scanProgress.addEventListener('error', (event: any) => {
+      if (!event.data) {
+        this.close();
+        return;
+      }
+      const parts = event.data.split('|');
+      this.errors.push({
+        message: parts[0],
+        file   : parts.length ? parts[1] : null,
+        date   : new Date().toISOString()
+      });
     });
 
-    scanProgress.addEventListener('done', () => {
+    this.scanProgress.addEventListener('done', () => {
       this.indeterminate = null;
       this.counter = 0;
       this.total = 0;
       this.scanned.emit(true);
       this.getStats();
-      scanProgress.close();
+
+      this.close();
     });
+  }
+
+  private close () {
+    this.scanProgress.close();
+    this.scanProgress = null;
   }
 }
