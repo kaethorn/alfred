@@ -104,4 +104,16 @@ export class ComicsService {
       map((result: Comic) => this.addId(result))
     );
   }
+
+  deleteComics (): Observable<any> {
+    return this.http.delete('api/comics');
+  }
+
+  deleteProgress (): Observable<any> {
+    return this.http.delete('api/progress');
+  }
+
+  deleteProgressForCurrentUser (): Observable<any> {
+    return this.http.delete('api/progress/me');
+  }
 }

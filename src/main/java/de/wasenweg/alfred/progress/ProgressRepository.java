@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ProgressRepository extends MongoRepository<Progress, String> {
 
   Optional<Progress> findByUserIdAndComicId(final String userId, final ObjectId comicId);
+
+  void deleteByUserId(final String userId);
 }

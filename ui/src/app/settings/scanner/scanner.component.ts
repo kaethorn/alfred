@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 
+import { ComicsService } from '../../comics.service';
 import { StatsService } from '../../stats.service';
 import { Stats } from '../../stats';
 
@@ -28,7 +29,8 @@ export class ScannerComponent {
   scanProgress: EventSource;
 
   constructor (
-    private statsService: StatsService
+    private statsService: StatsService,
+    private comicsService: ComicsService
   ) {
     this.getStats();
   }
@@ -87,6 +89,24 @@ export class ScannerComponent {
       this.getStats();
 
       this.close();
+    });
+  }
+
+  deleteComics () {
+    this.comicsService.deleteComics().subscribe(() => {
+      this.getStats();
+    });
+  }
+
+  deleteProgress () {
+    this.comicsService.deleteProgress().subscribe(() => {
+      this.getStats();
+    });
+  }
+
+  deleteProgressForCurrentUser () {
+    this.comicsService.deleteProgressForCurrentUser().subscribe(() => {
+      this.getStats();
     });
   }
 

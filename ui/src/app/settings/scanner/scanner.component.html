@@ -35,13 +35,23 @@
       </ion-item>
     </ion-list>
 
-    <ion-list lines="none">
-      <ion-item>
-        <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
-          SCAN
-        </ion-button>
-      </ion-item>
-    </ion-list>
+    <div>
+      <ion-button (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
+        DELETE COMICS
+      </ion-button>
+      <ion-button (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
+        DELETE ALL PROGRESS
+      </ion-button>
+      <ion-button (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
+        DELETE MY PROGRESS
+      </ion-button>
+    </div>
+    <ion-item lines="none">
+      <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
+        <ion-icon name="search"></ion-icon>
+        SCAN
+      </ion-button>
+    </ion-item>
 
   </ion-card-content>
 </ion-card>

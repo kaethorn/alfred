@@ -7,6 +7,7 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,6 +33,9 @@ public class ComicController {
 
   @Autowired
   private ComicQueryRepositoryImpl queryRepository;
+
+  @Autowired
+  private ComicRepository comicRepository;
 
   @GetMapping("/{comicId}")
   public Resource<Comic> findById(
@@ -72,6 +76,11 @@ public class ComicController {
   @PutMapping("/markAsUnread")
   public Resource<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
     return addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, false)));
+  }
+
+  @DeleteMapping("")
+  public void deleteComics() {
+    this.comicRepository.deleteAll();
   }
 
   private Resources<Resource<Comic>> addCollectionLink(final List<Comic> comics) {
