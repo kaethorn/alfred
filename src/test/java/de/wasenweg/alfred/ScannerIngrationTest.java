@@ -58,6 +58,7 @@ public class ScannerIngrationTest {
         .expectNext("start")
         .expectNext("1")
         .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz")
+        .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz|No images found")
         .expectNext("cleanUp")
         .expectNext("association")
         .expectNext("done")

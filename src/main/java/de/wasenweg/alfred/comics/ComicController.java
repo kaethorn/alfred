@@ -42,6 +42,11 @@ public class ComicController {
   @Autowired
   private ComicRepository comicRepository;
 
+  @GetMapping("")
+  public Resources<Resource<Comic>> findAll() {
+    return addCollectionLink(this.comicRepository.findAll());
+  }
+
   @GetMapping("/{comicId}")
   public Resource<Comic> findById(
       final Principal principal,

@@ -56,7 +56,7 @@ public class ScannerAssociationIngrationTest {
     StepVerifier.create(integrationTestHelper.triggerScan(port))
         .expectNext("start")
         .expectNext("305")
-        .expectNextCount(305)
+        .expectNextCount(610)
         .expectNext("cleanUp")
         .expectNext("association")
         .expectNext("done")
