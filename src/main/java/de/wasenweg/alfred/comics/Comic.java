@@ -72,8 +72,6 @@ public class Comic {
   private String teams;
   private String locations;
 
-  private byte[] thumbnail;
-
   private String nextId;
   private String previousId;
 

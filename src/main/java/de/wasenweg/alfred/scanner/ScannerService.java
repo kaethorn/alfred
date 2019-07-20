@@ -3,6 +3,7 @@ package de.wasenweg.alfred.scanner;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.settings.SettingsService;
+import de.wasenweg.alfred.thumbnails.ThumbnailSetter;
 import de.wasenweg.alfred.volumes.Volume;
 
 import org.slf4j.Logger;
@@ -105,8 +106,7 @@ public class ScannerService {
     }
     try {
       MetaDataReader.set(file, comic);
-      ThumbnailReader.set(file, comic);
-    } catch (final NoImagesException | SAXException | IOException exception) {
+    } catch (final SAXException | IOException exception) {
       logger.error(exception.getLocalizedMessage(), exception);
       reportError(pathString, exception);
     } finally {
@@ -119,6 +119,13 @@ public class ScannerService {
     }
 
     comicRepository.save(comic);
+
+    try {
+      ThumbnailSetter.set(file, comic);
+    } catch (final NoImagesException exception) {
+      logger.error(exception.getLocalizedMessage(), exception);
+      reportError(pathString, exception);
+    }
   }
 
   /**
