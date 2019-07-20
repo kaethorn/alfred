@@ -32,7 +32,7 @@ public class ProgressHelper {
             // Restore comic _id previously overwritten with progress _id.
             .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
         project().andExclude("progress", "comicId", "userId")
-        ).collect(Collectors.toList());
+    ).collect(Collectors.toList());
   }
 
   // Syntactic sugar
@@ -40,7 +40,6 @@ public class ProgressHelper {
     return Aggregation.newAggregation(
         Stream.concat(
             mergeProgress(userId).stream(),
-            Stream.of(operations))
-        .collect(Collectors.toList()));
+            Stream.of(operations)).collect(Collectors.toList()));
   }
 }

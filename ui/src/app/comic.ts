@@ -24,7 +24,6 @@ export interface Comic {
   characters?: string;
   teams?: string;
   locations?: string;
-  thumbnail: string;
   nextId?: string;
   previousId?: string;
   read?: boolean;

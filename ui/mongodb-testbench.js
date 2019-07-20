@@ -54,6 +54,24 @@ const mockUser = 'oauth2-mock-user-id';
 const progress = () => {
   return Progress.find();
 };
+const findAllVolumes = () => {
+  return Comic.aggregate()
+    .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
+    .match({ publisher: 'DC Comics', series: 'Batgirl' })
+    .sort({ position: 1 })
+    .group({
+      _id         : { volume: '$volume' },
+      volume      : { $last: '$volume' },
+      series      : { $last: '$series' },
+      publisher   : { $last: '$publisher' },
+      issueCount  : { $sum: 1 },
+      read        : { $min: '$read' },
+      readCount   : { $sum: { $cond: [ '$read', 1, 0 ]}},
+      firstComicId: { $first: '$_id' }
+    })
+    .sort({ volume: 1 });
+};
+
 
 const findAllLastReadPerVolume = () => {
   return Comic.aggregate()
@@ -219,6 +237,9 @@ db.once('open', function () {
       break;
     case 'markAllAsReadUntil':
       method = markAllAsReadUntil;
+      break;
+    case 'findAllVolumes':
+      method = findAllVolumes;
       break;
   }
 

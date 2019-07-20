@@ -65,16 +65,16 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
         match(where("publisher").is(publisher).and("series").is(series)),
         sort(Sort.Direction.ASC, "position"),
         group("volume")
-        .last("volume").as("volume")
-        .last("series").as("series")
-        .last("publisher").as("publisher")
-        .count().as("issueCount")
-        .min("read").as("read")
-        .sum(ConditionalOperators
-            .when(where("read").is(true))
-            .then(1).otherwise(0))
-        .as("readCount")
-        .first("thumbnail").as("thumbnail"),
+          .last("volume").as("volume")
+          .last("series").as("series")
+          .last("publisher").as("publisher")
+          .count().as("issueCount")
+          .min("read").as("read")
+          .sum(ConditionalOperators
+              .when(where("read").is(true))
+              .then(1).otherwise(0))
+              .as("readCount")
+          .first("_id").as("firstComicId"),
         sort(Sort.Direction.ASC, "volume")
         ), Comic.class, Volume.class).getMappedResults();
   }

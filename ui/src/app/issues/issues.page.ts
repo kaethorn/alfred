@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 import { ComicsService } from '../comics.service';
 import { VolumesService } from '../volumes.service';
+import { ThumbnailsService } from '../thumbnails.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -19,14 +21,15 @@ export class IssuesPage {
   private series: string;
   private volume: string;
   public currentRoute: string;
+  public thumbnails = new Map<string, Observable<SafeUrl>>();
 
   comics: Array<Comic> = [];
 
   constructor (
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private comicsService: ComicsService,
     private volumesService: VolumesService,
+    private thumbnailsService: ThumbnailsService,
     private popoverController: PopoverController
     ) { }
 
@@ -57,11 +60,6 @@ export class IssuesPage {
     });
   }
 
-
-  thumbnail (comic: Comic): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
-  }
-
   async openMenu (event: any, comic: Comic) {
     const popover = await this.popoverController.create({
       component: IssueActionsComponent,
@@ -81,6 +79,9 @@ export class IssuesPage {
     this.comicsService.listByVolume(this.publisher, this.series, this.volume)
       .subscribe((data: Comic[]) => {
         this.comics = data;
+        this.comics.forEach((comic: Comic) => {
+          this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
+        });
       });
   }
 

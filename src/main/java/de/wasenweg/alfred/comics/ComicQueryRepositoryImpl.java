@@ -46,20 +46,20 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
         // Collect volumes with aggregated read stats and a list of issues
         sort(Sort.Direction.ASC, "position"),
         group("publisher", "series", "volume")
-        .min(ConditionalOperators
-            .when(where("read").is(true))
-            .then(true).otherwise(false))
-        .as("volumeRead")
-        .max("lastRead")
-        .as("lastRead")
-        .sum(ConditionalOperators
-            // Consider either partly read or completed issues.
-            .when(new Criteria().orOperator(
-                where("currentPage").gt(0),
-                where("read").is(true)))
-            .then(1).otherwise(0))
-        .as("readCount")
-        .push(Aggregation.ROOT).as("comics"),
+          .min(ConditionalOperators
+              .when(where("read").is(true))
+              .then(true).otherwise(false))
+              .as("volumeRead")
+          .max("lastRead")
+          .as("lastRead")
+          .sum(ConditionalOperators
+              // Consider either partly read or completed issues.
+              .when(new Criteria().orOperator(
+                  where("currentPage").gt(0),
+                  where("read").is(true)))
+              .then(1).otherwise(0))
+              .as("readCount")
+          .push(Aggregation.ROOT).as("comics"),
 
         // Skip volumes where all issues are read.
         match(where("volumeRead").is(false)),

@@ -17,7 +17,7 @@ public class Volume {
   private Short issueCount;
   private Short readCount;
   private boolean read;
-  private byte[] thumbnail;
+  private String firstComicId;
 
   @Override
   public String toString() {

@@ -42,7 +42,7 @@
        class="read-badge" color="secondary">
         &#10004;
       </ion-badge>
-      <img [src]="thumbnail(volume)">
+      <img [attr.src]="thumbnails.get(volume.firstComicId) | async">
     </a>
     <ion-item>
       <ion-button slot="start" fill="clear"

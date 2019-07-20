@@ -5,26 +5,30 @@ import de.wasenweg.alfred.scanner.NoImagesException;
 import de.wasenweg.alfred.util.ZipReader;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ThumbnailSetter {
+@Service
+public class ThumbnailService {
 
   @Autowired
-  private static ThumbnailRepository thumbnailRepository;
+  private ThumbnailRepository thumbnailRepository;
 
   /*
    * Finds the thumbnail in the given zip file.
    */
-  public static void set(final ZipFile file, final Comic comic) throws NoImagesException {
+  public void setComic(final ZipFile file, final Comic comic) throws NoImagesException {
 
     try {
       final List<ZipEntry> sortedEntries = ZipReader.getImages(file);
 
       if (sortedEntries.size() > 0) {
         final ObjectId comicId = new ObjectId(comic.getId());
+        final Optional<Thumbnail> test = thumbnailRepository.findByComicId(comicId);
         final Thumbnail thumbnail = thumbnailRepository.findByComicId(comicId).orElse(
             Thumbnail.builder().comicId(comicId).build());
 

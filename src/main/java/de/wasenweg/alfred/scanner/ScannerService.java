@@ -3,7 +3,7 @@ package de.wasenweg.alfred.scanner;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.settings.SettingsService;
-import de.wasenweg.alfred.thumbnails.ThumbnailSetter;
+import de.wasenweg.alfred.thumbnails.ThumbnailService;
 import de.wasenweg.alfred.volumes.Volume;
 
 import org.slf4j.Logger;
@@ -33,6 +33,9 @@ public class ScannerService {
   private final EmitterProcessor<ServerSentEvent<String>> emitter = EmitterProcessor.create();
 
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
+
+  @Autowired
+  private ThumbnailService thumbnailService;
 
   @Autowired
   private ComicRepository comicRepository;
@@ -109,6 +112,15 @@ public class ScannerService {
     } catch (final SAXException | IOException exception) {
       logger.error(exception.getLocalizedMessage(), exception);
       reportError(pathString, exception);
+    }
+
+    comicRepository.save(comic);
+
+    try {
+      thumbnailService.setComic(file, comic);
+    } catch (final NoImagesException exception) {
+      logger.error(exception.getLocalizedMessage(), exception);
+      reportError(pathString, exception);
     } finally {
       try {
         file.close();
@@ -116,15 +128,6 @@ public class ScannerService {
         logger.error(exception.getLocalizedMessage(), exception);
         reportError(pathString, exception);
       }
-    }
-
-    comicRepository.save(comic);
-
-    try {
-      ThumbnailSetter.set(file, comic);
-    } catch (final NoImagesException exception) {
-      logger.error(exception.getLocalizedMessage(), exception);
-      reportError(pathString, exception);
     }
   }
 
