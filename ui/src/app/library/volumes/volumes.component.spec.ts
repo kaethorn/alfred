@@ -2,8 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TestModule } from '../../../testing/test.module';
 import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
+import { ThumbnailsServiceMocks as thumbnailsService } from '../../../testing/thumbnails.service.mocks';
 
 import { VolumesService } from '../../volumes.service';
+import { ThumbnailsService } from '../../thumbnails.service';
 import { VolumesComponent } from './volumes.component';
 
 describe('VolumesComponent', () => {
@@ -14,6 +16,8 @@ describe('VolumesComponent', () => {
     const testModule: any = TestModule();
     testModule.providers.push({
       provide: VolumesService, useValue: volumesService
+    }, {
+      provide: ThumbnailsService, useValue: thumbnailsService
     });
     TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(VolumesComponent);
