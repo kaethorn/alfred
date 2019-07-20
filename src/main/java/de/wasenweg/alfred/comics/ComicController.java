@@ -1,6 +1,8 @@
 package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.progress.ProgressService;
+import de.wasenweg.alfred.scanner.ScannerService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -30,6 +32,9 @@ public class ComicController {
 
   @Autowired
   private ProgressService progressService;
+
+  @Autowired
+  private ScannerService scannerService;
 
   @Autowired
   private ComicQueryRepositoryImpl queryRepository;
@@ -81,6 +86,11 @@ public class ComicController {
   @DeleteMapping("")
   public void deleteComics() {
     this.comicRepository.deleteAll();
+  }
+
+  @GetMapping("/bundle")
+  public void bundle() {
+    this.scannerService.associateVolumes();
   }
 
   private Resources<Resource<Comic>> addCollectionLink(final List<Comic> comics) {

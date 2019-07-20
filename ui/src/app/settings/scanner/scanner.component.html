@@ -45,6 +45,9 @@
       <ion-button (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
         DELETE MY PROGRESS
       </ion-button>
+      <ion-button (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
+        BUNDLE VOLUMES
+      </ion-button>
     </div>
     <ion-item lines="none">
       <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">

@@ -176,7 +176,7 @@ public class ScannerService {
    * Sets the `previousId` and `nextId` attributes for each comic which point to the
    * previous and next comic within the current volume.
    */
-  private void associateVolumes() {
+  public void associateVolumes() {
     reportAssociation();
 
     // Get all comics, grouped by volume.

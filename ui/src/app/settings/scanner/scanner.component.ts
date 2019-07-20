@@ -110,6 +110,10 @@ export class ScannerComponent {
     });
   }
 
+  bundleVolumes () {
+    this.comicsService.bundleVolumes().subscribe();
+  }
+
   private close () {
     this.counter = 0;
     this.total = 0;

@@ -116,4 +116,8 @@ export class ComicsService {
   deleteProgressForCurrentUser (): Observable<any> {
     return this.http.delete('api/progress/me');
   }
+
+  bundleVolumes (): Observable<any> {
+    return this.http.get('api/comics/bundle');
+  }
 }
