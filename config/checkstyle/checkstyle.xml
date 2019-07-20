@@ -284,5 +284,8 @@ Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
     <module name="StaticVariableName"/>
     <module name="IllegalImport"/>
     <module name="RedundantImport"/>
+    <module name="RequireThis">
+      <property name="validateOnlyOverlapping" value="false"/>
+    </module>
   </module>
 </module>
