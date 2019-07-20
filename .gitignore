@@ -5,6 +5,8 @@
 /bin/
 !gradle/wrapper/gradle-wrapper.jar
 /sample/
+/sample-all/
+/sample-broken/
 /.gradletasknamecache
 
 ### STS ###
