@@ -12,7 +12,7 @@ export class MongoDBTools {
     });
   });
 
-  // Drop DB and set it up it for E2E tests.
+  // Drop DB and set it up for E2E tests.
   static prepare (): Promise<any> {
     return new Promise((resolve, reject) => {
       this.connection.then(() => {
