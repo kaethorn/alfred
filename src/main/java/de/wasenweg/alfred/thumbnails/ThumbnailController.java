@@ -26,7 +26,6 @@ public class ThumbnailController {
     return addLink(this.thumbnailRepository.findByComicId(new ObjectId(comicId)));
   }
 
-  // FIXME: inline these two methods:
   private Resource<Thumbnail> addLink(final Optional<Thumbnail> thumbnail) {
     if (thumbnail.isPresent()) {
       return addLink(thumbnail.get());

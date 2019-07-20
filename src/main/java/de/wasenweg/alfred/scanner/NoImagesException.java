@@ -7,4 +7,8 @@ public class NoImagesException extends RuntimeException {
   public NoImagesException(final Throwable err) {
     super("No images found", err);
   }
+
+  public NoImagesException() {
+    super("No images found");
+  }
 }

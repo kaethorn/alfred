@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -28,14 +27,13 @@ public class ThumbnailService {
 
       if (sortedEntries.size() > 0) {
         final ObjectId comicId = new ObjectId(comic.getId());
-        final Optional<Thumbnail> test = thumbnailRepository.findByComicId(comicId);
         final Thumbnail thumbnail = thumbnailRepository.findByComicId(comicId).orElse(
             Thumbnail.builder().comicId(comicId).build());
 
-        thumbnail.setThumbnail(ThumbnailReader.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
+        thumbnail.setThumbnail(ThumbnailUtils.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
         thumbnailRepository.save(thumbnail);
       } else {
-        throw new NoImagesException(new Exception());
+        throw new NoImagesException();
       }
     } catch (final Exception exception) {
       throw new NoImagesException(exception);
