@@ -28,7 +28,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
   @Override
   public List<Publisher> findAllPublishers(final String userId) {
-    return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
         group("series", "volume")
         .last("publisher").as("publisher"),
         group("series")
@@ -46,7 +46,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
   @Override
   public List<Series> findAllSeries(final String userId, final String publisher) {
-    return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
         match(where("publisher").is(publisher)),
         group("series", "volume")
         .last("publisher").as("publisher"),
@@ -61,20 +61,20 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
   @Override
   public List<Volume> findAllVolumes(final String userId, final String publisher, final String series) {
-    return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
         match(where("publisher").is(publisher).and("series").is(series)),
         sort(Sort.Direction.ASC, "position"),
         group("volume")
-        .last("volume").as("volume")
-        .last("series").as("series")
-        .last("publisher").as("publisher")
-        .count().as("issueCount")
-        .min("read").as("read")
-        .sum(ConditionalOperators
-            .when(where("read").is(true))
-            .then(1).otherwise(0))
-        .as("readCount")
-        .first("thumbnail").as("thumbnail"),
+          .last("volume").as("volume")
+          .last("series").as("series")
+          .last("publisher").as("publisher")
+          .count().as("issueCount")
+          .min("read").as("read")
+          .sum(ConditionalOperators
+              .when(where("read").is(true))
+              .then(1).otherwise(0))
+              .as("readCount")
+          .first("_id").as("firstComicId"),
         sort(Sort.Direction.ASC, "volume")
         ), Comic.class, Volume.class).getMappedResults();
   }

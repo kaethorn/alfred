@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
 import { ComicsService } from '../comics.service';
+import { ThumbnailsService } from '../thumbnails.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -14,11 +16,12 @@ import { Comic } from '../comic';
 export class BookmarksPage {
 
   comics: Comic[];
+  public thumbnails = new Map<string, Observable<SafeUrl>>();
 
   constructor (
     private comicsService: ComicsService,
-    private sanitizer: DomSanitizer,
-    private popoverController: PopoverController
+    private popoverController: PopoverController,
+    private thumbnailsService: ThumbnailsService
   ) { }
 
   ionViewDidEnter () {
@@ -28,11 +31,10 @@ export class BookmarksPage {
   private list () {
     this.comicsService.listLastReadByVolume().subscribe((comics: Comic[]) => {
       this.comics = comics;
+      this.comics.forEach((comic: Comic) => {
+        this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
+      });
     });
-  }
-
-  thumbnail (comic: Comic): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ comic.thumbnail }`);
   }
 
   async openMenu (event: any, comic: Comic) {

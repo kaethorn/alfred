@@ -1,37 +1,31 @@
-package de.wasenweg.alfred.settings;
+package de.wasenweg.alfred.thumbnails;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Document
-public class Setting {
+public class Thumbnail {
 
   @Id
   private String id;
 
   @NonNull
-  private String key;
-  @NonNull
-  private String name;
-  @NonNull
-  private String value;
-  @NonNull
-  private String comment;
+  @Indexed
+  private ObjectId comicId;
 
-  @Override
-  public String toString() {
-    return String.format(
-        "Setting[id=%s, key='%s', value='%s']",
-        this.id, this.key, this.value);
-  }
+  private byte[] thumbnail;
 }

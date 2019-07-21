@@ -40,29 +40,29 @@ public class ComicsIntegrationTest {
   @Autowired
   private WebApplicationContext context;
 
-  private MockMvc mvc;
+  private MockMvc mockMvc;
 
   @Before
   public void setUp() {
-    mvc = MockMvcBuilders
-        .webAppContextSetup(context)
+    this.mockMvc = MockMvcBuilders
+        .webAppContextSetup(this.context)
         .apply(springSecurity())
         .build();
   }
 
   @After
   public void tearDown() {
-    comicRepository.deleteAll();
-    progressRepository.deleteAll();
+    this.comicRepository.deleteAll();
+    this.progressRepository.deleteAll();
   }
 
   @Test
   public void getAllComics() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(2))
@@ -72,14 +72,14 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findLastReadForVolumeWithReadIssue() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1, // read
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3));
 
-    progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1));
+    this.progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -90,14 +90,14 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findLastReadForVolumeWithStartedIssue() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1, // started
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3));
 
-    progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
+    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -108,12 +108,12 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findLastReadForUnstartedVolume() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -124,16 +124,16 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findLastReadForVolumeWithMixedState() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,   // read
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3)); // read
 
-    progressRepository.saveAll(Arrays.asList(
+    this.progressRepository.saveAll(Arrays.asList(
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_3)));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -144,17 +144,17 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findLastReadForCompletedVolume() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,   // read
         ComicFixtures.COMIC_V1_2,   // read
         ComicFixtures.COMIC_V1_3)); // read
 
-    progressRepository.saveAll(Arrays.asList(
+    this.progressRepository.saveAll(Arrays.asList(
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_2),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_3)));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -165,7 +165,7 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findBookmarksMultipleVolumes() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         // Partly read volume at second issue
         ComicFixtures.COMIC_V1_1, // read
         ComicFixtures.COMIC_V1_2,
@@ -181,12 +181,12 @@ public class ComicsIntegrationTest {
         ComicFixtures.COMIC_V3_2, // read
         ComicFixtures.COMIC_V3_3));
 
-    progressRepository.saveAll(Arrays.asList(
+    this.progressRepository.saveAll(Arrays.asList(
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1, 3),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2)));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(2))
@@ -196,15 +196,15 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findBookmarksFirstStarted() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         // Partly read volume at first issue
         ComicFixtures.COMIC_V1_1, // started
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3));
 
-    progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
+    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
@@ -213,18 +213,18 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findBookmarksAllRead() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         // Completely read volume
         ComicFixtures.COMIC_V3_1,   // read
         ComicFixtures.COMIC_V3_2,   // read
         ComicFixtures.COMIC_V3_3)); // read
 
-    progressRepository.saveAll(Arrays.asList(
+    this.progressRepository.saveAll(Arrays.asList(
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_3, 3)));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());
@@ -232,13 +232,13 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findBookmarksNoneRead() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         // Completely unread volume
         ComicFixtures.COMIC_V3_1,
         ComicFixtures.COMIC_V3_2,
         ComicFixtures.COMIC_V3_3));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());
@@ -246,17 +246,17 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findBookmarksLastStarted() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         // Almost read volume
         ComicFixtures.COMIC_V3_1, // read
         ComicFixtures.COMIC_V3_2, // read
         ComicFixtures.COMIC_V3_3));
 
-    progressRepository.saveAll(Arrays.asList(
+    this.progressRepository.saveAll(Arrays.asList(
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2)));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
@@ -265,15 +265,15 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findBookmarksWithGaps() throws Exception {
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         // A volume with unread first issue
         ComicFixtures.COMIC_V3_1,
         ComicFixtures.COMIC_V3_2, // read
         ComicFixtures.COMIC_V3_3));
 
-    progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2));
+    this.progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2));
 
-    mvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))

@@ -2,6 +2,7 @@ package de.wasenweg.alfred;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
+import de.wasenweg.alfred.progress.ProgressRepository;
 
 import org.junit.After;
 import org.junit.Test;
@@ -11,8 +12,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
@@ -33,28 +36,36 @@ public class ScannerIngrationTest {
   private ComicRepository comicRepository;
 
   @Autowired
+  private ProgressRepository progressRepository;
+
+  @Autowired
   private IntegrationTestHelper integrationTestHelper;
 
   @After
   public void tearDown() {
-    comicRepository.deleteAll();
+    this.comicRepository.deleteAll();
+    this.progressRepository.deleteAll();
   }
 
   @Test
+  @DirtiesContext
   public void emittsScanProgressEvents() throws Exception {
     // Given
-    integrationTestHelper.setComicsPath("src/test/resources/fixtures/simple");
+    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/simple");
 
     // When
-    StepVerifier.create(integrationTestHelper.triggerScan(port))
+    StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))
+        .expectNext("start")
         .expectNext("1")
         .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz")
-        .expectNext("")
+        .expectNext("cleanUp")
+        .expectNext("association")
+        .expectNext("done")
         .thenCancel()
         .verify(Duration.ofSeconds(2L));
 
     // Then
-    final List<Comic> comics = comicRepository.findAll();
+    final List<Comic> comics = this.comicRepository.findAll();
     assertThat(comics.size()).isEqualTo(1);
   }
 }

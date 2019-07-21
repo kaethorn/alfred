@@ -5,5 +5,5 @@ export interface Volume {
   issueCount: number;
   readCount: number;
   read: boolean;
-  thumbnail: string;
+  firstComicId: string;
 }

@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 import { VolumesService } from '../../volumes.service';
 import { ComicsService } from '../../comics.service';
+import { ThumbnailsService } from '../../thumbnails.service';
 import { Volume } from '../../volume';
 import { Comic } from '../../comic';
 import { VolumeActionsComponent } from './volume-actions/volume-actions.component';
@@ -20,12 +22,13 @@ export class VolumesComponent {
   volumes: Volume[];
   publisher = '';
   series = '';
+  public thumbnails = new Map<string, Observable<SafeUrl>>();
 
   constructor (
     private router: Router,
     private route: ActivatedRoute,
-    private sanitizer: DomSanitizer,
     private comicsService: ComicsService,
+    private thumbnailsService: ThumbnailsService,
     private volumesService: VolumesService,
     private popoverController: PopoverController
   ) { }
@@ -41,11 +44,10 @@ export class VolumesComponent {
       .subscribe((data: Volume[]) => {
         this.volumesData = data;
         this.volumes = this.volumesData;
+        this.volumes.forEach((volume: Volume) => {
+          this.thumbnails.set(volume.firstComicId, this.thumbnailsService.get(volume.firstComicId));
+        });
       });
-  }
-
-  thumbnail (volume: Volume): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ volume.thumbnail }`);
   }
 
   public resumeVolume (volume: Volume): void {

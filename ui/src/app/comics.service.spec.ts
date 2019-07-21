@@ -20,7 +20,6 @@ describe('ComicsService', () => {
         month: 4,
         publisher: 'DC Comics',
         pageCount: 20,
-        thumbnail: '',
         _links: {
           self: {
             href: 'foo.bar/1'
@@ -37,7 +36,6 @@ describe('ComicsService', () => {
         month: 5,
         publisher: 'DC Comics',
         pageCount: 20,
-        thumbnail: '',
         _links: {
           self: {
             href: 'foo.bar/2'

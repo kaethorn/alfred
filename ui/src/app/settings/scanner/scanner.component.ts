@@ -1,10 +1,12 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 
+import { ComicsService } from '../../comics.service';
 import { StatsService } from '../../stats.service';
 import { Stats } from '../../stats';
 
 interface Error {
   message: string;
+  file?: string;
   date: string;
 }
 
@@ -23,8 +25,12 @@ export class ScannerComponent {
   errors: Error[] = [];
   stats: Stats;
 
+  indeterminate: string;
+  scanProgress: EventSource;
+
   constructor (
-    private statsService: StatsService
+    private statsService: StatsService,
+    private comicsService: ComicsService
   ) {
     this.getStats();
   }
@@ -38,27 +44,80 @@ export class ScannerComponent {
   scan () {
     this.errors = [];
 
-    const scanProgress = new EventSource('/api/scan-progress');
+    this.scanProgress = new EventSource('/api/scan-progress');
 
-    scanProgress.addEventListener('total', (event: any) => {
+    this.scanProgress.addEventListener('start', (event: any) => {
+      this.indeterminate = 'Counting files';
+    });
+
+    this.scanProgress.addEventListener('total', (event: any) => {
+      this.indeterminate = null;
       this.total = this.total || event.data;
     });
 
-    scanProgress.addEventListener('current-file', (event: any) => {
+    this.scanProgress.addEventListener('current-file', (event: any) => {
       this.file = event.data;
       this.counter += 1;
     });
 
-    scanProgress.addEventListener('error', (event: any) => {
-      this.errors.push({ message: event.data, date: new Date().toISOString() });
-    });
-
-    scanProgress.addEventListener('done', () => {
+    this.scanProgress.addEventListener('cleanUp', (event: any) => {
       this.counter = 0;
       this.total = 0;
+      this.indeterminate = 'Cleaning up';
+    });
+
+    this.scanProgress.addEventListener('association', (event: any) => {
+      this.indeterminate = 'Bundling volumes';
+    });
+
+    this.scanProgress.addEventListener('error', (event: any) => {
+      if (!event.data) {
+        this.close();
+        return;
+      }
+      const parts = event.data.split('|');
+      this.errors.push({
+        message: parts[0],
+        file   : parts.length ? parts[1] : null,
+        date   : new Date().toISOString()
+      });
+    });
+
+    this.scanProgress.addEventListener('done', () => {
+      this.indeterminate = null;
       this.scanned.emit(true);
       this.getStats();
-      scanProgress.close();
+
+      this.close();
     });
+  }
+
+  deleteComics () {
+    this.comicsService.deleteComics().subscribe(() => {
+      this.getStats();
+    });
+  }
+
+  deleteProgress () {
+    this.comicsService.deleteProgress().subscribe(() => {
+      this.getStats();
+    });
+  }
+
+  deleteProgressForCurrentUser () {
+    this.comicsService.deleteProgressForCurrentUser().subscribe(() => {
+      this.getStats();
+    });
+  }
+
+  bundleVolumes () {
+    this.comicsService.bundleVolumes().subscribe();
+  }
+
+  private close () {
+    this.counter = 0;
+    this.total = 0;
+    this.scanProgress.close();
+    this.scanProgress = null;
   }
 }

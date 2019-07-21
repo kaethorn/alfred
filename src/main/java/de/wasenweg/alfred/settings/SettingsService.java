@@ -21,11 +21,11 @@ public class SettingsService {
     this.environment = environment;
 
     // Built in defaults:
-    defaults.add(new Setting("comics.path", "Path", "/comics", "Path to your comic library"));
-    defaults.add(new Setting("auth.users", "Users", "", "Users authorized to access this server"));
-    defaults.add(new Setting("auth.client.id", "Google client ID", "", "Google client ID to use for this server"));
+    this.defaults.add(new Setting("comics.path", "Path", "/comics", "Path to your comic library"));
+    this.defaults.add(new Setting("auth.users", "Users", "", "Users authorized to access this server"));
+    this.defaults.add(new Setting("auth.client.id", "Google client ID", "", "Google client ID to use for this server"));
 
-    defaults.forEach((settingDefault) -> {
+    this.defaults.forEach((settingDefault) -> {
       // Defaults passed in via a property override built in defaults
       final Optional<String> environmentValue = this.getEnvironmentValue(settingDefault.getKey());
       if (environmentValue.isPresent()) {

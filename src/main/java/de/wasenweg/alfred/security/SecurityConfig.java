@@ -36,7 +36,8 @@ public class SecurityConfig {
     protected void configure(final HttpSecurity http) throws Exception {
       http
         .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        .and().antMatcher("/api/**").addFilterAfter(new JwtFilter(jwtSecret, jwtService), BasicAuthenticationFilter.class);
+        .and().antMatcher("/api/**")
+        .addFilterAfter(new JwtFilter(SecurityConfig.this.jwtSecret, SecurityConfig.this.jwtService), BasicAuthenticationFilter.class);
     }
   }
 }

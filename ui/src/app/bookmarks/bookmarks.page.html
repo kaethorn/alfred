@@ -37,7 +37,7 @@
       </ion-card-header>
       <a [routerLink]="['/read', comic.id]"
          [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
-        <img [src]="thumbnail(comic)">
+        <img [attr.src]="thumbnails.get(comic.id) | async">
       </a>
       <ion-item>
         <ion-button fill="clear" slot="start"

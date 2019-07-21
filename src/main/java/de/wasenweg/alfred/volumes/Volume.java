@@ -17,12 +17,12 @@ public class Volume {
   private Short issueCount;
   private Short readCount;
   private boolean read;
-  private byte[] thumbnail;
+  private String firstComicId;
 
   @Override
   public String toString() {
     return String.format(
         "%s (Vol. %s) by %s",
-        series, volume, publisher);
+        this.series, this.volume, this.publisher);
   }
 }

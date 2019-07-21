@@ -1,4 +1,4 @@
-package de.wasenweg.alfred.scanner;
+package de.wasenweg.alfred.thumbnails;
 
 import javax.imageio.ImageIO;
 
@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Thumbnail {
+public class ThumbnailUtils {
 
   private static final int BOUND_WIDTH = 200;
   private static final int BOUND_HEIGHT = 300;

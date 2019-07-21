@@ -1,6 +1,7 @@
 package de.wasenweg.alfred;
 
 import de.wasenweg.alfred.comics.ComicRepository;
+import de.wasenweg.alfred.progress.ProgressRepository;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,18 +35,21 @@ public class VolumesIntegrationTest {
   private ComicRepository comicRepository;
 
   @Autowired
+  private ProgressRepository progressRepository;
+
+  @Autowired
   private WebApplicationContext context;
 
-  private MockMvc mvc;
+  private MockMvc mockMvc;
 
   @Before
   public void setUp() {
-    mvc = MockMvcBuilders
-        .webAppContextSetup(context)
+    this.mockMvc = MockMvcBuilders
+        .webAppContextSetup(this.context)
         .apply(springSecurity())
         .build();
 
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3,
@@ -59,12 +63,13 @@ public class VolumesIntegrationTest {
 
   @After
   public void tearDown() {
-    comicRepository.deleteAll();
+    this.comicRepository.deleteAll();
+    this.progressRepository.deleteAll();
   }
 
   @Test
   public void findAllPublishers() throws Exception {
-    mvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.publishers.length()").value(1))
@@ -75,7 +80,7 @@ public class VolumesIntegrationTest {
 
   @Test
   public void findAllSeries() throws Exception {
-    mvc.perform(MockMvcRequestBuilders
+    this.mockMvc.perform(MockMvcRequestBuilders
         .get("/api/publishers/" + ComicFixtures.COMIC_V1_1.getPublisher() + "/series"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
@@ -89,7 +94,7 @@ public class VolumesIntegrationTest {
 
   @Test
   public void findAllVolumes() throws Exception {
-    mvc.perform(MockMvcRequestBuilders
+    this.mockMvc.perform(MockMvcRequestBuilders
         .get("/api/publishers/"
             + ComicFixtures.COMIC_V1_1.getPublisher() + "/series/"
             + ComicFixtures.COMIC_V1_1.getSeries() + "/volumes"))

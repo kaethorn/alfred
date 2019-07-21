@@ -40,16 +40,16 @@ public class StatsIntegrationTest {
   @Autowired
   private WebApplicationContext context;
 
-  private MockMvc mvc;
+  private MockMvc mockMvc;
 
   @Before
   public void setUp() {
-    mvc = MockMvcBuilders
-        .webAppContextSetup(context)
+    this.mockMvc = MockMvcBuilders
+        .webAppContextSetup(this.context)
         .apply(springSecurity())
         .build();
 
-    comicRepository.saveAll(Arrays.asList(
+    this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3,
@@ -60,18 +60,18 @@ public class StatsIntegrationTest {
         ComicFixtures.COMIC_V3_2,
         ComicFixtures.COMIC_V3_3));
 
-    progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
+    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
   }
 
   @After
   public void tearDown() {
-    comicRepository.deleteAll();
-    progressRepository.deleteAll();
+    this.comicRepository.deleteAll();
+    this.progressRepository.deleteAll();
   }
 
   @Test
   public void getStats() throws Exception {
-    mvc.perform(MockMvcRequestBuilders.get("/api/stats"))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/stats"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._links.self.href").value("http://localhost/api/stats"))

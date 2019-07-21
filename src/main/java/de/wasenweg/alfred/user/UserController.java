@@ -87,7 +87,7 @@ public class UserController {
           return new ResponseEntity<Error>(HttpStatus.FORBIDDEN);
         }
 
-        final String apiToken = tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
+        final String apiToken = this.tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
 
         final User user = User.builder()
             .id(userId)

@@ -1,16 +1,6 @@
 <ion-card>
   <ion-card-header>Library management</ion-card-header>
   <ion-card-content>
-    <ion-list class="stats">
-      <ion-list-header>
-        Statistics
-      </ion-list-header>
-      <ion-item *ngFor="let stat of stats | keyvalue">
-        <ion-label>{{ stat.key }}</ion-label>
-        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
-      </ion-item>
-    </ion-list>
-
     <ion-list *ngIf="total" class="progress" lines="none">
       <ion-item>
         <ion-progress-bar [value]="counter/total"></ion-progress-bar>
@@ -22,21 +12,61 @@
       </ion-item>
     </ion-list>
 
+    <ion-list *ngIf="indeterminate" class="progress" lines="none">
+      <ion-item>
+        <ion-progress-bar type="indeterminate"></ion-progress-bar>
+      </ion-item>
+      <ion-item>
+        <ion-badge color="clear">
+          {{ indeterminate }}
+        </ion-badge>
+      </ion-item>
+    </ion-list>
+
     <ion-list *ngIf="errors.length" class="errors">
       <ion-list-header>Scan errors</ion-list-header>
       <ion-item *ngFor="let error of errors">
-        <ion-badge color="clear">{{ error.date }}</ion-badge>
-        <ion-badge color="danger">{{ error.message }}</ion-badge>
+        <ion-label>
+          <sub>{{ error.date | amTimeAgo }}</sub>
+          <h4><i>{{ error.message }}</i></h4>
+          <p *ngIf="error.file">{{ error.file }}</p>
+        </ion-label>
+        <ion-icon slot="end" color="danger" name="alert"></ion-icon>
       </ion-item>
     </ion-list>
 
-    <ion-list lines="none">
-      <ion-item>
-        <ion-button slot="end" (click)="scan()" [disabled]="total > 0" color="primary">
-          SCAN
-        </ion-button>
+    <div>
+      <ion-button (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
+        DELETE COMICS
+      </ion-button>
+      <ion-button (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
+        DELETE ALL PROGRESS
+      </ion-button>
+      <ion-button (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
+        DELETE MY PROGRESS
+      </ion-button>
+      <ion-button (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
+        BUNDLE VOLUMES
+      </ion-button>
+    </div>
+    <ion-item lines="none">
+      <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
+        <ion-icon name="search"></ion-icon>
+        SCAN
+      </ion-button>
+    </ion-item>
+
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>Statistics</ion-card-header>
+  <ion-card-content>
+    <ion-list class="stats">
+      <ion-item *ngFor="let stat of stats | keyvalue">
+        <ion-label>{{ stat.key }}</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
       </ion-item>
     </ion-list>
-
   </ion-card-content>
 </ion-card>

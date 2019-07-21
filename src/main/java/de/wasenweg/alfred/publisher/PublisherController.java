@@ -32,7 +32,7 @@ public class PublisherController {
         .map(publisher -> {
           return new Resource<Publisher>(
               publisher,
-              getSeriesLink(publisher.getPublisher()));
+              this.getSeriesLink(publisher.getPublisher()));
         }).collect(Collectors.toList()),
         linkTo(PublisherController.class).withSelfRel());
   }
@@ -47,9 +47,9 @@ public class PublisherController {
         .map(serie -> {
           return new Resource<Series>(
               serie,
-              getVolumeLink(serie.getPublisher(), serie.getSeries()));
+              this.getVolumeLink(serie.getPublisher(), serie.getSeries()));
         }).collect(Collectors.toList()),
-        getSeriesLink(publisher));
+        this.getSeriesLink(publisher));
   }
 
   @GetMapping("/{publisher}/series/{series}/volumes")

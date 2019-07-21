@@ -36,24 +36,24 @@ public class ProgressService {
     update.set("currentPage", comic.getCurrentPage());
     update.set("lastRead", comic.getLastRead());
 
-    mongoTemplate.upsert(query, update, Progress.class);
+    this.mongoTemplate.upsert(query, update, Progress.class);
     return comic;
   }
 
   public void updateVolume(final String userId, final Volume volume, final Boolean read) {
-    mongoTemplate.find(Query.query(Criteria
+    this.mongoTemplate.find(Query.query(Criteria
         .where("publisher").is(volume.getPublisher())
         .and("series").is(volume.getSeries())
         .and("volume").is(volume.getVolume())), Comic.class)
-      .stream().forEach(affectedComic -> updateComic(userId, affectedComic, read));
+      .stream().forEach(affectedComic -> this.updateComic(userId, affectedComic, read));
   }
 
   public void updateVolumeUntil(final String userId, final Comic comic) {
-    mongoTemplate.find(Query.query(Criteria
+    this.mongoTemplate.find(Query.query(Criteria
         .where("publisher").is(comic.getPublisher())
         .and("series").is(comic.getSeries())
         .and("volume").is(comic.getVolume())
         .and("position").lte(comic.getPosition())), Comic.class)
-      .forEach(affectedComic -> updateComic(userId, affectedComic, true));
+      .forEach(affectedComic -> this.updateComic(userId, affectedComic, true));
   }
 }

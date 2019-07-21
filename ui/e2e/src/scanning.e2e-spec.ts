@@ -33,7 +33,7 @@ describe('Scanning', () => {
 
   it('displays comics stats when the scan is finished', async () => {
     await settingsPage.waitForScanEnd();
-    const stats = await settingsPage.getStats();
+    const stats = await settingsPage.getStatsText();
     expect(stats[0]).toMatch(/^issues\s+305$/);
     expect(stats[1]).toMatch(/^publishers\s+3$/);
     expect(stats[2]).toMatch(/^series\s+5$/);

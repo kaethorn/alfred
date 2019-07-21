@@ -24,7 +24,7 @@
            class="read-badge" color="secondary">
             &#10004;
           </ion-badge>
-          <img [src]="thumbnail(comic)">
+          <img [attr.src]="thumbnails.get(comic.id) | async">
         </a>
       </div>
 
