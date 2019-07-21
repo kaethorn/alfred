@@ -9,6 +9,8 @@ import de.wasenweg.alfred.volumes.Volume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -33,6 +35,9 @@ public class ScannerService {
   private final EmitterProcessor<ServerSentEvent<String>> emitter = EmitterProcessor.create();
 
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
+
+  @Autowired
+  private Environment environment;
 
   @Autowired
   private ThumbnailService thumbnailService;
@@ -82,7 +87,9 @@ public class ScannerService {
   }
 
   private void reportError(final String path, final Exception exception) {
-    this.sendEvent(path + "|" + exception.getMessage(), "error");
+    if (this.environment.acceptsProfiles(Profiles.of("prod"))) {
+      this.sendEvent(path + "|" + exception.getMessage(), "error");
+    }
   }
 
   private void reportError(final Exception exception) {
