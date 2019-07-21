@@ -2,6 +2,11 @@
   <div>
     <img src="assets/icons/alfred.svg" />
   </div>
+  <ion-item *ngIf="message" lines="none">
+    <p class="message">
+      {{ message }}
+    </p>
+  </ion-item>
   <ion-button expand="block" id="signin-button">
     Sign in with Google
     <ion-icon slot="start" name="logo-google"></ion-icon>
