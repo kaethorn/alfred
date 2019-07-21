@@ -92,6 +92,6 @@ public class Comic {
   public String toString() {
     return String.format(
         "Comic[id=%s, series='%s', volume='%s', number='%s']",
-        id, series, volume, number);
+        this.id, this.series, this.volume, this.number);
   }
 }

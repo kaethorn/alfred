@@ -63,7 +63,7 @@ public class ReaderController {
   @Transactional
   private void setReadState(final Comic comic, final Short page, final String userId) {
     final ObjectId comicId = new ObjectId(comic.getId());
-    final Progress progress = progressRepository
+    final Progress progress = this.progressRepository
         .findByUserIdAndComicId(userId, comicId)
         .orElse(Progress.builder().comicId(comicId).userId(userId).build());
 
@@ -74,7 +74,7 @@ public class ReaderController {
       progress.setRead(true);
     }
 
-    progressRepository.save(progress);
+    this.progressRepository.save(progress);
   }
 
   @GetMapping("/read/{id}")
@@ -82,7 +82,7 @@ public class ReaderController {
   public ResponseEntity<StreamingResponseBody> readFromBeginning(
       @PathVariable("id") final String id,
       final Principal principal) {
-    return read(id, (short) 0, principal);
+    return this.read(id, (short) 0, principal);
   }
 
   /**
@@ -98,7 +98,7 @@ public class ReaderController {
       @PathVariable("id") final String id,
       @PathVariable("page") final Short page,
       final Principal principal) {
-    final Optional<Comic> comicQuery = comicRepository.findById(id);
+    final Optional<Comic> comicQuery = this.comicRepository.findById(id);
 
     if (!comicQuery.isPresent() || id == null || page == null) {
       return null;
@@ -106,9 +106,9 @@ public class ReaderController {
 
     final Comic comic = comicQuery.get();
 
-    setReadState(comic, page, principal.getName());
+    this.setReadState(comic, page, principal.getName());
 
-    final ComicPage comicPage = extractPage(comic, page);
+    final ComicPage comicPage = this.extractPage(comic, page);
 
     final StreamingResponseBody responseBody = outputStream -> {
       int numberOfBytesToWrite;
@@ -131,7 +131,7 @@ public class ReaderController {
   @ResponseBody
   public ResponseEntity<StreamingResponseBody> download(@PathVariable("id") final String id)
       throws FileNotFoundException {
-    final Optional<Comic> comicQuery = comicRepository.findById(id);
+    final Optional<Comic> comicQuery = this.comicRepository.findById(id);
 
     if (!comicQuery.isPresent() || id == null) {
       return null;

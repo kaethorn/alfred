@@ -23,6 +23,6 @@ public class Volume {
   public String toString() {
     return String.format(
         "%s (Vol. %s) by %s",
-        series, volume, publisher);
+        this.series, this.volume, this.publisher);
   }
 }

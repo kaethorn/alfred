@@ -23,12 +23,12 @@ public class ThumbnailController {
 
   @GetMapping("/{comicId}")
   public Resource<Thumbnail> findByComicId(@PathVariable("comicId") final String comicId) {
-    return addLink(this.thumbnailRepository.findByComicId(new ObjectId(comicId)));
+    return this.addLink(this.thumbnailRepository.findByComicId(new ObjectId(comicId)));
   }
 
   private Resource<Thumbnail> addLink(final Optional<Thumbnail> thumbnail) {
     if (thumbnail.isPresent()) {
-      return addLink(thumbnail.get());
+      return this.addLink(thumbnail.get());
     } else {
       throw new ResourceNotFoundException();
     }

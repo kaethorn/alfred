@@ -16,11 +16,11 @@ public class StatsService {
 
   public Stats getStats() {
     final Stats stats = Stats.builder()
-        .issues(mongoTemplate.count(new Query(), Comic.class))
-        .publishers(mongoTemplate.findDistinct("publisher", Comic.class, String.class).size())
-        .series(mongoTemplate.findDistinct("series", Comic.class, String.class).size())
-        .volumes(mongoTemplate.findDistinct("volume", Comic.class, String.class).size())
-        .users(mongoTemplate.findDistinct("userId", Progress.class, String.class).size())
+        .issues(this.mongoTemplate.count(new Query(), Comic.class))
+        .publishers(this.mongoTemplate.findDistinct("publisher", Comic.class, String.class).size())
+        .series(this.mongoTemplate.findDistinct("series", Comic.class, String.class).size())
+        .volumes(this.mongoTemplate.findDistinct("volume", Comic.class, String.class).size())
+        .users(this.mongoTemplate.findDistinct("userId", Progress.class, String.class).size())
         .build();
 
     return stats;

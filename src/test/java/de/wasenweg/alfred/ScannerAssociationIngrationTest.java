@@ -42,18 +42,18 @@ public class ScannerAssociationIngrationTest {
 
   @After
   public void tearDown() {
-    comicRepository.deleteAll();
-    progressRepository.deleteAll();
+    this.comicRepository.deleteAll();
+    this.progressRepository.deleteAll();
   }
 
   @Test
   @DirtiesContext
   public void associatesComics() throws Exception {
     // Given
-    integrationTestHelper.setComicsPath("src/test/resources/fixtures/full");
+    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/full");
 
     // When
-    StepVerifier.create(integrationTestHelper.triggerScan(port))
+    StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))
         .expectNext("start")
         .expectNext("305")
         .expectNextCount(610)
@@ -64,10 +64,10 @@ public class ScannerAssociationIngrationTest {
         .verify();
 
     // Then
-    final List<Comic> comics = comicRepository.findAll();
+    final List<Comic> comics = this.comicRepository.findAll();
     assertThat(comics.size()).isEqualTo(305);
 
-    final List<Comic> batgirlVol2008 = comicRepository
+    final List<Comic> batgirlVol2008 = this.comicRepository
         .findAllByPublisherAndSeriesAndVolumeOrderByPosition("", "DC Comics", "Batgirl", "2008");
     assertThat(batgirlVol2008.size()).isEqualTo(6);
 

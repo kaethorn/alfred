@@ -29,8 +29,8 @@ public class IntegrationTestHelper {
   }
 
   public void setComicsPath(final String comicsPath) {
-    final Setting comicsPathSetting = settingsRepository.findByKey("comics.path").get();
+    final Setting comicsPathSetting = this.settingsRepository.findByKey("comics.path").get();
     comicsPathSetting.setValue(comicsPath);
-    settingsRepository.save(comicsPathSetting);
+    this.settingsRepository.save(comicsPathSetting);
   }
 }

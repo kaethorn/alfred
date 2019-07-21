@@ -44,7 +44,7 @@ public class ScannerService {
   private SettingsService settingsService;
 
   private void sendEvent(final String data, final String name) {
-    emitter.onNext(
+    this.emitter.onNext(
         ServerSentEvent.builder(data)
           .id(String.valueOf(this.hashCode()))
           .event(name)
@@ -54,27 +54,27 @@ public class ScannerService {
 
   private void reportStart(final String path) {
     this.sendEvent("start", "start");
-    logger.info("Reading comics in {}", path);
+    this.logger.info("Reading comics in {}", path);
   }
 
   private void reportProgress(final String path) {
     this.sendEvent(path, "current-file");
-    logger.debug("Parsing comic {}", path);
+    this.logger.debug("Parsing comic {}", path);
   }
 
   private void reportTotal(final int total) {
     this.sendEvent(String.valueOf(total), "total");
-    logger.info("Found {} comics.", total);
+    this.logger.info("Found {} comics.", total);
   }
 
   private void reportCleanUp() {
     this.sendEvent("cleanUp", "cleanUp");
-    logger.info("Purging orphaned comics.");
+    this.logger.info("Purging orphaned comics.");
   }
 
   private void reportAssociation() {
     this.sendEvent("association", "association");
-    logger.info("Associating volumes.");
+    this.logger.info("Associating volumes.");
   }
 
   private void reportFinish() {
@@ -91,11 +91,11 @@ public class ScannerService {
 
   private void createOrUpdateComic(final Path path) {
     final String pathString = path.toString();
-    reportProgress(pathString);
+    this.reportProgress(pathString);
 
     final String comicPath = path.toAbsolutePath().toString();
 
-    final Comic comic = comicRepository.findByPath(comicPath)
+    final Comic comic = this.comicRepository.findByPath(comicPath)
         .orElse(new Comic());
     comic.setPath(comicPath);
 
@@ -103,30 +103,30 @@ public class ScannerService {
     try {
       file = new ZipFile(pathString);
     } catch (final IOException exception) {
-      logger.error(exception.getLocalizedMessage(), exception);
-      reportError(pathString, exception);
+      this.logger.error(exception.getLocalizedMessage(), exception);
+      this.reportError(pathString, exception);
       return;
     }
     try {
       MetaDataReader.set(file, comic);
     } catch (final SAXException | IOException exception) {
-      logger.error(exception.getLocalizedMessage(), exception);
-      reportError(pathString, exception);
+      this.logger.error(exception.getLocalizedMessage(), exception);
+      this.reportError(pathString, exception);
     }
 
-    comicRepository.save(comic);
+    this.comicRepository.save(comic);
 
     try {
-      thumbnailService.setComic(file, comic);
+      this.thumbnailService.setComic(file, comic);
     } catch (final NoImagesException exception) {
-      logger.error(exception.getLocalizedMessage(), exception);
-      reportError(pathString, exception);
+      this.logger.error(exception.getLocalizedMessage(), exception);
+      this.reportError(pathString, exception);
     } finally {
       try {
         file.close();
       } catch (final IOException exception) {
-        logger.error(exception.getLocalizedMessage(), exception);
-        reportError(pathString, exception);
+        this.logger.error(exception.getLocalizedMessage(), exception);
+        this.reportError(pathString, exception);
       }
     }
   }
@@ -139,7 +139,7 @@ public class ScannerService {
    */
   public Flux<ServerSentEvent<String>> scanComics() {
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
-    reportStart(comicsPath.toString());
+    this.reportStart(comicsPath.toString());
 
     Executors.newSingleThreadExecutor().execute(() -> {
       try {
@@ -148,36 +148,36 @@ public class ScannerService {
             .filter(path -> path.getFileName().toString().endsWith(".cbz"))
             .collect(Collectors.toList());
 
-        reportTotal(comicFiles.size());
-        comicFiles.forEach(path -> createOrUpdateComic(path));
-        logger.info("Parsed {} comics.", comicFiles.size());
+        this.reportTotal(comicFiles.size());
+        comicFiles.forEach(path -> this.createOrUpdateComic(path));
+        this.logger.info("Parsed {} comics.", comicFiles.size());
 
         this.cleanOrphans(comicFiles);
         this.associateVolumes();
 
-        logger.info("Done scanning.");
+        this.logger.info("Done scanning.");
       } catch (final IOException exception) {
-        logger.error(exception.getLocalizedMessage(), exception);
-        reportError(exception);
+        this.logger.error(exception.getLocalizedMessage(), exception);
+        this.reportError(exception);
       }
 
-      reportFinish();
+      this.reportFinish();
     });
 
-    return emitter.log();
+    return this.emitter.log();
   }
 
   private void cleanOrphans(final List<Path> comicFiles) {
-    reportCleanUp();
+    this.reportCleanUp();
 
     // Purge comics from the DB that don't have a corresponding file.
     final List<String> comicFilePaths = comicFiles.stream()
         .map(path -> path.toAbsolutePath().toString())
         .collect(Collectors.toList());
-    final List<Comic> toDelete = comicRepository.findAll().stream()
+    final List<Comic> toDelete = this.comicRepository.findAll().stream()
         .filter(comic -> !comicFilePaths.contains(comic.getPath()))
         .collect(Collectors.toList());
-    comicRepository.deleteAll(toDelete);
+    this.comicRepository.deleteAll(toDelete);
   }
 
   /**
@@ -187,10 +187,10 @@ public class ScannerService {
    * previous and next comic within the current volume.
    */
   public void associateVolumes() {
-    reportAssociation();
+    this.reportAssociation();
 
     // Get all comics, grouped by volume.
-    final Map<Volume, List<Comic>> volumes = comicRepository
+    final Map<Volume, List<Comic>> volumes = this.comicRepository
         .findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc().stream()
         .collect(Collectors.groupingBy(comic -> {
           final Volume volume = new Volume();
@@ -202,22 +202,22 @@ public class ScannerService {
 
     // Traverse each volume
     volumes.forEach((volume, comics) -> {
-      logger.debug("Associating {} comics for {}.", comics.size(), volume.toString());
+      this.logger.debug("Associating {} comics for {}.", comics.size(), volume.toString());
       // Traverse each comic in the volume
       IntStream.range(0, comics.size()).forEach(index -> {
         final Comic comic = comics.get(index);
-        logger.trace("Associating comic {}.", comic.getPosition());
+        this.logger.trace("Associating comic {}.", comic.getPosition());
         if (index > 0) {
           final Comic previousComic = comics.get(index - 1);
           comic.setPreviousId(previousComic.getId());
-          logger.trace("Associating comic {} with previous comic {}", comic.getPosition(), previousComic.getPosition());
+          this.logger.trace("Associating comic {} with previous comic {}", comic.getPosition(), previousComic.getPosition());
         }
         if (index < (comics.size() - 1)) {
           final Comic nextComic = comics.get(index + 1);
           comic.setNextId(nextComic.getId());
-          logger.trace("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
+          this.logger.trace("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
         }
-        comicRepository.save(comic);
+        this.comicRepository.save(comic);
       });
     });
   }

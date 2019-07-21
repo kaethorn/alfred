@@ -29,20 +29,20 @@ public class ScannerControllerTest {
 
   @Before
   public void setup() {
-    mockMvc = MockMvcBuilders.standaloneSetup(controller)
+    this.mockMvc = MockMvcBuilders.standaloneSetup(this.controller)
         .build();
   }
 
   @Test
   public void startsScanProgressEvents() throws Exception {
     // when
-    mockMvc.perform(get("/api/scan-progress"))
+    this.mockMvc.perform(get("/api/scan-progress"))
         .andExpect(status().isOk())
         .andReturn();
 
     // then
     // Wait for scan to start
     Thread.sleep(500);
-    verify(service).scanComics();
+    verify(this.service).scanComics();
   }
 }

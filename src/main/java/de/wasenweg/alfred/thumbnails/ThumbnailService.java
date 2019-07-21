@@ -27,11 +27,11 @@ public class ThumbnailService {
 
       if (sortedEntries.size() > 0) {
         final ObjectId comicId = new ObjectId(comic.getId());
-        final Thumbnail thumbnail = thumbnailRepository.findByComicId(comicId).orElse(
+        final Thumbnail thumbnail = this.thumbnailRepository.findByComicId(comicId).orElse(
             Thumbnail.builder().comicId(comicId).build());
 
         thumbnail.setThumbnail(ThumbnailUtils.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
-        thumbnailRepository.save(thumbnail);
+        this.thumbnailRepository.save(thumbnail);
       } else {
         throw new NoImagesException();
       }

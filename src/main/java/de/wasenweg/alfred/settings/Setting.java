@@ -32,6 +32,6 @@ public class Setting {
   public String toString() {
     return String.format(
         "Setting[id=%s, key='%s', value='%s']",
-        id, key, value);
+        this.id, this.key, this.value);
   }
 }

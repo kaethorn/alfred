@@ -33,7 +33,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
   public Optional<Comic> findById(
       final String userId,
       final String comicId) {
-    return Optional.ofNullable(mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+    return Optional.ofNullable(this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
         match(where("_id").is(new ObjectId(comicId))),
         limit(1)
         ), Comic.class, Comic.class).getUniqueMappedResult());
@@ -42,7 +42,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
   // Lists issues for volumes that are in progress, aka bookmarks.
   @Override
   public List<Comic> findAllLastReadPerVolume(final String userId) {
-    return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
         // Collect volumes with aggregated read stats and a list of issues
         sort(Sort.Direction.ASC, "position"),
         group("publisher", "series", "volume")
@@ -92,7 +92,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
       final String series,
       final String volume) {
 
-    return Optional.ofNullable(mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+    return Optional.ofNullable(this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
         match(where("publisher").is(publisher).and("series").is(series).and("volume").is(volume)),
 
         // If all comics are read, return the first, otherwise the first unread
@@ -109,7 +109,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
       final String publisher,
       final String series,
       final String volume) {
-    return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
         match(where("publisher").is(publisher).and("series").is(series).and("volume").is(volume)),
 
         sort(Sort.Direction.ASC, "position")

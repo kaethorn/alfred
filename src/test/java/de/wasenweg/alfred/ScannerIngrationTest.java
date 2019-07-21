@@ -43,18 +43,18 @@ public class ScannerIngrationTest {
 
   @After
   public void tearDown() {
-    comicRepository.deleteAll();
-    progressRepository.deleteAll();
+    this.comicRepository.deleteAll();
+    this.progressRepository.deleteAll();
   }
 
   @Test
   @DirtiesContext
   public void emittsScanProgressEvents() throws Exception {
     // Given
-    integrationTestHelper.setComicsPath("src/test/resources/fixtures/simple");
+    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/simple");
 
     // When
-    StepVerifier.create(integrationTestHelper.triggerScan(port))
+    StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))
         .expectNext("start")
         .expectNext("1")
         .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz")
@@ -66,7 +66,7 @@ public class ScannerIngrationTest {
         .verify(Duration.ofSeconds(2L));
 
     // Then
-    final List<Comic> comics = comicRepository.findAll();
+    final List<Comic> comics = this.comicRepository.findAll();
     assertThat(comics.size()).isEqualTo(1);
   }
 }

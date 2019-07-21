@@ -18,7 +18,7 @@ public class StatsController {
 
   @GetMapping()
   public Resource<Stats> getStats() {
-    return addLink(this.service.getStats());
+    return this.addLink(this.service.getStats());
   }
 
   private Resource<Stats> addLink(final Stats stats) {
