@@ -35,7 +35,7 @@ export class SettingsPage {
   }
 
   waitForScanEnd () {
-    return browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(this.progress)), 20000);
+    return browser.wait(ExpectedConditions.textToBePresentInElement(this.getStats().first(), '305'), 20000);
   }
 
   getScanButton () {
@@ -51,7 +51,11 @@ export class SettingsPage {
   }
 
   getStats () {
-    return element.all(by.css('app-scanner ion-list.stats ion-item')).getText();
+    return element.all(by.css('app-scanner ion-list.stats ion-item'));
+  }
+
+  getStatsText () {
+    return this.getStats().getText();
   }
 
   async scan () {
@@ -61,7 +65,7 @@ export class SettingsPage {
     await this.waitForScanStart();
     expect(await this.getScanProgress())
       .toMatch(/Scanning\ file\ \d+\ of\ \d+\ at\ .*/);
-    expect(await this.getScanErrors().isPresent()).toBe(false);
     await this.waitForScanEnd();
+    expect(await this.getScanErrors().isPresent()).toBe(false);
   }
 }
