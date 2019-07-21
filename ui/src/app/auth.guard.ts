@@ -17,12 +17,12 @@ export class AuthGuard implements CanActivate {
 
   canActivate (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     return new Promise<boolean>((resolve, reject) => {
-      this.userService.user.subscribe((user: User) => {
-        if (user) {
-          resolve(true);
-        } else {
+      this.userService.user.subscribe((user: User | string) => {
+        if (typeof user === 'string') {
           this.router.navigate(['/login'], { queryParams: { target: state.url } });
           resolve(false);
+        } else {
+          resolve(true);
         }
       });
     });

@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 import { User } from './user';
@@ -9,7 +9,7 @@ import { User } from './user';
 })
 export class UserService {
 
-  public user: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+  public user: BehaviorSubject<User | string> = new BehaviorSubject<User | string>(null);
   private auth2: gapi.auth2.GoogleAuth;
 
   constructor (
@@ -22,7 +22,7 @@ export class UserService {
   verifyCurrentUser () {
     const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
     if (!currentUser.token) {
-      this.user.next(null);
+      this.user.next('You\'ve been logged out.');
       return;
     }
 
@@ -30,7 +30,7 @@ export class UserService {
       this.user.next(currentUser);
     }, () => {
       this.logout();
-      this.user.next(null);
+      this.user.next('You\'ve been logged out.');
     });
   }
 
@@ -47,9 +47,11 @@ export class UserService {
               this.user.next(user);
               localStorage.setItem('token', user.token);
               localStorage.setItem('user', JSON.stringify(user));
+            }, (response: HttpErrorResponse) => {
+              this.user.next(`Login failure: ${ response.statusText }.`);
             });
-          }, (errorData) => {
-            console.log(`Login failure: ${ JSON.stringify(errorData, null, 2) }`);
+          }, () => {
+            this.user.next('Login failure: Google-SignIn error.');
           });
 
           if (this.auth2.isSignedIn.get() === true) {

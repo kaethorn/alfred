@@ -37,7 +37,7 @@ describe('AuthGuard', () => {
     });
 
     it('should navigate to home for a logged out user', async () => {
-      userService.user = of(null);
+      userService.user = of('Login error');
       authGuard = new AuthGuard((userService as any), (router as any));
       spyOn(router, 'navigate');
 

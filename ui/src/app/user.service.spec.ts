@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
+import { User } from './user';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -36,7 +37,7 @@ describe('UserService', () => {
         expect(req.request.method).toBe('GET');
         req.flush('');
 
-        service.user.subscribe((user) => {
+        service.user.subscribe((user: User) => {
           expect(user.email).toEqual('a@b.com');
           expect(user.token).toEqual('test-token-1');
         });
@@ -48,7 +49,7 @@ describe('UserService', () => {
         req.flush('', { status: 401, statusText: 'Unauthorized' });
 
         service.user.subscribe((user) => {
-          expect(user).toBeNull();
+          expect(user).toEqual('You\'ve been logged out.');
         });
       });
     });
@@ -63,7 +64,7 @@ describe('UserService', () => {
         service.verifyCurrentUser();
 
         service.user.subscribe((user) => {
-          expect(user).toBeNull();
+          expect(user).toEqual('You\'ve been logged out.');
         });
       });
     });
@@ -83,7 +84,7 @@ describe('UserService', () => {
         expect(req.request.method).toBe('GET');
         req.flush('');
 
-        service.user.subscribe((user) => {
+        service.user.subscribe((user: User) => {
           expect(user.name).toEqual('B.Wayne');
         });
       });
@@ -133,7 +134,7 @@ describe('UserService', () => {
             email: 'b@c.com',
             token: 'alfred-token-1'
           });
-          service.user.subscribe((user) => {
+          service.user.subscribe((user: User) => {
             expect(user.email).toEqual('b@c.com');
             expect(user.token).toEqual('alfred-token-1');
           });
