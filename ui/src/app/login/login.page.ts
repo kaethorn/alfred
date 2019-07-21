@@ -11,12 +11,15 @@ import { User } from '../user';
 })
 export class LoginPage {
 
+  message: string;
+
   constructor (
     private userService: UserService,
     private ngZone: NgZone,
     private router: Router,
     private route: ActivatedRoute
   ) {
+    this.message = 'No valid user session';
     this.userService.setupGoogleSignIn();
     this.userService.user.subscribe((user: User) => {
       if (user) {
