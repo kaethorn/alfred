@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
@@ -27,7 +27,6 @@ export class VolumesComponent {
   constructor (
     private router: Router,
     private route: ActivatedRoute,
-    private sanitizer: DomSanitizer,
     private comicsService: ComicsService,
     private thumbnailsService: ThumbnailsService,
     private volumesService: VolumesService,
