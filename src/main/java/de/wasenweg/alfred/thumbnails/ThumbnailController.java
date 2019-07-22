@@ -19,6 +19,6 @@ public class ThumbnailController extends BaseController<Thumbnail> {
 
   @GetMapping("/{comicId}")
   public Resource<Thumbnail> findByComicId(@PathVariable("comicId") final String comicId) {
-    return this.addLink(this.thumbnailRepository.findByComicId(new ObjectId(comicId)));
+    return this.wrap(this.thumbnailRepository.findByComicId(new ObjectId(comicId)));
   }
 }

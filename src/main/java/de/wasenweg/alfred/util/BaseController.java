@@ -19,34 +19,33 @@ public abstract class BaseController<T> {
       final Method getId = item.getClass().getDeclaredMethod("getId");
       return (String) getId.invoke(item);
     } catch (final Exception exception) {
-      exception.printStackTrace();
       return "";
     }
   }
 
-  protected Resources<Resource<T>> addCollectionLink(final List<T> items) {
+  protected Resources<Resource<T>> wrap(final List<T> items) {
     return new Resources<Resource<T>>(
         items.stream()
-        .map(item -> {
-          return this.addLink(item);
-        }).collect(Collectors.toList()),
+          .map(item -> {
+            return this.wrap(item);
+          }).collect(Collectors.toList()),
         linkTo(this.getClass()).withSelfRel());
   }
 
-  protected Resource<T> addLink(final Optional<T> item) {
+  protected Resource<T> wrap(final Optional<T> item) {
     if (item.isPresent()) {
-      return this.addLink(item.get());
+      return this.wrap(item.get());
     } else {
       throw new ResourceNotFoundException();
     }
   }
 
-  protected Resource<T> addLink(final T item) {
+  protected Resource<T> wrap(final T item) {
     final Link link = linkTo(this.getClass()).slash(this.getItemId(item)).withSelfRel();
     return new Resource<T>(item, link);
   }
 
-  protected Resource<T> addRootLink(final T item) {
+  protected Resource<T> wrapRoot(final T item) {
     final Link link = linkTo(this.getClass()).withSelfRel();
     return new Resource<T>(item, link);
   }

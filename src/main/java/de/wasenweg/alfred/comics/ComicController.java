@@ -39,19 +39,19 @@ public class ComicController extends BaseController<Comic> {
 
   @GetMapping("")
   public Resources<Resource<Comic>> findAll() {
-    return this.addCollectionLink(this.comicRepository.findAll());
+    return this.wrap(this.comicRepository.findAll());
   }
 
   @GetMapping("/{comicId}")
   public Resource<Comic> findById(
       final Principal principal,
       @PathVariable("comicId") final String comicId) {
-    return this.addLink(this.queryRepository.findById(principal.getName(), comicId));
+    return this.wrap(this.queryRepository.findById(principal.getName(), comicId));
   }
 
   @GetMapping("/search/findAllLastReadPerVolume")
   public Resources<Resource<Comic>> findAllLastReadPerVolume(final Principal principal) {
-    return this.addCollectionLink(this.queryRepository.findAllLastReadPerVolume(principal.getName()));
+    return this.wrap(this.queryRepository.findAllLastReadPerVolume(principal.getName()));
   }
 
   @GetMapping("/search/findLastReadForVolume")
@@ -60,7 +60,7 @@ public class ComicController extends BaseController<Comic> {
       @Param("publisher") final String publisher,
       @Param("series") final String series,
       @Param("volume") final String volume) {
-    return this.addLink(this.queryRepository.findLastReadForVolume(principal.getName(), publisher, series, volume));
+    return this.wrap(this.queryRepository.findLastReadForVolume(principal.getName(), publisher, series, volume));
   }
 
   @GetMapping("/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition")
@@ -69,18 +69,18 @@ public class ComicController extends BaseController<Comic> {
       @Param("publisher") final String publisher,
       @Param("series") final String series,
       @Param("volume") final String volume) {
-    return this.addCollectionLink(this.queryRepository.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+    return this.wrap(this.queryRepository.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
         principal.getName(), publisher, series, volume));
   }
 
   @PutMapping("/markAsRead")
   public Resource<Comic> markAsRead(@Valid @RequestBody final Comic comic, final Principal principal) {
-    return this.addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, true)));
+    return this.wrap(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, true)));
   }
 
   @PutMapping("/markAsUnread")
   public Resource<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
-    return this.addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, false)));
+    return this.wrap(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, false)));
   }
 
   @DeleteMapping("")

@@ -17,6 +17,6 @@ public class StatsController extends BaseController<Stats> {
 
   @GetMapping()
   public Resource<Stats> getStats() {
-    return this.addRootLink(this.service.getStats());
+    return this.wrapRoot(this.service.getStats());
   }
 }
