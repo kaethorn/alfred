@@ -15,12 +15,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class MetaDataReader {
+
+  private static List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
 
   private static Logger logger = LoggerFactory.getLogger(MetaDataReader.class);
 
@@ -40,7 +44,12 @@ public class MetaDataReader {
     try {
       return Short.parseShort(value);
     } catch (final Exception exception) {
-      logger.warn("Couldn't read " + elementName + " value of '" + value + "'. Falling back to '0'", exception);
+      final ScannerIssue parsingEvent = ScannerIssue.builder()
+          .message("Couldn't read " + elementName + " value of '" + value + "'. Falling back to '0'")
+          .type(ScannerIssue.Type.WARNING)
+          .build();
+      logger.warn(parsingEvent.getMessage(), exception);
+      scannerIssues.add(parsingEvent);
       return (short)0;
     }
   }
@@ -114,8 +123,10 @@ public class MetaDataReader {
     comic.setLocations(readStringElement(document, "Locations"));
   }
 
-  public static void set(final ZipFile file, final Comic comic)
+  public static List<ScannerIssue> set(final ZipFile file, final Comic comic)
       throws SAXException, IOException {
+
+    scannerIssues.clear();
 
     final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     try {
@@ -132,5 +143,7 @@ public class MetaDataReader {
         break;
       }
     }
+
+    return scannerIssues;
   }
 }

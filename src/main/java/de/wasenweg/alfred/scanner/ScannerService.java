@@ -1,5 +1,8 @@
 package de.wasenweg.alfred.scanner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.settings.SettingsService;
@@ -35,6 +38,9 @@ public class ScannerService {
   private final EmitterProcessor<ServerSentEvent<String>> emitter = EmitterProcessor.create();
 
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
+
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @Autowired
   private Environment environment;
@@ -86,14 +92,36 @@ public class ScannerService {
     this.sendEvent("done", "done");
   }
 
-  private void reportError(final String path, final Exception exception) {
-    if (this.environment.acceptsProfiles(Profiles.of("prod"))) {
-      this.sendEvent(path + "|" + exception.getMessage(), "error");
-    }
+  private void reportIssue(final Exception exception) {
+    this.logger.error(exception.getLocalizedMessage(), exception);
+    this.reportIssue(ScannerIssue.builder()
+        .message(exception.getLocalizedMessage())
+        .type(ScannerIssue.Type.ERROR)
+        .build());
   }
 
-  private void reportError(final Exception exception) {
-    this.reportError("", exception);
+  private void reportIssue(final Exception exception, final String path) {
+    this.logger.error(exception.getLocalizedMessage(), exception);
+    this.reportIssue(ScannerIssue.builder()
+        .message(exception.getLocalizedMessage())
+        .type(ScannerIssue.Type.ERROR)
+        .path(path)
+        .build());
+  }
+
+  private void reportIssue(final ScannerIssue issue, final String path) {
+    issue.setPath(path);
+    this.reportIssue(issue);
+  }
+
+  private void reportIssue(final ScannerIssue issue) {
+    if (this.environment.acceptsProfiles(Profiles.of("prod"))) {
+      try {
+        this.sendEvent(this.objectMapper.writeValueAsString(issue), "scan-issue");
+      } catch (final JsonProcessingException exception) {
+        exception.printStackTrace();
+      }
+    }
   }
 
   private void createOrUpdateComic(final Path path) {
@@ -110,15 +138,16 @@ public class ScannerService {
     try {
       file = new ZipFile(pathString);
     } catch (final IOException exception) {
-      this.logger.error(exception.getLocalizedMessage(), exception);
-      this.reportError(pathString, exception);
+      this.reportIssue(exception, pathString);
       return;
     }
+
     try {
-      MetaDataReader.set(file, comic);
+      MetaDataReader.set(file, comic).forEach(issue -> {
+        this.reportIssue(issue, pathString);
+      });
     } catch (final SAXException | IOException exception) {
-      this.logger.error(exception.getLocalizedMessage(), exception);
-      this.reportError(pathString, exception);
+      this.reportIssue(exception, pathString);
     }
 
     this.comicRepository.save(comic);
@@ -126,14 +155,12 @@ public class ScannerService {
     try {
       this.thumbnailService.setComic(file, comic);
     } catch (final NoImagesException exception) {
-      this.logger.error(exception.getLocalizedMessage(), exception);
-      this.reportError(pathString, exception);
+      this.reportIssue(exception, pathString);
     } finally {
       try {
         file.close();
       } catch (final IOException exception) {
-        this.logger.error(exception.getLocalizedMessage(), exception);
-        this.reportError(pathString, exception);
+        this.reportIssue(exception, pathString);
       }
     }
   }
@@ -164,8 +191,7 @@ public class ScannerService {
 
         this.logger.info("Done scanning.");
       } catch (final IOException exception) {
-        this.logger.error(exception.getLocalizedMessage(), exception);
-        this.reportError(exception);
+        this.reportIssue(exception);
       }
 
       this.reportFinish();

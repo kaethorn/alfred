@@ -59,9 +59,7 @@ public class PublisherController {
       @PathVariable final String series) {
     final List<Volume> volumes = this.repository
         .findAllVolumes(principal.getName(), publisher, series);
-    final Link link = linkTo(PublisherController.class)
-        .slash(publisher).slash("series").slash(series).slash("volumes").withSelfRel();
-    return new Resources<Volume>(volumes, link);
+    return new Resources<Volume>(volumes, this.getVolumeLink(publisher, series));
   }
 
   private Link getSeriesLink(final String publisher) {

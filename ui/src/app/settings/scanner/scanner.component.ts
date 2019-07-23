@@ -4,10 +4,16 @@ import { ComicsService } from '../../comics.service';
 import { StatsService } from '../../stats.service';
 import { Stats } from '../../stats';
 
-interface Error {
+enum ScannerIssueType {
+  ERROR,
+  WARNING
+}
+
+interface ScannerIssue {
   message: string;
-  file?: string;
-  date: string;
+  type: ScannerIssueType;
+  path?: string;
+  date: Date;
 }
 
 @Component({
@@ -22,7 +28,7 @@ export class ScannerComponent {
   total = 0;
   file: string;
   counter = 0;
-  errors: Error[] = [];
+  issues: ScannerIssue[] = [];
   stats: Stats;
 
   indeterminate: string;
@@ -42,7 +48,7 @@ export class ScannerComponent {
   }
 
   scan () {
-    this.errors = [];
+    this.issues = [];
 
     this.scanProgress = new EventSource('/api/scan-progress');
 
@@ -70,17 +76,15 @@ export class ScannerComponent {
       this.indeterminate = 'Bundling volumes';
     });
 
-    this.scanProgress.addEventListener('error', (event: any) => {
+    this.scanProgress.addEventListener('scan-issue', (event: any) => {
       if (!event.data) {
         this.close();
         return;
       }
-      const parts = event.data.split('|');
-      this.errors.push({
-        message: parts[0],
-        file   : parts.length ? parts[1] : null,
-        date   : new Date().toISOString()
-      });
+
+      const issue: ScannerIssue = <ScannerIssue>JSON.parse(event.data);
+
+      this.issues.push(issue);
     });
 
     this.scanProgress.addEventListener('done', () => {
