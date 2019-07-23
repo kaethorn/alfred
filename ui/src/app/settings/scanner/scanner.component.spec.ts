@@ -42,7 +42,7 @@ describe('ScannerComponent', () => {
       expect(EventSource.prototype.addEventListener)
         .toHaveBeenCalledWith('current-file', jasmine.any(Function));
       expect(EventSource.prototype.addEventListener)
-        .toHaveBeenCalledWith('error', jasmine.any(Function));
+        .toHaveBeenCalledWith('scan-issue', jasmine.any(Function));
       expect(EventSource.prototype.addEventListener)
         .toHaveBeenCalledWith('done', jasmine.any(Function));
     });

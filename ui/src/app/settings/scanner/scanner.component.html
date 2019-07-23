@@ -23,15 +23,16 @@
       </ion-item>
     </ion-list>
 
-    <ion-list *ngIf="errors.length" class="errors">
-      <ion-list-header>Scan errors</ion-list-header>
-      <ion-item *ngFor="let error of errors">
+    <ion-list *ngIf="issues.length" class="errors">
+      <ion-list-header>Scanning issues</ion-list-header>
+      <ion-item *ngFor="let issue of issues">
         <ion-label>
-          <sub>{{ error.date | amTimeAgo }}</sub>
-          <h4><i>{{ error.message }}</i></h4>
-          <p *ngIf="error.file">{{ error.file }}</p>
+          <sub>{{ issue.date | amTimeAgo }}</sub>
+          <h4><i>{{ issue.message }}</i></h4>
+          <p *ngIf="issue.path">{{ issue.path }}</p>
         </ion-label>
-        <ion-icon slot="end" color="danger" name="alert"></ion-icon>
+        <ion-icon *ngIf="issue.type === 'ERROR'" slot="end" color="danger" name="alert"></ion-icon>
+        <ion-icon *ngIf="issue.type === 'WARNING'" slot="end" color="warning" name="warning"></ion-icon>
       </ion-item>
     </ion-list>
 
