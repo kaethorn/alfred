@@ -134,6 +134,7 @@ public class ScannerService {
         .orElse(new Comic());
     comic.setPath(comicPath);
 
+    // FIXME use Optional<ZipFile>
     ZipFile file = null;
     try {
       file = new ZipFile(pathString);
@@ -146,8 +147,9 @@ public class ScannerService {
       MetaDataReader.set(file, comic).forEach(issue -> {
         this.reportIssue(issue, pathString);
       });
-    } catch (final SAXException | IOException exception) {
+    } catch (final SAXException | IOException | NoMetaDataException exception) {
       this.reportIssue(exception, pathString);
+      return;
     }
 
     this.comicRepository.save(comic);

@@ -123,8 +123,19 @@ public class MetaDataReader {
     comic.setLocations(readStringElement(document, "Locations"));
   }
 
+  private static ZipEntry findMetaDataFile(final ZipFile file) throws NoMetaDataException {
+    final Enumeration<? extends ZipEntry> entries = file.entries();
+    while (entries.hasMoreElements()) {
+      final ZipEntry entry = entries.nextElement();
+      if (entry.getName().equals("ComicInfo.xml")) {
+        return entry;
+      }
+    }
+    throw new NoMetaDataException();
+  }
+
   public static List<ScannerIssue> set(final ZipFile file, final Comic comic)
-      throws SAXException, IOException {
+      throws SAXException, IOException, NoMetaDataException {
 
     scannerIssues.clear();
 
@@ -135,14 +146,8 @@ public class MetaDataReader {
       e.printStackTrace();
     }
 
-    final Enumeration<? extends ZipEntry> entries = file.entries();
-    while (entries.hasMoreElements()) {
-      final ZipEntry entry = entries.nextElement();
-      if (entry.getName().equals("ComicInfo.xml")) {
-        parseComicInfoXml(file, entry, comic);
-        break;
-      }
-    }
+    final ZipEntry metaDataFile = findMetaDataFile(file);
+    parseComicInfoXml(file, metaDataFile, comic);
 
     return scannerIssues;
   }
