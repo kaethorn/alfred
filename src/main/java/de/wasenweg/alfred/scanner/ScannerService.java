@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -137,17 +138,16 @@ public class ScannerService {
         .orElse(new Comic());
     comic.setPath(comicPath);
 
-    // FIXME use Optional<ZipFile>
-    ZipFile file = null;
+    final Optional<ZipFile> file;
     try {
-      file = new ZipFile(pathString);
+      file = Optional.of(new ZipFile(pathString));
     } catch (final IOException exception) {
       this.reportIssue(exception, pathString);
       return;
     }
 
     try {
-      this.metaDataReader.set(file, comic).forEach(issue -> {
+      this.metaDataReader.set(file.get(), comic).forEach(issue -> {
         this.reportIssue(issue, pathString);
       });
     } catch (final SAXException | IOException | NoMetaDataException exception) {
@@ -158,12 +158,12 @@ public class ScannerService {
     this.comicRepository.save(comic);
 
     try {
-      this.thumbnailService.setComic(file, comic);
+      this.thumbnailService.setComic(file.get(), comic);
     } catch (final NoImagesException exception) {
       this.reportIssue(exception, pathString);
     } finally {
       try {
-        file.close();
+        file.get().close();
       } catch (final IOException exception) {
         this.reportIssue(exception, pathString);
       }
