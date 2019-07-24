@@ -40,6 +40,9 @@ public class ScannerService {
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
   @Autowired
+  private MetaDataReader metaDataReader;
+
+  @Autowired
   private ObjectMapper objectMapper;
 
   @Autowired
@@ -144,7 +147,7 @@ public class ScannerService {
     }
 
     try {
-      MetaDataReader.set(file, comic).forEach(issue -> {
+      this.metaDataReader.set(file, comic).forEach(issue -> {
         this.reportIssue(issue, pathString);
       });
     } catch (final SAXException | IOException | NoMetaDataException exception) {
