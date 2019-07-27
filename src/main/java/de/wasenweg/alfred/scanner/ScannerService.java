@@ -41,6 +41,9 @@ public class ScannerService {
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
   @Autowired
+  private ComicVineReader comicVineReader;
+
+  @Autowired
   private MetaDataReader metaDataReader;
 
   @Autowired
@@ -151,6 +154,13 @@ public class ScannerService {
         this.reportIssue(issue, pathString);
       });
     } catch (final SAXException | IOException | NoMetaDataException exception) {
+      // TODO throw a warning instead
+      this.reportIssue(exception, pathString);
+    }
+
+    try {
+      this.comicVineReader.read(comic);
+    } catch (final IncompleteMetaDataException exception) {
       this.reportIssue(exception, pathString);
       return;
     }
@@ -175,6 +185,16 @@ public class ScannerService {
    *
    * Updates existing files, adds new files and removes files that are
    * not available anymore.
+   *
+   * Mandatory fields are `publisher`, `series`, `volume` and `issue number`.
+   *
+   * Process:
+   * 1. Ignore all files that do not end in `.cbz`.
+   * 2. Attempt to parse mandatory fields from meta data XML. Exit on success.
+   * 3. Ignore all files that do not match pattern containing mandatory fields, e.g.
+   *    `{publisher}/{series} ({volume})/{series} ({volume}) {issue number} .*.cbz`.
+   * 4. Attempt to match & scrape meta data from Comic Vine API.
+   * 5. On match, write meta data XML and exit. Otherwise report error and ignore file.
    */
   public Flux<ServerSentEvent<String>> scanComics() {
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
