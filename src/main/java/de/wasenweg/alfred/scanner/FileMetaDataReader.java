@@ -24,11 +24,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 @Service
-public class MetaDataReader {
+public class FileMetaDataReader {
 
   private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
 
-  private Logger logger = LoggerFactory.getLogger(MetaDataReader.class);
+  private Logger logger = LoggerFactory.getLogger(FileMetaDataReader.class);
 
   private DocumentBuilder docBuilder = null;
 
@@ -65,21 +65,16 @@ public class MetaDataReader {
   }
 
   private String mapPosition(final String number) {
-    String convertableNumber = number;
-    if ("½".equals(number) || "1/2".equals(number)) {
-      convertableNumber = "0.5";
-    }
-    if (number.endsWith("a")) {
-      convertableNumber = convertableNumber.replace("a", ".5");
-    }
-    BigDecimal position = new BigDecimal(0);
     try {
-      position = new BigDecimal(convertableNumber);
-    } catch (final Exception exception) {
-      this.logger.warn("Couldn't read number '" + number + "'. Falling back to '0'", exception);
+      return MetaDataReaderUtil.mapPosition(number);
+    } catch (final InvalidIssueNumberException exception) {
+      this.logger.warn(exception.getMessage(), exception);
+      this.scannerIssues.add(ScannerIssue.builder()
+          .message(exception.getMessage())
+          .type(ScannerIssue.Type.WARNING)
+          .build());
+      return new DecimalFormat("0000.0").format(new BigDecimal(0));
     }
-    final String result = new DecimalFormat("0000.0").format(position);
-    return result;
   }
 
   private Optional<Document> getDocument(final ZipFile file, final ZipEntry entry)
@@ -144,8 +139,8 @@ public class MetaDataReader {
     final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     try {
       this.docBuilder = docBuilderFactory.newDocumentBuilder();
-    } catch (final ParserConfigurationException e) {
-      e.printStackTrace();
+    } catch (final ParserConfigurationException exception) {
+      exception.printStackTrace();
     }
 
     final ZipEntry metaDataFile = this.findMetaDataFile(file);

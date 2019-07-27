@@ -41,10 +41,10 @@ public class ScannerService {
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
   @Autowired
-  private ComicVineReader comicVineReader;
+  private ApiMetaDataReader apiMetaDataReader;
 
   @Autowired
-  private MetaDataReader metaDataReader;
+  private FileMetaDataReader fileMetaDataReader;
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -150,7 +150,7 @@ public class ScannerService {
     }
 
     try {
-      this.metaDataReader.set(file.get(), comic).forEach(issue -> {
+      this.fileMetaDataReader.set(file.get(), comic).forEach(issue -> {
         this.reportIssue(issue, pathString);
       });
     } catch (final SAXException | IOException | NoMetaDataException exception) {
@@ -159,7 +159,9 @@ public class ScannerService {
     }
 
     try {
-      this.comicVineReader.read(comic);
+      this.apiMetaDataReader.set(comic).forEach(issue -> {
+        this.reportIssue(issue, pathString);
+      });
     } catch (final IncompleteMetaDataException exception) {
       this.reportIssue(exception, pathString);
       return;
