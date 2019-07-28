@@ -108,10 +108,14 @@ public class ScannerService {
   }
 
   private void reportIssue(final Exception exception, final String path) {
+    this.reportIssue(exception, path, ScannerIssue.Type.ERROR);
+  }
+
+  private void reportIssue(final Exception exception, final String path, final ScannerIssue.Type type) {
     this.logger.error(exception.getLocalizedMessage(), exception);
     this.reportIssue(ScannerIssue.builder()
         .message(exception.getLocalizedMessage())
-        .type(ScannerIssue.Type.ERROR)
+        .type(type)
         .path(path)
         .build());
   }
@@ -154,8 +158,7 @@ public class ScannerService {
         this.reportIssue(issue, pathString);
       });
     } catch (final SAXException | IOException | NoMetaDataException exception) {
-      // TODO throw a warning instead
-      this.reportIssue(exception, pathString);
+      this.reportIssue(exception, pathString, ScannerIssue.Type.WARNING);
     }
 
     try {
