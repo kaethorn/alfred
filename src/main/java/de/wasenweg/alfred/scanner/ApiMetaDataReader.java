@@ -66,13 +66,9 @@ public class ApiMetaDataReader {
 
   /**
    * Expected format:
-   *
    * `/{publisher}/{series}/{series} #{number} ({volume}).cbz`
-   *
-   * The publisher parent folder is optional.
    */
-  // FIXME make private and use PowerMock to test it
-  public void setPathParts(final Comic comic) {
+  private void setPathParts(final Comic comic) {
     final Matcher matcher = this.pattern.matcher(comic.getPath());
     if (matcher.matches()
         && matcher.group("series1").equals(matcher.group("series2"))
