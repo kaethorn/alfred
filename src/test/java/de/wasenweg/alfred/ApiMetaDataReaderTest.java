@@ -2,25 +2,30 @@ package de.wasenweg.alfred;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.ApiMetaDataReader;
+import de.wasenweg.alfred.settings.SettingsService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.reflect.Whitebox;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = ApiMetaDataReader.class)
 public class ApiMetaDataReaderTest {
 
-  @Autowired
+  @InjectMocks
   private ApiMetaDataReader apiMetaDataReader;
 
+  @Mock
+  private SettingsService settingsService;
+
   @Test
-  public void matchesPath() throws Exception {
+  public void setPathPartsMatchesPath() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (1940)/Batman 400 (1940) bar.cbz");
     Whitebox.invokeMethod(this.apiMetaDataReader, "setPathParts", comic);
@@ -32,7 +37,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void matchesFractionalIssueNumbers() throws Exception {
+  public void setPathPartsMatchesFractionalIssueNumbers() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (1940)/Batman 102a (1940) bar.cbz");
     Whitebox.invokeMethod(this.apiMetaDataReader, "setPathParts", comic);
@@ -60,7 +65,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void rejectsNonMatchingVolumes() throws Exception {
+  public void setPathPartsRejectsNonMatchingVolumes() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (2001)/Batman 400 (1940) bar.cbz");
     Whitebox.invokeMethod(this.apiMetaDataReader, "setPathParts", comic);
@@ -72,7 +77,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void rejectsNonMatchingSeries() throws Exception {
+  public void setPathPartsRejectsNonMatchingSeries() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (1940)/Batwoman 400 (1940) bar.cbz");
     Whitebox.invokeMethod(this.apiMetaDataReader, "setPathParts", comic);
@@ -81,5 +86,12 @@ public class ApiMetaDataReaderTest {
     assertThat(comic.getVolume()).isNull();
     assertThat(comic.getNumber()).isNull();
     assertThat(comic.getPosition()).isNull();
+  }
+
+  @Test
+  public void findVolume() throws Exception {
+    // TODO mock API requests
+    final String result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId", "Batgirl");
+    assertThat(result).isEqualTo("0");
   }
 }

@@ -49,6 +49,10 @@ Users are identified through their email addresses and the initial set of allowe
 
 Once the application authenticates the user, it issues its own JWT authentication token which requires a secret key. A default key is supplied but should be overridden whenever the application is run (it's not stored in the DB).
 
+### Comic Vine API key (`comics.comicVineApiKey`)
+
+Comic books not containing a meta data XML or an XML without enough attributes won't be usable. Missing meta data can be fetched from the [Comic Vine API](https://comicvine.gamespot.com/api/) for which you need an API key.
+
 ## Logging
 
 By default, the application logs only to the console it was started in. In order to output logs to a file, use the `logging.file` application property, e.g. start the app with `LOGGING_FILE=alfred.log`.
