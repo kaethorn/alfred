@@ -1,33 +1,18 @@
 package de.wasenweg.alfred.scanner;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.wasenweg.alfred.comics.Comic;
-import de.wasenweg.alfred.settings.SettingsService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -37,28 +22,22 @@ import java.util.stream.Stream;
 @Service
 public class ApiMetaDataReader {
 
-  private SettingsService settingsService;
+  private ComicVineService comicVineService;
 
   private Logger logger = LoggerFactory.getLogger(ApiMetaDataReader.class);
 
   private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
   private Pattern pattern;
-  private String baseUrl = "https://comicvine.gamespot.com/api/";
-  private String apiKey;
-  private ObjectMapper mapper;
 
   @Autowired
-  public ApiMetaDataReader(final SettingsService settingsService) {
-    this.settingsService = settingsService;
-    this.mapper = new ObjectMapper();
+  public ApiMetaDataReader(final ComicVineService comicVineService) {
+    this.comicVineService = comicVineService;
 
     final String publisherDirPattern = "^.*?(?<publisher>[^/]+)/";
     final String seriesDirPattern = "(?<series1>[^/]+) \\((?<volume1>\\d{4})\\)/";
     final String fileNamePattern = "(?<series2>[^/]+) (?<number>[\\d\\.a½/]+) \\((?<volume2>\\d{4})\\) [^/]+\\.cbz$";
     this.pattern = Pattern
         .compile(publisherDirPattern + seriesDirPattern + fileNamePattern);
-
-    this.apiKey = this.settingsService.get("comics.comicVineApiKey");
   }
 
   private List<String> findMissingAttributes(final Comic comic) {
@@ -112,15 +91,6 @@ public class ApiMetaDataReader {
     }
   }
 
-  private String encodeValue(final String value) {
-    try {
-      return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-    } catch (final UnsupportedEncodingException exception) {
-      exception.printStackTrace();
-      return "";
-    }
-  }
-
   /**
    * Extract meta data from file path and match against API.
    *
@@ -144,12 +114,16 @@ public class ApiMetaDataReader {
 
     // Here we can assume to have enough meta data about the comic to make
     // a query to the Comic Vine API.
-    this.query(comic);
+    try {
+      this.query(comic);
+    } catch (final Exception exception) {
+      // TODO ass to this.scannerIssues
+    }
 
     return this.scannerIssues;
   }
 
-  private void query(final Comic comic) {
+  private void query(final Comic comic) throws Exception {
     // TODO query cache
     if (this.queryCache(comic)) {
       return;
@@ -163,72 +137,50 @@ public class ApiMetaDataReader {
     return false;
   }
 
-  private String getSearchUrl(final String series) {
-    final Map<String, String> requestParams = new HashMap<>();
-    requestParams.put("resources", "volume");
-    requestParams.put("query", series);
-    requestParams.put("api_key", this.apiKey);
-    requestParams.put("format", "json");
-
-    final String url = this.baseUrl + "search/?";
-    return requestParams.keySet().stream()
-        .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
-        .collect(Collectors.joining("&", url, ""));
-  }
-
-  private String getIssuesUrl(final String volumeId) {
-    final Map<String, String> requestParams = new HashMap<>();
-    requestParams.put("filter", "volume:" + volumeId);
-    requestParams.put("api_key", this.apiKey);
-    requestParams.put("format", "json");
-
-    final String url = this.baseUrl + "issues/?";
-    return requestParams.keySet().stream()
-        .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
-        .collect(Collectors.joining("&", url, ""));
-  }
-
-  private String findVolumeId(final String series) {
-    final String url = this.getSearchUrl(series);
-    final RestTemplate restTemplate = new RestTemplate();
-
-    final HttpHeaders headers = new HttpHeaders();
-    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    headers.add("user-agent", "curl/7.52.1");
-    final HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-
-    final ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-
-    JsonNode root = null;
-    try {
-      root = this.mapper.readTree(response.getBody());
-    } catch (final IOException exception) {
-      exception.printStackTrace();
-    }
-    final JsonNode results = root.get("results");
-
+  private List<JsonNode> filterVolumeSearchResults(final Comic comic, final JsonNode results) {
     final Stream<JsonNode> volumes = IntStream.range(0, results.size()).mapToObj(results::get);
-    return volumes.findAny().toString();
+    return volumes.filter(volume -> {
+      final String publisher = volume.get("publisher").get("name").asText();
+      final String volumeYear = volume.get("start_year").asText();
+      final String name = volume.get("name").asText();
+      return publisher.equals(comic.getPublisher())
+          && volumeYear.equals(comic.getVolume())
+          && name.equals(comic.getSeries());
+    }).collect(Collectors.toList());
   }
 
-  private void queryApi(final Comic comic) {
-    // FIXME account for throttling (200 requests/h).
-    // 1. Fetch issues by publisher, series and volume:
-    //   a. Search for volume by series: `search/?resources=volume&query=Batman`.
-    //   b. Match publisher on `publisher.name`.
-    //   c. Match volume on `start_year`.
-    //   d. The `id` is used to fetch all issues:
-    //   e. `issues/?filter=volume:796&sort=issue_number:asc`.
-    this.findVolumeId(comic.getSeries());
+  private String findVolumeId(final Comic comic) throws Exception {
+    int page = 1;
+    JsonNode response = this.comicVineService.findVolumesBySeries(comic.getSeries(), page);
+    List<JsonNode> results = this.filterVolumeSearchResults(comic, response.get("results"));
 
+    final int totalCount = response.get("number_of_total_results").asInt();
+    final int limit = response.get("limit").asInt();
+    final int lastPage = (totalCount + limit - 1) / limit; // Round up on division
+    while (results.size() == 0 && page <= lastPage) {
+      response = this.comicVineService.findVolumesBySeries(comic.getSeries(), page);
+      results = this.filterVolumeSearchResults(comic, response.get("results"));
+      page++;
+    }
 
-    // 2. The response will indicate how often the request needs to be repeated in order
-    //    to fetch all issues (`number_of_total_results` & `offset`).
-    // 3. Fetch all issues in the volumes, in chunks of 100.
-    // 4. Cache all results
+    if (results.size() > 0) {
+      return results.get(0).get("id").asText();
+    } else {
+      throw new Exception("No result in volume search");
+    }
+  }
 
-    //this.getIssuesUrl("TODO123");
+  private List<JsonNode> findVolumeIssues(final String volumeId) {
+    final JsonNode response = this.comicVineService.findIssuesInVolume(volumeId);
+    final JsonNode results = response.get("results");
+    return IntStream.range(0, results.size()).mapToObj(results::get)
+        .collect(Collectors.toList());
+  }
 
+  private void queryApi(final Comic comic) throws Exception {
+    // TODO account for throttling (200 requests/h).
     // TODO query & cache result.
+    final String volumeId = this.findVolumeId(comic);
+    final List<JsonNode> issues = this.findVolumeIssues(volumeId);
   }
 }

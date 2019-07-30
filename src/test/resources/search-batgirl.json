@@ -1,0 +1,121 @@
+{
+  "error": "OK",
+  "limit": 10,
+  "number_of_page_results": 10,
+  "number_of_total_results": 82,
+  "offset": 0,
+  "results": [
+    {
+      "id": 7205,
+      "name": "Batgirl",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2000"
+    },
+    {
+      "id": 92542,
+      "name": "Batgirl",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2016"
+    },
+    {
+      "id": 41790,
+      "name": "Batgirl",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2350/",
+        "id": 2350,
+        "name": "Panini Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2010"
+    },
+    {
+      "id": 42604,
+      "name": "Batgirl",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2011"
+    },
+    {
+      "id": 27457,
+      "name": "Batgirl",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2009"
+    },
+    {
+      "id": 22245,
+      "name": "Batgirl",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2008"
+    },
+    {
+      "id": 60406,
+      "name": "Batgirl",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2350/",
+        "id": 2350,
+        "name": "Panini Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2012"
+    },
+    {
+      "id": 92351,
+      "name": "Batgirl & the Birds of Prey: Rebirth",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2016"
+    },
+    {
+      "id": 34461,
+      "name": "Batgirl: Batgirl Rising",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2010"
+    },
+    {
+      "id": 82483,
+      "name": "Batgirl: Batgirl of Burnside",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2015"
+    }
+  ],
+  "status_code": 1,
+  "version": "1.0"
+}

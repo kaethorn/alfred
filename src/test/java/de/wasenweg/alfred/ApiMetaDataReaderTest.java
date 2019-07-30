@@ -1,7 +1,11 @@
 package de.wasenweg.alfred;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.ApiMetaDataReader;
+import de.wasenweg.alfred.scanner.ComicVineService;
 import de.wasenweg.alfred.settings.SettingsService;
 
 import org.junit.Test;
@@ -12,7 +16,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.reflect.Whitebox;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.io.File;
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = ApiMetaDataReader.class)
@@ -20,6 +28,9 @@ public class ApiMetaDataReaderTest {
 
   @InjectMocks
   private ApiMetaDataReader apiMetaDataReader;
+
+  @Mock
+  private ComicVineService comicVineService;
 
   @Mock
   private SettingsService settingsService;
@@ -90,8 +101,35 @@ public class ApiMetaDataReaderTest {
 
   @Test
   public void findVolume() throws Exception {
-    // TODO mock API requests
-    final String result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId", "Batgirl");
-    assertThat(result).isEqualTo("0");
+    when(this.comicVineService.findVolumesBySeries("Batgirl", 1)).thenReturn(this.parseJson("search-batgirl.json"));
+    final Comic comic = new Comic();
+    comic.setSeries("Batgirl");
+    comic.setPublisher("DC Comics");
+    comic.setVolume("2011");
+    final String result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId", comic);
+    assertThat(result).isEqualTo("42604");
+  }
+
+  @Test
+  public void findVolumeWithOffset() throws Exception {
+    when(this.comicVineService.findVolumesBySeries("Batman", 1)).thenReturn(this.parseJson("search-batman.json"));
+    when(this.comicVineService.findVolumesBySeries("Batman", 2)).thenReturn(this.parseJson("search-batman-page2.json"));
+    when(this.comicVineService.findVolumesBySeries("Batman", 3)).thenReturn(this.parseJson("search-batman-page3.json"));
+
+    final Comic comic = new Comic();
+    comic.setSeries("Batman");
+    comic.setPublisher("Carlsen Comics");
+    comic.setVolume("1991");
+    String result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId", comic);
+    assertThat(result).isEqualTo("117375");
+
+    comic.setPublisher("DC Comics");
+    comic.setVolume("2011");
+    result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId", comic);
+    assertThat(result).isEqualTo("42721");
+  }
+
+  private JsonNode parseJson(final String path) throws IOException {
+    return new ObjectMapper().readTree(new File("src/test/resources/" + path));
   }
 }
