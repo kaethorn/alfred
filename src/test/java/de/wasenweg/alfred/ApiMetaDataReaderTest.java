@@ -106,7 +106,8 @@ public class ApiMetaDataReaderTest {
     comic.setSeries("Batgirl");
     comic.setPublisher("DC Comics");
     comic.setVolume("2011");
-    final String result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId", comic);
+    final String result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId",
+        comic.getPublisher(), comic.getSeries(), comic.getVolume());
     assertThat(result).isEqualTo("42604");
   }
 
@@ -120,12 +121,14 @@ public class ApiMetaDataReaderTest {
     comic.setSeries("Batman");
     comic.setPublisher("Carlsen Comics");
     comic.setVolume("1991");
-    String result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId", comic);
+    String result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId",
+        comic.getPublisher(), comic.getSeries(), comic.getVolume());
     assertThat(result).isEqualTo("117375");
 
     comic.setPublisher("DC Comics");
     comic.setVolume("2011");
-    result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId", comic);
+    result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeId",
+        comic.getPublisher(), comic.getSeries(), comic.getVolume());
     assertThat(result).isEqualTo("42721");
   }
 

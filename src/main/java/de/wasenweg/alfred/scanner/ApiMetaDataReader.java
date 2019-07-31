@@ -7,6 +7,7 @@ import de.wasenweg.alfred.comics.Comic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -117,49 +118,34 @@ public class ApiMetaDataReader {
     try {
       this.query(comic);
     } catch (final Exception exception) {
-      // TODO ass to this.scannerIssues
+      // TODO add to this.scannerIssues
     }
 
     return this.scannerIssues;
   }
 
-  private void query(final Comic comic) throws Exception {
-    // TODO query cache
-    if (this.queryCache(comic)) {
-      return;
-    }
-    this.queryApi(comic);
-  }
-
-  private Boolean queryCache(final Comic comic) {
-    // The cache will either contain all issues in the volume, or none at all.
-    // TODO
-    return false;
-  }
-
-  private List<JsonNode> filterVolumeSearchResults(final Comic comic, final JsonNode results) {
+  private List<JsonNode> filterVolumeSearchResults(
+      final String publisher, final String series, final String volume, final JsonNode results) {
     final Stream<JsonNode> volumes = IntStream.range(0, results.size()).mapToObj(results::get);
-    return volumes.filter(volume -> {
-      final String publisher = volume.get("publisher").get("name").asText();
-      final String volumeYear = volume.get("start_year").asText();
-      final String name = volume.get("name").asText();
-      return publisher.equals(comic.getPublisher())
-          && volumeYear.equals(comic.getVolume())
-          && name.equals(comic.getSeries());
+    return volumes.filter(v -> {
+      return publisher.equals(v.get("publisher").get("name").asText())
+          && series.equals(v.get("name").asText())
+          && volume.equals(v.get("start_year").asText());
     }).collect(Collectors.toList());
   }
 
-  private String findVolumeId(final Comic comic) throws Exception {
+  @Cacheable("volumeIds")
+  private String findVolumeId(final String publisher, final String series, final String volume) throws Exception {
     int page = 1;
-    JsonNode response = this.comicVineService.findVolumesBySeries(comic.getSeries(), page);
-    List<JsonNode> results = this.filterVolumeSearchResults(comic, response.get("results"));
+    JsonNode response = this.comicVineService.findVolumesBySeries(series, page);
+    List<JsonNode> results = this.filterVolumeSearchResults(publisher, series, volume, response.get("results"));
 
     final int totalCount = response.get("number_of_total_results").asInt();
     final int limit = response.get("limit").asInt();
     final int lastPage = (totalCount + limit - 1) / limit; // Round up on division
     while (results.size() == 0 && page <= lastPage) {
-      response = this.comicVineService.findVolumesBySeries(comic.getSeries(), page);
-      results = this.filterVolumeSearchResults(comic, response.get("results"));
+      response = this.comicVineService.findVolumesBySeries(series, page);
+      results = this.filterVolumeSearchResults(publisher, series, volume, response.get("results"));
       page++;
     }
 
@@ -170,6 +156,7 @@ public class ApiMetaDataReader {
     }
   }
 
+  @Cacheable("volumeIssues")
   private List<JsonNode> findVolumeIssues(final String volumeId) {
     final JsonNode response = this.comicVineService.findIssuesInVolume(volumeId);
     final JsonNode results = response.get("results");
@@ -177,10 +164,10 @@ public class ApiMetaDataReader {
         .collect(Collectors.toList());
   }
 
-  private void queryApi(final Comic comic) throws Exception {
+  private void query(final Comic comic) throws Exception {
     // TODO account for throttling (200 requests/h).
-    // TODO query & cache result.
-    final String volumeId = this.findVolumeId(comic);
+    // TODO cache results for search and issues (single issues are fetched one by one)
+    final String volumeId = this.findVolumeId(comic.getPublisher(), comic.getSeries(), comic.getVolume());
     final List<JsonNode> issues = this.findVolumeIssues(volumeId);
   }
 }
