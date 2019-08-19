@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -47,13 +48,13 @@ public class ApiMetaDataReader {
       missingAttributes.add("publisher");
     }
     if ("".equals(comic.getSeries())) {
-      missingAttributes.add("publisher");
+      missingAttributes.add("series");
     }
     if ("".equals(comic.getVolume())) {
-      missingAttributes.add("publisher");
+      missingAttributes.add("volume");
     }
     if ("".equals(comic.getNumber())) {
-      missingAttributes.add("publisher");
+      missingAttributes.add("number");
     }
     return missingAttributes;
   }
@@ -107,7 +108,7 @@ public class ApiMetaDataReader {
     }
 
     // If neither the XML nor the file path contain enough hints about which
-    // comic book there is, we inform the user.
+    // comic book this is, we inform the user.
     final List<String> missingAttributes = this.findMissingAttributes(comic);
     if (missingAttributes.size() > 0) {
       throw new IncompleteMetaDataException(missingAttributes);
@@ -134,19 +135,36 @@ public class ApiMetaDataReader {
     }).collect(Collectors.toList());
   }
 
+  private String findIssueDetailsUrl(final Comic comic, final List<JsonNode> issues) throws Exception {
+    final List<JsonNode> filteredIssues = issues.stream()
+        .filter(issue -> {
+          return issue.get("issue_number").asText().equals(comic.getNumber());
+        })
+        .collect(Collectors.toList());
+
+    if (filteredIssues.size() == 0) {
+      throw new Exception("No matching issue found");
+    }
+    if (filteredIssues.size() > 1) {
+      throw new Exception("No unique issue found");
+    }
+
+    return filteredIssues.get(0).get("api_detail_url").asText();
+  }
+
   @Cacheable("volumeIds")
   private String findVolumeId(final String publisher, final String series, final String volume) throws Exception {
-    int page = 1;
+    int page = 0;
     JsonNode response = this.comicVineService.findVolumesBySeries(series, page);
     List<JsonNode> results = this.filterVolumeSearchResults(publisher, series, volume, response.get("results"));
 
     final int totalCount = response.get("number_of_total_results").asInt();
     final int limit = response.get("limit").asInt();
-    final int lastPage = (totalCount + limit - 1) / limit; // Round up on division
-    while (results.size() == 0 && page <= lastPage) {
+    final int lastPage = totalCount / limit;
+    while (results.size() == 0 && page < lastPage) {
+      page++;
       response = this.comicVineService.findVolumesBySeries(series, page);
       results = this.filterVolumeSearchResults(publisher, series, volume, response.get("results"));
-      page++;
     }
 
     if (results.size() > 0) {
@@ -157,17 +175,91 @@ public class ApiMetaDataReader {
   }
 
   @Cacheable("volumeIssues")
-  private List<JsonNode> findVolumeIssues(final String volumeId) {
-    final JsonNode response = this.comicVineService.findIssuesInVolume(volumeId);
-    final JsonNode results = response.get("results");
-    return IntStream.range(0, results.size()).mapToObj(results::get)
+  private List<JsonNode> findVolumeIssues(final String volumeId) throws Exception {
+    int page = 0;
+    final JsonNode response = this.comicVineService.findIssuesInVolume(volumeId, page);
+    JsonNode results = response.get("results");
+    final List<JsonNode> issues = IntStream.range(0, results.size()).mapToObj(results::get)
         .collect(Collectors.toList());
+
+    final int totalCount = response.get("number_of_total_results").asInt();
+    final int limit = response.get("limit").asInt();
+    final int lastPage = totalCount / limit;
+    while (page < lastPage) {
+      page++;
+      results = this.comicVineService.findIssuesInVolume(volumeId, page).get("results");
+      issues.addAll(IntStream.range(0, results.size()).mapToObj(results::get)
+          .collect(Collectors.toList()));
+    }
+
+    if (issues.isEmpty()) {
+      throw new Exception("Empty volume");
+    } else {
+      return issues;
+    }
+  }
+
+  private String getEntities(final JsonNode entities) {
+    return IntStream.range(0, entities.size()).mapToObj(entities::get)
+        .map(character -> character.get("name").asText())
+        .collect(Collectors.joining(", "));
+  }
+
+  private String getCharacters(final JsonNode details) {
+    return this.getEntities(details.get("character_credits"));
+  }
+
+  private String getTeams(final JsonNode details) {
+    return this.getEntities(details.get("team_credits"));
+  }
+
+  private String getLocations(final JsonNode details) {
+    return this.getEntities(details.get("location_credits"));
+  }
+
+  /**
+   * Gathers a comma separated list of persons per role.
+   * @param details The array of persons
+   * @return
+   */
+  private Map<String, String> getPersons(final JsonNode details) {
+    final JsonNode persons = details.get("person_credits");
+    return IntStream.range(0, persons.size())
+        .mapToObj(persons::get)
+        .collect(Collectors.groupingBy(
+            person -> person.get("role").asText(),
+            Collectors.mapping(
+                person -> person.get("name").asText(),
+                Collectors.joining(", "))));
+  }
+
+  private void applyIssueDetails(final String url, final Comic comic) {
+    final JsonNode response = this.comicVineService.getIssueDetails(url).get("results");
+    comic.setTitle(response.get("name").asText());
+    comic.setSummary(response.get("description").asText());
+    final String[] coverDate = response.get("cover_date").asText().split("-");
+    comic.setYear(new Short(coverDate[0]));
+    comic.setMonth(new Short(coverDate[1]));
+    comic.setCharacters(this.getCharacters(response));
+    comic.setTeams(this.getTeams(response));
+    comic.setLocations(this.getLocations(response));
+    final Map<String, String> persons = this.getPersons(response);
+    comic.setWriter(persons.get("writer"));
+    comic.setPenciller(persons.get("penciller"));
+    comic.setInker(persons.get("inker"));
+    comic.setColorist(persons.get("colorist"));
+    comic.setLetterer(persons.get("letterer"));
+    comic.setCoverArtist(persons.get("artist, cover"));
+    comic.setEditor(persons.get("editor"));
+    comic.setWeb(response.get("site_detail_url").asText());
+    // TODO make sure that page count is set by MetaDataReaderUtil?
   }
 
   private void query(final Comic comic) throws Exception {
     // TODO account for throttling (200 requests/h).
-    // TODO cache results for search and issues (single issues are fetched one by one)
     final String volumeId = this.findVolumeId(comic.getPublisher(), comic.getSeries(), comic.getVolume());
     final List<JsonNode> issues = this.findVolumeIssues(volumeId);
+    final String issueDetailsUrl = this.findIssueDetailsUrl(comic, issues);
+    this.applyIssueDetails(issueDetailsUrl, comic);
   }
 }

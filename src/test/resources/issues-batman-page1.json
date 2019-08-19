@@ -1,0 +1,611 @@
+{
+  "error": "OK",
+  "limit": 100,
+  "number_of_page_results": 100,
+  "number_of_total_results": 716,
+  "offset": 0,
+  "results": [
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-183/",
+      "id": 183,
+      "issue_number": "74",
+      "name": "The Crazy Crime Clown! / The Movie That Killed Batman / The Water Crimes of Mr.Hydro"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-310/",
+      "id": 310,
+      "issue_number": "75",
+      "name": "The Gorilla Boss of Gotham City"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-447/",
+      "id": 447,
+      "issue_number": "76",
+      "name": "The Danger Club"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-560/",
+      "id": 560,
+      "issue_number": "77",
+      "name": "The Crime Predictor"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-667/",
+      "id": 667,
+      "issue_number": "78",
+      "name": "Batman of the Mounties"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-776/",
+      "id": 776,
+      "issue_number": "79",
+      "name": "The Bride of Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-883/",
+      "id": 883,
+      "issue_number": "80",
+      "name": "The Machines of Menace"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-982/",
+      "id": 982,
+      "issue_number": "81",
+      "name": "Two-Face Strikes Again!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1027/",
+      "id": 1027,
+      "issue_number": "82",
+      "name": "The Flying Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1034/",
+      "id": 1034,
+      "issue_number": "83",
+      "name": "The Testing of Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1159/",
+      "id": 1159,
+      "issue_number": "84",
+      "name": "The Sleeping Beauties of Gotham City"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1272/",
+      "id": 1272,
+      "issue_number": "85",
+      "name": "The Costume of Doom"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1323/",
+      "id": 1323,
+      "issue_number": "86",
+      "name": "Batman -- Indian Chief!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1379/",
+      "id": 1379,
+      "issue_number": "87",
+      "name": "Batman Falls in Love!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1487/",
+      "id": 1487,
+      "issue_number": "88",
+      "name": "The Son of Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1667/",
+      "id": 1667,
+      "issue_number": "90",
+      "name": "The Web of Doom; City of Fantasy; The Adventures of Batboy!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1714/",
+      "id": 1714,
+      "issue_number": "91",
+      "name": "The Map of Mystery"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1815/",
+      "id": 1815,
+      "issue_number": "92",
+      "name": "Ace, the Bat-Hound"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1939/",
+      "id": 1939,
+      "issue_number": "93",
+      "name": "The Caveman Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-1992/",
+      "id": 1992,
+      "issue_number": "94",
+      "name": "Mystery of the Sky Museum"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2048/",
+      "id": 2048,
+      "issue_number": "95",
+      "name": "The Ballad of Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2163/",
+      "id": 2163,
+      "issue_number": "96",
+      "name": "Third Alarm for Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2288/",
+      "id": 2288,
+      "issue_number": "97",
+      "name": "The Return of the Bat-Hound"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2330/",
+      "id": 2330,
+      "issue_number": "98",
+      "name": "The Return of Mister Future; The Desert Island Batman; Secret of the Batmobile"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2385/",
+      "id": 2385,
+      "issue_number": "99",
+      "name": "The Phantom of the Bat-Cave!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2476/",
+      "id": 2476,
+      "issue_number": "100",
+      "name": "[100th Batman Issue!]"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2604/",
+      "id": 2604,
+      "issue_number": "101",
+      "name": "The Great Bat-Cape Hunt!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2643/",
+      "id": 2643,
+      "issue_number": "102",
+      "name": "The Caveman at Large"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2702/",
+      "id": 2702,
+      "issue_number": "103",
+      "name": "Bat-Hound, Movie Star"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2788/",
+      "id": 2788,
+      "issue_number": "104",
+      "name": "The Beast From 20,000 Fathoms"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2900/",
+      "id": 2900,
+      "issue_number": "105",
+      "name": "The Challenge of Batwoman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-2947/",
+      "id": 2947,
+      "issue_number": "106",
+      "name": "The Batman Puppet"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3001/",
+      "id": 3001,
+      "issue_number": "107",
+      "name": "The Grown-Up Boy Wonder"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3095/",
+      "id": 3095,
+      "issue_number": "108",
+      "name": "The Career of Batman Jones"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3207/",
+      "id": 3207,
+      "issue_number": "109",
+      "name": "The 1,001 Inventions of Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3276/",
+      "id": 3276,
+      "issue_number": "110",
+      "name": "Crime-of-the-Month Club! / The Secret of Batman's Butler / The Phantom Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3323/",
+      "id": 3323,
+      "issue_number": "111",
+      "name": "The Armored Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3404/",
+      "id": 3404,
+      "issue_number": "112",
+      "name": "Am I Really Batman?"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3674/",
+      "id": 3674,
+      "issue_number": "113",
+      "name": "Batman: Superman of Planet X"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3715/",
+      "id": 3715,
+      "issue_number": "114",
+      "name": "The Secret of Mechanical City"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3763/",
+      "id": 3763,
+      "issue_number": "115",
+      "name": "The Batman in the Bottle"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3836/",
+      "id": 3836,
+      "issue_number": "116",
+      "name": "The Winged Bat-People"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3912/",
+      "id": 3912,
+      "issue_number": "117",
+      "name": "Manhunt in Outer Space"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-3969/",
+      "id": 3969,
+      "issue_number": "118",
+      "name": "The Merman Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4029/",
+      "id": 4029,
+      "issue_number": "119",
+      "name": "Rip-Van Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4104/",
+      "id": 4104,
+      "issue_number": "120",
+      "name": "The Airborne Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4194/",
+      "id": 4194,
+      "issue_number": "121",
+      "name": "The Ice Crimes of Mr. Zero"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4232/",
+      "id": 4232,
+      "issue_number": "122",
+      "name": "The Marriage of Batman and Batwoman!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4271/",
+      "id": 4271,
+      "issue_number": "123",
+      "name": "The Fugitive Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4345/",
+      "id": 4345,
+      "issue_number": "124",
+      "name": "The Mystery Seeds From Space"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4418/",
+      "id": 4418,
+      "issue_number": "125",
+      "name": "King Batman the First"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4455/",
+      "id": 4455,
+      "issue_number": "126",
+      "name": "The Menace of the Firefly"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4517/",
+      "id": 4517,
+      "issue_number": "127",
+      "name": "The Hammer of Thor"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4620/",
+      "id": 4620,
+      "issue_number": "128",
+      "name": "The Interplanetary Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4697/",
+      "id": 4697,
+      "issue_number": "129",
+      "name": "The Web of the Spinner"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4730/",
+      "id": 4730,
+      "issue_number": "130",
+      "name": "The Hand From Nowhere"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4767/",
+      "id": 4767,
+      "issue_number": "131",
+      "name": "The Second Batman and Robin Team"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4833/",
+      "id": 4833,
+      "issue_number": "132",
+      "name": "Lair of the Sea-Fox"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4940/",
+      "id": 4940,
+      "issue_number": "134",
+      "name": "The Rainbow Creature"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-4982/",
+      "id": 4982,
+      "issue_number": "135",
+      "name": "The Menace of the Sky Creature"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5089/",
+      "id": 5089,
+      "issue_number": "136",
+      "name": "Challenge of the Joker"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5210/",
+      "id": 5210,
+      "issue_number": "138",
+      "name": "Secret of the Sea Beast"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5247/",
+      "id": 5247,
+      "issue_number": "139",
+      "name": "Bat-Girl"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5321/",
+      "id": 5321,
+      "issue_number": "140",
+      "name": "The Eighth Wonder of Space"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5440/",
+      "id": 5440,
+      "issue_number": "142",
+      "name": "Ruler of the Bewitched Valley"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5490/",
+      "id": 5490,
+      "issue_number": "143",
+      "name": "Bat-Hound and the Creature"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5603/",
+      "id": 5603,
+      "issue_number": "144",
+      "name": "Bat-Mite Meets Bat-Girl; The Alien Feud on Earth; The Man Who Played Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5731/",
+      "id": 5731,
+      "issue_number": "145",
+      "name": "The Son of the Joker"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5774/",
+      "id": 5774,
+      "issue_number": "146",
+      "name": "The Deadly Curse of Korabo"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5856/",
+      "id": 5856,
+      "issue_number": "147",
+      "name": "Batman Becomes Bat-Baby"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-5999/",
+      "id": 5999,
+      "issue_number": "149",
+      "name": "Invaders From the Past"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6039/",
+      "id": 6039,
+      "issue_number": "150",
+      "name": "Robin, the Super Boy Wonder"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6176/",
+      "id": 6176,
+      "issue_number": "152",
+      "name": "The False Face Society"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6351/",
+      "id": 6351,
+      "issue_number": "153",
+      "name": "Prisoners of Three Worlds"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6396/",
+      "id": 6396,
+      "issue_number": "154",
+      "name": "The Strange Experiment of Doctor Dorn"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6523/",
+      "id": 6523,
+      "issue_number": "156",
+      "name": "Robin Dies at Dawn"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6658/",
+      "id": 6658,
+      "issue_number": "158",
+      "name": "Ace -- the Super Bat-Hound;  Batman and Robin, Imposters; Secret of the Impossible Perils"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6750/",
+      "id": 6750,
+      "issue_number": "159",
+      "name": "The Great Clayface-Joker Feud / The Boyhood of Bruce Wayne Jr."
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6799/",
+      "id": 6799,
+      "issue_number": "160",
+      "name": "The Alien Boss of Gotham City"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-6958/",
+      "id": 6958,
+      "issue_number": "161",
+      "name": "The Bat-Mite Hero"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7081/",
+      "id": 7081,
+      "issue_number": "163",
+      "name": "Bat-Girl -- Batwoman II! / The Joker Jury!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7128/",
+      "id": 7128,
+      "issue_number": "164",
+      "name": "Two-Way Gem Caper!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7222/",
+      "id": 7222,
+      "issue_number": "165",
+      "name": "The Man Who Quit the Human Race"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7276/",
+      "id": 7276,
+      "issue_number": "166",
+      "name": "Two-Way Deathtrap"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7394/",
+      "id": 7394,
+      "issue_number": "167",
+      "name": "Zero Hour for Earth"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7449/",
+      "id": 7449,
+      "issue_number": "168",
+      "name": "The Fight That Jolted Gotham City"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7580/",
+      "id": 7580,
+      "issue_number": "169",
+      "name": "Partners In Plunder"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7638/",
+      "id": 7638,
+      "issue_number": "170",
+      "name": "Genius of the Gimmick Getaways!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7750/",
+      "id": 7750,
+      "issue_number": "171",
+      "name": "Remarkable Ruse of the Riddler"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7806/",
+      "id": 7806,
+      "issue_number": "172",
+      "name": "Attack of the Invisible Knights"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7932/",
+      "id": 7932,
+      "issue_number": "173",
+      "name": "Secret Identities for Sale"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-7998/",
+      "id": 7998,
+      "issue_number": "174",
+      "name": "The Human Punching Bag"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-8136/",
+      "id": 8136,
+      "issue_number": "175",
+      "name": "The Decline and Fall of Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-8197/",
+      "id": 8197,
+      "issue_number": "176",
+      "name": "Batman and Robin's Most Fantastic Foes"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-8246/",
+      "id": 8246,
+      "issue_number": "177",
+      "name": "Two Batmen Too Many"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-8337/",
+      "id": 8337,
+      "issue_number": "178",
+      "name": "Raid of the Rocketeers"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-8397/",
+      "id": 8397,
+      "issue_number": "179",
+      "name": "Clay Pigeon for a Killer; The Riddle-Less Robberies of the Riddler!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-8516/",
+      "id": 8516,
+      "issue_number": "180",
+      "name": "Death Knocks Three Times"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-8577/",
+      "id": 8577,
+      "issue_number": "181",
+      "name": "Beware of Poison Ivy!, The Perfect Crime - Slightly Imperfect!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-8700/",
+      "id": 8700,
+      "issue_number": "182",
+      "name": "The Strange Lives of Batman and Robin"
+    }
+  ],
+  "status_code": 1,
+  "version": "1.0"
+}

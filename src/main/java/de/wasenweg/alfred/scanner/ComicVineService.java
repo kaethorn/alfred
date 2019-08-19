@@ -49,15 +49,18 @@ public class ComicVineService {
   }
 
   // Get details about a specific issue
-  private String getIssueUrl(final String url) {
+  public JsonNode getIssueDetails(final String baseUrl) {
     final Map<String, String> requestParams = new HashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
-    requestParams.put("field_list", "character_credits,cover_date,location_credits,team_credits,person_credits");
+    requestParams.put("field_list",
+        "character_credits,cover_date,location_credits,team_credits,person_credits,description,site_detail_url");
 
-    return requestParams.keySet().stream()
+    final String url = requestParams.keySet().stream()
         .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
-        .collect(Collectors.joining("&", url + "?", ""));
+        .collect(Collectors.joining("&", baseUrl + "?", ""));
+
+    return this.query(url);
   }
 
   // Search for volumes by name
@@ -73,9 +76,7 @@ public class ComicVineService {
     requestParams.put("resources", "volume");
     requestParams.put("query", query);
     requestParams.put("field_list", "id,name,publisher,start_year");
-    if (page > 1) {
-      requestParams.put("page", String.valueOf(page));
-    }
+    requestParams.put("offset", String.valueOf(page * 10));
 
     final String url = requestParams.keySet().stream()
         .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
@@ -84,13 +85,14 @@ public class ComicVineService {
     return this.query(url);
   }
 
-  // Get details about all issues in a volume
-  public JsonNode findIssuesInVolume(final String volumeId) {
+  // Get basic details about all issues in a volume
+  public JsonNode findIssuesInVolume(final String volumeId, final int page) {
     final Map<String, String> requestParams = new HashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
     requestParams.put("filter", "volume:" + volumeId);
-    requestParams.put("field_list", "id,name,description,api_detail_url,issue_number,site_detail_url"); // TODO
+    requestParams.put("field_list", "id,name,api_detail_url,issue_number");
+    requestParams.put("offset", String.valueOf(page * 100));
 
     final String url = requestParams.keySet().stream()
         .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
