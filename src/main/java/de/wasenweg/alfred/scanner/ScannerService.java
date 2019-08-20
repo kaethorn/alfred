@@ -157,17 +157,17 @@ public class ScannerService {
       this.fileMetaDataReader.set(file.get(), comic).forEach(issue -> {
         this.reportIssue(issue, pathString);
       });
-    } catch (final SAXException | IOException | NoMetaDataException exception) {
+    } catch (final SAXException | IOException exception) {
       this.reportIssue(exception, pathString, ScannerIssue.Type.WARNING);
-    }
-
-    try {
-      this.apiMetaDataReader.set(comic).forEach(issue -> {
-        this.reportIssue(issue, pathString);
-      });
-    } catch (final Exception exception) {
-      this.reportIssue(exception, pathString);
-      return;
+    } catch (final NoMetaDataException e) {
+      try {
+        this.apiMetaDataReader.set(comic).forEach(issue -> {
+          this.reportIssue(issue, pathString);
+        });
+      } catch (final Exception exception) {
+        this.reportIssue(exception, pathString);
+        return;
+      }
     }
 
     this.comicRepository.save(comic);
