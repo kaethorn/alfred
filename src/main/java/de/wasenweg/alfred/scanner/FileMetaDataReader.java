@@ -1,6 +1,7 @@
 package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
+import de.wasenweg.alfred.util.ZipReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,10 +132,23 @@ public class FileMetaDataReader {
     throw new NoMetaDataException();
   }
 
+  private void setPageCountFromImages(final ZipFile file, final Comic comic) {
+    short pageCount;
+    try {
+      final List<ZipEntry> sortedEntries = ZipReader.getImages(file);
+      pageCount = (short) sortedEntries.size();
+    } catch (final Exception exception) {
+      pageCount = (short) 0;
+    }
+    comic.setPageCount(pageCount);
+  }
+
   public List<ScannerIssue> set(final ZipFile file, final Comic comic)
       throws SAXException, IOException, NoMetaDataException {
 
     this.scannerIssues.clear();
+
+    this.setPageCountFromImages(file, comic);
 
     final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
     try {

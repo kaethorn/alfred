@@ -99,7 +99,7 @@ public class ApiMetaDataReader {
    * @param comic The comic book entity.
    * @return
    */
-  public List<ScannerIssue> set(final Comic comic) throws IncompleteMetaDataException {
+  public List<ScannerIssue> set(final Comic comic) throws Exception {
     this.scannerIssues.clear();
 
     if (!this.isValid(comic)) {
@@ -119,7 +119,7 @@ public class ApiMetaDataReader {
     try {
       this.query(comic);
     } catch (final Exception exception) {
-      // TODO add to this.scannerIssues
+      throw new Exception("Error during Comic Vine API meta data retrieval");
     }
 
     return this.scannerIssues;
@@ -252,7 +252,6 @@ public class ApiMetaDataReader {
     comic.setCoverArtist(persons.get("artist, cover"));
     comic.setEditor(persons.get("editor"));
     comic.setWeb(response.get("site_detail_url").asText());
-    // TODO make sure that page count is set by MetaDataReaderUtil?
   }
 
   private void query(final Comic comic) throws Exception {

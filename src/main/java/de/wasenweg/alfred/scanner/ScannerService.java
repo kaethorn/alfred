@@ -165,7 +165,7 @@ public class ScannerService {
       this.apiMetaDataReader.set(comic).forEach(issue -> {
         this.reportIssue(issue, pathString);
       });
-    } catch (final IncompleteMetaDataException exception) {
+    } catch (final Exception exception) {
       this.reportIssue(exception, pathString);
       return;
     }
