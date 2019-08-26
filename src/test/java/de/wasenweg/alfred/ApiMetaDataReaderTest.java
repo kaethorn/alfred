@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.ApiMetaDataReader;
 import de.wasenweg.alfred.scanner.ComicVineService;
-import de.wasenweg.alfred.settings.SettingsService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,9 +31,6 @@ public class ApiMetaDataReaderTest {
 
   @Mock
   private ComicVineService comicVineService;
-
-  @Mock
-  private SettingsService settingsService;
 
   @Test
   public void setPathPartsMatchesPath() throws Exception {

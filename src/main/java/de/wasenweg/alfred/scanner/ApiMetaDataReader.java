@@ -119,7 +119,7 @@ public class ApiMetaDataReader {
     try {
       this.query(comic);
     } catch (final Exception exception) {
-      throw new Exception("Error during Comic Vine API meta data retrieval");
+      throw new ComicVineApiException();
     }
 
     return this.scannerIssues;
@@ -143,10 +143,10 @@ public class ApiMetaDataReader {
         .collect(Collectors.toList());
 
     if (filteredIssues.size() == 0) {
-      throw new Exception("No matching issue found");
+      throw new NoMatchException();
     }
     if (filteredIssues.size() > 1) {
-      throw new Exception("No unique issue found");
+      throw new NoUniqueMatchException();
     }
 
     return filteredIssues.get(0).get("api_detail_url").asText();
@@ -170,7 +170,7 @@ public class ApiMetaDataReader {
     if (results.size() > 0) {
       return results.get(0).get("id").asText();
     } else {
-      throw new Exception("No result in volume search");
+      throw new NoVolumeResultException();
     }
   }
 
@@ -193,7 +193,7 @@ public class ApiMetaDataReader {
     }
 
     if (issues.isEmpty()) {
-      throw new Exception("Empty volume");
+      throw new EmptyVolumeException();
     } else {
       return issues;
     }

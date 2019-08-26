@@ -26,17 +26,14 @@ import java.util.stream.Collectors;
 @Service
 public class ComicVineService {
 
-  private SettingsService settingsService;
-
   private String baseUrl = "https://comicvine.gamespot.com/api/";
   private String apiKey;
   private ObjectMapper mapper;
 
   @Autowired
   public ComicVineService(final SettingsService settingsService) {
-    this.settingsService = settingsService;
     this.mapper = new ObjectMapper();
-    this.apiKey = this.settingsService.get("comics.comicVineApiKey");
+    this.apiKey = settingsService.get("comics.comicVineApiKey");
   }
 
   private String encodeValue(final String value) {
