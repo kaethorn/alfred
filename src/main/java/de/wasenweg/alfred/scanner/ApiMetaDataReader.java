@@ -255,7 +255,6 @@ public class ApiMetaDataReader {
   }
 
   private void query(final Comic comic) throws Exception {
-    // TODO account for throttling (200 requests/h).
     final String volumeId = this.findVolumeId(comic.getPublisher(), comic.getSeries(), comic.getVolume());
     final List<JsonNode> issues = this.findVolumeIssues(volumeId);
     final String issueDetailsUrl = this.findIssueDetailsUrl(comic, issues);

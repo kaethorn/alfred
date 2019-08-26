@@ -2,6 +2,7 @@ package de.wasenweg.alfred.scanner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.util.concurrent.RateLimiter;
 
 import de.wasenweg.alfred.settings.SettingsService;
 
@@ -29,6 +30,7 @@ public class ComicVineService {
   private String baseUrl = "https://comicvine.gamespot.com/api/";
   private String apiKey;
   private ObjectMapper mapper;
+  private RateLimiter throttle = RateLimiter.create(0.055);
 
   @Autowired
   public ComicVineService(final SettingsService settingsService) {
@@ -99,6 +101,7 @@ public class ComicVineService {
   }
 
   private JsonNode query(final String url) {
+    this.throttle.acquire();
     final HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     headers.add("user-agent", "curl/7.52.1");
