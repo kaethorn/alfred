@@ -30,13 +30,14 @@ public class ComicVineService {
   private String baseUrl = "https://comicvine.gamespot.com/api/";
   private String apiKey;
   private ObjectMapper mapper;
-  // Throttle to 200 requests per hour
-  private RateLimiter throttle = RateLimiter.create(200 / 3600);
+  private RateLimiter throttle;
 
   @Autowired
   public ComicVineService(final SettingsService settingsService) {
     this.mapper = new ObjectMapper();
     this.apiKey = settingsService.get("comics.comicVineApiKey");
+    // Throttle to 200 requests per hour
+    this.throttle = RateLimiter.create(200.0 / 3600.0);
   }
 
   private String encodeValue(final String value) {
