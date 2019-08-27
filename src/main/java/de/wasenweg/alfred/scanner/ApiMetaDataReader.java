@@ -37,23 +37,23 @@ public class ApiMetaDataReader {
 
     final String publisherDirPattern = "^.*?(?<publisher>[^/]+)/";
     final String seriesDirPattern = "(?<series1>[^/]+) \\((?<volume1>\\d{4})\\)/";
-    final String fileNamePattern = "(?<series2>[^/]+) (?<number>[\\d\\.a½/]+) \\((?<volume2>\\d{4})\\) [^/]+\\.cbz$";
+    final String fileNamePattern = "(?<series2>[^/]+) (?<number>[\\d\\.a½/]+) \\((?<volume2>\\d{4})\\)( [^/]+)?\\.cbz$";
     this.pattern = Pattern
         .compile(publisherDirPattern + seriesDirPattern + fileNamePattern);
   }
 
   private List<String> findMissingAttributes(final Comic comic) {
     final List<String> missingAttributes = new ArrayList<String>();
-    if ("".equals(comic.getPublisher())) {
+    if (comic.getPublisher() == null) {
       missingAttributes.add("publisher");
     }
-    if ("".equals(comic.getSeries())) {
+    if (comic.getSeries() == null) {
       missingAttributes.add("series");
     }
-    if ("".equals(comic.getVolume())) {
+    if (comic.getVolume() == null) {
       missingAttributes.add("volume");
     }
-    if ("".equals(comic.getNumber())) {
+    if (comic.getNumber() == null) {
       missingAttributes.add("number");
     }
     return missingAttributes;

@@ -45,6 +45,17 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
+  public void setPathPartsMatchesWithoutSuffix() throws Exception {
+    final Comic comic = new Comic();
+    comic.setPath("/home/foo/src/alfred/src/test/resources/fixtures/incomplete/DC Comics/Batman (1940)/Batman 701 (1940).cbz");
+    Whitebox.invokeMethod(this.apiMetaDataReader, "setPathParts", comic);
+    assertThat(comic.getPublisher()).isEqualTo("DC Comics");
+    assertThat(comic.getSeries()).isEqualTo("Batman");
+    assertThat(comic.getVolume()).isEqualTo("1940");
+    assertThat(comic.getPosition()).isEqualTo("0701.0");
+  }
+
+  @Test
   public void setPathPartsMatchesFractionalIssueNumbers() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (1940)/Batman 102a (1940) bar.cbz");

@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import de.wasenweg.alfred.settings.SettingsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,7 +28,8 @@ import java.util.stream.Collectors;
 @Service
 public class ComicVineService {
 
-  private String baseUrl = "https://comicvine.gamespot.com/api/";
+  @Value("${comicVine.baseUrl:https://comicvine.gamespot.com/api/}")
+  private String baseUrl;
   private String apiKey;
   private ObjectMapper mapper;
   private RateLimiter throttle;
