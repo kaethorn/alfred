@@ -1,4 +1,4 @@
-package de.wasenweg.alfred;
+package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.settings.Setting;
 import de.wasenweg.alfred.settings.SettingRepository;

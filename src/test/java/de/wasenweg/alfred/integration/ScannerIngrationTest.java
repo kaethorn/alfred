@@ -1,5 +1,6 @@
-package de.wasenweg.alfred;
+package de.wasenweg.alfred.integration;
 
+import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
 @ActiveProfiles(profiles = "test")
-public class ScannerAssociationIngrationTest {
+public class ScannerIngrationTest {
 
   @LocalServerPort
   private int port;
@@ -48,34 +50,23 @@ public class ScannerAssociationIngrationTest {
 
   @Test
   @DirtiesContext
-  public void associatesComics() throws Exception {
+  public void emittsScanProgressEvents() throws Exception {
     // Given
-    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/full");
+    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/simple");
 
     // When
     StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))
         .expectNext("start")
-        .expectNext("305")
-        .expectNextCount(305)
+        .expectNext("1")
+        .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz")
         .expectNext("cleanUp")
         .expectNext("association")
         .expectNext("done")
         .thenCancel()
-        .verify();
+        .verify(Duration.ofSeconds(2L));
 
     // Then
     final List<Comic> comics = this.comicRepository.findAll();
-    assertThat(comics.size()).isEqualTo(305);
-
-    final List<Comic> batgirlVol2008 = this.comicRepository
-        .findAllByPublisherAndSeriesAndVolumeOrderByPosition("", "DC Comics", "Batgirl", "2008");
-    assertThat(batgirlVol2008.size()).isEqualTo(6);
-
-    assertThat(batgirlVol2008.get(0).getNextId()).isEqualTo(batgirlVol2008.get(1).getId());
-    assertThat(batgirlVol2008.get(0).getPreviousId()).isNull();
-    assertThat(batgirlVol2008.get(1).getNextId()).isEqualTo(batgirlVol2008.get(2).getId());
-    assertThat(batgirlVol2008.get(1).getPreviousId()).isEqualTo(batgirlVol2008.get(0).getId());
-    assertThat(batgirlVol2008.get(5).getNextId()).isNull();
-    assertThat(batgirlVol2008.get(5).getPreviousId()).isEqualTo(batgirlVol2008.get(4).getId());
+    assertThat(comics.size()).isEqualTo(1);
   }
 }

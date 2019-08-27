@@ -1,4 +1,4 @@
-package de.wasenweg.alfred;
+package de.wasenweg.alfred.unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

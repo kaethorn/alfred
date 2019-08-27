@@ -52,7 +52,8 @@ public class ComicVineService {
   }
 
   // Get details about a specific issue
-  public JsonNode getIssueDetails(final String baseUrl) {
+  public JsonNode getIssueDetails(final String detailsUrl) {
+    final String path = detailsUrl.split("/api/")[1];
     final Map<String, String> requestParams = new HashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
@@ -61,7 +62,7 @@ public class ComicVineService {
 
     final String url = requestParams.keySet().stream()
         .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
-        .collect(Collectors.joining("&", baseUrl + "?", ""));
+        .collect(Collectors.joining("&", this.baseUrl + path + "?", ""));
 
     return this.query(url);
   }

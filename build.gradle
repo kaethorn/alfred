@@ -74,6 +74,8 @@ dependencies {
   testCompile 'org.springframework.security:spring-security-test'
   testCompile 'org.powermock:powermock-module-junit4:2.0.0'
   testCompile 'org.powermock:powermock-api-mockito2:2.0.0'
+  testCompile 'org.mock-server:mockserver-netty:5.6.1'
+  testCompile 'org.mock-server:mockserver-client-java:5.6.1'
 
   implementation(project(':ui'))
 }

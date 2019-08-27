@@ -1,4 +1,4 @@
-package de.wasenweg.alfred;
+package de.wasenweg.alfred.unit;
 
 import de.wasenweg.alfred.scanner.ScannerController;
 import de.wasenweg.alfred.scanner.ScannerService;
