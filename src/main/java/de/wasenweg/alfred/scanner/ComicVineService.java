@@ -8,6 +8,8 @@ import de.wasenweg.alfred.settings.SettingsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,9 +35,14 @@ public class ComicVineService {
   private String apiKey;
   private ObjectMapper mapper;
   private RateLimiter throttle;
+  private Environment environment;
 
   @Autowired
-  public ComicVineService(final SettingsService settingsService) {
+  public ComicVineService(
+      final SettingsService settingsService,
+      final Environment environment
+  ) {
+    this.environment = environment;
     this.mapper = new ObjectMapper();
     this.apiKey = settingsService.get("comics.comicVineApiKey");
     // Throttle to 200 requests per hour
@@ -106,7 +113,9 @@ public class ComicVineService {
   }
 
   private JsonNode query(final String url) {
-    this.throttle.acquire();
+    if (this.environment.acceptsProfiles(Profiles.of("prod"))) {
+      this.throttle.acquire();
+    }
     final HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     headers.add("user-agent", "curl/7.52.1");
