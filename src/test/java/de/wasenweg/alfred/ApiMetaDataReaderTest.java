@@ -1,7 +1,6 @@
 package de.wasenweg.alfred;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.ApiMetaDataReader;
@@ -15,8 +14,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.reflect.Whitebox;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,7 +106,7 @@ public class ApiMetaDataReaderTest {
 
   @Test
   public void findVolume() throws Exception {
-    when(this.comicVineService.findVolumesBySeries("Batgirl", 0)).thenReturn(this.parseJson("search-batgirl.json"));
+    when(this.comicVineService.findVolumesBySeries("Batgirl", 0)).thenReturn(TestHelper.parseJson("search-batgirl.json"));
     final Comic comic = new Comic();
     comic.setSeries("Batgirl");
     comic.setPublisher("DC Comics");
@@ -121,9 +118,9 @@ public class ApiMetaDataReaderTest {
 
   @Test
   public void findVolumeWithOffset() throws Exception {
-    when(this.comicVineService.findVolumesBySeries("Batman", 0)).thenReturn(this.parseJson("search-batman.json"));
-    when(this.comicVineService.findVolumesBySeries("Batman", 1)).thenReturn(this.parseJson("search-batman-page2.json"));
-    when(this.comicVineService.findVolumesBySeries("Batman", 2)).thenReturn(this.parseJson("search-batman-page3.json"));
+    when(this.comicVineService.findVolumesBySeries("Batman", 0)).thenReturn(TestHelper.parseJson("search-batman.json"));
+    when(this.comicVineService.findVolumesBySeries("Batman", 1)).thenReturn(TestHelper.parseJson("search-batman-page2.json"));
+    when(this.comicVineService.findVolumesBySeries("Batman", 2)).thenReturn(TestHelper.parseJson("search-batman-page3.json"));
 
     final Comic comic = new Comic();
     comic.setSeries("Batman");
@@ -142,21 +139,21 @@ public class ApiMetaDataReaderTest {
 
   @Test
   public void findVolumeIssues() throws Exception {
-    when(this.comicVineService.findIssuesInVolume("796", 0)).thenReturn(this.parseJson("issues-batman-page1.json"));
-    when(this.comicVineService.findIssuesInVolume("796", 1)).thenReturn(this.parseJson("issues-batman-page2.json"));
-    when(this.comicVineService.findIssuesInVolume("796", 2)).thenReturn(this.parseJson("issues-batman-page3.json"));
-    when(this.comicVineService.findIssuesInVolume("796", 3)).thenReturn(this.parseJson("issues-batman-page4.json"));
-    when(this.comicVineService.findIssuesInVolume("796", 4)).thenReturn(this.parseJson("issues-batman-page5.json"));
-    when(this.comicVineService.findIssuesInVolume("796", 5)).thenReturn(this.parseJson("issues-batman-page6.json"));
-    when(this.comicVineService.findIssuesInVolume("796", 6)).thenReturn(this.parseJson("issues-batman-page7.json"));
-    when(this.comicVineService.findIssuesInVolume("796", 7)).thenReturn(this.parseJson("issues-batman-page8.json"));
+    when(this.comicVineService.findIssuesInVolume("796", 0)).thenReturn(TestHelper.parseJson("issues-batman-page1.json"));
+    when(this.comicVineService.findIssuesInVolume("796", 1)).thenReturn(TestHelper.parseJson("issues-batman-page2.json"));
+    when(this.comicVineService.findIssuesInVolume("796", 2)).thenReturn(TestHelper.parseJson("issues-batman-page3.json"));
+    when(this.comicVineService.findIssuesInVolume("796", 3)).thenReturn(TestHelper.parseJson("issues-batman-page4.json"));
+    when(this.comicVineService.findIssuesInVolume("796", 4)).thenReturn(TestHelper.parseJson("issues-batman-page5.json"));
+    when(this.comicVineService.findIssuesInVolume("796", 5)).thenReturn(TestHelper.parseJson("issues-batman-page6.json"));
+    when(this.comicVineService.findIssuesInVolume("796", 6)).thenReturn(TestHelper.parseJson("issues-batman-page7.json"));
+    when(this.comicVineService.findIssuesInVolume("796", 7)).thenReturn(TestHelper.parseJson("issues-batman-page8.json"));
     final List<JsonNode> result = Whitebox.invokeMethod(this.apiMetaDataReader, "findVolumeIssues", "796");
     assertThat(result.size()).isEqualTo(716);
   }
 
   @Test
   public void getIssueDetails() throws Exception {
-    when(this.comicVineService.getIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/")).thenReturn(this.parseJson("batman-701.json"));
+    when(this.comicVineService.getIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/")).thenReturn(TestHelper.parseJson("batman-701.json"));
     final Comic comic = new Comic();
     comic.setSeries("Batman");
     comic.setPublisher("DC Comics");
@@ -181,9 +178,5 @@ public class ApiMetaDataReaderTest {
     assertThat(comic.getCoverArtist()).isEqualTo("Tony Daniel");
     assertThat(comic.getEditor()).isEqualTo("Dan DiDio, Janelle Asselin (Siegel), Mike Marts");
     assertThat(comic.getWeb()).isEqualTo("https://comicvine.gamespot.com/batman-701-rip-the-missing-chapter-part-1-the-hole/4000-224555/");
-  }
-
-  private JsonNode parseJson(final String path) throws IOException {
-    return new ObjectMapper().readTree(new File("src/test/resources/" + path));
   }
 }
