@@ -1,7 +1,7 @@
 package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
-import de.wasenweg.alfred.util.ZipReader;
+import de.wasenweg.alfred.util.ZipReaderUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,7 +135,7 @@ public class FileMetaDataReader {
   private void setPageCountFromImages(final ZipFile file, final Comic comic) {
     short pageCount;
     try {
-      final List<ZipEntry> sortedEntries = ZipReader.getImages(file);
+      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
       pageCount = (short) sortedEntries.size();
     } catch (final Exception exception) {
       pageCount = (short) 0;

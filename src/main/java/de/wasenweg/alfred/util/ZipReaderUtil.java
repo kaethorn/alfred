@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ZipReader {
+public class ZipReaderUtil {
 
   /**
    * Returns a sorted list of images in the given zip file.

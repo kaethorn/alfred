@@ -2,7 +2,7 @@ package de.wasenweg.alfred.thumbnails;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.NoImagesException;
-import de.wasenweg.alfred.util.ZipReader;
+import de.wasenweg.alfred.util.ZipReaderUtil;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class ThumbnailService {
   public void setComic(final ZipFile file, final Comic comic) throws NoImagesException {
 
     try {
-      final List<ZipEntry> sortedEntries = ZipReader.getImages(file);
+      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
 
       if (sortedEntries.size() > 0) {
         final ObjectId comicId = new ObjectId(comic.getId());

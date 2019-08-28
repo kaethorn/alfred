@@ -28,7 +28,7 @@ public class ScannerControllerTest {
   private ScannerController controller;
 
   @Before
-  public void setup() {
+  public void setUp() {
     this.mockMvc = MockMvcBuilders.standaloneSetup(this.controller)
         .build();
   }

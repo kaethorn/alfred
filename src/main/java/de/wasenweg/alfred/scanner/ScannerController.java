@@ -20,7 +20,7 @@ public class ScannerController {
   private ScannerService scannerService;
 
   @GetMapping("/scan-progress")
-  Flux<ServerSentEvent<String>> streamScanProgress() {
+  public Flux<ServerSentEvent<String>> streamScanProgress() {
     this.logger.info("Triggered scan-progress.");
     return this.scannerService.scanComics();
   }

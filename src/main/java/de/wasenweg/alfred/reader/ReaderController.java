@@ -4,7 +4,7 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
-import de.wasenweg.alfred.util.ZipReader;
+import de.wasenweg.alfred.util.ZipReaderUtil;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class ReaderController {
     ZipFile file = null;
     try {
       file = new ZipFile(comic.getPath());
-      final List<ZipEntry> sortedEntries = ZipReader.getImages(file);
+      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
       final ZipEntry entry = sortedEntries.get(page);
       final String fileName = entry.getName();
       result.setStream(file.getInputStream(entry));
