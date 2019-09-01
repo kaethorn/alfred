@@ -1,5 +1,6 @@
-package de.wasenweg.alfred;
+package de.wasenweg.alfred.integration;
 
+import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
 

@@ -1,0 +1,611 @@
+{
+  "error": "OK",
+  "limit": 100,
+  "number_of_page_results": 100,
+  "number_of_total_results": 716,
+  "offset": 200,
+  "results": [
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18126/",
+      "id": 18126,
+      "issue_number": "295",
+      "name": "The Adventure of the Houdini Whodunit!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18209/",
+      "id": 18209,
+      "issue_number": "296",
+      "name": "The Sinister Straws of the Scarecrow"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18288/",
+      "id": 18288,
+      "issue_number": "297",
+      "name": "The Mad Hatter Goes Straight!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18367/",
+      "id": 18367,
+      "issue_number": "298",
+      "name": "The Case of the Crimson Coffin"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18458/",
+      "id": 18458,
+      "issue_number": "299",
+      "name": "The Island of Purple Mist!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18538/",
+      "id": 18538,
+      "issue_number": "300",
+      "name": "Last Batman Story!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18619/",
+      "id": 18619,
+      "issue_number": "301",
+      "name": "The Only Man Batman Ever Killed!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18697/",
+      "id": 18697,
+      "issue_number": "302",
+      "name": "The Attack of the Wire-Head Killers"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18778/",
+      "id": 18778,
+      "issue_number": "303",
+      "name": "Batman's Great Identity Switch"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18856/",
+      "id": 18856,
+      "issue_number": "304",
+      "name": "To Hell With Batman... and Back!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-18932/",
+      "id": 18932,
+      "issue_number": "305",
+      "name": "Death-Gamble of a Darknight Detective! / With This Ring Find Me Dead"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19006/",
+      "id": 19006,
+      "issue_number": "306",
+      "name": "Night of Siege"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19159/",
+      "id": 19159,
+      "issue_number": "307",
+      "name": "Dark Messenger of Mercy"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19260/",
+      "id": 19260,
+      "issue_number": "308",
+      "name": "There'll Be a Cold Time in the Old Town Tonight!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19334/",
+      "id": 19334,
+      "issue_number": "309",
+      "name": "Have Yourself a Deadly Little Christmas!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19401/",
+      "id": 19401,
+      "issue_number": "310",
+      "name": "The Ghost Who Haunted Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19475/",
+      "id": 19475,
+      "issue_number": "311",
+      "name": "Dr. Phosphorus is Back!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19547/",
+      "id": 19547,
+      "issue_number": "312",
+      "name": "A Caper a Day Keeps the Batman at Bay!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19610/",
+      "id": 19610,
+      "issue_number": "313",
+      "name": "Two For The Money!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19673/",
+      "id": 19673,
+      "issue_number": "314",
+      "name": "Once Beaten, Twice Sly!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19746/",
+      "id": 19746,
+      "issue_number": "315",
+      "name": "Danger on the Wing!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19810/",
+      "id": 19810,
+      "issue_number": "316",
+      "name": "Color Me Deadly!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19887/",
+      "id": 19887,
+      "issue_number": "317",
+      "name": "The 1,001 Clue Caper or Why Did the Riddler Cross the Road?"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-19950/",
+      "id": 19950,
+      "issue_number": "318",
+      "name": "My City Burns at Both Ends -- It Will Not Last the Night!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20064/",
+      "id": 20064,
+      "issue_number": "319",
+      "name": "Never Give Up the Ghost!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20130/",
+      "id": 20130,
+      "issue_number": "320",
+      "name": "The Curse of the Inquisitor!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20207/",
+      "id": 20207,
+      "issue_number": "321",
+      "name": "Dreadful Birthday, Dear Joker...!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20276/",
+      "id": 20276,
+      "issue_number": "322",
+      "name": "Chaos -- Coming and Going!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20353/",
+      "id": 20353,
+      "issue_number": "323",
+      "name": "Shadow of the Cat"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20421/",
+      "id": 20421,
+      "issue_number": "324",
+      "name": "The Cat Who Would Be King"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20494/",
+      "id": 20494,
+      "issue_number": "325",
+      "name": "Death -- Twenty Stories High"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20558/",
+      "id": 20558,
+      "issue_number": "326",
+      "name": "This Way Lies Madness"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20627/",
+      "id": 20627,
+      "issue_number": "327",
+      "name": "Asylum Sinister!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20698/",
+      "id": 20698,
+      "issue_number": "328",
+      "name": "Double Jeopardy"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20761/",
+      "id": 20761,
+      "issue_number": "329",
+      "name": "Twice Dies the Batman!; Case of the Hijacked Head"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20826/",
+      "id": 20826,
+      "issue_number": "330",
+      "name": "Target!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-20934/",
+      "id": 20934,
+      "issue_number": "331",
+      "name": "Closed Circuit!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21002/",
+      "id": 21002,
+      "issue_number": "332",
+      "name": "Fallout! [The Lazarus Affair] ; Cat's Paw!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21071/",
+      "id": 21071,
+      "issue_number": "333",
+      "name": "The China Syndrome [The Lazarous Affair] ; Shangahaied!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21140/",
+      "id": 21140,
+      "issue_number": "334",
+      "name": "Infinity Island [The Lazarus Affair] ; Whodunit;  ...From the Ashes"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21205/",
+      "id": 21205,
+      "issue_number": "335",
+      "name": "Ashes to Ashes [The Lazarus Affair]"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21264/",
+      "id": 21264,
+      "issue_number": "336",
+      "name": "While the Bat's Away ..."
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21336/",
+      "id": 21336,
+      "issue_number": "337",
+      "name": "Where Walks A Snowman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21405/",
+      "id": 21405,
+      "issue_number": "338",
+      "name": "This Sporting Death!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21479/",
+      "id": 21479,
+      "issue_number": "339",
+      "name": "A Sweet Kiss of Poison"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21551/",
+      "id": 21551,
+      "issue_number": "340",
+      "name": "A Man Called Mole!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21627/",
+      "id": 21627,
+      "issue_number": "341",
+      "name": "The Ghost of Wayne Mansion"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21691/",
+      "id": 21691,
+      "issue_number": "342",
+      "name": "Man-Bat Is Back!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21821/",
+      "id": 21821,
+      "issue_number": "343",
+      "name": "A Dagger So Deadly"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21890/",
+      "id": 21890,
+      "issue_number": "344",
+      "name": "Monster, My Sweet!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-21971/",
+      "id": 21971,
+      "issue_number": "345",
+      "name": "Calling Doctor Death!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22044/",
+      "id": 22044,
+      "issue_number": "346",
+      "name": "Half a Hero"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22123/",
+      "id": 22123,
+      "issue_number": "347",
+      "name": "The Shadow of the Batman starring Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22192/",
+      "id": 22192,
+      "issue_number": "348",
+      "name": "Shadow Play"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22266/",
+      "id": 22266,
+      "issue_number": "349",
+      "name": "Blood Sport"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22336/",
+      "id": 22336,
+      "issue_number": "350",
+      "name": "Nightmare in Crimson!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22410/",
+      "id": 22410,
+      "issue_number": "351",
+      "name": "What Stalks the Gotham Night?"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22480/",
+      "id": 22480,
+      "issue_number": "352",
+      "name": "The Killer Sky!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22557/",
+      "id": 22557,
+      "issue_number": "353",
+      "name": "Last Laugh"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22632/",
+      "id": 22632,
+      "issue_number": "354",
+      "name": "Showdown"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22753/",
+      "id": 22753,
+      "issue_number": "355",
+      "name": "The Bat ... ... and the Cat"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22826/",
+      "id": 22826,
+      "issue_number": "356",
+      "name": "The Double Life of Hugo Strange"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22911/",
+      "id": 22911,
+      "issue_number": "357",
+      "name": "Squid"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-22990/",
+      "id": 22990,
+      "issue_number": "358",
+      "name": "Don't Mess With Killer Croc!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23079/",
+      "id": 23079,
+      "issue_number": "359",
+      "name": "Hunt"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23162/",
+      "id": 23162,
+      "issue_number": "360",
+      "name": "When Slays the Savage Skull"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23248/",
+      "id": 23248,
+      "issue_number": "361",
+      "name": "The Most Successful Species!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23329/",
+      "id": 23329,
+      "issue_number": "362",
+      "name": "When Riddled By The Riddler"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23410/",
+      "id": 23410,
+      "issue_number": "363",
+      "name": "Elegant Night Crimes"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23495/",
+      "id": 23495,
+      "issue_number": "364",
+      "name": "The Man of a Thousand Menaces"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23578/",
+      "id": 23578,
+      "issue_number": "365",
+      "name": "Ruins"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23680/",
+      "id": 23680,
+      "issue_number": "366",
+      "name": "The Joker Is Wild!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23825/",
+      "id": 23825,
+      "issue_number": "367",
+      "name": "The Green Ghosts of Gotham"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-23928/",
+      "id": 23928,
+      "issue_number": "368",
+      "name": "A Revenge of Rainbows"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24043/",
+      "id": 24043,
+      "issue_number": "369",
+      "name": "Target Practice"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24151/",
+      "id": 24151,
+      "issue_number": "370",
+      "name": "Up Above the Sin So High..."
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24254/",
+      "id": 24254,
+      "issue_number": "371",
+      "name": "Nine Cradles of Death"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24353/",
+      "id": 24353,
+      "issue_number": "372",
+      "name": "What Price, the Prize?"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24453/",
+      "id": 24453,
+      "issue_number": "373",
+      "name": "The Frequency of Fear"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24546/",
+      "id": 24546,
+      "issue_number": "374",
+      "name": "Pieces of Penguin!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24651/",
+      "id": 24651,
+      "issue_number": "375",
+      "name": "The Glacier Under Gotham!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24737/",
+      "id": 24737,
+      "issue_number": "376",
+      "name": "Nightmares, Inc."
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24835/",
+      "id": 24835,
+      "issue_number": "377",
+      "name": "The Slayer of Night"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-24939/",
+      "id": 24939,
+      "issue_number": "378",
+      "name": "One Hat Madder!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25116/",
+      "id": 25116,
+      "issue_number": "379",
+      "name": "Bedtime Stories"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25202/",
+      "id": 25202,
+      "issue_number": "380",
+      "name": "End of the Bat"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25329/",
+      "id": 25329,
+      "issue_number": "382",
+      "name": "The Vengeance Spiral"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25436/",
+      "id": 25436,
+      "issue_number": "383",
+      "name": "Just As Night Follows Day..."
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25528/",
+      "id": 25528,
+      "issue_number": "384",
+      "name": "Broken Dates"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25634/",
+      "id": 25634,
+      "issue_number": "385",
+      "name": "Day Of Doom"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25730/",
+      "id": 25730,
+      "issue_number": "386",
+      "name": "Black Mask: Losing Face"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25830/",
+      "id": 25830,
+      "issue_number": "387",
+      "name": "Ebon Masquery"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-25922/",
+      "id": 25922,
+      "issue_number": "388",
+      "name": "The Round-Trip Looking Glass!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-26028/",
+      "id": 26028,
+      "issue_number": "389",
+      "name": "Red Skies"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-26134/",
+      "id": 26134,
+      "issue_number": "390",
+      "name": "Women Dark and Dangerous"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-26343/",
+      "id": 26343,
+      "issue_number": "391",
+      "name": "Death Comes as the End!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-26447/",
+      "id": 26447,
+      "issue_number": "392",
+      "name": "A Night on the Town"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-26551/",
+      "id": 26551,
+      "issue_number": "393",
+      "name": "The Dark Rider"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-26644/",
+      "id": 26644,
+      "issue_number": "394",
+      "name": "At The Heart Of Stone"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-26741/",
+      "id": 26741,
+      "issue_number": "395",
+      "name": "Fury of the Film Freak"
+    }
+  ],
+  "status_code": 1,
+  "version": "1.0"
+}

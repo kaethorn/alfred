@@ -3,10 +3,12 @@ package de.wasenweg.alfred;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@EnableCaching
 @SpringBootApplication
 public class AlfredApplication implements ErrorController {
 

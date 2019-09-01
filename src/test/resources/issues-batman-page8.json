@@ -1,0 +1,107 @@
+{
+  "error": "OK",
+  "limit": 100,
+  "number_of_page_results": 16,
+  "number_of_total_results": 716,
+  "offset": 700,
+  "results": [
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-213452/",
+      "id": 213452,
+      "issue_number": "699",
+      "name": "Riddle Me This, Part 2: A Means To An End"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-218346/",
+      "id": 218346,
+      "issue_number": "700",
+      "name": "Time and the Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-224555/",
+      "id": 224555,
+      "issue_number": "701",
+      "name": "R.I.P. The Missing Chapter, Part 1: The Hole In Things"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-231608/",
+      "id": 231608,
+      "issue_number": "702",
+      "name": "R.I.P. The Missing Chapter, Part 2: Batman's Last Case"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-233717/",
+      "id": 233717,
+      "issue_number": "703",
+      "name": "The Great Escape"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-244616/",
+      "id": 244616,
+      "issue_number": "704",
+      "name": "Eye of the Beholder, Part One: Hear No Evil"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-249177/",
+      "id": 249177,
+      "issue_number": "705",
+      "name": "Eye of The Beholder, Part Two: See No Evil"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-258315/",
+      "id": 258315,
+      "issue_number": "706",
+      "name": "Eye of the Beholder, Part Three: Speak No Evil"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-262718/",
+      "id": 262718,
+      "issue_number": "707",
+      "name": "Eye of the Beholder, Conclusion: The Evil Within"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-265991/",
+      "id": 265991,
+      "issue_number": "708",
+      "name": "Judgment on Gotham, Part One: One Good Man"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-268725/",
+      "id": 268725,
+      "issue_number": "709",
+      "name": "Judgment on Gotham, Conclusion: Secret Sin"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-270400/",
+      "id": 270400,
+      "issue_number": "710",
+      "name": "Pieces, Part One: Lost"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-274396/",
+      "id": 274396,
+      "issue_number": "711",
+      "name": "Pieces, Part Two: The Long Way Back"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-280287/",
+      "id": 280287,
+      "issue_number": "712",
+      "name": "Pieces, Part Three: Gilded Lily"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-286879/",
+      "id": 286879,
+      "issue_number": "713",
+      "name": "In Storybook Endings"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-542921/",
+      "id": 542921,
+      "issue_number": "616a",
+      "name": "Hush Interlude: The Cave"
+    }
+  ],
+  "status_code": 1,
+  "version": "1.0"
+}

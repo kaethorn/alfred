@@ -41,7 +41,10 @@ public class ScannerService {
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
   @Autowired
-  private MetaDataReader metaDataReader;
+  private ApiMetaDataReader apiMetaDataReader;
+
+  @Autowired
+  private FileMetaDataReader fileMetaDataReader;
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -105,10 +108,14 @@ public class ScannerService {
   }
 
   private void reportIssue(final Exception exception, final String path) {
+    this.reportIssue(exception, path, ScannerIssue.Type.ERROR);
+  }
+
+  private void reportIssue(final Exception exception, final String path, final ScannerIssue.Type type) {
     this.logger.error(exception.getLocalizedMessage(), exception);
     this.reportIssue(ScannerIssue.builder()
         .message(exception.getLocalizedMessage())
-        .type(ScannerIssue.Type.ERROR)
+        .type(type)
         .path(path)
         .build());
   }
@@ -147,12 +154,20 @@ public class ScannerService {
     }
 
     try {
-      this.metaDataReader.set(file.get(), comic).forEach(issue -> {
+      this.fileMetaDataReader.set(file.get(), comic).forEach(issue -> {
         this.reportIssue(issue, pathString);
       });
-    } catch (final SAXException | IOException | NoMetaDataException exception) {
-      this.reportIssue(exception, pathString);
-      return;
+    } catch (final SAXException | IOException exception) {
+      this.reportIssue(exception, pathString, ScannerIssue.Type.WARNING);
+    } catch (final NoMetaDataException e) {
+      try {
+        this.apiMetaDataReader.set(comic).forEach(issue -> {
+          this.reportIssue(issue, pathString);
+        });
+      } catch (final Exception exception) {
+        this.reportIssue(exception, pathString);
+        return;
+      }
     }
 
     this.comicRepository.save(comic);
@@ -175,6 +190,16 @@ public class ScannerService {
    *
    * Updates existing files, adds new files and removes files that are
    * not available anymore.
+   *
+   * Mandatory fields are `publisher`, `series`, `volume` and `issue number`.
+   *
+   * Process:
+   * 1. Ignore all files that do not end in `.cbz`.
+   * 2. Attempt to parse mandatory fields from meta data XML. Exit on success.
+   * 3. Ignore all files that do not match pattern containing mandatory fields, e.g.
+   *    `{publisher}/{series} ({volume})/{series} ({volume}) {issue number} .*.cbz`.
+   * 4. Attempt to match & scrape meta data from Comic Vine API.
+   * 5. On match, write meta data XML and exit. Otherwise report error and ignore file.
    */
   public Flux<ServerSentEvent<String>> scanComics() {
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));

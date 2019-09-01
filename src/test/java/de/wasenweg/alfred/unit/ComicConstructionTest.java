@@ -1,4 +1,4 @@
-package de.wasenweg.alfred;
+package de.wasenweg.alfred.unit;
 
 import de.wasenweg.alfred.comics.Comic;
 

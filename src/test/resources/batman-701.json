@@ -1,0 +1,145 @@
+{
+  "error": "OK",
+  "limit": 1,
+  "number_of_page_results": 1,
+  "number_of_total_results": 1,
+  "offset": 0,
+  "results": {
+    "character_credits": [
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-5556/",
+        "id": 5556,
+        "name": "Alfred Pennyworth",
+        "site_detail_url": "https://comicvine.gamespot.com/alfred-pennyworth/4005-5556/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-1699/",
+        "id": 1699,
+        "name": "Batman",
+        "site_detail_url": "https://comicvine.gamespot.com/batman/4005-1699/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-54826/",
+        "id": 54826,
+        "name": "Doctor Hurt",
+        "site_detail_url": "https://comicvine.gamespot.com/doctor-hurt/4005-54826/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-77732/",
+        "id": 77732,
+        "name": "Ellie",
+        "site_detail_url": "https://comicvine.gamespot.com/ellie/4005-77732/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-45542/",
+        "id": 45542,
+        "name": "Jezebel Jet",
+        "site_detail_url": "https://comicvine.gamespot.com/jezebel-jet/4005-45542/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-3603/",
+        "id": 3603,
+        "name": "Martha Wayne",
+        "site_detail_url": "https://comicvine.gamespot.com/martha-wayne/4005-3603/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-1807/",
+        "id": 1807,
+        "name": "Superman",
+        "site_detail_url": "https://comicvine.gamespot.com/superman/4005-1807/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/character/4005-3602/",
+        "id": 3602,
+        "name": "Thomas Wayne",
+        "site_detail_url": "https://comicvine.gamespot.com/thomas-wayne/4005-3602/"
+      }
+    ],
+    "cover_date": "2010-09-01",
+    "description": "<p><i>Grant Morrison and Tony Daniel re-team to tell the exciting 2-part, untold tale of Bruce Wayne and his adventures between Batman R.I.P. and FINAL CRISIS! What happened to Batman - and Dr. Hurt for that matter - after the devastating events at the climax at the end of R.I.P.? And what secrets within this story point towards THE RETURN OF BRUCE WAYNE? Continues in Batman #702.</i></p>",
+    "location_credits": [
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/location/4020-31340/",
+        "id": 31340,
+        "name": "Batcave",
+        "site_detail_url": "https://comicvine.gamespot.com/batcave/4020-31340/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/location/4020-23611/",
+        "id": 23611,
+        "name": "Gotham City",
+        "site_detail_url": "https://comicvine.gamespot.com/gotham-city/4020-23611/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/location/4020-55767/",
+        "id": 55767,
+        "name": "Wayne Manor",
+        "site_detail_url": "https://comicvine.gamespot.com/wayne-manor/4020-55767/"
+      }
+    ],
+    "name": "R.I.P. The Missing Chapter, Part 1: The Hole In Things",
+    "person_credits": [
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/person/4040-51584/",
+        "id": 51584,
+        "name": "Dan DiDio",
+        "role": "editor",
+        "site_detail_url": "https://comicvine.gamespot.com/dan-didio/4040-51584/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/person/4040-40434/",
+        "id": 40434,
+        "name": "Grant Morrison",
+        "role": "writer",
+        "site_detail_url": "https://comicvine.gamespot.com/grant-morrison/4040-40434/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/person/4040-12987/",
+        "id": 12987,
+        "name": "Ian Hannin",
+        "role": "colorist",
+        "site_detail_url": "https://comicvine.gamespot.com/ian-hannin/4040-12987/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/person/4040-55943/",
+        "id": 55943,
+        "name": "Janelle Asselin (Siegel)",
+        "role": "editor",
+        "site_detail_url": "https://comicvine.gamespot.com/janelle-asselin-siegel/4040-55943/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/person/4040-42881/",
+        "id": 42881,
+        "name": "Jared K. Fletcher",
+        "role": "letterer",
+        "site_detail_url": "https://comicvine.gamespot.com/jared-k-fletcher/4040-42881/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/person/4040-41024/",
+        "id": 41024,
+        "name": "Mike Marts",
+        "role": "editor",
+        "site_detail_url": "https://comicvine.gamespot.com/mike-marts/4040-41024/"
+      },
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/person/4040-4663/",
+        "id": 4663,
+        "name": "Tony Daniel",
+        "role": "artist, cover",
+        "site_detail_url": "https://comicvine.gamespot.com/tony-daniel/4040-4663/"
+      }
+    ],
+    "site_detail_url": "https://comicvine.gamespot.com/batman-701-rip-the-missing-chapter-part-1-the-hole/4000-224555/",
+    "store_date": "2010-07-14",
+    "team_credits": [
+      {
+        "api_detail_url": "https://comicvine.gamespot.com/api/team/4060-40474/",
+        "id": 40474,
+        "name": "Superman/Batman",
+        "site_detail_url": "https://comicvine.gamespot.com/superman-batman/4060-40474/"
+      }
+    ]
+  },
+  "status_code": 1,
+  "version": "1.0"
+}

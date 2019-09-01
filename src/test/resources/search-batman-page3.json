@@ -1,0 +1,121 @@
+{
+  "error": "OK",
+  "limit": 10,
+  "number_of_page_results": 10,
+  "number_of_total_results": 1602,
+  "offset": 20,
+  "results": [
+    {
+      "id": 42721,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2011"
+    },
+    {
+      "id": 51694,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2560/",
+        "id": 2560,
+        "name": "Titan Magazines"
+      },
+      "resource_type": "volume",
+      "start_year": "2012"
+    },
+    {
+      "id": 60481,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-246/",
+        "id": 246,
+        "name": "Carlsen Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "1989"
+    },
+    {
+      "id": 50839,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2903/",
+        "id": 2903,
+        "name": "Ediciones Zinco"
+      },
+      "resource_type": "volume",
+      "start_year": "1984"
+    },
+    {
+      "id": 59319,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-3089/",
+        "id": 3089,
+        "name": "Semic"
+      },
+      "resource_type": "volume",
+      "start_year": "1989"
+    },
+    {
+      "id": 50472,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2705/",
+        "id": 2705,
+        "name": "Editorial Televisa"
+      },
+      "resource_type": "volume",
+      "start_year": "2012"
+    },
+    {
+      "id": 52801,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2094/",
+        "id": 2094,
+        "name": "Abril"
+      },
+      "resource_type": "volume",
+      "start_year": "1987"
+    },
+    {
+      "id": 74232,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-5718/",
+        "id": 5718,
+        "name": "Editorial Muchnik"
+      },
+      "resource_type": "volume",
+      "start_year": "1954"
+    },
+    {
+      "id": 60431,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-4215/",
+        "id": 4215,
+        "name": "TM-Semic"
+      },
+      "resource_type": "volume",
+      "start_year": "1990"
+    },
+    {
+      "id": 51675,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-3615/",
+        "id": 3615,
+        "name": "Ge\u00efllustreerde Pers"
+      },
+      "resource_type": "volume",
+      "start_year": "1967"
+    }
+  ],
+  "status_code": 1,
+  "version": "1.0"
+}

@@ -1,4 +1,4 @@
-package de.wasenweg.alfred;
+package de.wasenweg.alfred.unit;
 
 import de.wasenweg.alfred.scanner.ScannerController;
 import de.wasenweg.alfred.scanner.ScannerService;
@@ -28,7 +28,7 @@ public class ScannerControllerTest {
   private ScannerController controller;
 
   @Before
-  public void setup() {
+  public void setUp() {
     this.mockMvc = MockMvcBuilders.standaloneSetup(this.controller)
         .build();
   }
