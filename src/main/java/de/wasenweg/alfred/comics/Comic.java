@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -77,6 +78,10 @@ public class Comic {
 
   @Builder.Default
   private boolean read = false;
+
+  @Builder.Default
+  private boolean hasErrors = false;
+  private List<String> errors;
 
   @Builder.Default
   private Short currentPage = (short) 0;

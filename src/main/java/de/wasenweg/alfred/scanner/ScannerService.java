@@ -135,7 +135,21 @@ public class ScannerService {
     }
   }
 
-  private void createOrUpdateComic(final Path path) {
+  private void setThumbnail(final Optional<ZipFile> file, final Comic comic, final String pathString) {
+    try {
+      this.thumbnailService.setComic(file.get(), comic);
+    } catch (final NoImagesException exception) {
+      this.reportIssue(exception, pathString);
+    } finally {
+      try {
+        file.get().close();
+      } catch (final IOException exception) {
+        this.reportIssue(exception, pathString);
+      }
+    }
+  }
+
+  private void processComic(final Path path) {
     final String pathString = path.toString();
     this.reportProgress(pathString);
 
@@ -160,29 +174,16 @@ public class ScannerService {
     } catch (final SAXException | IOException exception) {
       this.reportIssue(exception, pathString, ScannerIssue.Type.WARNING);
     } catch (final NoMetaDataException e) {
-      try {
-        this.apiMetaDataReader.set(comic).forEach(issue -> {
-          this.reportIssue(issue, pathString);
-        });
-      } catch (final Exception exception) {
-        this.reportIssue(exception, pathString);
-        return;
-      }
+      final List<ScannerIssue> issues = this.apiMetaDataReader.set(comic);
+      comic.setErrors(issues.stream().map(issue -> issue.getMessage()).collect(Collectors.toList()));
+      issues.forEach(issue -> {
+        this.reportIssue(issue, pathString);
+      });
     }
 
     this.comicRepository.save(comic);
 
-    try {
-      this.thumbnailService.setComic(file.get(), comic);
-    } catch (final NoImagesException exception) {
-      this.reportIssue(exception, pathString);
-    } finally {
-      try {
-        file.get().close();
-      } catch (final IOException exception) {
-        this.reportIssue(exception, pathString);
-      }
-    }
+    this.setThumbnail(file, comic, pathString);
   }
 
   /**
@@ -213,7 +214,7 @@ public class ScannerService {
             .collect(Collectors.toList());
 
         this.reportTotal(comicFiles.size());
-        comicFiles.forEach(path -> this.createOrUpdateComic(path));
+        comicFiles.forEach(path -> this.processComic(path));
         this.logger.info("Parsed {} comics.", comicFiles.size());
 
         this.cleanOrphans(comicFiles);
