@@ -29,4 +29,5 @@ export interface Comic {
   read?: boolean;
   currentPage?: number;
   lastRead?: Date;
+  errors?: string[];
 }

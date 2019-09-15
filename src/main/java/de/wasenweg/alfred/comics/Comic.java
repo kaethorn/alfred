@@ -79,8 +79,6 @@ public class Comic {
   @Builder.Default
   private boolean read = false;
 
-  @Builder.Default
-  private boolean hasErrors = false;
   private List<String> errors;
 
   @Builder.Default
