@@ -32,6 +32,13 @@ export class ComicsService {
     );
   }
 
+  listComicsWithErrors (): Observable<Comic[]> {
+    return this.http.get('api/queue').pipe(
+      this.consumeHateoas(),
+      map((data: any) => data.map((comic) => this.addId(comic)))
+    );
+  }
+
   listByVolume (publisher: string, series: string, volume: string): Observable<Comic[]> {
     const params = new HttpParams({
       fromObject: {

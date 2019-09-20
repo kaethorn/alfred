@@ -10,21 +10,23 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngIf="queue.length">
-    <ion-card-header>Either rename or fix these comic books manually</ion-card-header>
+  <ion-card *ngFor="let comic of comics">
+    <ion-card-header>
+      <ion-card-title>{{ comic.path }}</ion-card-title>
+    </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
-        <ion-item *ngFor="let comic of queue">
-          <ion-label position="floating">
-            <p>{{ comic.path }}</p>
-          </ion-label>
-          <ion-list>
-            <ion-item *ngFor="error of comic.errors">
-              <p>{{ error }}</p>
-            </ion-item>
-          </ion-list>
+        <ion-item *ngFor="let error of comic.errors">
+          <ion-chip color="danger" outline="true">
+            <ion-label>{{ error }}</ion-label>
+            <ion-icon name="close-circle"></ion-icon>
+          </ion-chip>
         </ion-item>
       </ion-list>
+      <ion-button slot="end">
+        <ion-icon slot="start" name="create"></ion-icon>
+          Edit
+      </ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>
