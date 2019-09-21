@@ -19,6 +19,7 @@ public class ComicConstructionTest {
   public void constructWithBuilder() throws Exception {
     final Comic comic = Comic.builder()
         .path("")
+        .fileName("")
         .title("")
         .series("")
         .volume("")

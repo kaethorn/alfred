@@ -12,8 +12,6 @@ import de.wasenweg.alfred.volumes.Volume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -49,9 +47,6 @@ public class ScannerService {
 
   @Autowired
   private ObjectMapper objectMapper;
-
-  @Autowired
-  private Environment environment;
 
   @Autowired
   private ThumbnailService thumbnailService;
@@ -135,12 +130,10 @@ public class ScannerService {
   }
 
   private void reportIssue(final ScannerIssue issue) {
-    if (this.environment.acceptsProfiles(Profiles.of("prod"))) {
-      try {
-        this.sendEvent(this.objectMapper.writeValueAsString(issue), "scan-issue");
-      } catch (final JsonProcessingException exception) {
-        exception.printStackTrace();
-      }
+    try {
+      this.sendEvent(this.objectMapper.writeValueAsString(issue), "scan-issue");
+    } catch (final JsonProcessingException exception) {
+      exception.printStackTrace();
     }
   }
 
