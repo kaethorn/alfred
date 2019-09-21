@@ -51,7 +51,7 @@ public class FileMetaDataReader {
           .message("Couldn't read " + elementName + " value of '" + value + "'. Falling back to '0'")
           .type(ScannerIssue.Type.WARNING)
           .build();
-      this.logger.warn(parsingEvent.getMessage(), exception);
+      this.logger.warn(parsingEvent.getMessage());
       this.scannerIssues.add(parsingEvent);
       return (short)0;
     }

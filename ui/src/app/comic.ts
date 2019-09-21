@@ -1,6 +1,7 @@
 export interface Comic {
   id: string;
   path: string;
+  fileName: string;
   title: string;
   series: string;
   number: number;

@@ -12,18 +12,19 @@
 <ion-content>
   <ion-card *ngFor="let comic of comics">
     <ion-card-header>
-      <ion-card-title>{{ comic.path }}</ion-card-title>
+      <ion-card-title>{{ comic.fileName }}</ion-card-title>
+      <ion-card-subtitle>{{ comic.path }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
+        <ion-list-header>Errors</ion-list-header>
         <ion-item *ngFor="let error of comic.errors">
-          <ion-chip color="danger" outline="true">
-            <ion-label>{{ error }}</ion-label>
-            <ion-icon name="close-circle"></ion-icon>
-          </ion-chip>
+          <ion-label>{{ error }}</ion-label>
+          <ion-icon slot="start" color="danger" name="alert"></ion-icon>
         </ion-item>
       </ion-list>
-      <ion-button slot="end">
+      <ion-button slot="end"
+        [routerLink]="['/edit/' + comic.id]">
         <ion-icon slot="start" name="create"></ion-icon>
           Edit
       </ion-button>

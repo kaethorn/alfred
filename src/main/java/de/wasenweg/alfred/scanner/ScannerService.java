@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,12 +63,7 @@ public class ScannerService {
   private SettingsService settingsService;
 
   private void sendEvent(final String data, final String name) {
-    this.emitter.onNext(
-        ServerSentEvent.builder(data)
-          .id(String.valueOf(this.hashCode()))
-          .event(name)
-          .build()
-    );
+    this.emitter.onNext(ServerSentEvent.builder(data).id(String.valueOf(this.hashCode())).event(name).build());
   }
 
   private void reportStart(final String path) {
@@ -101,27 +97,40 @@ public class ScannerService {
 
   private void reportIssue(final Exception exception) {
     this.logger.error(exception.getLocalizedMessage(), exception);
-    this.reportIssue(ScannerIssue.builder()
-        .message(exception.getLocalizedMessage())
-        .type(ScannerIssue.Type.ERROR)
-        .build());
+    this.reportIssue(
+        ScannerIssue.builder()
+          .message(exception.getLocalizedMessage())
+          .type(ScannerIssue.Type.ERROR)
+          .build());
   }
 
-  private void reportIssue(final Exception exception, final String path) {
-    this.reportIssue(exception, path, ScannerIssue.Type.ERROR);
+  private void reportIssue(final Comic comic, final Exception exception) {
+    this.logger.error(exception.getLocalizedMessage());
+    this.reportIssue(
+        comic,
+        ScannerIssue.builder()
+          .message(exception.getLocalizedMessage())
+          .type(ScannerIssue.Type.ERROR)
+          .build());
   }
 
-  private void reportIssue(final Exception exception, final String path, final ScannerIssue.Type type) {
+  private void reportIssue(final Comic comic, final Exception exception, final ScannerIssue.Type type) {
     this.logger.error(exception.getLocalizedMessage(), exception);
-    this.reportIssue(ScannerIssue.builder()
-        .message(exception.getLocalizedMessage())
-        .type(type)
-        .path(path)
-        .build());
+    this.reportIssue(
+        comic,
+        ScannerIssue.builder()
+          .message(exception.getLocalizedMessage())
+          .type(type)
+          .build());
   }
 
-  private void reportIssue(final ScannerIssue issue, final String path) {
-    issue.setPath(path);
+  private void reportIssue(final Comic comic, final ScannerIssue issue) {
+    issue.setPath(comic.getPath());
+    final List<String> errors = Optional
+        .ofNullable(comic.getErrors())
+        .orElse(new ArrayList<String>());
+    errors.add(issue.getMessage());
+    comic.setErrors(errors);
     this.reportIssue(issue);
   }
 
@@ -135,16 +144,16 @@ public class ScannerService {
     }
   }
 
-  private void setThumbnail(final Optional<ZipFile> file, final Comic comic, final String pathString) {
+  private void setThumbnail(final Optional<ZipFile> file, final Comic comic) {
     try {
       this.thumbnailService.setComic(file.get(), comic);
     } catch (final NoImagesException exception) {
-      this.reportIssue(exception, pathString);
+      this.reportIssue(comic, exception);
     } finally {
       try {
         file.get().close();
       } catch (final IOException exception) {
-        this.reportIssue(exception, pathString);
+        this.reportIssue(comic, exception);
       }
     }
   }
@@ -158,49 +167,49 @@ public class ScannerService {
     final Comic comic = this.comicRepository.findByPath(comicPath)
         .orElse(new Comic());
     comic.setPath(comicPath);
+    comic.setFileName(path.getFileName().toString());
 
     final Optional<ZipFile> file;
     try {
       file = Optional.of(new ZipFile(pathString));
     } catch (final IOException exception) {
-      this.reportIssue(exception, pathString);
+      this.reportIssue(comic, exception);
+      this.comicRepository.save(comic);
       return;
     }
 
     try {
       this.fileMetaDataReader.set(file.get(), comic).forEach(issue -> {
-        this.reportIssue(issue, pathString);
+        this.reportIssue(comic, issue);
       });
     } catch (final SAXException | IOException exception) {
-      this.reportIssue(exception, pathString, ScannerIssue.Type.WARNING);
+      this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
     } catch (final NoMetaDataException e) {
       final List<ScannerIssue> issues = this.apiMetaDataReader.set(comic);
-      comic.setErrors(issues.stream().map(issue -> issue.getMessage()).collect(Collectors.toList()));
       issues.forEach(issue -> {
-        this.reportIssue(issue, pathString);
+        this.reportIssue(comic, issue);
       });
     }
 
     this.comicRepository.save(comic);
-
-    this.setThumbnail(file, comic, pathString);
+    this.setThumbnail(file, comic);
+    this.comicRepository.save(comic);
   }
 
   /**
    * Scan for comics.
    *
-   * Updates existing files, adds new files and removes files that are
-   * not available anymore.
+   * Updates existing files, adds new files and removes files that are not
+   * available anymore.
    *
    * Mandatory fields are `publisher`, `series`, `volume` and `issue number`.
    *
-   * Process:
-   * 1. Ignore all files that do not end in `.cbz`.
-   * 2. Attempt to parse mandatory fields from meta data XML. Exit on success.
-   * 3. Ignore all files that do not match pattern containing mandatory fields, e.g.
-   *    `{publisher}/{series} ({volume})/{series} ({volume}) {issue number} .*.cbz`.
-   * 4. Attempt to match & scrape meta data from Comic Vine API.
-   * 5. On match, write meta data XML and exit. Otherwise report error and ignore file.
+   * Process: 1. Ignore all files that do not end in `.cbz`. 2. Attempt to parse
+   * mandatory fields from meta data XML. Exit on success. 3. Ignore all files
+   * that do not match pattern containing mandatory fields, e.g.
+   * `{publisher}/{series} ({volume})/{series} ({volume}) {issue number} .*.cbz`.
+   * 4. Attempt to match & scrape meta data from Comic Vine API. 5. On match,
+   * write meta data XML and exit. Otherwise report error and ignore file.
    */
   public Flux<ServerSentEvent<String>> scanComics() {
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
@@ -208,10 +217,8 @@ public class ScannerService {
 
     Executors.newSingleThreadExecutor().execute(() -> {
       try {
-        final List<Path> comicFiles = Files.walk(comicsPath)
-            .filter(path -> Files.isRegularFile(path))
-            .filter(path -> path.getFileName().toString().endsWith(".cbz"))
-            .collect(Collectors.toList());
+        final List<Path> comicFiles = Files.walk(comicsPath).filter(path -> Files.isRegularFile(path))
+            .filter(path -> path.getFileName().toString().endsWith(".cbz")).collect(Collectors.toList());
 
         this.reportTotal(comicFiles.size());
         comicFiles.forEach(path -> this.processComic(path));
@@ -235,28 +242,25 @@ public class ScannerService {
     this.reportCleanUp();
 
     // Purge comics from the DB that don't have a corresponding file.
-    final List<String> comicFilePaths = comicFiles.stream()
-        .map(path -> path.toAbsolutePath().toString())
+    final List<String> comicFilePaths = comicFiles.stream().map(path -> path.toAbsolutePath().toString())
         .collect(Collectors.toList());
     final List<Comic> toDelete = this.comicRepository.findAll().stream()
-        .filter(comic -> !comicFilePaths.contains(comic.getPath()))
-        .collect(Collectors.toList());
+        .filter(comic -> !comicFilePaths.contains(comic.getPath())).collect(Collectors.toList());
     this.comicRepository.deleteAll(toDelete);
   }
 
   /**
    * Associates comics within a volume.
    *
-   * Sets the `previousId` and `nextId` attributes for each comic which point to the
-   * previous and next comic within the current volume.
+   * Sets the `previousId` and `nextId` attributes for each comic which point to
+   * the previous and next comic within the current volume.
    */
   public void associateVolumes() {
     this.reportAssociation();
 
     // Get all comics, grouped by volume.
     final Map<Volume, List<Comic>> volumes = this.comicRepository
-        .findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc().stream()
-        .collect(Collectors.groupingBy(comic -> {
+        .findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc().stream().collect(Collectors.groupingBy(comic -> {
           final Volume volume = new Volume();
           volume.setPublisher(comic.getPublisher());
           volume.setSeries(comic.getSeries());
@@ -274,7 +278,8 @@ public class ScannerService {
         if (index > 0) {
           final Comic previousComic = comics.get(index - 1);
           comic.setPreviousId(previousComic.getId());
-          this.logger.trace("Associating comic {} with previous comic {}", comic.getPosition(), previousComic.getPosition());
+          this.logger.trace("Associating comic {} with previous comic {}", comic.getPosition(),
+              previousComic.getPosition());
         }
         if (index < (comics.size() - 1)) {
           final Comic nextComic = comics.get(index + 1);

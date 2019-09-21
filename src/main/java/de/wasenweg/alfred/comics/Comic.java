@@ -27,6 +27,9 @@ public class Comic {
   private String path;
 
   @NonNull
+  private String fileName;
+
+  @NonNull
   private String title;
 
   @NonNull
