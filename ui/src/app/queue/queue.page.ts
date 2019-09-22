@@ -11,7 +11,7 @@ export class QueuePage {
 
   comics: Array<Comic> = [];
 
-  constructor(
+  constructor (
     private comicsService: ComicsService,
   ) { }
 

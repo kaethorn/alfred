@@ -19,13 +19,11 @@ export class EditPage {
     number: ['', Validators.required],
   });
 
-  constructor(
+  constructor (
     private route: ActivatedRoute,
     private comicsService: ComicsService,
     private formBuilder: FormBuilder,
-  ) {
-
-  }
+  ) { }
 
   ionViewDidEnter () {
     this.comicsService
