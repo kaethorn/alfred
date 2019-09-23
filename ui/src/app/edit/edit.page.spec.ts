@@ -1,5 +1,9 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { TestModule } from '../../testing/test.module';
+import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
+
+import { ComicsService } from '../comics.service';
 
 import { EditPage } from './edit.page';
 
@@ -7,15 +11,12 @@ describe('EditPage', () => {
   let component: EditPage;
   let fixture: ComponentFixture<EditPage>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EditPage ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
-  }));
-
   beforeEach(() => {
+    const testModule: any = TestModule();
+    testModule.providers.push({
+      provide: ComicsService, useValue: comicsService
+    });
+    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(EditPage);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,4 +1,4 @@
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_BASE_HREF } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
@@ -22,6 +22,8 @@ import { ReaderPage } from '../app/reader/reader.page';
 import { IssuesPage } from '../app/issues/issues.page';
 import { BookmarksPage } from '../app/bookmarks/bookmarks.page';
 import { LoginPage } from '../app/login/login.page';
+import { QueuePage } from '../app/queue/queue.page';
+import { EditPage } from '../app/edit/edit.page';
 
 export const TestModule = () => {
   return {
@@ -41,7 +43,9 @@ export const TestModule = () => {
       ReaderPage,
       SettingsPage,
       BookmarksPage,
-      LoginPage
+      LoginPage,
+      QueuePage,
+      EditPage,
     ],
     imports: [
       IonicModule.forRoot(),
@@ -49,6 +53,7 @@ export const TestModule = () => {
       HttpClientModule,
       SecureModule,
       MomentModule,
+      ReactiveFormsModule,
       RouterTestingModule.withRoutes([
         { path: 'read/:id', component: MockComponent },
         { path: 'library', component: MockComponent }
