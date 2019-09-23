@@ -34,9 +34,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
     return this.mongoTemplate.aggregate(Aggregation.newAggregation(
         match(where("errors").exists(true)),
 
-        sort(Sort.Direction.ASC, "publisher"),
-        sort(Sort.Direction.ASC, "series"),
-        sort(Sort.Direction.ASC, "volume")
+        sort(Sort.Direction.ASC, "path")
         ), Comic.class, Comic.class).getMappedResults();
   }
 

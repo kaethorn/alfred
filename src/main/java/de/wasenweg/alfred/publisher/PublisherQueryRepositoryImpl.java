@@ -29,6 +29,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
   @Override
   public List<Publisher> findAllPublishers(final String userId) {
     return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+        match(where("errors").exists(false)),
         group("series", "volume")
         .last("publisher").as("publisher"),
         group("series")
@@ -47,7 +48,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
   @Override
   public List<Series> findAllSeries(final String userId, final String publisher) {
     return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
-        match(where("publisher").is(publisher)),
+        match(where("publisher").is(publisher).and("errors").exists(false)),
         group("series", "volume")
         .last("publisher").as("publisher"),
         group("series")
@@ -62,7 +63,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
   @Override
   public List<Volume> findAllVolumes(final String userId, final String publisher, final String series) {
     return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
-        match(where("publisher").is(publisher).and("series").is(series)),
+        match(where("publisher").is(publisher).and("series").is(series).and("errors").exists(false)),
         sort(Sort.Direction.ASC, "position"),
         group("volume")
           .last("volume").as("volume")
