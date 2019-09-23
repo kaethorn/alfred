@@ -30,11 +30,12 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
   public List<Publisher> findAllPublishers(final String userId) {
     return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
         match(where("errors").exists(false)),
-        group("series", "volume")
-        .last("publisher").as("publisher"),
-        group("series")
-        .last("_id.series").as("series")
+        group("publisher", "series", "volume")
         .last("publisher").as("publisher")
+        .last("series").as("series"),
+        group("publisher", "series")
+        .last("_id.series").as("series")
+        .last("_id.publisher").as("publisher")
         .count().as("volumesCount"),
         sort(Sort.Direction.ASC, "series"),
         group("publisher")
