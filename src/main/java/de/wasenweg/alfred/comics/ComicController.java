@@ -49,6 +49,15 @@ public class ComicController extends BaseController<Comic> {
     return this.wrap(this.queryRepository.findById(principal.getName(), comicId));
   }
 
+  @PutMapping("")
+  public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
+    // TODO:
+    // * update `position` field if `number` changes
+    // * persist changes in XML and DB (implicit?)
+    // * re-validate (in order to purge `errors`)
+    return this.wrap(this.comicRepository.save(comic));
+  }
+
   @GetMapping("/search/findAllLastReadPerVolume")
   public Resources<Resource<Comic>> findAllLastReadPerVolume(final Principal principal) {
     return this.wrap(this.queryRepository.findAllLastReadPerVolume(principal.getName()));

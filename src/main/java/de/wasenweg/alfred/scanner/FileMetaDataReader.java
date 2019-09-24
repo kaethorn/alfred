@@ -67,7 +67,7 @@ public class FileMetaDataReader {
 
   private String mapPosition(final String number) {
     try {
-      return MetaDataReaderUtil.mapPosition(number);
+      return Comic.mapPosition(number);
     } catch (final InvalidIssueNumberException exception) {
       this.logger.warn(exception.getMessage(), exception);
       this.scannerIssues.add(ScannerIssue.builder()

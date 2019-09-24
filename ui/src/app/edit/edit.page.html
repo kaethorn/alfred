@@ -12,7 +12,7 @@
 <ion-content>
   <ion-card>
     <ion-card-content>
-      <form [formGroup]="comicForm">
+      <form [formGroup]="comicForm" (ngSubmit)="onSubmit()">
         <ion-list>
           <ion-item>
             <ion-label position="floating">

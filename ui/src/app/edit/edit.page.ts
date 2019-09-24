@@ -36,4 +36,12 @@ export class EditPage {
         this.comicForm.get('number').setValue(data.number);
       });
   }
+
+  onSubmit () {
+    this.comic.publisher = this.comicForm.value.publisher;
+    this.comic.series = this.comicForm.value.series;
+    this.comic.volume = this.comicForm.value.volume;
+    this.comic.number = this.comicForm.value.number;
+    this.comicsService.update(this.comic).subscribe(() => {});
+  }
 }

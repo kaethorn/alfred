@@ -97,7 +97,9 @@ export class ComicsService {
   }
 
   update (comic: Comic): Observable<Comic> {
-    return this.http.put<Comic>(`api/comics/${ comic.id }`, comic);
+    return this.http.put<Comic>('api/comics', comic).pipe(
+      map((result: Comic) => this.addId(result))
+    );
   }
 
   markAsRead (comic: Comic): Observable<any> {
