@@ -22,17 +22,17 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
-public class ApiMetaDataReader {
+public class ApiMetaDataService {
 
   private ComicVineService comicVineService;
 
-  private Logger logger = LoggerFactory.getLogger(ApiMetaDataReader.class);
+  private Logger logger = LoggerFactory.getLogger(ApiMetaDataService.class);
 
   private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
   private Pattern pattern;
 
   @Autowired
-  public ApiMetaDataReader(final ComicVineService comicVineService) {
+  public ApiMetaDataService(final ComicVineService comicVineService) {
     this.comicVineService = comicVineService;
 
     final String publisherDirPattern = "^.*?(?<publisher>[^/]+)/";

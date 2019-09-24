@@ -3,7 +3,7 @@ package de.wasenweg.alfred.unit;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import de.wasenweg.alfred.comics.Comic;
-import de.wasenweg.alfred.scanner.ApiMetaDataReader;
+import de.wasenweg.alfred.scanner.ApiMetaDataService;
 import de.wasenweg.alfred.scanner.ComicVineService;
 
 import org.junit.Test;
@@ -20,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-@ContextConfiguration(classes = ApiMetaDataReader.class)
+@ContextConfiguration(classes = ApiMetaDataService.class)
 public class ApiMetaDataReaderTest {
 
   @InjectMocks
-  private ApiMetaDataReader apiMetaDataReader;
+  private ApiMetaDataService apiMetaDataReader;
 
   @Mock
   private ComicVineService comicVineService;

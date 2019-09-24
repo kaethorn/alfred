@@ -40,10 +40,10 @@ public class ScannerService {
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
   @Autowired
-  private ApiMetaDataReader apiMetaDataReader;
+  private ApiMetaDataService apiMetaDataService;
 
   @Autowired
-  private FileMetaDataReader fileMetaDataReader;
+  private FileMetaDataService fileMetaDataService;
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -137,34 +137,24 @@ public class ScannerService {
     }
   }
 
-  private void setThumbnail(final Optional<ZipFile> file, final Comic comic) {
+  private void setThumbnail(final ZipFile file, final Comic comic) {
     try {
-      this.thumbnailService.setComic(file.get(), comic);
+      this.thumbnailService.setComic(file, comic);
     } catch (final NoImagesException exception) {
       this.reportIssue(comic, exception);
     } finally {
       try {
-        file.get().close();
+        file.close();
       } catch (final IOException exception) {
         this.reportIssue(comic, exception);
       }
     }
   }
 
-  private void processComic(final Path path) {
-    final String pathString = path.toString();
-    this.reportProgress(pathString);
-
-    final String comicPath = path.toAbsolutePath().toString();
-
-    final Comic comic = this.comicRepository.findByPath(comicPath)
-        .orElse(new Comic());
-    comic.setPath(comicPath);
-    comic.setFileName(path.getFileName().toString());
-
-    final Optional<ZipFile> file;
+  public void processComic(final Comic comic) {
+    final ZipFile file;
     try {
-      file = Optional.of(new ZipFile(pathString));
+      file = this.fileMetaDataService.getZipFile(comic);
     } catch (final IOException exception) {
       this.reportIssue(comic, exception);
       this.comicRepository.save(comic);
@@ -172,13 +162,13 @@ public class ScannerService {
     }
 
     try {
-      this.fileMetaDataReader.set(file.get(), comic).forEach(issue -> {
+      this.fileMetaDataService.set(file, comic).forEach(issue -> {
         this.reportIssue(comic, issue);
       });
     } catch (final SAXException | IOException exception) {
       this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
     } catch (final NoMetaDataException e) {
-      final List<ScannerIssue> issues = this.apiMetaDataReader.set(comic);
+      final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
       issues.forEach(issue -> {
         this.reportIssue(comic, issue);
       });
@@ -186,7 +176,20 @@ public class ScannerService {
 
     this.comicRepository.save(comic);
     this.setThumbnail(file, comic);
+    // Save the comic again to store errors occurring while creating thumb nails:
     this.comicRepository.save(comic);
+  }
+
+  private void processComicByPath(final Path path) {
+    this.reportProgress(path.toString());
+
+    final String comicPath = path.toAbsolutePath().toString();
+
+    final Comic comic = this.comicRepository.findByPath(comicPath)
+        .orElse(new Comic());
+    comic.setPath(comicPath);
+    comic.setFileName(path.getFileName().toString());
+    this.processComic(comic);
   }
 
   /**
@@ -214,7 +217,7 @@ public class ScannerService {
             .filter(path -> path.getFileName().toString().endsWith(".cbz")).collect(Collectors.toList());
 
         this.reportTotal(comicFiles.size());
-        comicFiles.forEach(path -> this.processComic(path));
+        comicFiles.forEach(path -> this.processComicByPath(path));
         this.logger.info("Parsed {} comics.", comicFiles.size());
 
         this.cleanOrphans(comicFiles);

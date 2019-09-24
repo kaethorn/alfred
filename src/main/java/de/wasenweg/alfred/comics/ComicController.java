@@ -52,10 +52,10 @@ public class ComicController extends BaseController<Comic> {
   @PutMapping("")
   public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
     // TODO:
-    // * update `position` field if `number` changes
     // * persist changes in XML and DB (implicit?)
-    // * re-validate (in order to purge `errors`)
-    return this.wrap(this.comicRepository.save(comic));
+    final Resource<Comic> comicResource = this.wrap(this.comicRepository.save(comic));
+    this.scannerService.processComic(comic);
+    return comicResource;
   }
 
   @GetMapping("/search/findAllLastReadPerVolume")

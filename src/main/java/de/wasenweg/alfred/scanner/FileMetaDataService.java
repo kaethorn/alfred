@@ -5,6 +5,7 @@ import de.wasenweg.alfred.util.ZipReaderUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -25,13 +26,23 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 @Service
-public class FileMetaDataReader {
+public class FileMetaDataService {
 
   private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
 
-  private Logger logger = LoggerFactory.getLogger(FileMetaDataReader.class);
+  private Logger logger = LoggerFactory.getLogger(FileMetaDataService.class);
 
   private DocumentBuilder docBuilder = null;
+
+  @Autowired
+  public FileMetaDataService() {
+    final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+    try {
+      this.docBuilder = docBuilderFactory.newDocumentBuilder();
+    } catch (final ParserConfigurationException exception) {
+      exception.printStackTrace();
+    }
+  }
 
   private String readStringElement(final Document document, final String elementName) {
     final NodeList element = document.getElementsByTagName(elementName);
@@ -143,6 +154,10 @@ public class FileMetaDataReader {
     comic.setPageCount(pageCount);
   }
 
+  public ZipFile getZipFile(final Comic comic) throws IOException {
+    return new ZipFile(comic.getPath());
+  }
+
   public List<ScannerIssue> set(final ZipFile file, final Comic comic)
       throws SAXException, IOException, NoMetaDataException {
 
@@ -150,16 +165,18 @@ public class FileMetaDataReader {
 
     this.setPageCountFromImages(file, comic);
 
-    final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-    try {
-      this.docBuilder = docBuilderFactory.newDocumentBuilder();
-    } catch (final ParserConfigurationException exception) {
-      exception.printStackTrace();
-    }
-
     final ZipEntry metaDataFile = this.findMetaDataFile(file);
     this.parseComicInfoXml(file, metaDataFile, comic);
 
     return this.scannerIssues;
+  }
+
+  public void write(final Comic comic) {
+    try {
+      final ZipFile file = this.getZipFile(comic);
+      final ZipEntry metaDataFile = this.findMetaDataFile(file);
+    } catch (final NoMetaDataException | IOException exception) {
+      exception.printStackTrace();
+    }
   }
 }
