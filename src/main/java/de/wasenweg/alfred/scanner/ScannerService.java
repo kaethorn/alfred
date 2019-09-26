@@ -162,13 +162,14 @@ public class ScannerService {
     }
 
     try {
-      this.fileMetaDataService.set(file, comic).forEach(issue -> {
+      this.fileMetaDataService.read(file, comic).forEach(issue -> {
         this.reportIssue(comic, issue);
       });
     } catch (final SAXException | IOException exception) {
       this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
-    } catch (final NoMetaDataException e) {
+    } catch (final NoMetaDataException exception) {
       final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
+      this.fileMetaDataService.write(comic);
       issues.forEach(issue -> {
         this.reportIssue(comic, issue);
       });
