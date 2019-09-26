@@ -8,15 +8,29 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -41,6 +55,16 @@ public class FileMetaDataService {
       this.docBuilder = docBuilderFactory.newDocumentBuilder();
     } catch (final ParserConfigurationException exception) {
       exception.printStackTrace();
+    }
+  }
+
+  private void writeStringElement(final Document document, final String elementName, final String value) {
+    final NodeList element = document.getDocumentElement().getElementsByTagName(elementName);
+    if (element.getLength() > 0) {
+      element.item(0).setTextContent(value);
+    } else {
+      final Element newElement = document.createElement(elementName);
+      document.getDocumentElement().appendChild(newElement);
     }
   }
 
@@ -96,10 +120,56 @@ public class FileMetaDataService {
         this.docBuilder.parse(file.getInputStream(entry)));
   }
 
-  private void parseComicInfoXml(final ZipFile file, final ZipEntry entry, final Comic comic)
-      throws SAXException, IOException {
+  private String readShortValue(final Short value) {
+    if (value == null) {
+      return null;
+    }
+    return value.toString();
+  }
 
-    final Optional<Document> documentOptional = this.getDocument(file, entry);
+  private String marshal(final Comic comic) throws SAXException, IOException, TransformerException {
+    Document document;
+    final ZipFile file = this.getZipFile(comic);
+
+    try {
+      document = this.getDocument(file, this.findMetaDataFile(file)).get();
+    } catch (final NoMetaDataException exception) {
+      document = this.docBuilder.newDocument();
+      document.appendChild(document.createElement("ComicInfo"));
+    }
+    file.close();
+
+    this.writeStringElement(document, "Title", comic.getTitle());
+    this.writeStringElement(document, "Series", comic.getSeries());
+    this.writeStringElement(document, "Publisher", comic.getPublisher());
+    this.writeStringElement(document, "Number", comic.getNumber());
+    this.writeStringElement(document, "Volume", comic.getVolume());
+    this.writeStringElement(document, "Summary", comic.getSummary());
+    this.writeStringElement(document, "Notes", comic.getNotes());
+    this.writeStringElement(document, "Year", this.readShortValue(comic.getYear()));
+    this.writeStringElement(document, "Month", this.readShortValue(comic.getMonth()));
+    this.writeStringElement(document, "Writer", comic.getWriter());
+    this.writeStringElement(document, "Penciller", comic.getPenciller());
+    this.writeStringElement(document, "Inker", comic.getInker());
+    this.writeStringElement(document, "Colorist", comic.getColorist());
+    this.writeStringElement(document, "Letterer", comic.getLetterer());
+    this.writeStringElement(document, "CoverArtist", comic.getCoverArtist());
+    this.writeStringElement(document, "Editor", comic.getEditor());
+    this.writeStringElement(document, "Web", comic.getWeb());
+    this.writeStringElement(document, "Manga", comic.isManga() ? "Yes" : "No");
+    this.writeStringElement(document, "Characters", comic.getCharacters());
+    this.writeStringElement(document, "Teams", comic.getTeams());
+    this.writeStringElement(document, "Locations", comic.getLocations());
+    final StringWriter stringWriter = new StringWriter();
+    TransformerFactory.newInstance().newTransformer()
+      .transform(new DOMSource(document), new StreamResult(stringWriter));
+    return stringWriter.toString();
+  }
+
+  private void parseComicInfoXml(final ZipFile file, final Comic comic)
+      throws SAXException, IOException, NoMetaDataException {
+
+    final Optional<Document> documentOptional = this.getDocument(file, this.findMetaDataFile(file));
 
     if (!documentOptional.isPresent()) {
       return;
@@ -123,6 +193,7 @@ public class FileMetaDataService {
     comic.setInker(this.readStringElement(document, "Inker"));
     comic.setColorist(this.readStringElement(document, "Colorist"));
     comic.setLetterer(this.readStringElement(document, "Letterer"));
+    comic.setCoverArtist(this.readStringElement(document, "CoverArtist"));
     comic.setEditor(this.readStringElement(document, "Editor"));
     comic.setWeb(this.readStringElement(document, "Web"));
     comic.setPageCount(this.getPageCount(document));
@@ -158,24 +229,25 @@ public class FileMetaDataService {
     return new ZipFile(comic.getPath());
   }
 
-  public List<ScannerIssue> set(final ZipFile file, final Comic comic)
+  public List<ScannerIssue> read(final ZipFile file, final Comic comic)
       throws SAXException, IOException, NoMetaDataException {
-
     this.scannerIssues.clear();
-
     this.setPageCountFromImages(file, comic);
-
-    final ZipEntry metaDataFile = this.findMetaDataFile(file);
-    this.parseComicInfoXml(file, metaDataFile, comic);
-
+    this.parseComicInfoXml(file, comic);
     return this.scannerIssues;
   }
 
   public void write(final Comic comic) {
-    try {
-      final ZipFile file = this.getZipFile(comic);
-      final ZipEntry metaDataFile = this.findMetaDataFile(file);
-    } catch (final NoMetaDataException | IOException exception) {
+    final Path zipFilePath = Paths.get(comic.getPath());
+    try (final FileSystem fs = FileSystems.newFileSystem(zipFilePath, null)) {
+      final Path source = fs.getPath("/ComicInfo.xml");
+      if (Files.exists(source)) {
+        Files.delete(source);
+      }
+      final Writer writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
+      writer.write(this.marshal(comic));
+      this.logger.info("Finished writing ComicInfo.XML for " + comic.getPath());
+    } catch (final IOException | SAXException | TransformerException exception) {
       exception.printStackTrace();
     }
   }

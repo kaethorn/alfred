@@ -1,6 +1,7 @@
 package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.progress.ProgressService;
+import de.wasenweg.alfred.scanner.FileMetaDataService;
 import de.wasenweg.alfred.scanner.ScannerService;
 import de.wasenweg.alfred.util.BaseController;
 
@@ -32,6 +33,9 @@ public class ComicController extends BaseController<Comic> {
   private ScannerService scannerService;
 
   @Autowired
+  private FileMetaDataService fileMetaDataService;
+
+  @Autowired
   private ComicQueryRepositoryImpl queryRepository;
 
   @Autowired
@@ -51,9 +55,8 @@ public class ComicController extends BaseController<Comic> {
 
   @PutMapping("")
   public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
-    // TODO:
-    // * persist changes in XML and DB (implicit?)
     final Resource<Comic> comicResource = this.wrap(this.comicRepository.save(comic));
+    this.fileMetaDataService.write(comic);
     this.scannerService.processComic(comic);
     return comicResource;
   }
