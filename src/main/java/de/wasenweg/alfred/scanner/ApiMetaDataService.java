@@ -94,7 +94,10 @@ public class ApiMetaDataService {
   }
 
   /**
-   * Extract meta data from file path and match against API.
+   * Scrapes and saves information for the given comic.
+   *
+   * API lookup information is extracted from the file path and/or existing meta
+   * data stored in the embedded XML file.
    *
    * @param comic The comic book entity.
    * @return
@@ -122,6 +125,7 @@ public class ApiMetaDataService {
     try {
       this.query(comic);
     } catch (final Exception exception) {
+      this.logger.error("Error while fetching information for " + comic.getPath(), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Error during Comic Vine API meta data retrieval")
           .type(ScannerIssue.Type.ERROR)

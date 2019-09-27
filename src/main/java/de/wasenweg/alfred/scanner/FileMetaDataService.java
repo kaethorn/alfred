@@ -246,6 +246,8 @@ public class FileMetaDataService {
       }
       final Writer writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
       writer.write(this.marshal(comic));
+      writer.close();
+      fs.close();
       this.logger.info("Finished writing ComicInfo.XML for " + comic.getPath());
     } catch (final IOException | SAXException | TransformerException exception) {
       exception.printStackTrace();

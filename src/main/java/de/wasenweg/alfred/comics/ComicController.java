@@ -1,12 +1,15 @@
 package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.progress.ProgressService;
+import de.wasenweg.alfred.scanner.ApiMetaDataService;
 import de.wasenweg.alfred.scanner.FileMetaDataService;
+import de.wasenweg.alfred.scanner.ScannerIssue;
 import de.wasenweg.alfred.scanner.ScannerService;
 import de.wasenweg.alfred.util.BaseController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RequestMapping(value = "/api/comics", produces = { "application/hal+json" })
@@ -34,6 +38,9 @@ public class ComicController extends BaseController<Comic> {
 
   @Autowired
   private FileMetaDataService fileMetaDataService;
+
+  @Autowired
+  private ApiMetaDataService apiMetaDataService;
 
   @Autowired
   private ComicQueryRepositoryImpl queryRepository;
@@ -55,10 +62,20 @@ public class ComicController extends BaseController<Comic> {
 
   @PutMapping("")
   public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
-    final Resource<Comic> comicResource = this.wrap(this.comicRepository.save(comic));
+    this.comicRepository.save(comic);
     this.fileMetaDataService.write(comic);
+    comic.getErrors().clear();
     this.scannerService.processComic(comic);
-    return comicResource;
+    return this.wrap(comic);
+  }
+
+  @PutMapping("/scrape")
+  public Resource<Comic> scrape(@Valid @RequestBody final Comic comic) {
+    final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
+    if (issues.size() > 0) {
+      throw new ResourceNotFoundException("Error while querying ComicVine.");
+    }
+    return this.wrap(comic);
   }
 
   @GetMapping("/search/findAllLastReadPerVolume")

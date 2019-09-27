@@ -102,6 +102,12 @@ export class ComicsService {
     );
   }
 
+  scrape (comic: Comic): Observable<Comic> {
+    return this.http.put<Comic>('api/comics/scrape', comic).pipe(
+      map((result: Comic) => this.addId(result))
+    );
+  }
+
   markAsRead (comic: Comic): Observable<any> {
     return this.http.put<Comic>('api/comics/markAsRead', comic).pipe(
       map((result: Comic) => this.addId(result))
