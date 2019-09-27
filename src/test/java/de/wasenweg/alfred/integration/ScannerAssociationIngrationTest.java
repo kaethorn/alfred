@@ -6,7 +6,9 @@ import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
 
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -41,6 +43,9 @@ public class ScannerAssociationIngrationTest {
   @Autowired
   private IntegrationTestHelper integrationTestHelper;
 
+  @Rule
+  public TemporaryFolder testBed = new TemporaryFolder();
+
   @After
   public void tearDown() {
     this.comicRepository.deleteAll();
@@ -51,7 +56,7 @@ public class ScannerAssociationIngrationTest {
   @DirtiesContext
   public void associatesComics() throws Exception {
     // Given
-    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/full");
+    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/full", this.testBed);
 
     // When
     StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))

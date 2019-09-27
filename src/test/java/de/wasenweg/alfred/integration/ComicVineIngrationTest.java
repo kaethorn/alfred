@@ -9,7 +9,9 @@ import de.wasenweg.alfred.progress.ProgressRepository;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -45,6 +47,8 @@ public class ComicVineIngrationTest {
   @Autowired
   private IntegrationTestHelper integrationTestHelper;
 
+  @Rule
+  public TemporaryFolder testBed = new TemporaryFolder();
 
   @BeforeClass
   public static void startServer() throws IOException {
@@ -66,7 +70,7 @@ public class ComicVineIngrationTest {
   @DirtiesContext
   public void associatesComics() throws Exception {
     // Given
-    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/incomplete");
+    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
 
     // When
     StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))
