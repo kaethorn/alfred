@@ -45,7 +45,7 @@ public class MockServer {
           .withMethod("GET")
           .withPath("/issues/")
           .withQueryStringParameters(
-              param("filter", "volume%3A796")
+              param("filter", "volume:796")
           )
     ).respond(
         callback().withCallbackClass("de.wasenweg.alfred.mockserver.MockServer$BatmanIssuesCallback")

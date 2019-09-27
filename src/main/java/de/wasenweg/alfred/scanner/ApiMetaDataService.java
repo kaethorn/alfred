@@ -228,15 +228,24 @@ public class ApiMetaDataService {
   }
 
   private String getCharacters(final JsonNode details) {
-    return this.getEntities(details.get("character_credits"));
+    if (details.has("character_credits")) {
+      return this.getEntities(details.get("character_credits"));
+    }
+    return "";
   }
 
   private String getTeams(final JsonNode details) {
-    return this.getEntities(details.get("team_credits"));
+    if (details.has("team_credits")) {
+      return this.getEntities(details.get("team_credits"));
+    }
+    return "";
   }
 
   private String getLocations(final JsonNode details) {
-    return this.getEntities(details.get("location_credits"));
+    if (details.has("location_credits")) {
+      return this.getEntities(details.get("location_credits"));
+    }
+    return "";
   }
 
   /**
@@ -255,10 +264,17 @@ public class ApiMetaDataService {
                 Collectors.joining(", "))));
   }
 
+  private String getNodeText(final JsonNode response, final String key) {
+    if (response.has(key)) {
+      return response.get(key).asText();
+    }
+    return "";
+  }
+
   private void applyIssueDetails(final String url, final Comic comic) {
     final JsonNode response = this.comicVineService.getIssueDetails(url).get("results");
-    comic.setTitle(response.get("name").asText());
-    comic.setSummary(response.get("description").asText());
+    comic.setTitle(this.getNodeText(response, "name"));
+    comic.setSummary(this.getNodeText(response, "description"));
     final String[] coverDate = response.get("cover_date").asText().split("-");
     comic.setYear(new Short(coverDate[0]));
     comic.setMonth(new Short(coverDate[1]));

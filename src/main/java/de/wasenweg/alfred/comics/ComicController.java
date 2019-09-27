@@ -75,6 +75,7 @@ public class ComicController extends BaseController<Comic> {
     if (issues.size() > 0) {
       throw new ResourceNotFoundException("Error while querying ComicVine.");
     }
+    this.comicRepository.save(comic);
     return this.wrap(comic);
   }
 

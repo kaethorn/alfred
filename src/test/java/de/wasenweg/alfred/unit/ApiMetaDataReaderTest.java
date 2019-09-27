@@ -153,12 +153,15 @@ public class ApiMetaDataReaderTest {
 
   @Test
   public void getIssueDetails() throws Exception {
-    when(this.comicVineService.getIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/")).thenReturn(TestHelper.parseJson("batman-701.json"));
+    when(this.comicVineService.getIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/"))
+      .thenReturn(TestHelper.parseJson("batman-701.json"));
+
     final Comic comic = new Comic();
     comic.setSeries("Batman");
     comic.setPublisher("DC Comics");
     comic.setVolume("1940");
     comic.setNumber("701");
+
     Whitebox.invokeMethod(this.apiMetaDataReader, "applyIssueDetails", "https://comicvine.gamespot.com/api/issue/4000-224555/", comic);
     assertThat(comic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
     assertThat(comic.getSummary().length()).isEqualTo(391);

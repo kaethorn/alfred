@@ -19,9 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,15 +46,6 @@ public class ComicVineService {
     this.throttle = RateLimiter.create(200.0 / 3600.0);
   }
 
-  private String encodeValue(final String value) {
-    try {
-      return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-    } catch (final UnsupportedEncodingException exception) {
-      exception.printStackTrace();
-      return "";
-    }
-  }
-
   // Get details about a specific issue
   public JsonNode getIssueDetails(final String detailsUrl) {
     final String path = detailsUrl.split("/api/")[1];
@@ -68,7 +56,7 @@ public class ComicVineService {
         "character_credits,cover_date,location_credits,team_credits,person_credits,description,site_detail_url");
 
     final String url = requestParams.keySet().stream()
-        .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
+        .map(key -> key + "=" + requestParams.get(key))
         .collect(Collectors.joining("&", this.baseUrl + path + "?", ""));
 
     return this.query(url);
@@ -90,7 +78,7 @@ public class ComicVineService {
     requestParams.put("offset", String.valueOf(page * 10));
 
     final String url = requestParams.keySet().stream()
-        .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
+        .map(key -> key + "=" + requestParams.get(key))
         .collect(Collectors.joining("&", this.baseUrl + "search/?", ""));
 
     return this.query(url);
@@ -106,7 +94,7 @@ public class ComicVineService {
     requestParams.put("offset", String.valueOf(page * 100));
 
     final String url = requestParams.keySet().stream()
-        .map(key -> key + "=" + this.encodeValue(requestParams.get(key)))
+        .map(key -> key + "=" + requestParams.get(key))
         .collect(Collectors.joining("&", this.baseUrl + "issues/?", ""));
 
     return this.query(url);
