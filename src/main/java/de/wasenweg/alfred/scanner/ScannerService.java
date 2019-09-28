@@ -169,6 +169,7 @@ public class ScannerService {
       this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
     } catch (final NoMetaDataException exception) {
       final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
+      this.fileMetaDataService.write(comic);
       issues.forEach(issue -> {
         this.reportIssue(comic, issue);
       });
