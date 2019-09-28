@@ -64,7 +64,7 @@ public class ComicController extends BaseController<Comic> {
   public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
     this.comicRepository.save(comic);
     this.fileMetaDataService.write(comic);
-    comic.getErrors().clear();
+    comic.setErrors(null);
     this.scannerService.processComic(comic);
     return this.wrap(comic);
   }
@@ -76,6 +76,7 @@ public class ComicController extends BaseController<Comic> {
       throw new ResourceNotFoundException("Error while querying ComicVine.");
     }
     this.comicRepository.save(comic);
+    this.fileMetaDataService.write(comic);
     return this.wrap(comic);
   }
 

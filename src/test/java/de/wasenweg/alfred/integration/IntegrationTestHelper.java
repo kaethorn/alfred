@@ -1,5 +1,9 @@
 package de.wasenweg.alfred.integration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.settings.Setting;
 import de.wasenweg.alfred.settings.SettingRepository;
 
@@ -81,6 +85,15 @@ public class IntegrationTestHelper {
     final Setting comicsPathSetting = this.settingsRepository.findByKey("comics.path").get();
     comicsPathSetting.setValue(temp.getRoot().getAbsolutePath());
     this.settingsRepository.save(comicsPathSetting);
+  }
+
+  public String comicToJson(final Comic comic) {
+    try {
+      return new ObjectMapper().writeValueAsString(comic);
+    } catch (final JsonProcessingException exception) {
+      exception.printStackTrace();
+      return "";
+    }
   }
 
   private void copyResources(final TemporaryFolder temp, final String resourcePath) {

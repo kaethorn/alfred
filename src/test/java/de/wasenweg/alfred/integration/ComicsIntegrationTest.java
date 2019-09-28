@@ -1,26 +1,37 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
+import de.wasenweg.alfred.mockserver.MockServer;
 import de.wasenweg.alfred.progress.ProgressRepository;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.w3c.dom.Document;
 
+import java.io.IOException;
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,7 +52,23 @@ public class ComicsIntegrationTest {
   @Autowired
   private WebApplicationContext context;
 
+  @Autowired
+  private IntegrationTestHelper helper;
+
+  @Rule
+  public TemporaryFolder testBed = new TemporaryFolder();
+
   private MockMvc mockMvc;
+
+  @BeforeClass
+  public static void startServer() throws IOException {
+    MockServer.startServer();
+  }
+
+  @AfterClass
+  public static void stopServer() {
+    MockServer.stop();
+  }
 
   @Before
   public void setUp() {
@@ -279,5 +306,218 @@ public class ComicsIntegrationTest {
         .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
         .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V3_1.getTitle()));
+  }
+
+  @Test
+  @DirtiesContext
+  public void updateIncompleteComic() throws Exception {
+    // Given
+    this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
+    final String comicPath = this.testBed.getRoot().getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
+    final Comic comic = Comic.builder()
+        .path(comicPath)
+        .fileName("Batman 701 (1940).cbz")
+        .number("")
+        .publisher("")
+        .series("")
+        .volume("")
+        .build();
+
+    this.comicRepository.save(comic);
+
+    comic.setPublisher("DC Comics");
+    comic.setSeries("Batman");
+    comic.setVolume("1940");
+    comic.setNumber("701");
+    comic.setYear(Short.parseShort("2010"));
+    comic.setMonth(Short.parseShort("10"));
+    comic.setErrors(Arrays.asList("Mock Error"));
+
+    // Returns the comic with new values and without errors
+    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_UTF8_VALUE)
+        .content(this.helper.comicToJson(comic)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.series").value("Batman"))
+        .andExpect(jsonPath("$.publisher").value("DC Comics"))
+        .andExpect(jsonPath("$.volume").value("1940"))
+        .andExpect(jsonPath("$.number").value("701"))
+        .andExpect(jsonPath("$.position").value("0701.0"))
+        .andExpect(jsonPath("$.year").value("2010"))
+        .andExpect(jsonPath("$.month").value("10"))
+        .andExpect(jsonPath("$.title").value(""))
+        .andExpect(jsonPath("$.errors").doesNotExist());
+
+    // Stores the information
+    final Comic persistedComic = this.comicRepository.findById(comic.getId()).get();
+    assertThat(persistedComic.getPublisher()).isEqualTo("DC Comics");
+    assertThat(persistedComic.getSeries()).isEqualTo("Batman");
+    assertThat(persistedComic.getVolume()).isEqualTo("1940");
+    assertThat(persistedComic.getNumber()).isEqualTo("701");
+    assertThat(persistedComic.getPosition()).isEqualTo("0701.0");
+    assertThat(persistedComic.getErrors()).isNull();
+    assertThat(persistedComic.getTitle()).isEqualTo("");
+
+    // Writes the XML to the file
+    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = this.helper.parseComicInfo(comicPath);
+    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(this.helper.getText(document, "Number")).isEqualTo("701");
+    assertThat(this.helper.getText(document, "Title")).isEqualTo("");
+  }
+
+  @Test
+  @DirtiesContext
+  public void updateComic() throws Exception {
+    // Given
+    this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
+    final String comicPath = this.testBed.getRoot().getAbsolutePath() + "/Batman 402 (1940).cbz";
+    final Comic comic = Comic.builder()
+        .path(comicPath)
+        .fileName("Batman 402 (1940).cbz")
+        .number("402")
+        .publisher("DC Comics")
+        .series("Batman")
+        .volume("1940")
+        .year(Short.parseShort("1986"))
+        .month(Short.parseShort("12"))
+        .build();
+
+    this.comicRepository.save(comic);
+
+    comic.setNumber("502");
+    comic.setYear(Short.parseShort("1993"));
+
+    // Returns the comic with new values
+    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_UTF8_VALUE)
+        .content(this.helper.comicToJson(comic)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.series").value("Batman"))
+        .andExpect(jsonPath("$.publisher").value("DC Comics"))
+        .andExpect(jsonPath("$.volume").value("1940"))
+        .andExpect(jsonPath("$.number").value("502"))
+        .andExpect(jsonPath("$.position").value("0502.0"))
+        .andExpect(jsonPath("$.year").value("1993"))
+        .andExpect(jsonPath("$.month").value("12"))
+        .andExpect(jsonPath("$.title").value(""))
+        .andExpect(jsonPath("$.errors").doesNotExist());
+
+    // Stores the information
+    final Comic persistedComic = this.comicRepository.findById(comic.getId()).get();
+    assertThat(persistedComic.getPublisher()).isEqualTo("DC Comics");
+    assertThat(persistedComic.getSeries()).isEqualTo("Batman");
+    assertThat(persistedComic.getVolume()).isEqualTo("1940");
+    assertThat(persistedComic.getNumber()).isEqualTo("502");
+    assertThat(persistedComic.getPosition()).isEqualTo("0502.0");
+    assertThat(persistedComic.getTitle()).isEqualTo("");
+    assertThat(persistedComic.getErrors()).isNull();
+
+    // Writes the XML to the file
+    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = this.helper.parseComicInfo(comicPath);
+    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(this.helper.getText(document, "Number")).isEqualTo("502");
+    assertThat(this.helper.getText(document, "Title")).isEqualTo("");
+  }
+
+  @Test
+  @DirtiesContext
+  public void scrape() throws Exception {
+    // Given
+    this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
+    final String comicPath = this.testBed.getRoot().getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
+    final Comic comic = Comic.builder()
+        .path(comicPath)
+        .fileName("Batman 701 (1940).cbz")
+        .number("")
+        .publisher("")
+        .series("")
+        .volume("")
+        .build();
+
+    this.comicRepository.save(comic);
+
+    comic.setPublisher("DC Comics");
+    comic.setSeries("Batman");
+    comic.setVolume("1940");
+    comic.setNumber("701");
+    comic.setErrors(Arrays.asList("Mock Error"));
+
+    // Returns the comic with scraped values but keeps errors
+    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_UTF8_VALUE)
+        .content(this.helper.comicToJson(comic)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$.series").value("Batman"))
+        .andExpect(jsonPath("$.publisher").value("DC Comics"))
+        .andExpect(jsonPath("$.volume").value("1940"))
+        .andExpect(jsonPath("$.number").value("701"))
+        .andExpect(jsonPath("$.position").value("0701.0"))
+        .andExpect(jsonPath("$.year").value("2010"))
+        .andExpect(jsonPath("$.month").value("9"))
+        .andExpect(jsonPath("$.title").value("R.I.P. The Missing Chapter, Part 1: The Hole In Things"))
+        .andExpect(jsonPath("$.errors.length()").value(1))
+        .andExpect(jsonPath("$.errors[0]").value("Mock Error"));
+
+    // Stores the information
+    final Comic persistedComic = this.comicRepository.findById(comic.getId()).get();
+    assertThat(persistedComic.getPublisher()).isEqualTo("DC Comics");
+    assertThat(persistedComic.getSeries()).isEqualTo("Batman");
+    assertThat(persistedComic.getVolume()).isEqualTo("1940");
+    assertThat(persistedComic.getNumber()).isEqualTo("701");
+    assertThat(persistedComic.getPosition()).isEqualTo("0701.0");
+    assertThat(persistedComic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
+    assertThat(persistedComic.getErrors()).isEqualTo(Arrays.asList("Mock Error"));
+
+    // Writes the XML to the file
+    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = this.helper.parseComicInfo(comicPath);
+    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(this.helper.getText(document, "Number")).isEqualTo("701");
+    assertThat(this.helper.getText(document, "Title")).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
+  }
+
+  @Test
+  @DirtiesContext
+  public void scrapeWithError() throws Exception {
+    // Given
+    MockServer.stop();
+    this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
+    final String comicPath = this.testBed.getRoot().getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
+    final Comic comic = Comic.builder()
+        .path(comicPath)
+        .fileName("Batman 701 (1940).cbz")
+        .number("")
+        .publisher("")
+        .series("")
+        .volume("")
+        .build();
+
+    this.comicRepository.save(comic);
+
+    comic.setPublisher("DC Comics");
+    comic.setSeries("Batman");
+    comic.setVolume("1940");
+    comic.setNumber("701");
+    comic.setErrors(Arrays.asList("Mock Error"));
+
+    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_UTF8_VALUE)
+        .content(this.helper.comicToJson(comic)))
+        .andExpect(status().is(404));
   }
 }
