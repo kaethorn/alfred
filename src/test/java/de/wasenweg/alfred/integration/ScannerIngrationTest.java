@@ -42,7 +42,7 @@ public class ScannerIngrationTest {
   private ProgressRepository progressRepository;
 
   @Autowired
-  private IntegrationTestHelper integrationTestHelper;
+  private IntegrationTestHelper helper;
 
   @Rule
   public TemporaryFolder testBed = new TemporaryFolder();
@@ -57,10 +57,10 @@ public class ScannerIngrationTest {
   @DirtiesContext
   public void emittsScanProgressEvents() throws Exception {
     // Given
-    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
+    this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
 
     // When
-    StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))
+    StepVerifier.create(this.helper.triggerScan(this.port))
         .expectNext("start")
         .expectNext("1")
         .expectNext(this.testBed.getRoot().getAbsolutePath() + "/Batman 402 (1940).cbz")

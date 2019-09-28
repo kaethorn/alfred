@@ -64,6 +64,7 @@ public class FileMetaDataService {
       element.item(0).setTextContent(value);
     } else {
       final Element newElement = document.createElement(elementName);
+      newElement.setTextContent(value);
       document.getDocumentElement().appendChild(newElement);
     }
   }

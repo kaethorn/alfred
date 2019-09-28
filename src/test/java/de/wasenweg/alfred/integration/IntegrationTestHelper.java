@@ -8,14 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.w3c.dom.Document;
 
 import reactor.core.publisher.Flux;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 
@@ -33,6 +40,40 @@ public class IntegrationTestHelper {
         .accept(TEXT_EVENT_STREAM)
         .retrieve()
         .bodyToFlux(new ParameterizedTypeReference<String>() { });
+  }
+
+  public Boolean zipContainsFile(final String zipPath, final String filePath) {
+    try {
+      final ZipFile zipFile = new ZipFile(zipPath);
+      final Boolean found = zipFile.stream()
+          .filter(entry -> entry.getName().equals(filePath))
+          .collect(Collectors.toList()).size() > 0;
+      zipFile.close();
+      return found;
+    } catch (final IOException exception) {
+      exception.printStackTrace();
+      return false;
+    }
+  }
+
+  public Document parseComicInfo(final String zipPath) {
+    try {
+      final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      final ZipFile zipFile = new ZipFile(zipPath);
+      final ZipEntry comicInfo = zipFile.stream()
+          .filter(entry -> entry.getName().equals("ComicInfo.xml"))
+          .collect(Collectors.toList()).get(0);
+      final Document document = docBuilder.parse(zipFile.getInputStream(comicInfo));
+      zipFile.close();
+      return document;
+    } catch (final Exception exception) {
+      exception.printStackTrace();
+      return null;
+    }
+  }
+
+  public String getText(final Document document, final String name) {
+    return document.getDocumentElement().getElementsByTagName(name).item(0).getTextContent();
   }
 
   public void setComicsPath(final String comicsPath, final TemporaryFolder temp) {

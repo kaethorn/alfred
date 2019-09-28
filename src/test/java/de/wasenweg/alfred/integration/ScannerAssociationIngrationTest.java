@@ -41,7 +41,7 @@ public class ScannerAssociationIngrationTest {
   private ProgressRepository progressRepository;
 
   @Autowired
-  private IntegrationTestHelper integrationTestHelper;
+  private IntegrationTestHelper helper;
 
   @Rule
   public TemporaryFolder testBed = new TemporaryFolder();
@@ -56,10 +56,10 @@ public class ScannerAssociationIngrationTest {
   @DirtiesContext
   public void associatesComics() throws Exception {
     // Given
-    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/full", this.testBed);
+    this.helper.setComicsPath("src/test/resources/fixtures/full", this.testBed);
 
     // When
-    StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))
+    StepVerifier.create(this.helper.triggerScan(this.port))
         .expectNext("start")
         .expectNext("305")
         .expectNextCount(305)
