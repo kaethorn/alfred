@@ -23,39 +23,51 @@
       </ion-item>
     </ion-list>
 
-    <ion-list *ngIf="issues.length" class="errors">
-      <ion-list-header>Scanning issues</ion-list-header>
-      <ion-item *ngFor="let issue of issues">
-        <ion-label>
-          <sub>{{ issue.date | amTimeAgo }}</sub>
-          <h4><i>{{ issue.message }}</i></h4>
-          <p *ngIf="issue.path">{{ issue.path }}</p>
-        </ion-label>
-        <ion-icon *ngIf="issue.type === 'ERROR'" slot="end" color="danger" name="alert"></ion-icon>
-        <ion-icon *ngIf="issue.type === 'WARNING'" slot="end" color="warning" name="warning"></ion-icon>
+    <ion-list>
+      <ion-item>
+        Scan the library. Purges deleted and updates existing comics.
+        <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
+          <ion-icon name="search"></ion-icon>
+          SCAN
+        </ion-button>
+      </ion-item>
+      <ion-item *ngIf="issues.length">
+        <ion-icon slot="start" color="danger" name="alert"></ion-icon>
+        {{ issues.length }} errors found in comics.
+        <ion-button slot="end" [routerLink]="['queue']">
+          <ion-icon slot="start" name="list"></ion-icon>
+          View 
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        Remove scanned comic book information. Does not delete files from disk.
+        <ion-button slot="end" (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Delete
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        Remove read progress information for all users. Does not affect comic information.
+        <ion-button slot="end" (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Delete
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        Remove read progress information for the current user.
+        <ion-button slot="end" (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Delete
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        Associate comics in a volume. Automatically done after scanning.
+        <ion-button slot="end" (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
+          <ion-icon slot="start" name="paper"></ion-icon>
+          Bundle
+        </ion-button>
       </ion-item>
     </ion-list>
-
-    <div>
-      <ion-button (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
-        DELETE COMICS
-      </ion-button>
-      <ion-button (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
-        DELETE ALL PROGRESS
-      </ion-button>
-      <ion-button (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
-        DELETE MY PROGRESS
-      </ion-button>
-      <ion-button (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
-        BUNDLE VOLUMES
-      </ion-button>
-    </div>
-    <ion-item lines="none">
-      <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
-        <ion-icon name="search"></ion-icon>
-        SCAN
-      </ion-button>
-    </ion-item>
 
   </ion-card-content>
 </ion-card>

@@ -5,6 +5,7 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.mockserver.MockServer;
 import de.wasenweg.alfred.progress.ProgressRepository;
+import de.wasenweg.alfred.scanner.ScannerIssue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -331,7 +332,8 @@ public class ComicsIntegrationTest {
     comic.setNumber("701");
     comic.setYear(Short.parseShort("2010"));
     comic.setMonth(Short.parseShort("10"));
-    comic.setErrors(Arrays.asList("Mock Error"));
+    comic.setErrors(Arrays.asList(
+        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
 
     // Returns the comic with new values and without errors
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
@@ -450,7 +452,8 @@ public class ComicsIntegrationTest {
     comic.setSeries("Batman");
     comic.setVolume("1940");
     comic.setNumber("701");
-    comic.setErrors(Arrays.asList("Mock Error"));
+    comic.setErrors(Arrays.asList(
+        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
 
     // Returns the comic with scraped values but keeps errors
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
@@ -512,7 +515,8 @@ public class ComicsIntegrationTest {
     comic.setSeries("Batman");
     comic.setVolume("1940");
     comic.setNumber("701");
-    comic.setErrors(Arrays.asList("Mock Error"));
+    comic.setErrors(Arrays.asList(
+        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
 
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { Comic } from '../comic';
-import { ComicsService } from '../comics.service';
+import { Comic } from '../../comic';
+import { ComicsService } from '../../comics.service';
 
 @Component({
   selector: 'app-queue',
-  templateUrl: './queue.page.html',
-  styleUrls: ['./queue.page.sass'],
+  templateUrl: './queue.component.html',
+  styleUrls: ['./queue.component.sass'],
 })
-export class QueuePage {
+export class QueueComponent {
 
   comics: Array<Comic> = [];
+  issueTypesToColor = { ERROR: 'danger', WARNING: 'warning', INFO: 'secondary' };
 
   constructor (
     private comicsService: ComicsService,

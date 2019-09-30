@@ -121,10 +121,10 @@ public class ScannerService {
 
   private void reportIssue(final Comic comic, final ScannerIssue issue) {
     issue.setPath(comic.getPath());
-    final List<String> errors = Optional
+    final List<ScannerIssue> errors = Optional
         .ofNullable(comic.getErrors())
-        .orElse(new ArrayList<String>());
-    errors.add(issue.getMessage());
+        .orElse(new ArrayList<ScannerIssue>());
+    errors.add(issue);
     comic.setErrors(errors);
     this.reportIssue(issue);
   }
@@ -152,6 +152,8 @@ public class ScannerService {
   }
 
   public void processComic(final Comic comic) {
+    comic.setErrors(null);
+
     final ZipFile file;
     try {
       file = this.fileMetaDataService.getZipFile(comic);

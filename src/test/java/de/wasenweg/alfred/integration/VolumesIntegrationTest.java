@@ -4,6 +4,7 @@ import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
+import de.wasenweg.alfred.scanner.ScannerIssue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,9 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -170,9 +169,8 @@ public class VolumesIntegrationTest {
   public void findAllPublishersWithErrors() throws Exception {
     final Comic pivotal = this.comicRepository.findByPath("/a1.cbz").get();
     pivotal.setPublisher("Pub B");
-    final List<String> errors = new ArrayList<String>();
-    errors.add("Mock error");
-    pivotal.setErrors(errors);
+    pivotal.setErrors(Arrays.asList(
+        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
     this.comicRepository.save(pivotal);
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))

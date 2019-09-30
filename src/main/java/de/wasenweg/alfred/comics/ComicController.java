@@ -64,7 +64,6 @@ public class ComicController extends BaseController<Comic> {
   public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
     this.comicRepository.save(comic);
     this.fileMetaDataService.write(comic);
-    comic.setErrors(null);
     this.scannerService.processComic(comic);
     return this.wrap(comic);
   }

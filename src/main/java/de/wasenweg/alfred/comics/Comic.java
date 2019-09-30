@@ -1,7 +1,7 @@
 package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.scanner.InvalidIssueNumberException;
-
+import de.wasenweg.alfred.scanner.ScannerIssue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -117,7 +117,7 @@ public class Comic {
   @Builder.Default
   private boolean read = false;
 
-  private List<String> errors;
+  private List<ScannerIssue> errors;
 
   @Builder.Default
   private Short currentPage = (short) 0;

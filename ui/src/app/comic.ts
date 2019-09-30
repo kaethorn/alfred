@@ -1,3 +1,16 @@
+export enum ScannerIssueType {
+  INFO,
+  WARNING,
+  ERROR
+}
+
+export interface ScannerIssue {
+  date: Date;
+  message: string;
+  path: string;
+  type: ScannerIssueType;
+}
+
 export interface Comic {
   id: string;
   path: string;
@@ -30,5 +43,5 @@ export interface Comic {
   read?: boolean;
   currentPage?: number;
   lastRead?: Date;
-  errors?: string[];
+  errors?: ScannerIssue[];
 }
