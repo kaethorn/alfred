@@ -35,7 +35,7 @@ import java.util.zip.ZipFile;
 @Service
 public class ScannerService {
 
-  private final EmitterProcessor<ServerSentEvent<String>> emitter = EmitterProcessor.create();
+  private EmitterProcessor<ServerSentEvent<String>> emitter;
 
   private Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
@@ -214,6 +214,7 @@ public class ScannerService {
    * write meta data XML and exit. Otherwise report error and ignore file.
    */
   public Flux<ServerSentEvent<String>> scanComics() {
+    this.emitter = EmitterProcessor.create();
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
     this.reportStart(comicsPath.toString());
 
@@ -235,9 +236,9 @@ public class ScannerService {
       }
 
       this.reportFinish();
+      this.emitter.onComplete();
     });
 
-    // TODO properly close emitter or make sure it can be reused
     return this.emitter.log();
   }
 
