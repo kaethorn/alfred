@@ -237,6 +237,7 @@ public class ScannerService {
       this.reportFinish();
     });
 
+    // TODO properly close emitter or make sure it can be reused
     return this.emitter.log();
   }
 

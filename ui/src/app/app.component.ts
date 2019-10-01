@@ -17,7 +17,6 @@ export class AppComponent {
     { title: 'Bookmarks', url: '/bookmarks', icon: 'bookmarks' },
     { title: 'Library', url: '/library/publishers', icon: 'book' },
     { title: 'Settings', url: '/settings', icon: 'settings' },
-    { title: 'Error Queue', url: '/queue', icon: 'list' },
   ];
 
   user: User;

@@ -30,7 +30,7 @@
         <ion-icon slot="start" color="{{ issueTypesToColor[error.type] }}" name="alert"></ion-icon>
       </ion-item>
     </ion-list>
-    <ion-button slot="end" [routerLink]="['/edit/' + comic.id]">
+    <ion-button slot="end" [routerLink]="['/edit', comic.id]">
       <ion-icon slot="start" name="create"></ion-icon>
       Edit
     </ion-button>

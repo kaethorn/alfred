@@ -19,6 +19,22 @@ export class EditPage {
     publisher: ['', Validators.required],
     volume: ['', Validators.required],
     number: ['', Validators.required],
+    year: [''],
+    month: [''],
+    title: [''],
+    summary: [''],
+    notes: [''],
+    writer: [''],
+    penciller: [''],
+    inker: [''],
+    colorist: [''],
+    letterer: [''],
+    coverArtist: [''],
+    editor: [''],
+    manga: [''],
+    characters: [''],
+    teams: [''],
+    locations: [''],
   });
 
   constructor (
@@ -37,18 +53,16 @@ export class EditPage {
       .get(id)
       .subscribe((data: Comic) => {
         this.comic = data;
-        this.comicForm.get('series').setValue(data.series);
-        this.comicForm.get('publisher').setValue(data.publisher);
-        this.comicForm.get('volume').setValue(data.volume);
-        this.comicForm.get('number').setValue(data.number);
+        Object.keys(this.comicForm.value).forEach(key => {
+          this.comicForm.get(key).setValue(data[key]);
+        });
       });
   }
 
   onSubmit () {
-    this.comic.publisher = this.comicForm.value.publisher;
-    this.comic.series = this.comicForm.value.series;
-    this.comic.volume = this.comicForm.value.volume;
-    this.comic.number = this.comicForm.value.number;
+    Object.keys(this.comicForm.value).forEach(key => {
+      this.comic[key] = this.comicForm.value[key];
+    });
     this.comicsService.update(this.comic).subscribe(
       () => this.showToast('Comic saved.'),
       () => this.showToast('Error saving comic.')
@@ -72,5 +86,4 @@ export class EditPage {
     });
     toast.present();
   }
-
 }

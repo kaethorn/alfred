@@ -11,7 +11,6 @@ const routes: Routes = [
   { path: 'bookmarks', loadChildren: './bookmarks/bookmarks.module#BookmarksPageModule', canActivate: [AuthGuard] },
   { path: 'settings', loadChildren: './settings/settings.module#SettingsPageModule', canActivate: [AuthGuard] },
   { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
-  { path: 'queue', loadChildren: './queue/queue.module#QueuePageModule', canActivate: [AuthGuard] },
   { path: 'edit', loadChildren: './edit/edit.module#EditPageModule', canActivate: [AuthGuard] },
 ];
 
