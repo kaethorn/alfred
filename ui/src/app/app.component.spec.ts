@@ -53,23 +53,21 @@ describe('AppComponent', () => {
   it('should have menu labels', async () => {
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(5);
+    expect(menuItems.length).toEqual(4);
     expect(menuItems[0].textContent).toContain('Foo Barfoo@bar.com');
     expect(menuItems[1].textContent).toContain('Bookmarks');
     expect(menuItems[2].textContent).toContain('Library');
     expect(menuItems[3].textContent).toContain('Settings');
-    expect(menuItems[4].textContent).toContain('Error Queue');
   });
 
   it('should have URLs', async () => {
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(5);
+    expect(menuItems.length).toEqual(4);
     expect(menuItems[0].getAttribute('ng-reflect-router-link')).toBe(null);
     expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual('/bookmarks');
     expect(menuItems[2].getAttribute('ng-reflect-router-link')).toEqual('/library/publishers');
     expect(menuItems[3].getAttribute('ng-reflect-router-link')).toEqual('/settings');
-    expect(menuItems[4].getAttribute('ng-reflect-router-link')).toEqual('/queue');
   });
 
   it('retrieves user info on startup', () => {

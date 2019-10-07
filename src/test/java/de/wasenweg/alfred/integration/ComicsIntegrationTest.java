@@ -447,13 +447,16 @@ public class ComicsIntegrationTest {
         .build();
 
     this.comicRepository.save(comic);
+    final ScannerIssue error = ScannerIssue.builder()
+        .type(ScannerIssue.Type.ERROR)
+        .message("Mock Error")
+        .build();
 
     comic.setPublisher("DC Comics");
     comic.setSeries("Batman");
     comic.setVolume("1940");
     comic.setNumber("701");
-    comic.setErrors(Arrays.asList(
-        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
+    comic.setErrors(Arrays.asList(error));
 
     // Returns the comic with scraped values but keeps errors
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
@@ -471,7 +474,7 @@ public class ComicsIntegrationTest {
         .andExpect(jsonPath("$.month").value("9"))
         .andExpect(jsonPath("$.title").value("R.I.P. The Missing Chapter, Part 1: The Hole In Things"))
         .andExpect(jsonPath("$.errors.length()").value(1))
-        .andExpect(jsonPath("$.errors[0]").value("Mock Error"));
+        .andExpect(jsonPath("$.errors[0].message").value("Mock Error"));
 
     // Stores the information
     final Comic persistedComic = this.comicRepository.findById(comic.getId()).get();
@@ -481,7 +484,7 @@ public class ComicsIntegrationTest {
     assertThat(persistedComic.getNumber()).isEqualTo("701");
     assertThat(persistedComic.getPosition()).isEqualTo("0701.0");
     assertThat(persistedComic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
-    assertThat(persistedComic.getErrors()).isEqualTo(Arrays.asList("Mock Error"));
+    assertThat(persistedComic.getErrors()).isEqualTo(Arrays.asList(error));
 
     // Writes the XML to the file
     assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();

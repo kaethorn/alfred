@@ -3,7 +3,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TestModule } from '../../../testing/test.module';
 
 import { StatsServiceMocks as statsService } from '../../../testing/stats.service.mocks';
+import { ComicsServiceMocks as comicsService } from '../../../testing/comics.service.mocks';
 import { StatsService } from '../../stats.service';
+import { ComicsService } from '../../comics.service';
 
 import { ScannerComponent } from './scanner.component';
 
@@ -15,6 +17,8 @@ describe('ScannerComponent', () => {
     const testModule: any = TestModule();
     testModule.providers.push({
       provide: StatsService, useValue: statsService
+    }, {
+      provide: ComicsService, useValue: comicsService
     });
     TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(ScannerComponent);

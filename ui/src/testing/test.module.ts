@@ -12,6 +12,7 @@ import { AppComponent } from '../app/app.component';
 import { PublishersComponent } from '../app/library/publishers/publishers.component';
 import { SeriesComponent } from '../app/library/series/series.component';
 import { ScannerComponent } from '../app/settings/scanner/scanner.component';
+import { QueueComponent } from '../app/settings/queue/queue.component';
 import { VolumesComponent } from '../app/library/volumes/volumes.component';
 import { VolumeActionsComponent } from '../app/library/volumes/volume-actions/volume-actions.component';
 import { BookmarkActionsComponent } from '../app/bookmarks/bookmark-actions/bookmark-actions.component';
@@ -22,7 +23,6 @@ import { ReaderPage } from '../app/reader/reader.page';
 import { IssuesPage } from '../app/issues/issues.page';
 import { BookmarksPage } from '../app/bookmarks/bookmarks.page';
 import { LoginPage } from '../app/login/login.page';
-import { QueuePage } from '../app/queue/queue.page';
 import { EditPage } from '../app/edit/edit.page';
 
 export const TestModule = () => {
@@ -32,6 +32,7 @@ export const TestModule = () => {
 
       AppComponent,
       ScannerComponent,
+      QueueComponent,
       PublishersComponent,
       SeriesComponent,
       VolumesComponent,
@@ -44,7 +45,6 @@ export const TestModule = () => {
       SettingsPage,
       BookmarksPage,
       LoginPage,
-      QueuePage,
       EditPage,
     ],
     imports: [

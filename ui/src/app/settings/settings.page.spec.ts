@@ -2,10 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TestModule } from '../../testing/test.module';
 import { SettingsServiceMocks as settingsService } from '../../testing/settings.service.mocks';
+import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 import { StatsServiceMocks as statsService } from '../../testing/stats.service.mocks';
 
 import { SettingsService } from '../settings.service';
 import { StatsService } from '../stats.service';
+import { ComicsService } from '../comics.service';
 
 import { SettingsPage } from './settings.page';
 
@@ -17,6 +19,8 @@ describe('SettingsPage', () => {
     const testModule: any = TestModule();
     testModule.providers.push({
       provide: SettingsService, useValue: settingsService
+    }, {
+      provide: ComicsService, useValue: comicsService
     });
     testModule.providers.push({
       provide: StatsService, useValue: statsService
