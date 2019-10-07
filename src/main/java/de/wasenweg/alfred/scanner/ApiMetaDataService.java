@@ -276,8 +276,8 @@ public class ApiMetaDataService {
     comic.setTitle(this.getNodeText(response, "name"));
     comic.setSummary(this.getNodeText(response, "description"));
     final String[] coverDate = response.get("cover_date").asText().split("-");
-    comic.setYear(new Short(coverDate[0]));
-    comic.setMonth(new Short(coverDate[1]));
+    comic.setYear(Short.valueOf(coverDate[0]));
+    comic.setMonth(Short.valueOf(coverDate[1]));
     comic.setCharacters(this.getCharacters(response));
     comic.setTeams(this.getTeams(response));
     comic.setLocations(this.getLocations(response));

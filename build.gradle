@@ -28,8 +28,8 @@ bootJar {
 }
 
 group = 'de.wasenweg'
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 11.0
+targetCompatibility = 11.0
 
 repositories {
   mavenCentral()
