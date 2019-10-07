@@ -25,7 +25,7 @@
 
     <ion-list>
       <ion-item>
-        Scan the library. Purges deleted and updates existing comics.
+        Scan the library folder for new comic books.
         <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
           <ion-icon name="search"></ion-icon>
           SCAN
@@ -33,12 +33,32 @@
       </ion-item>
       <ion-item *ngIf="issues.length">
         <ion-icon slot="start" color="danger" name="alert"></ion-icon>
-        {{ issues.length }} errors found in comics.
+          Found {{ issues.length }} errors in the comic book library.
         <ion-button slot="end" [routerLink]="['queue']">
           <ion-icon slot="start" name="list"></ion-icon>
           View 
         </ion-button>
       </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>Statistics</ion-card-header>
+  <ion-card-content>
+    <ion-list class="stats">
+      <ion-item *ngFor="let stat of stats | keyvalue">
+        <ion-label>{{ stat.key }}</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>Maintenance</ion-card-header>
+  <ion-card-content>
+    <ion-list>
       <ion-item>
         Remove scanned comic book information. Does not delete files from disk.
         <ion-button slot="end" (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
@@ -66,19 +86,6 @@
           <ion-icon slot="start" name="paper"></ion-icon>
           Bundle
         </ion-button>
-      </ion-item>
-    </ion-list>
-
-  </ion-card-content>
-</ion-card>
-
-<ion-card>
-  <ion-card-header>Statistics</ion-card-header>
-  <ion-card-content>
-    <ion-list class="stats">
-      <ion-item *ngFor="let stat of stats | keyvalue">
-        <ion-label>{{ stat.key }}</ion-label>
-        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
       </ion-item>
     </ion-list>
   </ion-card-content>

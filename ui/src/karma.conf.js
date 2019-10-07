@@ -28,8 +28,7 @@ module.exports = function (config) {
     browsers : [ 'Chrome' ],
     singleRun: false,
     proxies: {
-      '/api/read/923/0': '/assets/icons/alfred.svg',
-      '/api/scan-progress': '/assets/icons/alfred.svg'
+      '/api/read/923/0': '/assets/icons/alfred.svg'
     }
   });
 };
