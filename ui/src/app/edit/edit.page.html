@@ -232,10 +232,10 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-button color="secondary" (click)="scrape()">
+          <ion-button color="secondary" (click)="scrape()" [disabled]="scrapeInProgress">
             SCRAPE
           </ion-button>
-          <ion-button type="submit" color="primary" [disabled]="!comicForm.valid">
+          <ion-button type="submit" color="primary" [disabled]="!comicForm.valid || editInProgress">
             SAVE
           </ion-button>
         </ion-col>

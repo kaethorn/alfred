@@ -36,6 +36,8 @@ export class EditPage {
     teams: [''],
     locations: [''],
   });
+  scrapeInProgress = false;
+  editInProgress = false;
 
   constructor (
     private route: ActivatedRoute,
@@ -60,22 +62,34 @@ export class EditPage {
   }
 
   onSubmit () {
+    this.editInProgress = true;
     Object.keys(this.comicForm.value).forEach(key => {
       this.comic[key] = this.comicForm.value[key];
     });
     this.comicsService.update(this.comic).subscribe(
-      () => this.showToast('Comic saved.'),
-      () => this.showToast('Error saving comic.')
+      () => {
+        this.editInProgress = false;
+        this.showToast('Comic saved.');
+      },
+      () => {
+        this.editInProgress = false;
+        this.showToast('Error saving comic.');
+      }
     );
   }
 
   scrape () {
+    this.scrapeInProgress = true;
     this.comicsService.scrape(this.comic).subscribe(
       () => {
+        this.scrapeInProgress = false;
         this.get(this.comic.id);
         this.showToast('Comic scraped.');
       },
-      () => this.showToast('Error scraping comic.')
+      () => {
+        this.scrapeInProgress = false;
+        this.showToast('Error scraping comic.');
+      }
     );
   }
 
