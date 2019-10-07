@@ -31,7 +31,7 @@ export class ReaderPage {
     private toastController: ToastController
   ) { }
 
-  @ViewChild('pagesLayer') pagesLayer: ElementRef;
+  @ViewChild('pagesLayer', { static: true }) pagesLayer: ElementRef;
 
   @HostListener('document:keyup.esc', ['$event'])
   handleEscape () {
