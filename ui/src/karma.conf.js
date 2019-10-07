@@ -27,7 +27,7 @@ module.exports = function (config) {
     autoWatch: true,
     browsers : [ 'Chrome' ],
     singleRun: false,
-    proxies: {
+    proxies  : {
       '/api/read/923/0': '/assets/icons/alfred.svg'
     }
   });
