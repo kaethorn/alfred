@@ -1,5 +1,7 @@
 package de.wasenweg.alfred.comics;
 
+import de.wasenweg.alfred.scanner.InvalidIssueNumberException;
+import de.wasenweg.alfred.scanner.ScannerIssue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +12,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,7 +31,11 @@ public class Comic {
   private String path;
 
   @NonNull
-  private String title;
+  private String fileName;
+
+  @NonNull
+  @Indexed
+  private String publisher;
 
   @NonNull
   @Indexed
@@ -39,44 +48,51 @@ public class Comic {
   @NonNull
   private String number;
 
-  @NonNull
   @Indexed
   private String position;
 
-  @NonNull
   private Short year;
 
-  @NonNull
   private Short month;
 
-  @NonNull
-  @Indexed
-  private String publisher;
+  private String title;
 
   private String summary;
+
   private String notes;
 
   private String writer;
+
   private String penciller;
+
   private String inker;
+
   private String colorist;
+
   private String letterer;
+
   private String coverArtist;
+
   private String editor;
+
   private String web;
 
-  private Short pageCount;
   private boolean manga;
 
   private String characters;
+
   private String teams;
+
   private String locations;
 
+  private Short pageCount;
   private String nextId;
   private String previousId;
 
   @Builder.Default
   private boolean read = false;
+
+  private List<ScannerIssue> errors;
 
   @Builder.Default
   private Short currentPage = (short) 0;
@@ -86,6 +102,28 @@ public class Comic {
   public Comic() {
     this.read = false;
     this.currentPage = (short) 0;
+  }
+
+  public void setNumber(final String number) {
+    this.number = number;
+    this.position = Comic.mapPosition(number);
+  }
+
+  public static String mapPosition(final String number) throws InvalidIssueNumberException {
+    String convertableNumber = number;
+    if ("½".equals(number) || "1/2".equals(number)) {
+      convertableNumber = "0.5";
+    }
+    if (number.endsWith("a")) {
+      convertableNumber = convertableNumber.replace("a", ".5");
+    }
+    BigDecimal position = new BigDecimal(0);
+    try {
+      position = new BigDecimal(convertableNumber);
+    } catch (final Exception exception) {
+      throw new InvalidIssueNumberException(number);
+    }
+    return new DecimalFormat("0000.0").format(position);
   }
 
   @Override

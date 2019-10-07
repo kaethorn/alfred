@@ -3,18 +3,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { ComicsService } from '../../comics.service';
 import { StatsService } from '../../stats.service';
 import { Stats } from '../../stats';
-
-enum ScannerIssueType {
-  ERROR,
-  WARNING
-}
-
-interface ScannerIssue {
-  message: string;
-  type: ScannerIssueType;
-  path?: string;
-  date: Date;
-}
+import { Comic, ScannerIssue } from 'src/app/comic';
 
 @Component({
   selector: 'app-scanner',
@@ -39,12 +28,23 @@ export class ScannerComponent {
     private comicsService: ComicsService
   ) {
     this.getStats();
+    this.getComicsWithErrors();
   }
 
   private getStats () {
     this.statsService.get().subscribe((stats: Stats) => {
       this.stats = stats;
     });
+  }
+
+  private getComicsWithErrors (): void {
+    this.issues.splice(0);
+    this.comicsService.listComicsWithErrors()
+      .subscribe((data: Comic[]) => {
+        data.forEach((comic: Comic) => {
+          this.issues.push(...comic.errors);
+        });
+      });
   }
 
   scan () {
@@ -91,6 +91,7 @@ export class ScannerComponent {
       this.indeterminate = null;
       this.scanned.emit(true);
       this.getStats();
+      this.getComicsWithErrors();
 
       this.close();
     });
@@ -99,18 +100,21 @@ export class ScannerComponent {
   deleteComics () {
     this.comicsService.deleteComics().subscribe(() => {
       this.getStats();
+      this.getComicsWithErrors();
     });
   }
 
   deleteProgress () {
     this.comicsService.deleteProgress().subscribe(() => {
       this.getStats();
+      this.getComicsWithErrors();
     });
   }
 
   deleteProgressForCurrentUser () {
     this.comicsService.deleteProgressForCurrentUser().subscribe(() => {
       this.getStats();
+      this.getComicsWithErrors();
     });
   }
 

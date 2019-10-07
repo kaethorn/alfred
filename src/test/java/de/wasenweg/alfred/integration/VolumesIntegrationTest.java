@@ -1,8 +1,10 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
+import de.wasenweg.alfred.scanner.ScannerIssue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -76,7 +78,9 @@ public class VolumesIntegrationTest {
         .andExpect(jsonPath("$._embedded.publishers.length()").value(1))
         .andExpect(jsonPath("$._embedded.publishers[0].publisher")
             .value(ComicFixtures.COMIC_V1_1.getPublisher()))
-        .andExpect(jsonPath("$._embedded.publishers[0].seriesCount").value(1));
+        .andExpect(jsonPath("$._embedded.publishers[0].seriesCount").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[0].series.length()").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[0].series[0].volumesCount").value(3));
   }
 
   @Test
@@ -135,5 +139,48 @@ public class VolumesIntegrationTest {
         .andExpect(jsonPath("$._embedded.volumes[2].issueCount").value(3))
         .andExpect(jsonPath("$._embedded.volumes[2].readCount").value(0))
         .andExpect(jsonPath("$._embedded.volumes[2].read").value(false));
+  }
+
+  @Test
+  public void findAllPublishersWithMoreThanOne() throws Exception {
+    // When there are two publishers, each of which have the exact same
+    // series name and volume name.
+    final Comic pivotal = this.comicRepository.findByPath("/a1.cbz").get();
+    pivotal.setPublisher("Pub B");
+    this.comicRepository.save(pivotal);
+
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$._embedded.publishers.length()").value(2))
+        .andExpect(jsonPath("$._embedded.publishers[0].publisher")
+            .value(ComicFixtures.COMIC_V1_1.getPublisher()))
+        .andExpect(jsonPath("$._embedded.publishers[0].seriesCount").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[0].series.length()").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[0].series[0].volumesCount").value(3))
+        .andExpect(jsonPath("$._embedded.publishers[1].publisher")
+            .value("Pub B"))
+        .andExpect(jsonPath("$._embedded.publishers[1].seriesCount").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[1].series.length()").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[1].series[0].volumesCount").value(1));
+  }
+
+  @Test
+  public void findAllPublishersWithErrors() throws Exception {
+    final Comic pivotal = this.comicRepository.findByPath("/a1.cbz").get();
+    pivotal.setPublisher("Pub B");
+    pivotal.setErrors(Arrays.asList(
+        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
+    this.comicRepository.save(pivotal);
+
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("$._embedded.publishers.length()").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[0].publisher")
+            .value(ComicFixtures.COMIC_V1_1.getPublisher()))
+        .andExpect(jsonPath("$._embedded.publishers[0].seriesCount").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[0].series.length()").value(1))
+        .andExpect(jsonPath("$._embedded.publishers[0].series[0].volumesCount").value(3));
   }
 }

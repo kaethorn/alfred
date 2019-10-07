@@ -19,6 +19,7 @@ public class ComicConstructionTest {
   public void constructWithBuilder() throws Exception {
     final Comic comic = Comic.builder()
         .path("")
+        .fileName("")
         .title("")
         .series("")
         .volume("")
@@ -30,5 +31,16 @@ public class ComicConstructionTest {
         .build();
     assertThat(comic.getCurrentPage()).isEqualTo((short) 0);
     assertThat(comic.isRead()).isEqualTo(false);
+  }
+
+  @Test
+  public void updatePosition() throws Exception {
+    final Comic comic = new Comic();
+    comic.setNumber("1/2");
+    assertThat(comic.getPosition()).isEqualTo("0000.5");
+    comic.setNumber("1");
+    assertThat(comic.getPosition()).isEqualTo("0001.0");
+    comic.setNumber("0.5");
+    assertThat(comic.getPosition()).isEqualTo("0000.5");
   }
 }

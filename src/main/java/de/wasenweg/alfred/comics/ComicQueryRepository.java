@@ -20,4 +20,6 @@ public interface ComicQueryRepository {
       final String publisher,
       final String series,
       final String volume);
+
+  List<Comic> findAllWithErrors();
 }

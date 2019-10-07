@@ -30,6 +30,15 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
   private MongoTemplate mongoTemplate;
 
   @Override
+  public List<Comic> findAllWithErrors() {
+    return this.mongoTemplate.aggregate(Aggregation.newAggregation(
+        match(where("errors").exists(true)),
+
+        sort(Sort.Direction.ASC, "path")
+        ), Comic.class, Comic.class).getMappedResults();
+  }
+
+  @Override
   public Optional<Comic> findById(
       final String userId,
       final String comicId) {

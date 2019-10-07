@@ -38,4 +38,9 @@ export class IssueActionsComponent {
     this.router.navigate(['/library/publishers', comic.publisher, 'series', comic.series, 'volumes']);
     this.popoverCtrl.dismiss();
   }
+
+  edit (comic: Comic): void {
+    this.router.navigate(['/edit', comic.id]);
+    this.popoverCtrl.dismiss();
+  }
 }

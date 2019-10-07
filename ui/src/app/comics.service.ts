@@ -32,6 +32,13 @@ export class ComicsService {
     );
   }
 
+  listComicsWithErrors (): Observable<Comic[]> {
+    return this.http.get('api/queue').pipe(
+      this.consumeHateoas(),
+      map((data: any) => data.map((comic) => this.addId(comic)))
+    );
+  }
+
   listByVolume (publisher: string, series: string, volume: string): Observable<Comic[]> {
     const params = new HttpParams({
       fromObject: {
@@ -90,7 +97,15 @@ export class ComicsService {
   }
 
   update (comic: Comic): Observable<Comic> {
-    return this.http.put<Comic>(`api/comics/${ comic.id }`, comic);
+    return this.http.put<Comic>('api/comics', comic).pipe(
+      map((result: Comic) => this.addId(result))
+    );
+  }
+
+  scrape (comic: Comic): Observable<Comic> {
+    return this.http.put<Comic>('api/comics/scrape', comic).pipe(
+      map((result: Comic) => this.addId(result))
+    );
   }
 
   markAsRead (comic: Comic): Observable<any> {

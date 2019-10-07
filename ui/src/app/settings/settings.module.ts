@@ -7,6 +7,7 @@ import { MomentModule } from 'ngx-moment';
 
 import { SettingsPage } from './settings.page';
 import { ScannerComponent } from './scanner/scanner.component';
+import { QueueComponent } from './queue/queue.component';
 
 @NgModule({
   imports: [
@@ -17,11 +18,15 @@ import { ScannerComponent } from './scanner/scanner.component';
     RouterModule.forChild([{
       path: '',
       component: SettingsPage
+    }, {
+      path: 'queue',
+      component: QueueComponent
     }])
   ],
   declarations: [
     SettingsPage,
-    ScannerComponent
+    ScannerComponent,
+    QueueComponent
   ]
 })
 export class SettingsPageModule {}

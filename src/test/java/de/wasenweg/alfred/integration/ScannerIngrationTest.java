@@ -6,7 +6,9 @@ import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
 
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -40,7 +42,10 @@ public class ScannerIngrationTest {
   private ProgressRepository progressRepository;
 
   @Autowired
-  private IntegrationTestHelper integrationTestHelper;
+  private IntegrationTestHelper helper;
+
+  @Rule
+  public TemporaryFolder testBed = new TemporaryFolder();
 
   @After
   public void tearDown() {
@@ -52,13 +57,13 @@ public class ScannerIngrationTest {
   @DirtiesContext
   public void emittsScanProgressEvents() throws Exception {
     // Given
-    this.integrationTestHelper.setComicsPath("src/test/resources/fixtures/simple");
+    this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
 
     // When
-    StepVerifier.create(this.integrationTestHelper.triggerScan(this.port))
+    StepVerifier.create(this.helper.triggerScan(this.port))
         .expectNext("start")
         .expectNext("1")
-        .expectNext("src/test/resources/fixtures/simple/Batman 402 (1940).cbz")
+        .expectNext(this.testBed.getRoot().getAbsolutePath() + "/Batman 402 (1940).cbz")
         .expectNext("cleanUp")
         .expectNext("association")
         .expectNext("done")

@@ -1,4 +1,4 @@
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_BASE_HREF } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
@@ -12,6 +12,7 @@ import { AppComponent } from '../app/app.component';
 import { PublishersComponent } from '../app/library/publishers/publishers.component';
 import { SeriesComponent } from '../app/library/series/series.component';
 import { ScannerComponent } from '../app/settings/scanner/scanner.component';
+import { QueueComponent } from '../app/settings/queue/queue.component';
 import { VolumesComponent } from '../app/library/volumes/volumes.component';
 import { VolumeActionsComponent } from '../app/library/volumes/volume-actions/volume-actions.component';
 import { BookmarkActionsComponent } from '../app/bookmarks/bookmark-actions/bookmark-actions.component';
@@ -22,6 +23,7 @@ import { ReaderPage } from '../app/reader/reader.page';
 import { IssuesPage } from '../app/issues/issues.page';
 import { BookmarksPage } from '../app/bookmarks/bookmarks.page';
 import { LoginPage } from '../app/login/login.page';
+import { EditPage } from '../app/edit/edit.page';
 
 export const TestModule = () => {
   return {
@@ -30,6 +32,7 @@ export const TestModule = () => {
 
       AppComponent,
       ScannerComponent,
+      QueueComponent,
       PublishersComponent,
       SeriesComponent,
       VolumesComponent,
@@ -41,7 +44,8 @@ export const TestModule = () => {
       ReaderPage,
       SettingsPage,
       BookmarksPage,
-      LoginPage
+      LoginPage,
+      EditPage,
     ],
     imports: [
       IonicModule.forRoot(),
@@ -49,6 +53,7 @@ export const TestModule = () => {
       HttpClientModule,
       SecureModule,
       MomentModule,
+      ReactiveFormsModule,
       RouterTestingModule.withRoutes([
         { path: 'read/:id', component: MockComponent },
         { path: 'library', component: MockComponent }
