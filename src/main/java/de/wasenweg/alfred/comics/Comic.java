@@ -12,9 +12,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -25,7 +22,6 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Document
-@XmlRootElement(name = "ComicInfo")
 public class Comic {
 
   @Id
@@ -39,75 +35,54 @@ public class Comic {
 
   @NonNull
   @Indexed
-  @XmlElement(name = "Publisher")
   private String publisher;
 
   @NonNull
   @Indexed
-  @XmlElement(name = "Series")
   private String series;
 
   @NonNull
   @Indexed
-  @XmlElement(name = "Volume")
   private String volume;
 
   @NonNull
-  @XmlElement(name = "Number")
   private String number;
 
   @Indexed
   private String position;
 
-  @XmlElement(name = "Year")
   private Short year;
 
-  @XmlElement(name = "Month")
   private Short month;
 
-  @XmlElement(name = "Title")
   private String title;
 
-  @XmlElement(name = "Summary")
   private String summary;
 
-  @XmlElement(name = "Notes")
   private String notes;
 
-  @XmlElement(name = "Writer")
   private String writer;
 
-  @XmlElement(name = "Penciller")
   private String penciller;
 
-  @XmlElement(name = "Inker")
   private String inker;
 
-  @XmlElement(name = "Colorist")
   private String colorist;
 
-  @XmlElement(name = "Letterer")
   private String letterer;
 
-  @XmlElement(name = "CoverArtist")
   private String coverArtist;
 
-  @XmlElement(name = "Editor")
   private String editor;
 
-  @XmlElement(name = "Web")
   private String web;
 
-  @XmlElement(name = "Manga")
   private boolean manga;
 
-  @XmlElement(name = "Characters")
   private String characters;
 
-  @XmlElement(name = "Teams")
   private String teams;
 
-  @XmlElement(name = "Locations")
   private String locations;
 
   private Short pageCount;
