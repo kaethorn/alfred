@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { NavParams } from '@ionic/angular';
 
-import { TestModule } from '../../../testing/test.module';
 import { comic1 as comic } from '../../../testing/comic.fixtures';
 
 import { IssueActionsComponent } from './issue-actions.component';
+import { IssuesPageModule } from '../issues.module';
 
 describe('IssueActionsComponent', () => {
   let component: IssueActionsComponent;
@@ -13,11 +14,15 @@ describe('IssueActionsComponent', () => {
 
   beforeEach(() => {
     navParams = new NavParams({ comic });
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: NavParams, useValue: navParams
+    TestBed.configureTestingModule({
+      imports: [
+        IssuesPageModule,
+        RouterTestingModule
+      ],
+      providers: [{
+        provide: NavParams, useValue: navParams
+      }]
     });
-    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(IssueActionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

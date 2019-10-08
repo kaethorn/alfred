@@ -4,12 +4,12 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { defer } from 'rxjs';
 
-import { TestModule } from '../../testing/test.module';
 import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 import { comic1 as comic } from '../../testing/comic.fixtures';
 
 import { ComicsService } from '../comics.service';
 import { ReaderPage } from './reader.page';
+import { ReaderPageModule } from './reader.module';
 
 describe('ReaderPage', () => {
 
@@ -41,31 +41,26 @@ describe('ReaderPage', () => {
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
 
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: ComicsService, useValue: comicsService
-    });
-    testModule.providers.push({
-      provide: ActivatedRoute,
-      useValue: {
-        snapshot: {
-          params: { id: '493' },
-          queryParams: { page: 0 }
+    TestBed.configureTestingModule({
+      imports: [
+        ReaderPageModule,
+        RouterTestingModule.withRoutes([
+          { path: 'read/:id', component: ReaderPage }
+        ])
+      ],
+      providers: [{
+        provide: ComicsService, useValue: comicsService
+      }, {
+        provide: ActivatedRoute, useValue: {
+          snapshot: {
+            params: { id: '493' },
+            queryParams: { page: 0 }
+          }
         }
-      }
+      }, {
+        provide: Router, useValue: router
+      }]
     });
-    testModule.providers.push({
-      provide: Router, useValue: router
-    });
-
-    testModule.imports.pop();
-    testModule.imports.push(
-      RouterTestingModule.withRoutes([
-        { path: 'read/:id', component: ReaderPage }
-      ])
-    );
-
-    TestBed.configureTestingModule(testModule);
 
     // Allow steering ComicsService response:
     comicsService.get.and.returnValue(defer(() => Promise.resolve(comic)));

@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { NavParams } from '@ionic/angular';
 
-import { TestModule } from '../../../testing/test.module';
 import { comic1 as comic } from '../../../testing/comic.fixtures';
 
 import { BookmarkActionsComponent } from './bookmark-actions.component';
+import { BookmarksPageModule } from '../bookmarks.module';
 
 describe('BookmarkActionsComponent', () => {
   let component: BookmarkActionsComponent;
@@ -13,11 +14,15 @@ describe('BookmarkActionsComponent', () => {
 
   beforeEach(() => {
     navParams = new NavParams({ comic });
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: NavParams, useValue: navParams
+    TestBed.configureTestingModule({
+      imports: [
+        BookmarksPageModule,
+        RouterTestingModule
+      ],
+      providers: [{
+        provide: NavParams, useValue: navParams
+      }]
     });
-    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(BookmarkActionsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
