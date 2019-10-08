@@ -61,6 +61,7 @@ describe('BookmarksComponent', () => {
 
     beforeAll(async () => {
       await bookmarksPage.clickBookmarkMenuItem(0, 'View in library');
+      await libraryPage.waitForVolumes();
       await libraryPage.clickVolumeMenuItem('Vol. 2009', 'Mark volume as read');
     });
 
