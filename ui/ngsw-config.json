@@ -25,6 +25,52 @@
           "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
         ]
       }
+    }, {
+      "name": "reader-api",
+      "resources": {
+        "urls": [
+          "/api/read/**"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "user-api",
+      "version": 1,
+      "cacheConfig": {
+        "maxSize": 10,
+        "maxAge": "1d",
+        "timeout": "2s",
+        "strategy": "freshness"
+      },
+      "urls": [
+        "/api/user/**"
+      ]
+    }, {
+      "name": "library-api",
+      "version": 1,
+      "cacheConfig": {
+        "maxSize": 70,
+        "maxAge": "1d",
+        "timeout": "2s",
+        "strategy": "freshness"
+      },
+      "urls": [
+        "/api/publishers/**",
+        "/api/comics/**"
+      ]
+    }, {
+      "name": "thumbnails-api",
+      "version": 1,
+      "cacheConfig": {
+        "maxSize": 400,
+        "maxAge": "10d",
+        "strategy": "performance"
+      },
+      "urls": [
+        "/api/thumbnails/**"
+      ]
     }
   ]
 }
