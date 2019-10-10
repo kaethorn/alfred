@@ -2,105 +2,54 @@ import { Injectable } from '@angular/core';
 
 import { Comic } from './comic';
 import { ComicsService } from './comics.service';
+import { IndexedDb } from './indexed-db';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComicDatabaseService {
 
-  db: IDBDatabase;
+  private db: IndexedDb;
 
   constructor (
     private comicService: ComicsService
   ) {
-    this.open();
-  }
-
-  private open () {
-    const request: any = indexedDB.open('Comics', 1);
-    request.onerror = (event) => {
-      console.log(`Error opening DB 'Comics': ${ event }`);
-    };
-    request.onsuccess = () => {
-      this.db = request.result;
-    };
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      db.createObjectStore('Images', { autoIncrement: true });
-      const comicStore: IDBObjectStore = db.createObjectStore('Comics', { keyPath: 'id' });
-      comicStore.createIndex('id', 'id', { unique: true });
-    };
+    this.db = new IndexedDb('Comics', 1, [{
+      name: 'Images',
+      options: { autoIncrement: true }
+    }, {
+      name: 'Comics',
+      options: { keyPath: 'id' },
+      indices: [[ 'id', 'id', { unique: true }]]
+    }]);
   }
 
   store (comic: Comic): Promise<Event> {
     return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
       return result.then(() => this.saveImage(comic, page));
-    }, Promise.resolve()).then(() => this.saveComic(comic));
+    }, Promise.resolve()).then(() => this.db.save('Comics', comic));
   }
 
   isStored (comic: Comic): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const transaction: IDBTransaction = this.db.transaction(['Comics'], 'readonly');
-      transaction.oncomplete = () => resolve(true);
-      transaction.onerror = () => resolve(false);
-      const store = transaction.objectStore('Comics').getKey(comic.id);
-      store.onerror = () => resolve(false);
-      store.onsuccess = (event: any) => {
-        const result = event.target.result;
-        resolve(result === comic.id);
-      };
-    });
+    return this.db.hasKey('Comics', comic.id);
   }
 
   delete (comic: Comic): Promise<Event> {
     return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
-      return result.then(() => this.removeImage(comic, page));
-    }, Promise.resolve()).then(() => this.removeComic(comic));
+      return result.then(() => this.db.delete('Images', `${ comic.id }/${ page }`));
+    }, Promise.resolve()).then(() => this.db.delete('Comics', comic.id));
   }
 
   getPageLink (): string {
     return 'TODO';
   }
 
-  private removeComic (comic: Comic): Promise<Event> {
-    return new Promise((resolve, reject) => {
-      const transaction: IDBTransaction = this.db.transaction(['Comics'], 'readwrite');
-      transaction.oncomplete = resolve;
-      transaction.onerror = (error) => reject(error);
-      const store = transaction.objectStore('Comics').delete(comic.id);
-      store.onerror = (error) => reject(error);
-    });
-  }
-
-  private removeImage (comic: Comic, page: number) {
-    return new Promise((resolve, reject) => {
-      const transaction: IDBTransaction = this.db.transaction(['Images'], 'readwrite');
-      transaction.oncomplete = resolve;
-      transaction.onerror = (error) => reject(error);
-      const store = transaction.objectStore('Images').delete(`${ comic.id }/${ page }`);
-      store.onerror = (error) => reject(error);
-    });
-  }
-
-  private saveComic (comic: Comic): Promise<Event> {
-    return new Promise((resolve, reject) => {
-      const transaction: IDBTransaction = this.db.transaction(['Comics'], 'readwrite');
-      transaction.oncomplete = resolve;
-      transaction.onerror = (error) => reject(error);
-      const store = transaction.objectStore('Comics').put(comic);
-      store.onerror = (error) => reject(error);
-    });
-  }
-
   private saveImage (comic: Comic, page: number): Promise<Event> {
     return new Promise((resolve, reject) => {
       this.comicService.getPage(comic, page).subscribe((image: Blob) => {
-        const transaction: IDBTransaction = this.db.transaction(['Images'], 'readwrite');
-        transaction.oncomplete = resolve;
-        transaction.onerror = (error) => reject(error);
-        const store = transaction.objectStore('Images')
-          .put(image, `${ comic.id }/${ page }`);
-        store.onerror = (error) => reject(error);
+        this.db.save('Images', comic, `${ comic.id }/${ page }`)
+          .then(resolve)
+          .catch(error => reject(error));
       });
     });
   }
