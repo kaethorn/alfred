@@ -40,8 +40,7 @@
         <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
       </a>
       <ion-item>
-        <ion-button fill="clear"
-          (click)="sync(comic)">
+        <ion-button fill="clear" (click)="sync(comic)">
           <ion-icon slot="start" name="sync"></ion-icon>
           Sync
         </ion-button>

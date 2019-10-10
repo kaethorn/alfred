@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
 import { ComicsService } from '../comics.service';
 import { ThumbnailsService } from '../thumbnails.service';
+import { ComicDatabaseService } from '../comic-database.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -19,6 +20,7 @@ export class BookmarksPage {
   public thumbnails = new Map<string, Observable<SafeUrl>>();
 
   constructor (
+    private db: ComicDatabaseService,
     private comicsService: ComicsService,
     private popoverController: PopoverController,
     private thumbnailsService: ThumbnailsService
@@ -48,5 +50,9 @@ export class BookmarksPage {
       this.list();
     });
     await popover.present();
+  }
+
+  sync (comic: Comic): void {
+    this.db.storeComic(comic);
   }
 }

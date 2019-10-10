@@ -135,4 +135,10 @@ export class ComicsService {
   bundleVolumes (): Observable<any> {
     return this.http.get('api/comics/bundle');
   }
+
+  getPage (comic: Comic, page: number): Observable<Blob> {
+    return this.http.get(`/api/download/${ comic.id }/${ page }`, {
+      responseType: 'blob'
+    });
+  }
 }
