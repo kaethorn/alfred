@@ -17,7 +17,9 @@ import { Comic } from '../comic';
 export class BookmarksPage {
 
   comics: Comic[];
-  public thumbnails = new Map<string, Observable<SafeUrl>>();
+  thumbnails = new Map<string, Observable<SafeUrl>>();
+  synching = false;
+  stored: { [name: string]: Promise<boolean> } = {};
 
   constructor (
     private db: ComicDatabaseService,
@@ -35,6 +37,7 @@ export class BookmarksPage {
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
         this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
+        this.stored[comic.id] = this.db.isStored(comic);
       });
     });
   }
@@ -53,6 +56,17 @@ export class BookmarksPage {
   }
 
   sync (comic: Comic): void {
-    this.db.storeComic(comic);
+    this.synching = true;
+    this.db.store(comic)
+      .then((pages) => {
+        this.synching = false;
+      }).catch((error) => {
+        console.error(error);
+        this.synching = false;
+      });
+  }
+
+  delete (comic: Comic): void {
+    this.db.delete(comic);
   }
 }

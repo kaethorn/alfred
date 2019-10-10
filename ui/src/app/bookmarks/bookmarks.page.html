@@ -40,10 +40,16 @@
         <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
       </a>
       <ion-item>
-        <ion-button fill="clear" (click)="sync(comic)">
-          <ion-icon slot="start" name="sync"></ion-icon>
-          Sync
+        <ion-button *ngIf="stored[comic.id] | async; else allowSync" fill="clear" (click)="delete(comic)">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          Synced
         </ion-button>
+        <ng-template #allowSync>
+          <ion-button fill="clear" (click)="sync(comic)">
+            <ion-icon slot="start" name="sync" [ngClass]="{ 'synching': synching }"></ion-icon>
+            Sync
+          </ion-button>
+        </ng-template>
         <ion-button fill="clear" slot="end" (click)="openMenu($event, comic)">
           <ion-icon color="tertiary" name="more"></ion-icon>
         </ion-button>
