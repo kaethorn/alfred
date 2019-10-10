@@ -17,43 +17,54 @@
     </ion-card-header>
 
     <ion-card-content>
-      <div class="thumbnail">
-        <a [routerLink]="['/read', comic.id]"
-           [queryParams]="{ page: 0, parent: currentRoute }">
-          <ion-badge *ngIf="comic.read"
-           class="read-badge" color="secondary">
-            &#10004;
-          </ion-badge>
-          <img [attr.src]="thumbnails.get(comic.id) | async">
-        </a>
-      </div>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="auto">
+            <div class="thumbnail">
+              <a [routerLink]="['/read', comic.id]"
+                [queryParams]="{ page: 0, parent: currentRoute }">
+                <ion-badge *ngIf="comic.read"
+                class="read-badge" color="secondary">
+                  &#10004;
+                </ion-badge>
+                <img [attr.src]="thumbnails.get(comic.id) | async">
+              </a>
+            </div>
+          </ion-col>
 
-      <ion-item>
-        <ion-button *ngIf="comic.read; else notRead"
-          class="read-toggle"
-          color="primary" fill="clear"
-          (click)="markAsUnread(comic)">
-          <ion-icon name="qr-scanner"></ion-icon>
-          Mark as unread
-        </ion-button>
-        <ng-template #notRead>
-          <ion-button
-            color="primary" fill="clear"
-            class="read-toggle"
-            (click)="markAsRead(comic)">
-            <ion-icon name="checkmark"></ion-icon>
-            Mark as read
-          </ion-button>
-        </ng-template>
-        <ion-icon (click)="openMenu($event, comic)" slot="end" name="more"></ion-icon>
-      </ion-item>
+          <ion-col size="12" size-md>
+            <ion-item lines="none">
+              <div [ngClass]="{'expanded': comic.summaryExpanded}" class="comic-summary" (click)="comic.summaryExpanded = !comic.summaryExpanded">
+                {{ comic.summary }}
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
 
-      <ion-item lines="none">
-        <div [ngClass]="{'expanded': comic.summaryExpanded}" class="comic-summary" (click)="comic.summaryExpanded = !comic.summaryExpanded">
-          {{ comic.summary }}
-        </div>
-      </ion-item>
-
+        <ion-row>
+          <ion-col size="12" size-sm>
+            <ion-item>
+              <ion-button *ngIf="comic.read; else notRead"
+                class="read-toggle"
+                color="primary" fill="clear"
+                (click)="markAsUnread(comic)">
+                <ion-icon name="qr-scanner"></ion-icon>
+                Mark as unread
+              </ion-button>
+              <ng-template #notRead>
+                <ion-button
+                  color="primary" fill="clear"
+                  class="read-toggle"
+                  (click)="markAsRead(comic)">
+                  <ion-icon name="checkmark"></ion-icon>
+                  Mark as read
+                </ion-button>
+              </ng-template>
+              <ion-icon (click)="openMenu($event, comic)" slot="end" name="more"></ion-icon>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-card-content>
   </ion-card>
 </ion-content>

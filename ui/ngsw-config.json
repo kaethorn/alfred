@@ -40,7 +40,7 @@
       "version": 1,
       "cacheConfig": {
         "maxSize": 10,
-        "maxAge": "1d",
+        "maxAge": "10d",
         "timeout": "2s",
         "strategy": "freshness"
       },
