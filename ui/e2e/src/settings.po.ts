@@ -22,7 +22,7 @@ export class SettingsPage {
   }
 
   async getConfirmationMessage () {
-    await browser.sleep(300);
+    await browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), 500);
     return (await this.page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
   }
 
