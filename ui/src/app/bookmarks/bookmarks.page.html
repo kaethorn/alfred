@@ -28,7 +28,6 @@
     </ion-item>
   </ion-card>
 
-  <!-- FIXME is this check needed, scanner will be moved to settings anyway? -->
   <div *ngIf="comics?.length > 0">
     <ion-card *ngFor="let comic of comics" class="comic-tile">
       <ion-card-header>
@@ -38,15 +37,17 @@
       <a [routerLink]="['/read', comic.id]"
          [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
         <img [attr.src]="thumbnails.get(comic.id) | async">
+        <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
       </a>
       <ion-item>
-        <ion-button fill="clear" slot="start"
-          [routerLink]="['/read', comic.id]"
-          [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
-          <ion-icon slot="start" name="play"></ion-icon>
-          Resume
+        <ion-button fill="clear"
+          (click)="sync(comic)">
+          <ion-icon slot="start" name="sync"></ion-icon>
+          Sync
         </ion-button>
-        <ion-icon (click)="openMenu($event, comic)" slot="end" name="more"></ion-icon>
+        <ion-button fill="clear" slot="end" (click)="openMenu($event, comic)">
+          <ion-icon color="tertiary" name="more"></ion-icon>
+        </ion-button>
       </ion-item>
     </ion-card>
   </div>

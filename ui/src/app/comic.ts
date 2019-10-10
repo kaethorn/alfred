@@ -29,7 +29,7 @@ export interface Comic {
   inker?: string;
   colorist?: string;
   letterer?: string;
-  cover_artist?: string;
+  coverArtist?: string;
   editor?: string;
   publisher: string;
   web?: string;
