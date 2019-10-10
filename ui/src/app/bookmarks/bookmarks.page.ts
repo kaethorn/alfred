@@ -37,7 +37,7 @@ export class BookmarksPage {
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
         this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
-        this.stored[comic.id] = this.db.isStored(comic);
+        this.updateStoredState(comic);
       });
     });
   }
@@ -59,6 +59,7 @@ export class BookmarksPage {
     this.synching = true;
     this.db.store(comic)
       .then((pages) => {
+        this.updateStoredState(comic);
         this.synching = false;
       }).catch((error) => {
         console.error(error);
@@ -67,6 +68,12 @@ export class BookmarksPage {
   }
 
   delete (comic: Comic): void {
-    this.db.delete(comic);
+    this.db.delete(comic).then(() => {
+      this.updateStoredState(comic);
+    });
+  }
+
+  private updateStoredState (comic: Comic) {
+    this.stored[comic.id] = this.db.isStored(comic);
   }
 }

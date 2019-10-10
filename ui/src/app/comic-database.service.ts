@@ -62,12 +62,24 @@ export class ComicDatabaseService {
     return 'TODO';
   }
 
-  private removeComic (comic: Comic) {
-    return 'TODO';
+  private removeComic (comic: Comic): Promise<Event> {
+    return new Promise((resolve, reject) => {
+      const transaction: IDBTransaction = this.db.transaction(['Comics'], 'readwrite');
+      transaction.oncomplete = resolve;
+      transaction.onerror = (error) => reject(error);
+      const store = transaction.objectStore('Comics').delete(comic.id);
+      store.onerror = (error) => reject(error);
+    });
   }
 
   private removeImage (comic: Comic, page: number) {
-    return 'TODO';
+    return new Promise((resolve, reject) => {
+      const transaction: IDBTransaction = this.db.transaction(['Images'], 'readwrite');
+      transaction.oncomplete = resolve;
+      transaction.onerror = (error) => reject(error);
+      const store = transaction.objectStore('Images').delete(`${ comic.id }/${ page }`);
+      store.onerror = (error) => reject(error);
+    });
   }
 
   private saveComic (comic: Comic): Promise<Event> {
