@@ -3,6 +3,7 @@ import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ComicsService } from '../comics.service';
+import { ComicDatabaseService } from '../comic-database.service';
 import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
 import { Comic } from '../comic';
 
@@ -22,13 +23,15 @@ export class ReaderPage {
   imagePathRight = '';
   showControls = false;
   parent: string;
+  private isStored = false;
 
   constructor (
     private route: ActivatedRoute,
     private router: Router,
     private comicsService: ComicsService,
     private navigator: NavigatorService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private db: ComicDatabaseService,
   ) { }
 
   @ViewChild('pagesLayer', { static: true }) pagesLayer: ElementRef;
@@ -47,18 +50,26 @@ export class ReaderPage {
     this.go(1);
   }
 
-  ionViewDidEnter () {
-    this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
-      this.comic = data;
-      this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-      const parentElement = this.pagesLayer.nativeElement.parentElement;
-      this.navigator.set(
-        this.comic.pageCount,
-        this.getPage(this.comic),
-        (parentElement.clientWidth > parentElement.clientHeight) ? true : false
-      );
-      this.navigate(this.navigator.go());
-    });
+  async ionViewDidEnter () {
+    const comicId = this.route.snapshot.params.id;
+    this.isStored = await this.db.isStored(comicId);
+    if (this.isStored) {
+      this.db.getComic(comicId).then((comic: Comic) => this.setup(comic));
+    } else {
+      this.comicsService.get(comicId).subscribe((comic: Comic) => this.setup(comic));
+    }
+  }
+
+  private setup (comic: Comic) {
+    this.comic = comic;
+    this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
+    const parentElement = this.pagesLayer.nativeElement.parentElement;
+    this.navigator.set(
+      this.comic.pageCount,
+      this.getPage(this.comic),
+      (parentElement.clientWidth > parentElement.clientHeight) ? true : false
+    );
+    this.navigate(this.navigator.go());
   }
 
   private getPage (comic: Comic): number {
@@ -132,8 +143,7 @@ export class ReaderPage {
           queryParams: { page: NavigatorService.page },
           queryParamsHandling: 'merge'
         });
-        this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
-        this.imagePathRight = instruction.sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
+        this.setImages(instruction.sideBySide);
         break;
       case AdjacentComic.next:
         this.openNext({ showToast: true });
@@ -141,6 +151,25 @@ export class ReaderPage {
       case AdjacentComic.previous:
         this.openPrevious({ showToast: true });
         break;
+    }
+  }
+
+  private setImages (sideBySide: boolean) {
+    if (this.isStored) {
+      this.db.getImageUrl(this.comic, NavigatorService.page).then((url) => {
+        this.imagePathLeft = url;
+
+      });
+      if (sideBySide) {
+        this.db.getImageUrl(this.comic, NavigatorService.page + 1).then((url) => {
+          this.imagePathRight = url;
+        });
+      } else {
+        this.imagePathRight = null;
+      }
+    } else {
+      this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
+      this.imagePathRight = sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
     }
   }
 

@@ -36,18 +36,29 @@ export class IndexedDb {
     };
   }
 
-  hasKey (storeName: string, key: any): Promise<boolean> {
+  hasKey (storeName: string, key: IDBValidKey): Promise<boolean> {
     return new Promise((resolve) => {
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
-      transaction.oncomplete = () => resolve(true);
       transaction.onerror = () => resolve(false);
       const store = transaction.objectStore(storeName).getKey(key);
       store.onerror = () => resolve(false);
-      store.onsuccess = () => resolve(true);
+      store.onsuccess = (event: any) => {
+        resolve(event.target.result === key);
+      };
     });
   }
 
-  save (storeName: string, item: any, key?: string): Promise<Event> {
+  get (storeName: string, key: IDBValidKey): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
+      transaction.onerror = () => reject();
+      const store = transaction.objectStore(storeName).get(key);
+      store.onerror = () => reject();
+      store.onsuccess = (event: any) => resolve(event.target.result);
+    });
+  }
+
+  save (storeName: string, item: any, key?: IDBValidKey): Promise<Event> {
     return new Promise((resolve, reject) => {
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readwrite');
       transaction.oncomplete = resolve;

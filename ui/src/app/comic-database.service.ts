@@ -30,8 +30,8 @@ export class ComicDatabaseService {
     }, Promise.resolve()).then(() => this.db.save('Comics', comic));
   }
 
-  isStored (comic: Comic): Promise<boolean> {
-    return this.db.hasKey('Comics', comic.id);
+  isStored (comicId: string): Promise<boolean> {
+    return this.db.hasKey('Comics', comicId);
   }
 
   delete (comic: Comic): Promise<Event> {
@@ -40,14 +40,22 @@ export class ComicDatabaseService {
     }, Promise.resolve()).then(() => this.db.delete('Comics', comic.id));
   }
 
-  getPageLink (): string {
-    return 'TODO';
+  getImageUrl (comic: Comic, page: number): Promise<string> {
+    return this.db.get('Images', `${ comic.id }/${ page }`).then((data: any) => {
+      return URL.createObjectURL(data);
+    });
+  }
+
+  getComic (comicId: string): Promise<Comic> {
+    return this.db.get('Comics', comicId).then((data: any) => {
+      return data as Comic;
+    });
   }
 
   private saveImage (comic: Comic, page: number): Promise<Event> {
     return new Promise((resolve, reject) => {
       this.comicService.getPage(comic, page).subscribe((image: Blob) => {
-        this.db.save('Images', comic, `${ comic.id }/${ page }`)
+        this.db.save('Images', image, `${ comic.id }/${ page }`)
           .then(resolve)
           .catch(error => reject(error));
       });

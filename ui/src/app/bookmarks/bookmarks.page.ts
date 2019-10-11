@@ -58,7 +58,7 @@ export class BookmarksPage {
   sync (comic: Comic): void {
     this.synching = true;
     this.db.store(comic)
-      .then((pages) => {
+      .then(() => {
         this.updateStoredState(comic);
         this.synching = false;
       }).catch((error) => {
@@ -74,6 +74,6 @@ export class BookmarksPage {
   }
 
   private updateStoredState (comic: Comic) {
-    this.stored[comic.id] = this.db.isStored(comic);
+    this.stored[comic.id] = this.db.isStored(comic.id);
   }
 }
