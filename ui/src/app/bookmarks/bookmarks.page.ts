@@ -4,9 +4,9 @@ import { PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
-import { ComicsService } from '../comics.service';
 import { ThumbnailsService } from '../thumbnails.service';
 import { ComicDatabaseService } from '../comic-database.service';
+import { ComicStorageService } from '../comic-storage.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -23,9 +23,9 @@ export class BookmarksPage {
 
   constructor (
     private db: ComicDatabaseService,
-    private comicsService: ComicsService,
     private popoverController: PopoverController,
-    private thumbnailsService: ThumbnailsService
+    private thumbnailsService: ThumbnailsService,
+    private comicStorageService: ComicStorageService,
   ) { }
 
   ionViewDidEnter () {
@@ -33,14 +33,14 @@ export class BookmarksPage {
   }
 
   private list () {
-    this.comicsService.listLastReadByVolume().subscribe((comics: Comic[]) => {
+    this.comicStorageService.getBookmarks().then((comics: Comic[]) => {
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
         this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
         this.updateStoredState(comic);
       });
     });
-  }
+ }
 
   async openMenu (event: any, comic: Comic) {
     const popover = await this.popoverController.create({

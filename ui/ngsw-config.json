@@ -25,13 +25,6 @@
           "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
         ]
       }
-    }, {
-      "name": "reader-api",
-      "resources": {
-        "urls": [
-          "/api/read/**"
-        ]
-      }
     }
   ],
   "dataGroups": [
@@ -57,8 +50,7 @@
         "strategy": "freshness"
       },
       "urls": [
-        "/api/publishers/**",
-        "/api/comics/**"
+        "/api/publishers/**"
       ]
     }, {
       "name": "thumbnails-api",

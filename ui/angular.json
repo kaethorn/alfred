@@ -41,7 +41,9 @@
               }
             ],
             "scripts": [],
-            "es5BrowserSupport": true
+            "es5BrowserSupport": true,
+            "ngswConfigPath": "ngsw-config.json",
+            "serviceWorker": true
           },
           "configurations": {
             "production": {
@@ -66,9 +68,7 @@
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
                 }
-              ],
-              "ngswConfigPath": "ngsw-config.json",
-              "serviceWorker": true
+              ]
             },
             "ci": {
               "progress": false

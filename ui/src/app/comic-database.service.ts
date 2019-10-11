@@ -24,9 +24,13 @@ export class ComicDatabaseService {
     }]);
   }
 
+  /**
+   * Stores the comic and all its images.
+   * @param comic The comic to store.
+   */
   store (comic: Comic): Promise<Event> {
     return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
-      return result.then(() => this.saveImage(comic, page));
+      return result.then(() => this.saveImage(comic.id, page));
     }, Promise.resolve()).then(() => this.db.save('Comics', comic));
   }
 
@@ -34,28 +38,40 @@ export class ComicDatabaseService {
     return this.db.hasKey('Comics', comicId);
   }
 
+  /**
+   * Deletes the comic and any stored images.
+   * @param comic The comic to delete.
+   */
   delete (comic: Comic): Promise<Event> {
     return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
       return result.then(() => this.db.delete('Images', `${ comic.id }/${ page }`));
     }, Promise.resolve()).then(() => this.db.delete('Comics', comic.id));
   }
 
-  getImageUrl (comic: Comic, page: number): Promise<string> {
-    return this.db.get('Images', `${ comic.id }/${ page }`).then((data: any) => {
+  getImageUrl (comicId: string, page: number): Promise<string> {
+    return this.db.get('Images', `${ comicId }/${ page }`).then((data: any) => {
       return URL.createObjectURL(data);
     });
   }
 
   getComic (comicId: string): Promise<Comic> {
-    return this.db.get('Comics', comicId).then((data: any) => {
-      return data as Comic;
+    return this.db.get('Comics', comicId);
+  }
+
+  getComics (): Promise<Comic[]> {
+    return this.db.getAll('Comics').then((data: any) => {
+      return data as Comic[];
     });
   }
 
-  private saveImage (comic: Comic, page: number): Promise<Event> {
+  update (comic: Comic): Promise<Event> {
+    return this.db.save('Comics', comic);
+  }
+
+  private saveImage (comicId: string, page: number): Promise<Event> {
     return new Promise((resolve, reject) => {
-      this.comicService.getPage(comic, page).subscribe((image: Blob) => {
-        this.db.save('Images', image, `${ comic.id }/${ page }`)
+      this.comicService.getPage(comicId, page).subscribe((image: Blob) => {
+        this.db.save('Images', image, `${ comicId }/${ page }`)
           .then(resolve)
           .catch(error => reject(error));
       });

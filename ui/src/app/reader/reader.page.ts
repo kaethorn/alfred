@@ -2,10 +2,9 @@ import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ComicsService } from '../comics.service';
-import { ComicDatabaseService } from '../comic-database.service';
 import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
 import { Comic } from '../comic';
+import { ComicStorageService } from '../comic-storage.service';
 
 interface IOpenOptions {
   showToast?: boolean;
@@ -22,16 +21,14 @@ export class ReaderPage {
   imagePathLeft = '';
   imagePathRight = '';
   showControls = false;
-  parent: string;
-  private isStored = false;
+  private parent: string;
 
   constructor (
     private route: ActivatedRoute,
     private router: Router,
-    private comicsService: ComicsService,
     private navigator: NavigatorService,
     private toastController: ToastController,
-    private db: ComicDatabaseService,
+    private comicStorageService: ComicStorageService,
   ) { }
 
   @ViewChild('pagesLayer', { static: true }) pagesLayer: ElementRef;
@@ -51,13 +48,8 @@ export class ReaderPage {
   }
 
   async ionViewDidEnter () {
-    const comicId = this.route.snapshot.params.id;
-    this.isStored = await this.db.isStored(comicId);
-    if (this.isStored) {
-      this.db.getComic(comicId).then((comic: Comic) => this.setup(comic));
-    } else {
-      this.comicsService.get(comicId).subscribe((comic: Comic) => this.setup(comic));
-    }
+    this.comic = await this.comicStorageService.set(this.route.snapshot.params.id);
+    this.setup(this.comic);
   }
 
   private setup (comic: Comic) {
@@ -154,22 +146,12 @@ export class ReaderPage {
     }
   }
 
-  private setImages (sideBySide: boolean) {
-    if (this.isStored) {
-      this.db.getImageUrl(this.comic, NavigatorService.page).then((url) => {
-        this.imagePathLeft = url;
-
-      });
-      if (sideBySide) {
-        this.db.getImageUrl(this.comic, NavigatorService.page + 1).then((url) => {
-          this.imagePathRight = url;
-        });
-      } else {
-        this.imagePathRight = null;
-      }
+  private async setImages (sideBySide: boolean) {
+    this.imagePathLeft = await this.comicStorageService.readPage(NavigatorService.page);
+    if (sideBySide) {
+      this.imagePathRight = await this.comicStorageService.readPage(NavigatorService.page + 1);
     } else {
-      this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
-      this.imagePathRight = sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
+      this.imagePathRight = null;
     }
   }
 
