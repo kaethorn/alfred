@@ -2,12 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { defer } from 'rxjs';
 
-import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 import { comic1 as comic } from '../../testing/comic.fixtures';
 
-import { ComicsService } from '../comics.service';
+import { ComicStorageService } from '../comic-storage.service';
 import { ReaderPage } from './reader.page';
 import { ReaderPageModule } from './reader.module';
 
@@ -16,30 +14,39 @@ describe('ReaderPage', () => {
   let component: ReaderPage;
   let fixture: ComponentFixture<ReaderPage>;
   let router;
-  const clickRightSide = () => {
+  const clickRightSide = async () => {
     fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
         clientX      : 700,
         currentTarget: { offsetWidth: 800 }
       });
+    await fixture.whenStable();
+    fixture.detectChanges();
   };
-  const clickLeftSide = () => {
+  const clickLeftSide = async () => {
     fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
         clientX      : 100,
         currentTarget: { offsetWidth: 800 }
       });
+    await fixture.whenStable();
+    fixture.detectChanges();
   };
-  const clickCenter = () => {
+  const clickCenter = async () => {
     fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
         clientX      : 500,
         currentTarget: { offsetWidth: 800 }
       });
+    await fixture.whenStable();
+    fixture.detectChanges();
   };
 
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
+    const comicStorageService = jasmine.createSpyObj('ComicStorageService', ['set', 'readPage']);
+    comicStorageService.set.and.returnValue(Promise.resolve(comic));
+    comicStorageService.readPage.and.returnValue(Promise.resolve('/api/read/923/0'));
 
     TestBed.configureTestingModule({
       imports: [
@@ -49,7 +56,7 @@ describe('ReaderPage', () => {
         ])
       ],
       providers: [{
-        provide: ComicsService, useValue: comicsService
+        provide: ComicStorageService, useValue: comicStorageService
       }, {
         provide: ActivatedRoute, useValue: {
           snapshot: {
@@ -61,9 +68,6 @@ describe('ReaderPage', () => {
         provide: Router, useValue: router
       }]
     });
-
-    // Allow steering ComicsService response:
-    comicsService.get.and.returnValue(defer(() => Promise.resolve(comic)));
 
     fixture = TestBed.createComponent(ReaderPage);
     component = fixture.componentInstance;
@@ -89,14 +93,14 @@ describe('ReaderPage', () => {
 
     describe('when clicking the center', () => {
 
-      it('shows the controls when clicking in the center', () => {
+      it('shows the controls when clicking in the center', async () => {
         expect(fixture.debugElement.query(By.css('.control-layer'))).toBeNull();
-        clickCenter();
-        fixture.detectChanges();
+        await clickCenter();
         expect(fixture.debugElement.query(By.css('.control-layer'))).not.toBeNull();
       });
 
-      it('does not navigate', () => {
+      it('does not navigate', async () => {
+        await fixture.whenStable();
         router.navigate.calls.reset();
         clickCenter();
         expect(router.navigate).not.toHaveBeenCalled();
@@ -121,8 +125,8 @@ describe('ReaderPage', () => {
 
       describe('to the next page', () => {
 
-        beforeEach(() => {
-          clickRightSide();
+        beforeEach(async () => {
+          await clickRightSide();
         });
 
         it('sets the current page and updates the route', () => {
@@ -132,15 +136,15 @@ describe('ReaderPage', () => {
 
       describe('to the end of the comic', () => {
 
-        beforeEach(() => {
-          clickRightSide();
-          clickRightSide();
-          clickRightSide();
+        beforeEach(async () => {
+          await clickRightSide();
+          await clickRightSide();
+          await clickRightSide();
         });
 
-        it('does not exceed the last page', () => {
+        it('does not exceed the last page', async () => {
           expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
-          clickRightSide();
+          await clickRightSide();
           expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
         });
       });
@@ -168,8 +172,8 @@ describe('ReaderPage', () => {
 
       describe('to the next page', () => {
 
-        beforeEach(() => {
-          clickRightSide();
+        beforeEach(async () => {
+          await clickRightSide();
         });
 
         it('sets the current page and updates the route', () => {
@@ -181,8 +185,8 @@ describe('ReaderPage', () => {
           expect(component.imagePathRight).not.toBeNull();
         });
 
-        it('navigating back displays only the cover', () => {
-          clickLeftSide();
+        it('navigating back displays only the cover', async () => {
+          await clickLeftSide();
           expect(component.imagePathLeft).not.toBeNull();
           expect(component.imagePathRight).toBeNull();
         });
@@ -190,14 +194,14 @@ describe('ReaderPage', () => {
 
       describe('to the end of the comic', () => {
 
-        beforeEach(() => {
-          clickRightSide();
-          clickRightSide();
+        beforeEach(async () => {
+          await clickRightSide();
+          await clickRightSide();
         });
 
-        it('does not exceed the last page', () => {
+        it('does not exceed the last page', async () => {
           expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
-          clickRightSide();
+          await clickRightSide();
           expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
         });
       });

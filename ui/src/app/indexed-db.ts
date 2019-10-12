@@ -38,6 +38,9 @@ export class IndexedDb {
 
   hasKey (storeName: string, key: IDBValidKey): Promise<boolean> {
     return new Promise((resolve) => {
+      if (!this.db) {
+        return resolve(false);
+      }
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
       transaction.onerror = () => resolve(false);
       const store = transaction.objectStore(storeName).getKey(key);

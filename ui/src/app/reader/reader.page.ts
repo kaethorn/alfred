@@ -47,10 +47,12 @@ export class ReaderPage {
     this.go(1);
   }
 
-  async ionViewDidEnter () {
+  ionViewDidEnter () {
     // TODO Handle offline case gracefully.
-    this.comic = await this.comicStorageService.set(this.route.snapshot.params.id);
-    this.setup(this.comic);
+    this.comicStorageService.set(this.route.snapshot.params.id).then((comic) => {
+      this.comic = comic;
+      this.setup(this.comic);
+    });
   }
 
   private setup (comic: Comic) {
