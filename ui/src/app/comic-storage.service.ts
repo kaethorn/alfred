@@ -23,13 +23,15 @@ export class ComicStorageService {
 
   set (comicId: string): Promise<Comic> {
     this.comicId = comicId;
-    return this.comic = new Promise(resolve => {
+    return this.comic = new Promise((resolve, reject) => {
       this.db.isStored(comicId).then((isStored) => {
         this.isStored = isStored;
         if (this.isStored) {
-          this.db.getComic(comicId).then((comic: Comic) => resolve(comic));
+          this.db.getComic(comicId).then(resolve).catch(reject);
         } else {
-          this.comicsService.get(comicId).subscribe((comic: Comic) => resolve(comic));
+          this.comicsService.get(comicId).subscribe(
+            (comic: Comic) => resolve(comic),
+            () => reject());
         }
       });
     });

@@ -48,16 +48,19 @@ export class ReaderPage {
   }
 
   ionViewDidEnter () {
-    // TODO Handle offline case gracefully.
-    this.comicStorageService.set(this.route.snapshot.params.id).then((comic) => {
-      this.comic = comic;
-      this.setup(this.comic);
-    });
+    this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
+    this.comicStorageService.set(this.route.snapshot.params.id)
+      .then((comic) => {
+        this.comic = comic;
+        this.setup(this.comic);
+      }).catch(() => {
+        this.showToast('Comic book not available, please try again later.');
+        this.back();
+      });
   }
 
   private setup (comic: Comic) {
     this.comic = comic;
-    this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
     const parentElement = this.pagesLayer.nativeElement.parentElement;
     this.navigator.set(
       this.comic.pageCount,

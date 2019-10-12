@@ -38,6 +38,9 @@ export class QueueService {
   }
 
   private save () {
+    // TODO use indexedDB:
+    // * Comics should already be saved there.
+    // * Save only comic IDs in local storage.
     localStorage.setItem('queue', JSON.stringify(this.queue));
   }
 
