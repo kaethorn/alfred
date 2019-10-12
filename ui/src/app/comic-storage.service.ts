@@ -2,6 +2,7 @@ import { Comic } from './comic';
 import { Injectable } from '@angular/core';
 import { ComicDatabaseService } from './comic-database.service';
 import { ComicsService } from './comics.service';
+import { QueueService } from './queue.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,10 @@ export class ComicStorageService {
   constructor (
     private db: ComicDatabaseService,
     private comicsService: ComicsService,
-  ) { }
+    private queue: QueueService,
+  ) {
+    this.queue.process();
+  }
 
   set (comicId: string): Promise<Comic> {
     this.comicId = comicId;
@@ -31,10 +35,6 @@ export class ComicStorageService {
     });
   }
 
-  get (): Promise<Comic> {
-    return this.comic;
-  }
-
   /**
    * Reads the given page of this comic, setting the read state.
    * @param page Page number
@@ -44,11 +44,7 @@ export class ComicStorageService {
     if (this.isStored) {
       const comic = await this.comic;
       comic.currentPage = page;
-      // TODO
-      // Attempt to save the comic to the API, too. On failure, store the
-      // last state per comic in a queue. When calling `this.getBookmarks`
-      // and the API request succeeds, process the queue by saving each
-      // comic it contains and then repeat the bookmarks API call.
+      this.saveComic(comic);
       await this.db.update(comic);
       return this.db.getImageUrl(this.comicId, page);
     } else {
@@ -62,12 +58,36 @@ export class ComicStorageService {
   getBookmarks (): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
       this.comicsService.listLastReadByVolume().subscribe((comics: Comic[]) => {
-        resolve(comics);
+        if (this.queue.hasItems()) {
+          this.queue.process().subscribe(
+            () => {},
+            () => resolve(comics),
+            () => {
+              this.comicsService.listLastReadByVolume().subscribe((updatedComics: Comic[]) => {
+                resolve(updatedComics);
+              });
+          });
+        } else {
+          resolve(comics);
+        }
       }, () => {
         this.db.getComics().then((comics: Comic[]) => {
           resolve(comics);
         }, () => reject());
       });
     });
+  }
+
+  /**
+   * Attempt to save the comic to the API, too. On failure, store the
+   * last state per comic in a queue. When calling `this.getBookmarks`
+   * and the API request succeeds, process the queue by saving each
+   * comic it contains and then repeat the bookmarks API call.
+   */
+  // TODO see above
+  private saveComic (comic: Comic) {
+    this.comicsService.update(comic).subscribe(
+      () => this.queue.process(),
+      () => this.queue.add(comic));
   }
 }

@@ -48,6 +48,7 @@ export class ReaderPage {
   }
 
   async ionViewDidEnter () {
+    // TODO Handle offline case gracefully.
     this.comic = await this.comicStorageService.set(this.route.snapshot.params.id);
     this.setup(this.comic);
   }
