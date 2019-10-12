@@ -60,7 +60,9 @@
                   Mark as read
                 </ion-button>
               </ng-template>
-              <ion-icon (click)="openMenu($event, comic)" slot="end" name="more"></ion-icon>
+              <ion-button class="menu" fill="clear" slot="end" (click)="openMenu($event, comic)">
+                <ion-icon color="tertiary" name="more"></ion-icon>
+              </ion-button>
             </ion-item>
           </ion-col>
         </ion-row>

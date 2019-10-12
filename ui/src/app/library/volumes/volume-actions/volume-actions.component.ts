@@ -22,16 +22,14 @@ export class VolumeActionsComponent {
   }
 
   public markAsRead (volume: Volume) {
-    this.volumesService.markAsRead(volume)
-      .subscribe(() => {
-        this.popoverCtrl.dismiss();
-      });
+    this.volumesService.markAsRead(volume).subscribe(
+      () => this.popoverCtrl.dismiss(),
+      () => this.popoverCtrl.dismiss());
   }
 
   public markAsUnread (volume: Volume) {
-    this.volumesService.markAsUnread(volume)
-      .subscribe(() => {
-        this.popoverCtrl.dismiss();
-      });
+    this.volumesService.markAsUnread(volume).subscribe(
+      () => this.popoverCtrl.dismiss(),
+      () => this.popoverCtrl.dismiss());
   }
 }

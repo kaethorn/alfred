@@ -3,7 +3,7 @@ import { browser, by, element, ExpectedConditions, ElementFinder } from 'protrac
 export class Page {
 
   async clickMenuItem (target: ElementFinder, item: string) {
-    const menuButton = target.element(by.css('ion-icon[name="more"]'));
+    const menuButton = target.element(by.css('ion-button.menu'));
     await this.scrollIntoView(menuButton);
     await menuButton.click();
     const button = element(by.cssContainingText('ion-item', item));
