@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { of, throwError, Observable, Subject } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { comic1 as comic } from '../testing/comic.fixtures';
 import { QueueService } from './queue.service';

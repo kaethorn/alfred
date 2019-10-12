@@ -57,7 +57,7 @@ export class BookmarksPage {
 
   sync (comic: Comic): void {
     this.synching = true;
-    this.db.store(comic)
+    this.comicStorageService.storeSurrounding(comic.id)
       .then(() => {
         this.updateStoredState(comic);
         this.synching = false;

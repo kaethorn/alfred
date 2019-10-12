@@ -49,7 +49,7 @@ export class ReaderPage {
 
   ionViewDidEnter () {
     this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-    this.comicStorageService.set(this.route.snapshot.params.id)
+    this.comicStorageService.get(this.route.snapshot.params.id)
       .then((comic) => {
         this.comic = comic;
         this.setup(this.comic);
@@ -93,9 +93,10 @@ export class ReaderPage {
     }
   }
 
-  private open (adjacentId, options?: IOpenOptions) {
-    if (this.comic[adjacentId]) {
-      this.router.navigate(['/read', this.comic[adjacentId]], {
+  private open (adjacentAttr: string, options?: IOpenOptions) {
+    if (this.comic[adjacentAttr]) {
+      this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
+      this.router.navigate(['/read', this.comic[adjacentAttr]], {
         relativeTo: this.route,
         queryParamsHandling: 'merge'
       });
@@ -153,9 +154,11 @@ export class ReaderPage {
   }
 
   private async setImages (sideBySide: boolean) {
-    this.imagePathLeft = await this.comicStorageService.readPage(NavigatorService.page);
+    this.imagePathLeft = await this.comicStorageService
+      .readPage(this.comic.id, NavigatorService.page);
     if (sideBySide) {
-      this.imagePathRight = await this.comicStorageService.readPage(NavigatorService.page + 1);
+      this.imagePathRight = await this.comicStorageService
+        .readPage(this.comic.id, NavigatorService.page + 1);
     } else {
       this.imagePathRight = null;
     }

@@ -25,13 +25,15 @@ export class ComicDatabaseService {
   }
 
   /**
-   * Stores the comic and all its images.
-   * @param comic The comic to store.
+   * Caches the entire given comic book, including meta data and images.
+   * @param comic The comic to cache.
    */
   store (comic: Comic): Promise<Event> {
-    return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
-      return result.then(() => this.saveImage(comic.id, page));
-    }, Promise.resolve()).then(() => this.db.save('Comics', comic));
+    if (!this.isStored(comic.id)) {
+      return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
+        return result.then(() => this.saveImage(comic.id, page));
+      }, Promise.resolve()).then(() => this.db.save('Comics', comic));
+    }
   }
 
   isStored (comicId: string): Promise<boolean> {

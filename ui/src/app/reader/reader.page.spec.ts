@@ -44,8 +44,9 @@ describe('ReaderPage', () => {
 
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
-    const comicStorageService = jasmine.createSpyObj('ComicStorageService', ['set', 'readPage']);
-    comicStorageService.set.and.returnValue(Promise.resolve(comic));
+    const comicStorageService = jasmine
+      .createSpyObj('ComicStorageService', ['get', 'readPage']);
+    comicStorageService.get.and.returnValue(Promise.resolve(comic));
     comicStorageService.readPage.and.returnValue(Promise.resolve('/api/read/923/0'));
 
     TestBed.configureTestingModule({

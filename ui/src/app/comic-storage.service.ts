@@ -9,31 +9,20 @@ import { QueueService } from './queue.service';
 })
 export class ComicStorageService {
 
-  private isStored = false;
-  private comic: Promise<Comic>;
-  private comicId: string;
-
   constructor (
-    private db: ComicDatabaseService,
+    private comicDatabaseService: ComicDatabaseService,
     private comicsService: ComicsService,
     private queue: QueueService,
   ) {
     this.queue.process();
   }
 
-  set (comicId: string): Promise<Comic> {
-    this.comicId = comicId;
-    return this.comic = new Promise((resolve, reject) => {
-      this.db.isStored(comicId).then((isStored) => {
-        this.isStored = isStored;
-        if (this.isStored) {
-          this.db.getComic(comicId).then(resolve).catch(reject);
-        } else {
-          this.comicsService.get(comicId).subscribe(
-            (comic: Comic) => resolve(comic),
-            () => reject());
-        }
-      });
+  get (comicId: string): Promise<Comic> {
+    return this.comicDatabaseService.isStored(comicId).then((isStored) => {
+      if (isStored) {
+        return this.comicDatabaseService.getComic(comicId);
+      }
+      return this.comicsService.get(comicId).toPromise();
     });
   }
 
@@ -42,15 +31,15 @@ export class ComicStorageService {
    * @param page Page number
    * @returns The URL to the image.
    */
-  async readPage (page: number): Promise<string> {
-    if (this.isStored) {
-      const comic = await this.comic;
+  async readPage (comicId: string, page: number): Promise<string> {
+    if (await this.comicDatabaseService.isStored(comicId)) {
+      const comic = await this.get(comicId);
       comic.currentPage = page;
       this.saveComic(comic);
-      await this.db.update(comic);
-      return this.db.getImageUrl(this.comicId, page);
+      await this.comicDatabaseService.update(comic);
+      return this.comicDatabaseService.getImageUrl(comicId, page);
     } else {
-      return Promise.resolve(`/api/read/${ this.comicId }/${ page }`);
+      return Promise.resolve(`/api/read/${ comicId }/${ page }`);
     }
   }
 
@@ -73,7 +62,7 @@ export class ComicStorageService {
           resolve(comics);
         }
       }, () => {
-        this.db.getComics().then((comics: Comic[]) => {
+        this.comicDatabaseService.getComics().then((comics: Comic[]) => {
           resolve(comics);
         }, () => reject());
       });
@@ -81,12 +70,55 @@ export class ComicStorageService {
   }
 
   /**
-   * Attempt to save the comic to the API, too. On failure, store the
-   * last state per comic in a queue. When calling `this.getBookmarks`
-   * and the API request succeeds, process the queue by saving each
-   * comic it contains and then repeat the bookmarks API call.
+   * Caches the previous, the current and the three next comic books.
+   * @param comicId The reference comic ID.
    */
-  // TODO see above
+  async storeSurrounding (comicId: string): Promise<void> {
+    const cachedIds = [];
+    const comic = await this.get(comicId);
+
+    // Store the previous comic.
+    if (typeof comic.previousId !== 'undefined') {
+      const previousComic = await this.get(comic.previousId);
+      await this.comicDatabaseService.store(previousComic);
+      cachedIds.push(previousComic.id);
+    }
+
+    // Store the current comic.
+    await this.comicDatabaseService.store(comic);
+    cachedIds.push(comic.id);
+
+    // Store the next three comics.
+    let nextComic: Comic = comic;
+    for (const {} of new Array(3)) {
+      if (typeof nextComic.nextId !== 'undefined') {
+        nextComic = await this.get(nextComic.nextId);
+        await this.comicDatabaseService.store(nextComic);
+        cachedIds.push(nextComic.id);
+      } else {
+        break;
+      }
+    }
+
+    // Traverse indexedDb's Comic collection for comic books outside
+    // that range and delete them.
+    await this.comicDatabaseService.getComics().then((cachedComics) => {
+      const comicsToDelete = cachedComics.filter((cachedComic) => {
+        // Filter out comics from other volumes:
+        return comic.publisher === cachedComic.publisher &&
+        comic.series === cachedComic.series &&
+        comic.volume === cachedComic.volume &&
+        // Filter out comics that are not cached
+        cachedIds.indexOf(cachedComic.id) === -1;
+      });
+      comicsToDelete.forEach((comicToDelete) => {
+        this.comicDatabaseService.delete(comicToDelete);
+      });
+    });
+
+    return;
+  }
+
   private saveComic (comic: Comic) {
     this.comicsService.update(comic).subscribe(
       () => this.queue.process(),
