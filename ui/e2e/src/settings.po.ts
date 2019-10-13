@@ -3,62 +3,56 @@ import { Page } from './page.po';
 
 export class SettingsPage {
 
-  private page: Page;
-
-  constructor () {
-    this.page = new Page();
-  }
-
-  navigateTo () {
+  static navigateTo () {
     return browser.get('/settings');
   }
 
-  getComicsPathInput () {
+  static getComicsPathInput () {
     return element(by.css('input[Placeholder="Path"]'));
   }
 
-  getSaveButton () {
+  static getSaveButton () {
     return element(by.cssContainingText('app-settings ion-button', 'SAVE'));
   }
 
-  async getConfirmationMessage () {
+  static async getConfirmationMessage () {
     await browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), 500);
-    return (await this.page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
+    return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
   }
 
-  private get progress () {
+  private static get progress () {
     return element(by.css('app-scanner .progress'));
   }
 
-  waitForScanStart () {
+  static waitForScanStart () {
     return browser.wait(ExpectedConditions.presenceOf(this.progress), 1000);
   }
 
-  waitForScanEnd () {
+  static waitForScanEnd () {
     return browser.wait(ExpectedConditions.textToBePresentInElement(this.getStats().first(), '305'), 20000);
   }
 
-  getScanButton () {
+  static getScanButton () {
     return element(by.cssContainingText('app-scanner ion-button', 'SCAN'));
   }
 
-  getScanProgress () {
+  static getScanProgress () {
     return this.progress.getText();
   }
 
-  getScanErrors () {
+  static getScanErrors () {
     return element(by.css('app-scanner .errors'));
   }
 
-  getStats () {
+  static getStats () {
     return element.all(by.css('app-scanner ion-list.stats ion-item'));
   }
 
-  getStatsText () {
+  static getStatsText () {
     return this.getStats().getText();
   }
 
-  async scan () {
+  static async scan () {
     await this.navigateTo();
     expect(await this.getScanButton().isPresent()).toBe(true);
     await this.getScanButton().click();

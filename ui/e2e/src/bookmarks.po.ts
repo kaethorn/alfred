@@ -3,29 +3,23 @@ import { Page } from './page.po';
 
 export class BookmarksPage {
 
-  private page: Page;
-
-  constructor () {
-    this.page = new Page();
-  }
-
-  navigateTo () {
+  static navigateTo () {
     return browser.get('/bookmarks');
   }
 
-  getBookmarks () {
+  static getBookmarks () {
     return element(by.css('app-bookmarks'));
   }
 
-  getBookmarkItems () {
+  static getBookmarkItems () {
     return this.getBookmarks().all(by.css('.comic-tile'));
   }
 
-  getBookmarkTitles () {
+  static getBookmarkTitles () {
     return this.getBookmarkItems().all(by.css('ion-card-title'));
   }
 
-  clickBookmarkMenuItem (volume: number, item: string) {
-    return this.page.clickMenuItem(this.getBookmarkItems().get(volume), item);
+  static clickBookmarkMenuItem (volume: number, item: string) {
+    return Page.clickActionItem(this.getBookmarkItems().get(volume), item);
   }
 }

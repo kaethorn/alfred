@@ -4,24 +4,12 @@ import { SettingsPage } from './settings.po';
 import { IssuesPage } from './issues.po';
 import { MongoDBTools } from './mongodb.tools';
 import { ProxySettings } from './proxy-settings';
-import { browser } from 'protractor';
+import { AppPage } from './app.po';
 
 describe('Sync', () => {
 
-  let bookmarksPage: BookmarksPage;
-  let issuesPage: IssuesPage;
-  let settingsPage: SettingsPage;
-  let libraryPage: LibraryPage;
-
   beforeAll(async () => {
     await MongoDBTools.prepare();
-  });
-
-  beforeEach(async () => {
-    bookmarksPage = new BookmarksPage();
-    issuesPage = new IssuesPage();
-    settingsPage = new SettingsPage();
-    libraryPage = new LibraryPage();
   });
 
   afterAll(async () => {
@@ -29,22 +17,22 @@ describe('Sync', () => {
   });
 
   it('scans for comics', async () => {
-    await settingsPage.scan();
+    await SettingsPage.scan();
   });
 
   it('starts a volume', async () => {
-    await libraryPage.navigateTo();
-    await libraryPage.clickPublisher('DC Comics');
-    await libraryPage.clickSeries('Batgirl');
-    await libraryPage.clickVolumeListButton('Vol. 2008');
-    await issuesPage.wait();
-    await issuesPage.toggleMarkAsRead(0);
+    await LibraryPage.navigateTo();
+    await LibraryPage.clickPublisher('DC Comics');
+    await LibraryPage.clickSeries('Batgirl');
+    await LibraryPage.clickVolumeListButton('Vol. 2008');
+    await IssuesPage.wait();
+    await IssuesPage.toggleMarkAsRead(0);
   });
 
   it('shows bookmarks', async () => {
-    await bookmarksPage.navigateTo();
-    expect(await bookmarksPage.getBookmarkTitles().count()).toBe(1);
-    expect(await bookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
+    await BookmarksPage.navigateTo();
+    expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
+    expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
   });
 
   describe('when going offline', () => {
@@ -54,10 +42,9 @@ describe('Sync', () => {
     });
 
     it('shows no bookmarks', async () => {
-      // FIXME use menu navigation:
-      await libraryPage.navigateTo();
-      await bookmarksPage.navigateTo();
-      expect(await bookmarksPage.getBookmarkTitles().count()).toBe(0);
+      await AppPage.clickMenuItem('Library');
+      await AppPage.clickMenuItem('Bookmarks');
+      expect(await BookmarksPage.getBookmarkTitles().count()).toBe(0);
     });
   });
 });
