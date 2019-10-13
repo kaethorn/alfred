@@ -63,6 +63,16 @@
       "urls": [
         "/api/thumbnails/**"
       ]
+    }, {
+      "name": "search-api",
+      "cacheConfig": {
+        "maxSize": 0,
+        "maxAge": "0u",
+        "strategy": "freshness"
+      },
+      "urls": [
+        "/api/search/**"
+      ]
     }
   ]
 }
