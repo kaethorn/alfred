@@ -15,6 +15,6 @@ export class AppPage {
   }
 
   static async clickMenuItem (item: string) {
-    // TODO
+    await element(by.cssContainingText('ion-menu ion-item ion-label', item)).click();
   }
 }
