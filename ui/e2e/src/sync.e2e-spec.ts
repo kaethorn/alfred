@@ -5,6 +5,7 @@ import { IssuesPage } from './issues.po';
 import { MongoDBTools } from './mongodb.tools';
 import { ProxySettings } from './proxy-settings';
 import { AppPage } from './app.po';
+import { browser } from 'protractor';
 
 describe('Sync', () => {
 
@@ -35,7 +36,7 @@ describe('Sync', () => {
     expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
   });
 
-  describe('when going offline', () => {
+  describe('when going offline without synced volumes', () => {
 
     beforeAll(async () => {
       await ProxySettings.set({ offline: true });
@@ -47,6 +48,35 @@ describe('Sync', () => {
       expect(await BookmarksPage.getBookmarkTitles().count()).toBe(0);
       expect(await BookmarksPage.getBookmarks().getText()).toContain('No comics found');
       expect(await BookmarksPage.getBookmarks().getText()).toContain('START NOW');
+    });
+  });
+
+  describe('when going offline with synced volumes', () => {
+
+    beforeAll(async () => {
+      await ProxySettings.set({ offline: false });
+      await AppPage.clickMenuItem('Library');
+      await AppPage.clickMenuItem('Bookmarks');
+    });
+
+    it('shows bookmarks', async () => {
+      expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
+      expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
+    });
+
+    it('syncs volumes and goes offline', async () => {
+      await BookmarksPage.getSyncButton(0).click();
+      // FIXME wait until sync is complete instead of sleeping
+      await browser.sleep(500);
+      expect(await BookmarksPage.getSyncedButton(0).isPresent()).toBe(true);
+      await ProxySettings.set({ offline: true });
+    });
+
+    it('still shows bookmarks', async () => {
+      await AppPage.clickMenuItem('Library');
+      await AppPage.clickMenuItem('Bookmarks');
+      expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
+      expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
     });
   });
 });

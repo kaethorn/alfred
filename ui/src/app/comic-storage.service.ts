@@ -63,7 +63,21 @@ export class ComicStorageService {
         }
       }, () => {
         this.comicDatabaseService.getComics().then((comics: Comic[]) => {
-          resolve(comics);
+          // Pick latest unread by volume
+          const group: {[name: string]: Comic[]} = comics.reduce((result, comic) => {
+            const key = `${ comic.publisher }|${ comic.series }|${ comic.volume }`;
+            (result[key] = result[key] || []).push(comic);
+            return result;
+          }, {});
+
+          const lastUnread: Comic[] = Object.keys(group).reduce((result, key) => {
+            result.push(group[key]
+              .sort((comic) => comic.number)
+              .find((comic: Comic) => !comic.read));
+            return result;
+          }, []);
+
+          resolve(lastUnread);
         }, () => reject());
       });
     });

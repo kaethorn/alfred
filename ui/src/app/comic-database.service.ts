@@ -28,8 +28,9 @@ export class ComicDatabaseService {
    * Caches the entire given comic book, including meta data and images.
    * @param comic The comic to cache.
    */
-  store (comic: Comic): Promise<Event> {
-    if (!this.isStored(comic.id)) {
+  async store (comic: Comic): Promise<Event> {
+    const isStored = await this.isStored(comic.id);
+    if (!isStored) {
       return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
         return result.then(() => this.saveImage(comic.id, page));
       }, Promise.resolve()).then(() => this.db.save('Comics', comic));
@@ -76,7 +77,7 @@ export class ComicDatabaseService {
         this.db.save('Images', image, `${ comicId }/${ page }`)
           .then(resolve)
           .catch(error => reject(error));
-      });
+      }, (error) => reject(error));
     });
   }
 }

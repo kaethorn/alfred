@@ -3,8 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { ComicsService } from './comics.service';
 import { ComicStorageService } from './comic-storage.service';
 import { ComicsServiceMocks as comicsService } from '../testing/comics.service.mocks';
-import { volume } from '../testing/comic.fixtures';
+import { volume, volumeInProgress } from '../testing/comic.fixtures';
 import { ComicDatabaseService } from './comic-database.service';
+import { throwError } from 'rxjs';
 
 describe('ComicStorageService', () => {
   let service: ComicStorageService;
@@ -26,6 +27,23 @@ describe('ComicStorageService', () => {
 
   afterEach(() => {
     TestBed.resetTestingModule();
+  });
+
+  describe('#getBookmarks', () => {
+
+    describe('when offlie', () => {
+
+      beforeEach(() => {
+        comicsService.listLastReadByVolume.and.returnValue(throwError('Offline'));
+        comicDatabaseService.getComics.and.returnValue(Promise.resolve(volumeInProgress));
+      });
+
+      it('filters offline comics', async () => {
+        const comics = await service.getBookmarks();
+        expect(comics.length).toBe(1);
+        expect(comics[0].id).toEqual('3');
+      });
+    });
   });
 
   describe('#storeSurrounding', () => {

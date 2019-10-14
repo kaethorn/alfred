@@ -38,7 +38,8 @@ exports.config = {
     // Wait for service worker to be active.
     await browser.wait(async () => {
       const serviceWorkerStatus = await browser.executeScript(function () {
-        return navigator.serviceWorker.controller.state;
+        return navigator.serviceWorker.controller ?
+          navigator.serviceWorker.controller.state : '';
       });
       return serviceWorkerStatus === 'activated';
     });

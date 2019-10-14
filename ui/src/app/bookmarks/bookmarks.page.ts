@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
@@ -26,6 +26,7 @@ export class BookmarksPage {
     private popoverController: PopoverController,
     private thumbnailsService: ThumbnailsService,
     private comicStorageService: ComicStorageService,
+    private toastController: ToastController,
   ) { }
 
   ionViewDidEnter () {
@@ -49,9 +50,6 @@ export class BookmarksPage {
       event,
       translucent: true
     });
-    popover.onWillDismiss().finally(() => {
-      this.list();
-    });
     await popover.present();
   }
 
@@ -60,8 +58,10 @@ export class BookmarksPage {
     this.comicStorageService.storeSurrounding(comic.id)
       .then(() => {
         this.updateStoredState(comic);
+        this.showToast('Volume synced.');
         this.synching = false;
       }).catch((error) => {
+        this.showToast('Error while syncing volume.');
         console.error(error);
         this.synching = false;
       });
@@ -75,5 +75,13 @@ export class BookmarksPage {
 
   private updateStoredState (comic: Comic) {
     this.stored[comic.id] = this.db.isStored(comic.id);
+  }
+
+  private async showToast (message: string, duration: number = 3000) {
+    const toast = await this.toastController.create({
+      message,
+      duration
+    });
+    toast.present();
   }
 }

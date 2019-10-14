@@ -22,4 +22,12 @@ export class BookmarksPage {
   static clickBookmarkMenuItem (volume: number, item: string) {
     return Page.clickActionItem(this.getBookmarkItems().get(volume), item);
   }
+
+  static getSyncButton (volume: number) {
+    return element.all(by.cssContainingText('ion-button', 'Sync')).get(volume);
+  }
+
+  static getSyncedButton (volume: number) {
+    return element.all(by.cssContainingText('ion-button', 'Synced')).get(volume);
+  }
 }

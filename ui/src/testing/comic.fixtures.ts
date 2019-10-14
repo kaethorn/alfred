@@ -11,7 +11,7 @@ comic1.publisher = 'DC Comics';
 
 export { comic1 };
 
-const comics: Comic[] = [
+const volume: Comic[] = [
   Object.assign({ id: '1', nextId: '2' }, comic1),
   Object.assign({ id: '2', nextId: '3', previousId: '1' }, comic1),
   Object.assign({ id: '3', nextId: '4', previousId: '2' }, comic1),
@@ -25,4 +25,14 @@ const comics: Comic[] = [
   return comic;
 });
 
-export { comics as volume };
+export { volume };
+
+const volumeInProgress: Comic[] = volume
+.map((comic: Comic, index: number) => {
+  comic.id = `${ index + 1 }`;
+  return comic;
+});
+volume[0].read = true;
+volume[1].read = true;
+
+export { volumeInProgress };
