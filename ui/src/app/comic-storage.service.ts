@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import { ComicDatabaseService } from './comic-database.service';
 import { ComicsService } from './comics.service';
 import { QueueService } from './queue.service';
-import { from } from 'rxjs';
-import { groupBy, mergeMap, toArray, filter, first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -66,14 +64,20 @@ export class ComicStorageService {
       }, () => {
         this.comicDatabaseService.getComics().then((comics: Comic[]) => {
           // Pick latest unread by volume
-          from(comics.sort(comic => comic.number)).pipe(
-            groupBy(comic => `${ comic.publisher }|${ comic.series }|${ comic.volume }`),
-            mergeMap(group => group.pipe(
-              filter(comic => !comic.read),
-              first(),
-              toArray()
-            ))
-          ).subscribe(resolve);
+          const group: { [name: string]: Comic[] } = comics.reduce((result, comic) => {
+            const key = `${comic.publisher}|${comic.series}|${comic.volume}`;
+            (result[key] = result[key] || []).push(comic);
+            return result;
+          }, {});
+
+          const lastUnread: Comic[] = Object.keys(group).reduce((result, key) => {
+            result.push(group[key]
+              .sort((comic) => comic.number)
+              .find((comic: Comic) => !comic.read));
+            return result;
+          }, []);
+
+          resolve(lastUnread);
         }, () => reject());
       });
     });

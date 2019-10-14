@@ -55,11 +55,10 @@ describe('Sync', () => {
 
     beforeAll(async () => {
       await ProxySettings.set({ offline: false });
-      await AppPage.clickMenuItem('Library');
-      await AppPage.clickMenuItem('Bookmarks');
+      await BookmarksPage.navigateTo();
     });
 
-    it('shows bookmarks', async () => {
+    it('shows bookmarks while online', async () => {
       expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
       expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
     });

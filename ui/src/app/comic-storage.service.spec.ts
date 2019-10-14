@@ -31,17 +31,35 @@ describe('ComicStorageService', () => {
 
   describe('#getBookmarks', () => {
 
-    describe('when offlie', () => {
+    describe('when offline', () => {
 
       beforeEach(() => {
         comicsService.listLastReadByVolume.and.returnValue(throwError('Offline'));
-        comicDatabaseService.getComics.and.returnValue(Promise.resolve(volumeInProgress));
       });
 
-      it('filters offline comics', async () => {
-        const comics = await service.getBookmarks();
-        expect(comics.length).toBe(1);
-        expect(comics[0].id).toEqual('3');
+      describe('with synced comics', () => {
+
+        beforeEach(() => {
+          comicDatabaseService.getComics.and.returnValue(Promise.resolve(volumeInProgress));
+        });
+
+        it('filters offline comics', async () => {
+          const comics = await service.getBookmarks();
+          expect(comics.length).toBe(1);
+          expect(comics[0].id).toEqual('3');
+        });
+      });
+
+      describe('without synced comics', () => {
+
+        beforeEach(() => {
+          comicDatabaseService.getComics.and.returnValue(Promise.resolve([]));
+        });
+
+        it('filters offline comics', async () => {
+          const comics = await service.getBookmarks();
+          expect(comics.length).toBe(0);
+        });
       });
     });
   });

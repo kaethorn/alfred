@@ -62,9 +62,7 @@ export class ComicDatabaseService {
   }
 
   getComics (): Promise<Comic[]> {
-    return this.db.getAll('Comics').then((data: any) => {
-      return data as Comic[];
-    });
+    return this.db.getAll('Comics');
   }
 
   update (comic: Comic): Promise<Event> {
