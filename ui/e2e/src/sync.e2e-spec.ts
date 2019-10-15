@@ -5,7 +5,6 @@ import { IssuesPage } from './issues.po';
 import { MongoDBTools } from './mongodb.tools';
 import { ProxySettings } from './proxy-settings';
 import { AppPage } from './app.po';
-import { browser } from 'protractor';
 
 describe('Sync', () => {
 
@@ -65,8 +64,7 @@ describe('Sync', () => {
 
     it('syncs volumes and goes offline', async () => {
       await BookmarksPage.getSyncButton(0).click();
-      // FIXME wait until sync is complete instead of sleeping
-      await browser.sleep(500);
+      await BookmarksPage.waitForSync(0);
       expect(await BookmarksPage.getSyncedButton(0).isPresent()).toBe(true);
       await ProxySettings.set({ offline: true });
     });

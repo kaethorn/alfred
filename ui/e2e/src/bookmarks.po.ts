@@ -24,10 +24,16 @@ export class BookmarksPage {
   }
 
   static getSyncButton (volume: number) {
-    return element.all(by.cssContainingText('ion-button', 'Sync')).get(volume);
+    return element.all(by.css('ion-card.comic-tile')).get(volume)
+      .element(by.cssContainingText('ion-button', 'Sync'));
   }
 
   static getSyncedButton (volume: number) {
-    return element.all(by.cssContainingText('ion-button', 'Synced')).get(volume);
+    return element.all(by.css('ion-card.comic-tile')).get(volume)
+      .element(by.cssContainingText('ion-button', 'Synced'));
+  }
+
+  static waitForSync (volume: number) {
+    return Page.waitForElement(this.getSyncedButton(0));
   }
 }
