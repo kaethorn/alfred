@@ -22,7 +22,7 @@ export class BookmarksPage {
   stored: { [name: string]: Promise<boolean> } = {};
 
   constructor (
-    private db: ComicDatabaseService,
+    private comicDatabaseService: ComicDatabaseService,
     private popoverController: PopoverController,
     private thumbnailsService: ThumbnailsService,
     private comicStorageService: ComicStorageService,
@@ -30,7 +30,7 @@ export class BookmarksPage {
   ) { }
 
   ionViewDidEnter () {
-    this.list();
+    this.comicDatabaseService.ready.toPromise().then(() => this.list());
   }
 
   private list () {
@@ -68,13 +68,13 @@ export class BookmarksPage {
   }
 
   delete (comic: Comic): void {
-    this.db.delete(comic).then(() => {
+    this.comicDatabaseService.delete(comic).then(() => {
       this.updateStoredState(comic);
     });
   }
 
   private updateStoredState (comic: Comic) {
-    this.stored[comic.id] = this.db.isStored(comic.id);
+    this.stored[comic.id] = this.comicDatabaseService.isStored(comic.id);
   }
 
   private async showToast (message: string, duration: number = 3000) {

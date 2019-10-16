@@ -6,36 +6,39 @@ import { comic1 as comic } from '../testing/comic.fixtures';
 import { QueueService } from './queue.service';
 import { ComicsService } from './comics.service';
 import { Comic } from './comic';
+import { ComicDatabaseService } from './comic-database.service';
 
 describe('QueueService', () => {
   let service: QueueService;
+  let dbService: ComicDatabaseService;
   const comicsService = jasmine.createSpyObj('ComicsService', [ 'update' ]);
   const updateSpy: jasmine.Spy = comicsService.update;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     updateSpy.and.returnValue(of(comic));
-    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [{
         provide: ComicsService, useValue: comicsService
       }],
     });
+    dbService = TestBed.get(ComicDatabaseService);
+    await dbService.ready.toPromise();
     service = TestBed.get(QueueService);
   });
 
-  afterEach(() => {
+  afterEach(async (done) => {
     updateSpy.calls.reset();
     TestBed.resetTestingModule();
+    await dbService.deleteAll();
+    done();
   });
 
   describe('#hasItems', () => {
 
-    it('reflects the state of the internal queue', () => {
-      expect(service.hasItems()).toBe(false);
-      service.load();
-      expect(service.hasItems()).toBe(false);
+    it('reflects the state of the internal queue', async () => {
+      expect(await service.hasItems()).toBe(false);
       service.add({ id: '123' } as Comic);
-      expect(service.hasItems()).toBe(true);
+      expect(await service.hasItems()).toBe(true);
     });
   });
 
@@ -43,25 +46,25 @@ describe('QueueService', () => {
 
     describe('without items in the queue', () => {
 
-      it('completes', () => {
+      it('completes', (done) => {
         service.process().subscribe(() => {
           expect(true).toBe(true);
         }, () => {
           expect(false).toBe(true);
+          done();
         }, () => {
           expect(true).toBe(true);
+          done();
         });
       });
     });
 
     describe('with items', () => {
 
-      beforeEach(() => {
-        localStorage.setItem('queue', JSON.stringify({
-          1: { path: 'one' },
-          2: { path: 'two' },
-        }));
-        service.load();
+      beforeEach(async (done) => {
+        await service.add({ id: 'one' } as Comic);
+        await service.add({ id: 'two' } as Comic);
+        done();
       });
 
       describe('on error', () => {
@@ -72,9 +75,9 @@ describe('QueueService', () => {
 
         it('does not complete', (done) => {
           service.process().subscribe(() => {
-          }, () => {
+          }, async () => {
             expect(updateSpy.calls.count()).toBe(1);
-            expect(service.count()).toBe(2);
+            expect(await service.count()).toBe(2);
             done();
           });
         });
@@ -82,17 +85,14 @@ describe('QueueService', () => {
 
       describe('on success', () => {
 
-        beforeEach(() => {
-        });
-
         it('completes', (done) => {
           service.process().subscribe(() => {
           }, () => {
-          }, () => {
+          }, async () => {
             expect(updateSpy.calls.count()).toBe(2);
-            expect(comicsService.update).toHaveBeenCalledWith({ path: 'one' });
-            expect(comicsService.update).toHaveBeenCalledWith({ path: 'two' });
-            expect(service.count()).toBe(0);
+            expect(comicsService.update).toHaveBeenCalledWith({ id: 'one' });
+            expect(comicsService.update).toHaveBeenCalledWith({ id: 'two' });
+            expect(await service.count()).toBe(0);
             done();
           });
         });
@@ -113,9 +113,9 @@ describe('QueueService', () => {
 
         it('does not complete', (done) => {
           service.process().subscribe(() => {
-          }, () => {
+          }, async () => {
             expect(updateSpy.calls.count()).toBe(2);
-            expect(service.count()).toBe(1);
+            expect(await service.count()).toBe(1);
             done();
           });
         });

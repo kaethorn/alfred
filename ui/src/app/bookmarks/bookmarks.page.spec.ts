@@ -7,12 +7,13 @@ import { ComicsService } from '../comics.service';
 import { ThumbnailsService } from '../thumbnails.service';
 import { BookmarksPage } from './bookmarks.page';
 import { BookmarksPageModule } from './bookmarks.module';
+import { ComicDatabaseService } from '../comic-database.service';
 
 describe('BookmarksPage', () => {
   let component: BookmarksPage;
   let fixture: ComponentFixture<BookmarksPage>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [
         BookmarksPageModule
@@ -23,6 +24,9 @@ describe('BookmarksPage', () => {
         provide: ThumbnailsService, useValue: thumbnailsService
       }]
     });
+
+    const dbService = TestBed.get(ComicDatabaseService);
+    await dbService.ready.toPromise();
 
     fixture = TestBed.createComponent(BookmarksPage);
     component = fixture.componentInstance;

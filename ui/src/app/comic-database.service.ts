@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Comic } from './comic';
 import { ComicsService } from './comics.service';
 import { IndexedDb } from './indexed-db';
+import { AsyncSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import { IndexedDb } from './indexed-db';
 export class ComicDatabaseService {
 
   private db: IndexedDb;
+  ready: AsyncSubject<void> = new AsyncSubject<void>();
 
   constructor (
     private comicService: ComicsService
@@ -20,8 +22,15 @@ export class ComicDatabaseService {
     }, {
       name: 'Comics',
       options: { keyPath: 'id' },
-      indices: [[ 'id', 'id', { unique: true }]]
+      indices: [
+        [ 'id', 'id', { unique: true }],
+        [ 'dirty', 'dirty', { unique: false }]
+      ]
     }]);
+    this.db.ready.subscribe(
+      () => {},
+      () => this.ready.thrownError(),
+      () => this.ready.complete());
   }
 
   /**
@@ -51,6 +60,13 @@ export class ComicDatabaseService {
     }, Promise.resolve()).then(() => this.db.delete('Comics', comic.id));
   }
 
+  async deleteAll (): Promise<any> {
+    const comics = await this.getComics();
+    for (const comic of comics) {
+      await this.delete(comic);
+    }
+  }
+
   getImageUrl (comicId: string, page: number): Promise<string> {
     return this.db.get('Images', `${ comicId }/${ page }`).then((data: any) => {
       return URL.createObjectURL(data);
@@ -65,7 +81,11 @@ export class ComicDatabaseService {
     return this.db.getAll('Comics');
   }
 
-  update (comic: Comic): Promise<Event> {
+  getComicsBy (key: string, value: any): Promise<Comic[]> {
+    return this.db.getAllBy('Comics', key, value);
+  }
+
+  save (comic: Comic): Promise<Event> {
     return this.db.save('Comics', comic);
   }
 

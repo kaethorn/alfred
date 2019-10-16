@@ -3,19 +3,19 @@ import { Injectable } from '@angular/core';
 import { Comic } from './comic';
 import { ComicsService } from './comics.service';
 import { Observable, from } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { concatMap, flatMap } from 'rxjs/operators';
+import { ComicDatabaseService } from './comic-database.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QueueService {
 
-  private queue: { [name: string]: Comic } = {};
-
   constructor (
     private comicsService: ComicsService,
+    private comicDatabaseService: ComicDatabaseService,
   ) {
-    this.load();
+    this.comicDatabaseService.ready.toPromise().then(() => this.process());
   }
 
   /**
@@ -25,39 +25,38 @@ export class QueueService {
    * processed successfully or rejects on the first error.
    */
   process (): Observable<Comic> {
-    return from(Object.keys(this.queue)).pipe(
-      concatMap((comicId) => {
-        const update  = this.comicsService.update(this.queue[comicId]);
+    return from(this.load()).pipe(
+      flatMap(comics => from(comics)),
+      concatMap((comic) => {
+        delete comic.dirty;
+        const update = this.comicsService.update(comic);
         update.subscribe(() => {
-          delete this.queue[comicId];
-          this.save();
-        }, () => {});
+          this.comicDatabaseService.save(comic);
+        }, () => {
+          comic.dirty = 1;
+          this.comicDatabaseService.save(comic);
+        });
         return update;
       })
     );
   }
 
-  private save () {
-    // TODO use indexedDB:
-    // * Comics should already be saved there.
-    // * Save only comic IDs in local storage.
-    localStorage.setItem('queue', JSON.stringify(this.queue));
+  private load (): Promise<Comic[]> {
+    return this.comicDatabaseService.getComicsBy('dirty', 1);
   }
 
-  add (comic: Comic) {
-    this.queue[comic.id] = comic;
-    this.save();
+  add (comic: Comic): Promise<any> {
+    comic.dirty = 1;
+    return this.comicDatabaseService.save(comic);
   }
 
-  load () {
-    this.queue = JSON.parse(localStorage.getItem('queue')) || {};
+  async hasItems (): Promise<boolean> {
+    const count = await this.count();
+    return count > 0;
   }
 
-  hasItems (): boolean {
-    return this.count() > 0;
-  }
-
-  count (): number {
-    return Object.keys(this.queue).length;
+  async count (): Promise<number> {
+    const comics = await this.load();
+    return comics.length;
   }
 }

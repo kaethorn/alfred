@@ -14,12 +14,11 @@ export class ComicStorageService {
   constructor (
     private comicDatabaseService: ComicDatabaseService,
     private comicsService: ComicsService,
-    private queue: QueueService,
-  ) {
-    this.queue.process();
-  }
+    private queueService: QueueService,
+  ) { }
 
-  get (comicId: string): Promise<Comic> {
+  async get (comicId: string): Promise<Comic> {
+    await this.comicDatabaseService.ready.toPromise();
     return this.comicDatabaseService.isStored(comicId).then((isStored) => {
       if (isStored) {
         return this.comicDatabaseService.getComic(comicId);
@@ -38,7 +37,7 @@ export class ComicStorageService {
       const comic = await this.get(comicId);
       comic.currentPage = page;
       this.saveComic(comic);
-      await this.comicDatabaseService.update(comic);
+      await this.comicDatabaseService.save(comic);
       return this.comicDatabaseService.getImageUrl(comicId, page);
     } else {
       return Promise.resolve(`/api/read/${ comicId }/${ page }`);
@@ -51,8 +50,8 @@ export class ComicStorageService {
   getBookmarks (): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
       this.comicsService.listLastReadByVolume().subscribe((comics: Comic[]) => {
-        if (this.queue.hasItems()) {
-          this.queue.process().subscribe(
+        if (this.queueService.hasItems()) {
+          this.queueService.process().subscribe(
             () => {},
             () => resolve(comics),
             () => {
@@ -125,13 +124,11 @@ export class ComicStorageService {
         this.comicDatabaseService.delete(comicToDelete);
       });
     });
-
-    return;
   }
 
   private saveComic (comic: Comic) {
     this.comicsService.update(comic).subscribe(
-      () => this.queue.process(),
-      () => this.queue.add(comic));
+      () => this.queueService.process(),
+      () => this.queueService.add(comic));
   }
 }

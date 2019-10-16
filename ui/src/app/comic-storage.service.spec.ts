@@ -5,16 +5,20 @@ import { ComicStorageService } from './comic-storage.service';
 import { ComicsServiceMocks as comicsService } from '../testing/comics.service.mocks';
 import { volume, volumeInProgress } from '../testing/comic.fixtures';
 import { ComicDatabaseService } from './comic-database.service';
-import { throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
 
 describe('ComicStorageService', () => {
   let service: ComicStorageService;
   const comicDatabaseService = jasmine
-    .createSpyObj('ComicDatabaseService', [ 'store', 'delete', 'getComics' ]);
+    .createSpyObj('ComicDatabaseService', [ 'store', 'delete', 'getComics', 'ready', 'getComicsBy' ]);
 
   beforeEach(() => {
     comicDatabaseService.store.and.returnValue(Promise.resolve());
     comicDatabaseService.delete.and.returnValue(Promise.resolve());
+    comicDatabaseService.getComicsBy.and.returnValue(Promise.resolve([]));
+    comicDatabaseService.getComics.and.returnValue(Promise.resolve([]));
+    comicDatabaseService.ready = of({ });
+
     TestBed.configureTestingModule({
       providers: [{
         provide: ComicsService, useValue: comicsService

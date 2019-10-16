@@ -1,3 +1,5 @@
+import { AsyncSubject } from 'rxjs';
+
 export interface Store {
   name: string;
   options?: object;
@@ -10,30 +12,37 @@ export interface Store {
 export class IndexedDb {
 
   private db: IDBDatabase;
+  ready: AsyncSubject<void> = new AsyncSubject<void>();
 
   constructor (name: string, version: number, stores: Store[]) {
     this.open(name, version, stores);
   }
 
-  private open (name: string, version: number, stores: Store[]) {
-    const request: any = indexedDB.open(name, version);
-    request.onerror = (event) => {
-      console.log(`Error opening DB '${ name }': ${ event }`);
-    };
-    request.onsuccess = () => {
-      this.db = request.result;
-    };
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      stores.forEach((store) => {
-        const objectStore = db.createObjectStore(store.name, store.options);
-        if (store.indices) {
-          store.indices.forEach((index) => {
-            objectStore.createIndex(...index);
-          });
-        }
-      });
-    };
+  private open (name: string, version: number, stores: Store[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const request: IDBOpenDBRequest = window.indexedDB.open(name, version);
+      request.onerror = (event) => {
+        console.log(`Error opening DB '${ name }': ${ event }.`);
+        reject();
+        this.ready.thrownError();
+      };
+      request.onsuccess = () => {
+        this.db = request.result;
+        resolve();
+        this.ready.complete();
+      };
+      request.onupgradeneeded = (event: any) => {
+        const db: IDBDatabase = event.target.result;
+        stores.forEach((store) => {
+          const objectStore = db.createObjectStore(store.name, store.options);
+          if (store.indices) {
+            store.indices.forEach((index) => {
+              objectStore.createIndex(...index);
+            });
+          }
+        });
+      };
+    });
   }
 
   hasKey (storeName: string, key: IDBValidKey): Promise<boolean> {
@@ -65,9 +74,20 @@ export class IndexedDb {
     return new Promise((resolve, reject) => {
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
       transaction.onerror = () => reject();
-      const store = transaction.objectStore(storeName).getAll();
-      store.onerror = () => reject();
-      store.onsuccess = (event: any) => resolve(event.target.result);
+      const request: IDBRequest = transaction.objectStore(storeName).getAll();
+      request.onerror = () => reject();
+      request.onsuccess = (event: any) => resolve(event.target.result);
+    });
+  }
+
+  getAllBy (storeName: string, key: string, value: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
+      transaction.onerror = () => resolve([]);
+      const index: IDBIndex = transaction.objectStore(storeName).index(key);
+      const request: IDBRequest = index.getAll(value);
+      request.onerror = () => resolve([]);
+      request.onsuccess = (event: any) => resolve(event.target.result);
     });
   }
 

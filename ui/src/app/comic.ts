@@ -43,5 +43,6 @@ export interface Comic {
   read?: boolean;
   currentPage?: number;
   lastRead?: Date;
+  dirty?: number;
   errors?: ScannerIssue[];
 }
