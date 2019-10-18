@@ -48,8 +48,9 @@ export class ReaderPage {
   }
 
   async ionViewDidEnter () {
+    const comicId = this.route.snapshot.params.id;
     this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-    this.comicStorageService.cache(this.route.snapshot.params.id)
+    this.comicStorageService.get(comicId)
       .then((comic) => {
         this.comic = comic;
         this.setup(this.comic);
@@ -57,6 +58,9 @@ export class ReaderPage {
         this.showToast('Comic book not available, please try again later.');
         this.back();
       });
+    this.comicStorageService.storeSurrounding(comicId).then(() => {
+      this.showToast('Volume synched.');
+    });
   }
 
   private setup (comic: Comic) {

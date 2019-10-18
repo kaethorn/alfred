@@ -36,17 +36,6 @@ export class ComicStorageService {
   }
 
   /**
-   * Retrieve the given comic from cache or from the server as a fallback.
-   * @param comicId Comic ID to retrieve.
-   * @param cache Whether to cache the comic if not already done so.
-   * @returns A promise returning the comic.
-   */
-  async cache (comicId: string): Promise<Comic> {
-    await this.storeSurrounding(comicId);
-    return this.get(comicId);
-  }
-
-  /**
    * Reads the given page of this comic, setting the read state.
    * @param page Page number
    * @returns The URL to the image.

@@ -58,7 +58,7 @@ export class BookmarksPage {
     this.comicStorageService.storeSurrounding(comic.id)
       .then(() => {
         this.updateStoredState(comic.id);
-        this.showToast('Volume synced.');
+        this.showToast('Volume synched.');
         this.synching = false;
       }).catch((error) => {
         this.showToast('Error while syncing volume.');
