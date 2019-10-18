@@ -20,9 +20,8 @@ export class IssuesPage {
   private publisher: string;
   private series: string;
   private volume: string;
-  public currentRoute: string;
-  public thumbnails = new Map<string, Observable<SafeUrl>>();
-
+  currentRoute: string;
+  thumbnails = new Map<string, Observable<SafeUrl>>();
   comics: Array<Comic> = [];
 
   constructor (

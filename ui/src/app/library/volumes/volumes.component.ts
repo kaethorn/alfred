@@ -54,7 +54,7 @@ export class VolumesComponent {
       });
   }
 
-  public resumeVolume (volume: Volume): void {
+  resumeVolume (volume: Volume): void {
     if (volume.read) {
       this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {

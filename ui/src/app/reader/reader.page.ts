@@ -77,7 +77,7 @@ export class ReaderPage {
     return comic.currentPage;
   }
 
-  public onClick (event: MouseEvent): void {
+  onClick (event: MouseEvent): void {
     const direction = this.getDirection(event);
     if (direction === 0) {
       this.toggleControls();
@@ -86,7 +86,7 @@ export class ReaderPage {
     }
   }
 
-  public go (direction: number, event?: MouseEvent): void {
+  go (direction: number, event?: MouseEvent): void {
     this.navigate(this.navigator.go(direction));
     if (event) {
       event.stopPropagation();
@@ -114,23 +114,23 @@ export class ReaderPage {
     toast.present();
   }
 
-  public openNext (options?: IOpenOptions) {
+  openNext (options?: IOpenOptions) {
     this.open('nextId', options);
   }
 
-  public openPrevious (options?: IOpenOptions) {
+  openPrevious (options?: IOpenOptions) {
     this.open('previousId', options);
   }
 
-  public toggleControls (): void {
+  toggleControls (): void {
     this.showControls = !this.showControls;
   }
 
-  public onSwipe (direction): void {
+  onSwipe (direction): void {
     this.navigate(this.navigator.go(direction));
   }
 
-  public back (): void {
+  back (): void {
     this.router.navigate([this.parent]);
   }
 

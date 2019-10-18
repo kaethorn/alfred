@@ -9,7 +9,7 @@ import { User } from './user';
 })
 export class UserService {
 
-  public user: BehaviorSubject<User | string> = new BehaviorSubject<User | string>(null);
+  user: BehaviorSubject<User | string> = new BehaviorSubject<User | string>(null);
   private auth2: gapi.auth2.GoogleAuth;
 
   constructor (
