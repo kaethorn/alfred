@@ -6,6 +6,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { UserService } from './user.service';
 import { User } from './user';
+import { Router, RouterEvent } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +15,13 @@ import { User } from './user';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  public appPages = [
+  appPages = [
     { title: 'Bookmarks', url: '/bookmarks', icon: 'bookmarks' },
     { title: 'Library', url: '/library/publishers', icon: 'book' },
     { title: 'Settings', url: '/settings', icon: 'settings' },
   ];
+  hideMenu = false;
+  private fullScreenUrls = [ '/read' ];
 
   user: User;
 
@@ -25,15 +29,22 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
   ) {
     this.initializeApp();
     this.userService.user.subscribe((user: User) => {
       this.user = user;
     });
+    this.router.events.pipe(
+      filter(event => event instanceof RouterEvent)
+    ).subscribe((event: RouterEvent) => {
+      this.hideMenu = this.fullScreenUrls
+        .reduce((result, fullScreenUrl) => result || event.url.startsWith(fullScreenUrl), false);
+    });
   }
 
-  initializeApp () {
+  private initializeApp () {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
