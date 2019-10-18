@@ -3,7 +3,7 @@ const proxy = require('http-proxy-middleware');
 
 let server;
 const flags = {
-  offline: false,
+  offline: false
 };
 
 const parse = (req) => {
@@ -38,12 +38,12 @@ module.exports = {
 
     // Proxy requests to the web server
     app.use('', proxy(proxyFilter, {
-      target: 'http://localhost:8080',
+      target: 'http://localhost:8080'
     }));
 
     return new Promise((resolve, reject) => {
       server = app.listen(8090, '0.0.0.0', () => resolve())
-      .on('error', (error) => reject(error));
+        .on('error', (error) => reject(error));
     });
   },
 
