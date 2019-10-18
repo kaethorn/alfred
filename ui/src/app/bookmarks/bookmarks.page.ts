@@ -38,7 +38,7 @@ export class BookmarksPage {
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
         this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
-        this.updateStoredState(comic);
+        this.updateStoredState(comic.id);
       });
     });
  }
@@ -57,7 +57,7 @@ export class BookmarksPage {
     this.synching = true;
     this.comicStorageService.storeSurrounding(comic.id)
       .then(() => {
-        this.updateStoredState(comic);
+        this.updateStoredState(comic.id);
         this.showToast('Volume synced.');
         this.synching = false;
       }).catch((error) => {
@@ -69,12 +69,12 @@ export class BookmarksPage {
 
   delete (comic: Comic): void {
     this.comicStorageService.deleteVolume(comic).then(() => {
-      this.updateStoredState(comic);
+      this.updateStoredState(comic.id);
     });
   }
 
-  private updateStoredState (comic: Comic) {
-    this.stored[comic.id] = this.comicDatabaseService.isStored(comic.id);
+  private updateStoredState (comicId: string) {
+    this.stored[comicId] = this.comicDatabaseService.isStored(comicId);
   }
 
   private async showToast (message: string, duration: number = 3000) {

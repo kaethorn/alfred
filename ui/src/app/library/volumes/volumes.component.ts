@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { VolumesService } from '../../volumes.service';
 import { ComicsService } from '../../comics.service';
 import { ThumbnailsService } from '../../thumbnails.service';
+import { ComicDatabaseService } from 'src/app/comic-database.service';
 import { Volume } from '../../volume';
 import { Comic } from '../../comic';
 import { VolumeActionsComponent } from './volume-actions/volume-actions.component';
@@ -22,7 +23,8 @@ export class VolumesComponent {
   volumes: Volume[];
   publisher = '';
   series = '';
-  public thumbnails = new Map<string, Observable<SafeUrl>>();
+  thumbnails = new Map<string, Observable<SafeUrl>>();
+  stored: { [name: string]: Promise<boolean> } = {};
 
   constructor (
     private router: Router,
@@ -30,7 +32,8 @@ export class VolumesComponent {
     private comicsService: ComicsService,
     private thumbnailsService: ThumbnailsService,
     private volumesService: VolumesService,
-    private popoverController: PopoverController
+    private popoverController: PopoverController,
+    private comicDatabaseService: ComicDatabaseService,
   ) { }
 
   ionViewDidEnter () {
@@ -46,6 +49,7 @@ export class VolumesComponent {
         this.volumes = this.volumesData;
         this.volumes.forEach((volume: Volume) => {
           this.thumbnails.set(volume.firstComicId, this.thumbnailsService.get(volume.firstComicId));
+          this.updateStoredState(volume.firstComicId);
         });
       });
   }
@@ -84,5 +88,9 @@ export class VolumesComponent {
   filter (value: string) {
     this.volumes = this.volumesData
       .filter(volume => volume.volume.match(value));
+  }
+
+  private updateStoredState (comicId: string) {
+    this.stored[comicId] = this.comicDatabaseService.isStored(comicId);
   }
 }
