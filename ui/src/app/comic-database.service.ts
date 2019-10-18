@@ -73,7 +73,8 @@ export class ComicDatabaseService {
     });
   }
 
-  getComic (comicId: string): Promise<Comic> {
+  async getComic (comicId: string): Promise<Comic> {
+    await this.ready.toPromise();
     return this.db.get('Comics', comicId);
   }
 

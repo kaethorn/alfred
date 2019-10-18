@@ -68,7 +68,7 @@ export class BookmarksPage {
   }
 
   delete (comic: Comic): void {
-    this.comicDatabaseService.delete(comic).then(() => {
+    this.comicStorageService.deleteVolume(comic).then(() => {
       this.updateStoredState(comic);
     });
   }

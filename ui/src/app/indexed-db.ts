@@ -66,7 +66,13 @@ export class IndexedDb {
       transaction.onerror = () => reject();
       const store = transaction.objectStore(storeName).get(key);
       store.onerror = () => reject();
-      store.onsuccess = (event: any) => resolve(event.target.result);
+      store.onsuccess = (event: any) => {
+        if (event.target.result) {
+          resolve(event.target.result);
+        } else {
+          reject();
+        }
+      };
     });
   }
 

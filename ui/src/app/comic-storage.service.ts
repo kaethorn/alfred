@@ -23,21 +23,27 @@ export class ComicStorageService {
    * @param cache Whether to cache the comic if not already done so.
    * @returns A promise returning the comic.
    */
-  async get (comicId: string, cache = false): Promise<Comic> {
-    await this.comicDatabaseService.ready.toPromise();
-    return this.comicDatabaseService.isStored(comicId).then((isStored) => {
-      if (isStored) {
-        return this.comicDatabaseService.getComic(comicId);
-      }
-      return new Promise((resolve) => {
-        this.comicsService.get(comicId).subscribe((comic) => {
-          if (!cache) {
-            return resolve(comic);
-          }
-          this.comicDatabaseService.store(comic).then(() => resolve(comic));
+  get (comicId: string): Promise<Comic> {
+    return new Promise((resolve, reject) => {
+      this.comicDatabaseService.getComic(comicId)
+        .then((comic) => resolve(comic))
+        .catch(() => {
+          this.comicsService.get(comicId).subscribe(
+            (apiComic) => resolve(apiComic),
+            () => reject());
         });
-      });
     });
+  }
+
+  /**
+   * Retrieve the given comic from cache or from the server as a fallback.
+   * @param comicId Comic ID to retrieve.
+   * @param cache Whether to cache the comic if not already done so.
+   * @returns A promise returning the comic.
+   */
+  async cache (comicId: string): Promise<Comic> {
+    await this.storeSurrounding(comicId);
+    return this.get(comicId);
   }
 
   /**
@@ -100,7 +106,7 @@ export class ComicStorageService {
     const comic = await this.get(comicId);
 
     // Store the previous comic.
-    if (typeof comic.previousId !== 'undefined') {
+    if (comic.previousId !== null) {
       const previousComic = await this.get(comic.previousId);
       await this.comicDatabaseService.store(previousComic);
       cachedIds.push(previousComic.id);
@@ -113,7 +119,7 @@ export class ComicStorageService {
     // Store the next three comics.
     let nextComic: Comic = comic;
     for (const {} of new Array(3)) {
-      if (typeof nextComic.nextId !== 'undefined') {
+      if (nextComic.nextId !== null) {
         nextComic = await this.get(nextComic.nextId);
         await this.comicDatabaseService.store(nextComic);
         cachedIds.push(nextComic.id);
@@ -124,19 +130,36 @@ export class ComicStorageService {
 
     // Traverse indexedDb's Comic collection for comic books outside
     // that range and delete them.
-    await this.comicDatabaseService.getComics().then((cachedComics) => {
-      const comicsToDelete = cachedComics.filter((cachedComic) => {
-        // Filter out comics from other volumes:
-        return comic.publisher === cachedComic.publisher &&
-        comic.series === cachedComic.series &&
-        comic.volume === cachedComic.volume &&
+    const cachedComics = await this.comicDatabaseService.getComics();
+    const comicsToDelete = cachedComics.filter((cachedComic) => {
+      // Filter out comics from other volumes:
+      return this.matchesVolume(comic, cachedComic) &&
         // Filter out comics that are not cached
         cachedIds.indexOf(cachedComic.id) === -1;
-      });
-      comicsToDelete.forEach((comicToDelete) => {
-        this.comicDatabaseService.delete(comicToDelete);
-      });
     });
+    comicsToDelete.forEach((comicToDelete) => {
+      this.comicDatabaseService.delete(comicToDelete);
+    });
+  }
+
+  /**
+   * Deletes all comics in the given comic's volume.
+   * @param comic Reference comic.
+   */
+  async deleteVolume (referenceComic: Comic): Promise<void> {
+    const comics = await this.comicDatabaseService.getComics();
+    const volume: Comic[] = comics.filter((comic) => {
+      return this.matchesVolume(referenceComic, comic);
+    });
+    for (const comic of volume) {
+      await this.comicDatabaseService.delete(comic);
+    }
+  }
+
+  private matchesVolume (comicA: Comic, comicB: Comic): boolean {
+    return comicA.publisher === comicB.publisher &&
+      comicA.series === comicB.series &&
+      comicA.volume === comicB.volume;
   }
 
   private saveComic (comic: Comic) {

@@ -49,7 +49,7 @@ export class ReaderPage {
 
   async ionViewDidEnter () {
     this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-    this.comicStorageService.get(this.route.snapshot.params.id, true)
+    this.comicStorageService.cache(this.route.snapshot.params.id)
       .then((comic) => {
         this.comic = comic;
         this.setup(this.comic);
