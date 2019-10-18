@@ -17,13 +17,26 @@ export class ComicStorageService {
     private queueService: QueueService,
   ) { }
 
-  async get (comicId: string): Promise<Comic> {
+  /**
+   * Retrieve the given comic from cache or from the server as a fallback.
+   * @param comicId Comic ID to retrieve.
+   * @param cache Whether to cache the comic if not already done so.
+   * @returns A promise returning the comic.
+   */
+  async get (comicId: string, cache = false): Promise<Comic> {
     await this.comicDatabaseService.ready.toPromise();
     return this.comicDatabaseService.isStored(comicId).then((isStored) => {
       if (isStored) {
         return this.comicDatabaseService.getComic(comicId);
       }
-      return this.comicsService.get(comicId).toPromise();
+      return new Promise((resolve) => {
+        this.comicsService.get(comicId).subscribe((comic) => {
+          if (!cache) {
+            return resolve(comic);
+          }
+          this.comicDatabaseService.store(comic).then(() => resolve(comic));
+        });
+      });
     });
   }
 

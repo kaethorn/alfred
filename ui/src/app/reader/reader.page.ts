@@ -47,9 +47,9 @@ export class ReaderPage {
     this.go(1);
   }
 
-  ionViewDidEnter () {
+  async ionViewDidEnter () {
     this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-    this.comicStorageService.get(this.route.snapshot.params.id)
+    this.comicStorageService.get(this.route.snapshot.params.id, true)
       .then((comic) => {
         this.comic = comic;
         this.setup(this.comic);
