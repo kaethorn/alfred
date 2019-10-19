@@ -1,10 +1,14 @@
-import { Comic } from './comic';
+import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Injectable } from '@angular/core';
+
+import { from } from 'rxjs';
+import { groupBy, mergeMap, first, filter, toArray } from 'rxjs/operators';
+
+import { Comic } from './comic';
 import { ComicDatabaseService } from './comic-database.service';
 import { ComicsService } from './comics.service';
 import { QueueService } from './queue.service';
-import { from } from 'rxjs';
-import { groupBy, mergeMap, first, filter, toArray } from 'rxjs/operators';
+import { ThumbnailsService } from './thumbnails.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +16,8 @@ import { groupBy, mergeMap, first, filter, toArray } from 'rxjs/operators';
 export class ComicStorageService {
 
   constructor (
+    private sanitizer: DomSanitizer,
+    private thumbnailsService: ThumbnailsService,
     private comicDatabaseService: ComicDatabaseService,
     private comicsService: ComicsService,
     private queueService: QueueService,
@@ -143,6 +149,17 @@ export class ComicStorageService {
     for (const comic of volume) {
       await this.comicDatabaseService.delete(comic);
     }
+  }
+
+  async getThumbnail (comicId: string): Promise<SafeUrl> {
+    return new Promise((resolve, reject) => {
+      this.comicDatabaseService.getImageUrl(comicId, 0)
+        .then((thumbnail) => {
+          resolve(this.sanitizer.bypassSecurityTrustResourceUrl(thumbnail));
+        }).catch(() => {
+          this.thumbnailsService.get(comicId).subscribe(resolve, reject);
+        });
+    });
   }
 
   private matchesVolume (comicA: Comic, comicB: Comic): boolean {

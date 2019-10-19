@@ -17,14 +17,13 @@ import { Comic } from '../comic';
 export class BookmarksPage {
 
   comics: Comic[];
-  thumbnails = new Map<string, Observable<SafeUrl>>();
+  thumbnails = new Map<string, Promise<SafeUrl>>();
   synching = false;
   stored: { [name: string]: Promise<boolean> } = {};
 
   constructor (
     private comicDatabaseService: ComicDatabaseService,
     private popoverController: PopoverController,
-    private thumbnailsService: ThumbnailsService,
     private comicStorageService: ComicStorageService,
     private toastController: ToastController,
   ) { }
@@ -37,7 +36,7 @@ export class BookmarksPage {
     this.comicStorageService.getBookmarks().then((comics: Comic[]) => {
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
-        this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
+        this.thumbnails.set(comic.id, this.comicStorageService.getThumbnail(comic.id));
         this.updateStoredState(comic.id);
       });
     });
