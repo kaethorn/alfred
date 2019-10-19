@@ -35,6 +35,14 @@ describe('Sync', () => {
     expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
   });
 
+  it('shows no cached issues', async () => {
+    await BookmarksPage.clickBookmarkMenuItem(0, 'View in volume');
+    await IssuesPage.wait();
+    expect(await IssuesPage.getIssues().count()).toBe(6);
+    expect(await IssuesPage.getUnreadIssues().count()).toBe(5);
+    expect(await IssuesPage.getSyncedIssues().count()).toBe(0);
+  });
+
   describe('when going offline without synced volumes', () => {
 
     beforeAll(async () => {
@@ -66,14 +74,34 @@ describe('Sync', () => {
       await BookmarksPage.getSyncButton(0).click();
       await BookmarksPage.waitForSync(0);
       expect(await BookmarksPage.getSyncedButton(0).isPresent()).toBe(true);
-      await ProxySettings.set({ offline: true });
     });
 
-    it('still shows bookmarks', async () => {
-      await AppPage.clickMenuItem('Library');
+    it('caches the previous, current and next three issues', async () => {
+      await BookmarksPage.clickBookmarkMenuItem(0, 'View in volume');
+      await IssuesPage.wait();
+      expect(await IssuesPage.getIssues().count()).toBe(6);
+      expect(await IssuesPage.getUnreadIssues().count()).toBe(5);
+      expect(await IssuesPage.getSyncedIssues().count()).toBe(5);
+    });
+
+    it('still shows bookmarks when offline', async () => {
+      await ProxySettings.set({ offline: true });
       await AppPage.clickMenuItem('Bookmarks');
       expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
       expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
+    });
+  });
+
+  describe('removing synced volumes', () => {
+
+    it('will result in empty bookmarks while offline', async () => {
+      await BookmarksPage.getSyncedButton(0).click();
+      await BookmarksPage.waitForUnsync(0);
+      await AppPage.clickMenuItem('Library');
+      await AppPage.clickMenuItem('Bookmarks');
+      expect(await BookmarksPage.getBookmarkTitles().count()).toBe(0);
+      expect(await BookmarksPage.getBookmarks().getText()).toContain('No comics found');
+      expect(await BookmarksPage.getBookmarks().getText()).toContain('START NOW');
     });
   });
 });

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 import { ComicsService } from '../comics.service';
 import { VolumesService } from '../volumes.service';
+import { ComicDatabaseService } from '../comic-database.service';
 import { ThumbnailsService } from '../thumbnails.service';
 import { Comic } from '../comic';
 
@@ -23,8 +24,10 @@ export class IssuesPage {
   currentRoute: string;
   thumbnails = new Map<string, Observable<SafeUrl>>();
   comics: Array<Comic> = [];
+  stored: { [name: string]: Promise<boolean> } = {};
 
   constructor (
+    private comicDatabaseService: ComicDatabaseService,
     private route: ActivatedRoute,
     private comicsService: ComicsService,
     private volumesService: VolumesService,
@@ -80,8 +83,13 @@ export class IssuesPage {
         this.comics = data;
         this.comics.forEach((comic: Comic) => {
           this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
+          this.updateStoredState(comic.id);
         });
       });
+  }
+
+  private updateStoredState (comicId: string) {
+    this.stored[comicId] = this.comicDatabaseService.isStored(comicId);
   }
 
   private replaceComic (comic: Comic): void {

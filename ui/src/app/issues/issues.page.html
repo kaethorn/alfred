@@ -27,6 +27,10 @@
                 class="read-badge" color="secondary">
                   &#10004;
                 </ion-badge>
+                <ion-badge *ngIf="stored[comic.id] | async"
+                  class="synced-badge" color="secondary">
+                  &#9921;
+                </ion-badge>
                 <img [attr.src]="thumbnails.get(comic.id) | async">
               </a>
             </div>

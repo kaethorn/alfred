@@ -59,7 +59,7 @@ export class ReaderPage {
         this.back();
       });
     this.comicStorageService.storeSurrounding(comicId).then(() => {
-      this.showToast('Volume synched.');
+      this.showToast('Volume cached.');
     });
   }
 

@@ -18,7 +18,7 @@ export class BookmarksPage {
 
   comics: Comic[];
   thumbnails = new Map<string, Promise<SafeUrl>>();
-  synching = false;
+  syncing = false;
   stored: { [name: string]: Promise<boolean> } = {};
 
   constructor (
@@ -53,16 +53,16 @@ export class BookmarksPage {
   }
 
   sync (comic: Comic): void {
-    this.synching = true;
+    this.syncing = true;
     this.comicStorageService.storeSurrounding(comic.id)
       .then(() => {
         this.updateStoredState(comic.id);
-        this.showToast('Volume synched.');
-        this.synching = false;
+        this.showToast('Volume cached.');
+        this.syncing = false;
       }).catch((error) => {
         this.showToast('Error while syncing volume.');
         console.error(error);
-        this.synching = false;
+        this.syncing = false;
       });
   }
 

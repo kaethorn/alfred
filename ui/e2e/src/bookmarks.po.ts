@@ -36,4 +36,8 @@ export class BookmarksPage {
   static waitForSync (volume: number) {
     return Page.waitForElement(this.getSyncedButton(0));
   }
+
+  static waitForUnsync (volume: number) {
+    return Page.waitForElement(this.getSyncButton(0));
+  }
 }

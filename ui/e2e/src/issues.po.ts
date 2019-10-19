@@ -8,8 +8,14 @@ export class IssuesPage {
   }
 
   static getUnreadIssues () {
-    return this.getIssues().filter((e, index) => {
+    return this.getIssues().filter((e) => {
       return e.element(by.css('ion-badge.read-badge')).isPresent().then(present => !present);
+    });
+  }
+
+  static getSyncedIssues () {
+    return this.getIssues().filter((e) => {
+      return e.element(by.css('ion-badge.synced-badge')).isPresent().then(present => present);
     });
   }
 
