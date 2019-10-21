@@ -113,6 +113,7 @@ export class IssuesPage {
   private storeSurrounding (comicId: string) {
     this.comicStorageService.storeSurrounding(comicId).then(() => {
       this.showToast('Volume cached.');
+      this.updateStoredState(comicId);
     });
   }
 }

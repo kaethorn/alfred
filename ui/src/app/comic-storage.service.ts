@@ -132,9 +132,9 @@ export class ComicStorageService {
         // Filter out comics that are not cached
         cachedIds.indexOf(cachedComic.id) === -1;
     });
-    comicsToDelete.forEach((comicToDelete) => {
-      this.comicDatabaseService.delete(comicToDelete);
-    });
+    for (const comicToDelete of comicsToDelete) {
+      await this.comicDatabaseService.delete(comicToDelete);
+    }
   }
 
   /**
