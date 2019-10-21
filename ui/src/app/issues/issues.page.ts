@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { IssueActionsComponent } from './issue-actions/issue-actions.component';
@@ -9,6 +9,7 @@ import { ComicsService } from '../comics.service';
 import { VolumesService } from '../volumes.service';
 import { ComicDatabaseService } from '../comic-database.service';
 import { ThumbnailsService } from '../thumbnails.service';
+import { ComicStorageService } from '../comic-storage.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -32,8 +33,10 @@ export class IssuesPage {
     private comicsService: ComicsService,
     private volumesService: VolumesService,
     private thumbnailsService: ThumbnailsService,
-    private popoverController: PopoverController
-    ) { }
+    private popoverController: PopoverController,
+    private toastController: ToastController,
+    private comicStorageService: ComicStorageService,
+  ) { }
 
   ionViewDidEnter () {
     this.publisher = this.route.snapshot.params.publisher;
@@ -47,18 +50,21 @@ export class IssuesPage {
   markAsRead (comic: Comic): void {
     this.comicsService.markAsRead(comic).subscribe((resultComic) => {
       this.replaceComic(resultComic);
+      this.storeSurrounding(comic.id);
     });
   }
 
   markAsUnread (comic: Comic): void {
     this.comicsService.markAsUnread(comic).subscribe((resultComic) => {
       this.replaceComic(resultComic);
+      this.storeSurrounding(comic.id);
     });
   }
 
   markAsReadUntil (comic: Comic): void {
     this.volumesService.markAllAsReadUntil(comic).subscribe(() => {
       this.list();
+      this.storeSurrounding(comic.id);
     });
   }
 
@@ -94,5 +100,19 @@ export class IssuesPage {
 
   private replaceComic (comic: Comic): void {
     this.comics[this.comics.findIndex(c => c.id === comic.id)] = comic;
+  }
+
+  private async showToast (message: string, duration: number = 3000) {
+    const toast = await this.toastController.create({
+      message,
+      duration
+    });
+    toast.present();
+  }
+
+  private storeSurrounding (comicId: string) {
+    this.comicStorageService.storeSurrounding(comicId).then(() => {
+      this.showToast('Volume cached.');
+    });
   }
 }
