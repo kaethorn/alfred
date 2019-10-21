@@ -15,11 +15,6 @@ export class SettingsPage {
     return element(by.cssContainingText('app-settings ion-button', 'SAVE'));
   }
 
-  static async getConfirmationMessage () {
-    await browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), 500);
-    return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
-  }
-
   private static get progress () {
     return element(by.css('app-scanner .progress'));
   }

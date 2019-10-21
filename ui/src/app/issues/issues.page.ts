@@ -9,7 +9,7 @@ import { ComicsService } from '../comics.service';
 import { VolumesService } from '../volumes.service';
 import { ComicDatabaseService } from '../comic-database.service';
 import { ThumbnailsService } from '../thumbnails.service';
-import { ComicStorageService } from '../comic-storage.service';
+import { ComicStorageService, StoredState } from '../comic-storage.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -25,7 +25,7 @@ export class IssuesPage {
   currentRoute: string;
   thumbnails = new Map<string, Observable<SafeUrl>>();
   comics: Array<Comic> = [];
-  stored: { [name: string]: Promise<boolean> } = {};
+  stored: StoredState = {};
 
   constructor (
     private comicDatabaseService: ComicDatabaseService,
@@ -50,21 +50,22 @@ export class IssuesPage {
   markAsRead (comic: Comic): void {
     this.comicsService.markAsRead(comic).subscribe((resultComic) => {
       this.replaceComic(resultComic);
-      this.storeSurrounding(comic.id);
+      this.storeSurrounding(comic.nextId);
     });
   }
 
   markAsUnread (comic: Comic): void {
     this.comicsService.markAsUnread(comic).subscribe((resultComic) => {
       this.replaceComic(resultComic);
-      this.storeSurrounding(comic.id);
+      // FIXME is there a previous comic?
+      this.storeSurrounding(comic.previousId);
     });
   }
 
   markAsReadUntil (comic: Comic): void {
     this.volumesService.markAllAsReadUntil(comic).subscribe(() => {
       this.list();
-      this.storeSurrounding(comic.id);
+      this.storeSurrounding(comic.nextId);
     });
   }
 
@@ -94,8 +95,8 @@ export class IssuesPage {
       });
   }
 
-  private updateStoredState (comicId: string) {
-    this.stored[comicId] = this.comicDatabaseService.isStored(comicId);
+  private async updateStoredState (comicId: string) {
+    this.stored[comicId] = await this.comicDatabaseService.isStored(comicId);
   }
 
   private replaceComic (comic: Comic): void {
@@ -111,9 +112,9 @@ export class IssuesPage {
   }
 
   private storeSurrounding (comicId: string) {
-    this.comicStorageService.storeSurrounding(comicId).then(() => {
+    this.comicStorageService.storeSurrounding(comicId).then((storedComicIds) => {
       this.showToast('Volume cached.');
-      this.updateStoredState(comicId);
+      this.stored = storedComicIds;
     });
   }
 }

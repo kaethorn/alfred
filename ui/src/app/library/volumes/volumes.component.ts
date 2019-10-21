@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
+
 import { Observable } from 'rxjs';
 
+import { StoredState } from '../../comic-storage.service';
 import { VolumesService } from '../../volumes.service';
 import { ComicsService } from '../../comics.service';
 import { ThumbnailsService } from '../../thumbnails.service';
@@ -24,7 +26,7 @@ export class VolumesComponent {
   publisher = '';
   series = '';
   thumbnails = new Map<string, Observable<SafeUrl>>();
-  stored: { [name: string]: Promise<boolean> } = {};
+  stored: StoredState = {};
 
   constructor (
     private router: Router,
@@ -90,7 +92,7 @@ export class VolumesComponent {
       .filter(volume => volume.volume.match(value));
   }
 
-  private updateStoredState (comicId: string) {
-    this.stored[comicId] = this.comicDatabaseService.isStored(comicId);
+  private async updateStoredState (comicId: string) {
+    this.stored[comicId] = await this.comicDatabaseService.isStored(comicId);
   }
 }

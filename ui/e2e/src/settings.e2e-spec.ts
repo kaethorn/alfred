@@ -1,5 +1,6 @@
 import { SettingsPage } from './settings.po';
 import { MongoDBTools } from './mongodb.tools';
+import { Page } from './page.po';
 
 describe('SettingsPage', () => {
 
@@ -20,6 +21,6 @@ describe('SettingsPage', () => {
   });
 
   it('confirms that settings are saved', async () => {
-    expect(await SettingsPage.getConfirmationMessage()).toEqual('Settings saved.');
+    expect(await Page.getToastMessage()).toEqual('Settings saved.');
   });
 });

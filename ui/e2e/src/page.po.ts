@@ -1,4 +1,4 @@
-import { browser, by, element, ExpectedConditions, ElementFinder } from 'protractor';
+import { browser, by, element, ExpectedConditions, ElementFinder, WebElement } from 'protractor';
 
 export class Page {
 
@@ -35,5 +35,14 @@ export class Page {
     return browser.executeScript(
       'return document.querySelector(arguments[0]).shadowRoot.querySelector(arguments[1]);',
       parentSelector, childSelector);
+  }
+
+  static waitForToast (timeout = 500) {
+    return browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), timeout);
+  }
+
+  static async getToastMessage (timeout = 500) {
+    await this.waitForToast(timeout);
+    return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
   }
 }

@@ -52,6 +52,7 @@ export class IndexedDb {
       }
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
       transaction.onerror = () => resolve(false);
+      transaction.onabort = () => resolve(false);
       const store = transaction.objectStore(storeName).getKey(key);
       store.onerror = () => resolve(false);
       store.onsuccess = (event: any) => {
@@ -64,6 +65,7 @@ export class IndexedDb {
     return new Promise((resolve, reject) => {
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
       transaction.onerror = () => reject();
+      transaction.onabort = (error) => reject(error);
       const store = transaction.objectStore(storeName).get(key);
       store.onerror = () => reject();
       store.onsuccess = (event: any) => {
@@ -80,6 +82,7 @@ export class IndexedDb {
     return new Promise((resolve, reject) => {
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
       transaction.onerror = () => reject();
+      transaction.onabort = (error) => reject(error);
       const request: IDBRequest = transaction.objectStore(storeName).getAll();
       request.onerror = () => reject();
       request.onsuccess = (event: any) => resolve(event.target.result);
@@ -90,6 +93,7 @@ export class IndexedDb {
     return new Promise((resolve, reject) => {
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readonly');
       transaction.onerror = () => resolve([]);
+      transaction.onabort = (error) => reject(error);
       const index: IDBIndex = transaction.objectStore(storeName).index(key);
       const request: IDBRequest = index.getAll(value);
       request.onerror = () => resolve([]);
@@ -101,6 +105,7 @@ export class IndexedDb {
     return new Promise((resolve, reject) => {
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readwrite');
       transaction.oncomplete = resolve;
+      transaction.onabort = (error) => reject(error);
       transaction.onerror = (error) => reject(error);
       const store = transaction.objectStore(storeName).put(item, key);
       store.onerror = (error) => reject(error);
@@ -112,6 +117,7 @@ export class IndexedDb {
       const transaction: IDBTransaction = this.db.transaction([storeName], 'readwrite');
       transaction.oncomplete = resolve;
       transaction.onerror = (error) => reject(error);
+      transaction.onabort = (error) => reject(error);
       const store = transaction.objectStore(storeName).delete(key);
       store.onerror = (error) => reject(error);
     });

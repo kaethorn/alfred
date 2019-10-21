@@ -36,7 +36,7 @@
       </ion-card-header>
       <a class="thumbnail" [routerLink]="['/read', comic.id]"
          [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
-        <ion-badge *ngIf="stored[comic.id] | async"
+        <ion-badge *ngIf="stored[comic.id]"
           class="synced-badge" color="secondary">
           &#9921;
         </ion-badge>
@@ -44,7 +44,7 @@
         <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
       </a>
       <ion-item>
-        <ion-button *ngIf="stored[comic.id] | async; else allowSync" fill="clear" (click)="delete(comic)">
+        <ion-button *ngIf="stored[comic.id]; else allowSync" fill="clear" (click)="delete(comic)">
           <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
           Synced
         </ion-button>

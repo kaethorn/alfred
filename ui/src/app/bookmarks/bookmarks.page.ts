@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { PopoverController, ToastController } from '@ionic/angular';
-import { Observable } from 'rxjs';
 
 import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
-import { ThumbnailsService } from '../thumbnails.service';
 import { ComicDatabaseService } from '../comic-database.service';
-import { ComicStorageService } from '../comic-storage.service';
+import { ComicStorageService, StoredState } from '../comic-storage.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -19,7 +17,7 @@ export class BookmarksPage {
   comics: Comic[];
   thumbnails = new Map<string, Promise<SafeUrl>>();
   syncing = false;
-  stored: { [name: string]: Promise<boolean> } = {};
+  stored: StoredState = {};
 
   constructor (
     private comicDatabaseService: ComicDatabaseService,
@@ -72,8 +70,8 @@ export class BookmarksPage {
     });
   }
 
-  private updateStoredState (comicId: string) {
-    this.stored[comicId] = this.comicDatabaseService.isStored(comicId);
+  private async updateStoredState (comicId: string) {
+    this.stored[comicId] = await this.comicDatabaseService.isStored(comicId);
   }
 
   private async showToast (message: string, duration: number = 3000) {

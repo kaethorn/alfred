@@ -1,4 +1,4 @@
-import { by, element } from 'protractor';
+import { by, element, browser, ExpectedConditions } from 'protractor';
 import { Page } from './page.po';
 
 export class IssuesPage {
@@ -16,6 +16,13 @@ export class IssuesPage {
   static getSyncedIssues () {
     return this.getIssues().filter((e) => {
       return e.element(by.css('ion-badge.synced-badge')).isPresent().then(present => present);
+    });
+  }
+
+  static getSyncedIssueNumbers () {
+    return this.getSyncedIssues().map(async (issue) => {
+      const title = await issue.element(by.css('ion-card-title')).getText();
+      return title.match(/#(\d+)/)[1];
     });
   }
 

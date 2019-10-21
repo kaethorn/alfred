@@ -5,6 +5,7 @@ import { IssuesPage } from './issues.po';
 import { MongoDBTools } from './mongodb.tools';
 import { ProxySettings } from './proxy-settings';
 import { AppPage } from './app.po';
+import { Page } from './page.po';
 
 describe('Sync', () => {
 
@@ -29,74 +30,58 @@ describe('Sync', () => {
     await IssuesPage.toggleMarkAsRead(0);
   });
 
-  it('shows bookmarks', async () => {
+  it('is cached implicitly', async () => {
+    expect(await Page.getToastMessage(4000)).toEqual('Volume cached.');
     await BookmarksPage.navigateTo();
+    expect(await BookmarksPage.getSyncedButton(0).isPresent()).toBe(true);
     expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
     expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
   });
 
-  it('shows no cached issues', async () => {
+  it('shows cached issues', async () => {
     await BookmarksPage.clickBookmarkMenuItem(0, 'View in volume');
     await IssuesPage.wait();
     expect(await IssuesPage.getIssues().count()).toBe(6);
     expect(await IssuesPage.getUnreadIssues().count()).toBe(5);
-    expect(await IssuesPage.getSyncedIssues().count()).toBe(0);
+    expect(await IssuesPage.getSyncedIssues().count()).toBe(5);
+    expect(await IssuesPage.getSyncedIssueNumbers()).toEqual(['1', '2', '3', '4', '5']);
   });
 
-  describe('when going offline without synced volumes', () => {
-
-    beforeAll(async () => {
-      await ProxySettings.set({ offline: true });
-    });
-
-    it('shows no bookmarks', async () => {
-      await AppPage.clickMenuItem('Library');
-      await AppPage.clickMenuItem('Bookmarks');
-      expect(await BookmarksPage.getBookmarkTitles().count()).toBe(0);
-      expect(await BookmarksPage.getBookmarks().getText()).toContain('No comics found');
-      expect(await BookmarksPage.getBookmarks().getText()).toContain('START NOW');
-    });
+  it('caches again when reading an issue', async () => {
+    debugger;
+    await IssuesPage.toggleMarkAsRead(1);
+    expect(await Page.getToastMessage(4000)).toEqual('Volume cached.');
+    expect(await IssuesPage.getSyncedIssueNumbers()).toEqual(['2', '3', '4', '5', '6']);
   });
 
   describe('when going offline with synced volumes', () => {
+
+    beforeAll(async () => {
+      await ProxySettings.set({ offline: true });
+      await AppPage.clickMenuItem('Library');
+      await AppPage.clickMenuItem('Bookmarks');
+    });
+
+    it('shows bookmarks', async () => {
+      expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
+      expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #3' ]);
+    });
+  });
+
+  describe('without synced volumes', () => {
 
     beforeAll(async () => {
       await ProxySettings.set({ offline: false });
       await BookmarksPage.navigateTo();
     });
 
-    it('shows bookmarks while online', async () => {
-      expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
-      expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
-    });
-
-    it('syncs volumes and goes offline', async () => {
-      await BookmarksPage.getSyncButton(0).click();
-      await BookmarksPage.waitForSync(0);
-      expect(await BookmarksPage.getSyncedButton(0).isPresent()).toBe(true);
-    });
-
-    it('caches the previous, current and next three issues', async () => {
-      await BookmarksPage.clickBookmarkMenuItem(0, 'View in volume');
-      await IssuesPage.wait();
-      expect(await IssuesPage.getIssues().count()).toBe(6);
-      expect(await IssuesPage.getUnreadIssues().count()).toBe(5);
-      expect(await IssuesPage.getSyncedIssues().count()).toBe(5);
-    });
-
-    it('still shows bookmarks when offline', async () => {
-      await ProxySettings.set({ offline: true });
-      await AppPage.clickMenuItem('Bookmarks');
-      expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
-      expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
-    });
-  });
-
-  describe('removing synced volumes', () => {
-
-    it('will result in empty bookmarks while offline', async () => {
+    it('unsyncs the volume', async () => {
       await BookmarksPage.getSyncedButton(0).click();
       await BookmarksPage.waitForUnsync(0);
+    });
+
+    it('shows no booksmarks while offline', async () => {
+      await ProxySettings.set({ offline: true });
       await AppPage.clickMenuItem('Library');
       await AppPage.clickMenuItem('Bookmarks');
       expect(await BookmarksPage.getBookmarkTitles().count()).toBe(0);
