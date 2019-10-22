@@ -5,7 +5,7 @@ import { throwError, of } from 'rxjs';
 import { ComicsService } from './comics.service';
 import { ComicStorageService } from './comic-storage.service';
 import { ComicsServiceMocks as comicsService } from '../testing/comics.service.mocks';
-import { volume, volumeInProgress, volumesInProgress } from '../testing/comic.fixtures';
+import { volume, volumesInProgress } from '../testing/comic.fixtures';
 import { ComicDatabaseService } from './comic-database.service';
 import { ThumbnailsService } from './thumbnails.service';
 

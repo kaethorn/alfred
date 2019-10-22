@@ -1,5 +1,4 @@
-import { browser, by, element, ExpectedConditions, WebElement } from 'protractor';
-import { Page } from './page.po';
+import { browser, by, element, ExpectedConditions } from 'protractor';
 
 export class SettingsPage {
 

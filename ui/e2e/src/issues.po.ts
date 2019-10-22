@@ -1,4 +1,4 @@
-import { by, element, browser, ExpectedConditions } from 'protractor';
+import { by, element } from 'protractor';
 import { Page } from './page.po';
 
 export class IssuesPage {
