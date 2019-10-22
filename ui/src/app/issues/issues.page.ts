@@ -50,6 +50,7 @@ export class IssuesPage {
   markAsRead (comic: Comic): void {
     this.comicsService.markAsRead(comic).subscribe((resultComic) => {
       this.replaceComic(resultComic);
+      // FIXME is there a next comic?
       this.storeSurrounding(comic.nextId);
     });
   }
@@ -91,6 +92,7 @@ export class IssuesPage {
         this.comics.forEach((comic: Comic) => {
           this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
           this.updateStoredState(comic.id);
+          this.comicStorageService.saveIfStored(comic);
         });
       });
   }
@@ -100,6 +102,7 @@ export class IssuesPage {
   }
 
   private replaceComic (comic: Comic): void {
+    this.comicStorageService.saveIfStored(comic);
     this.comics[this.comics.findIndex(c => c.id === comic.id)] = comic;
   }
 

@@ -1,11 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
+import { throwError, of } from 'rxjs';
+
 import { ComicsService } from './comics.service';
 import { ComicStorageService } from './comic-storage.service';
 import { ComicsServiceMocks as comicsService } from '../testing/comics.service.mocks';
-import { volume, volumeInProgress } from '../testing/comic.fixtures';
+import { volume, volumeInProgress, volumesInProgress } from '../testing/comic.fixtures';
 import { ComicDatabaseService } from './comic-database.service';
-import { throwError, of } from 'rxjs';
+import { ThumbnailsService } from './thumbnails.service';
 
 describe('ComicStorageService', () => {
   let service: ComicStorageService;
@@ -24,6 +26,8 @@ describe('ComicStorageService', () => {
         provide: ComicsService, useValue: comicsService
       }, {
         provide: ComicDatabaseService, useValue: comicDatabaseService
+      }, {
+        provide: ThumbnailsService, useValue: {}
       }],
     });
     service = TestBed.get(ComicStorageService);
@@ -44,13 +48,14 @@ describe('ComicStorageService', () => {
       describe('with synced comics', () => {
 
         beforeEach(() => {
-          comicDatabaseService.getComics.and.returnValue(Promise.resolve(volumeInProgress));
+          comicDatabaseService.getComics.and.returnValue(Promise.resolve(volumesInProgress));
         });
 
         it('filters offline comics', async () => {
           const comics = await service.getBookmarks();
-          expect(comics.length).toBe(1);
-          expect(comics[0].id).toEqual('3');
+          expect(comics.length).toBe(2);
+          expect(comics[0].id).toEqual('13');
+          expect(comics[1].id).toEqual('22');
         });
       });
 

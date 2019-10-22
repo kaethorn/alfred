@@ -2,7 +2,7 @@ import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Injectable } from '@angular/core';
 
 import { from } from 'rxjs';
-import { groupBy, mergeMap, first, filter, toArray } from 'rxjs/operators';
+import { groupBy, mergeMap, filter, toArray, map } from 'rxjs/operators';
 
 import { Comic } from './comic';
 import { ComicDatabaseService } from './comic-database.service';
@@ -62,6 +62,12 @@ export class ComicStorageService {
     }
   }
 
+  async saveIfStored (comic: Comic): Promise<void> {
+    if (await this.comicDatabaseService.isStored(comic.id)) {
+      await this.comicDatabaseService.save(comic);
+    }
+  }
+
   /**
    * Retrieves bookmarks either from API or from indexedDB.
    */
@@ -82,15 +88,18 @@ export class ComicStorageService {
         }
       }, () => {
         this.comicDatabaseService.getComics().then((comics: Comic[]) => {
-          // Pick latest unread by volume
-          from(comics.sort(comic => comic.number)).pipe(
+          from(comics).pipe(
+            filter(comic => !comic.read),
             groupBy(comic => `${comic.publisher}|${comic.series}|${comic.volume}`),
             mergeMap(group => group.pipe(
-              filter(comic => !comic.read),
-              first(),
-              toArray()
-            ))
-          ).subscribe(resolve, reject, () => resolve(comics));
+              toArray(),
+              map(g => g.sort((a, b) => a.position > b.position ? 1 : -1))
+            )),
+            map(group => group[0]),
+            toArray()
+          ).subscribe((c) => {
+            resolve(c);
+          }, reject);
         }, () => reject());
       });
     });
