@@ -34,10 +34,23 @@ export class BookmarksPage {
   }
 
   static waitForSync (volume: number) {
-    return Page.waitForElement(this.getSyncedButton(0));
+    return Page.waitForElement(this.getSyncedButton(volume));
   }
 
   static waitForUnsync (volume: number) {
-    return Page.waitForElement(this.getSyncButton(0));
+    return Page.waitForElement(this.getSyncButton(volume));
+  }
+
+  static getIssueCover (volume: number) {
+    return element.all(by.css('ion-card.comic-tile a.thumbnail')).get(volume);
+  }
+
+  static async getPageNumberFromCover (volume: number): Promise<number> {
+    const href = await this.getIssueCover(volume).getAttribute('href');
+    const pageParts = href.match(/page=(\d+)/);
+    if (pageParts && pageParts.length > 1) {
+      return parseInt(pageParts[1], 10);
+    }
+    return -1;
   }
 }

@@ -45,4 +45,11 @@ export class Page {
     await this.waitForToast(timeout);
     return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
   }
+
+  static async waitForToastMessageGone (timeout = 4000) {
+    return browser.wait(
+      ExpectedConditions.not(
+        ExpectedConditions.presenceOf(
+          element(by.css('ion-toast')))), timeout);
+  }
 }
