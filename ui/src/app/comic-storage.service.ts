@@ -54,6 +54,10 @@ export class ComicStorageService {
     if (await this.comicDatabaseService.isStored(comicId)) {
       const comic = await this.get(comicId);
       comic.currentPage = page;
+      comic.lastRead = new Date();
+      if (comic.pageCount - 1 === page) {
+        comic.read = true;
+      }
       await this.saveComic(comic);
       await this.comicDatabaseService.save(comic);
       return this.comicDatabaseService.getImageUrl(comicId, page);
@@ -152,7 +156,7 @@ export class ComicStorageService {
   }
 
   /**
-   * Deletes all comics in the given comic's volume.
+   * Deletes all stored comics in the given comic's volume.
    * @param comic Reference comic.
    */
   async deleteVolume (referenceComic: Comic): Promise<void> {
