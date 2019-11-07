@@ -101,11 +101,12 @@ export class ReaderPage {
     if (this.comic[adjacentAttr]) {
       this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
       this.router.navigate(['/read', this.comic[adjacentAttr]], {
+        replaceUrl: true,
         relativeTo: this.route,
         queryParamsHandling: 'merge'
       });
       if (options.showToast) {
-        this.showToast(`Next up: ${ this.comic.series } (${ this.comic.volume }) #${ this.comic.number }`);
+        this.showToast(`Opening next issue of ${ this.comic.series } (${ this.comic.volume }).`);
       }
     }
   }

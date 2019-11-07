@@ -1,7 +1,7 @@
 const config = require('./protractor.conf').config;
 
 config.capabilities.chromeOptions = {
-  args: [ '--headless', '--disable-gpu', '--window-size=1024,2048' ]
+  args: [ '--headless', '--window-size=3840,2160' ]
 };
 
 exports.config = config;

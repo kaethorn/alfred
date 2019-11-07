@@ -41,12 +41,12 @@ export class Page {
     return browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), timeout);
   }
 
-  static async getToastMessage (timeout = 500) {
+  static async getToastMessage (timeout = 1000) {
     await this.waitForToast(timeout);
     return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
   }
 
-  static async waitForToastMessageGone (timeout = 4000) {
+  static async waitForToastMessageGone (timeout = 6000) {
     return browser.wait(
       ExpectedConditions.not(
         ExpectedConditions.presenceOf(

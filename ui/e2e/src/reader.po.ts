@@ -14,8 +14,12 @@ export class ReaderPage {
     return this.getNavigationButtons().get(2);
   }
 
+  static getOverlayPreviousButton () {
+    return this.getNavigationButtons().get(1);
+  }
+
   static exit () {
-    return browser.actions().mouseMove(element.all(by.css('app-reader img')).first())
+    return browser.actions().mouseMove(element.all(by.css('app-reader img')).last())
       .sendKeys(protractor.Key.ESCAPE)
       .perform();
   }
@@ -27,5 +31,14 @@ export class ReaderPage {
       return parseInt(pageParts[1], 10);
     }
     return -1;
+  }
+
+  static async getIssueIdFromUrl (): Promise<string> {
+    const url = await browser.getCurrentUrl();
+    const parts = url.match(/read\/(.+)\?/);
+    if (parts && parts.length > 1) {
+      return parts[1];
+    }
+    return null;
   }
 }

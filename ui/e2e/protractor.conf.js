@@ -23,6 +23,8 @@ exports.config = {
   },
   async onPrepare () {
     await testProxy.start();
+
+    // Fake log in
     await browser.get('/');
     await browser.executeScript(function () {
       const mockUser = {
