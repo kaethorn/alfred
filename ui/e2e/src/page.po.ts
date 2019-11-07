@@ -37,11 +37,11 @@ export class Page {
       parentSelector, childSelector);
   }
 
-  static waitForToast (timeout = 500) {
+  static waitForToast (timeout = 1000) {
     return browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), timeout);
   }
 
-  static async getToastMessage (timeout = 1000) {
+  static async getToastMessage (timeout = 4000) {
     await this.waitForToast(timeout);
     return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
   }
