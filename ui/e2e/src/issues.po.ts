@@ -39,7 +39,7 @@ export class IssuesPage {
     await this.getIssues().get(issueNumber)
       .element(by.css('ion-button.read-toggle')).click();
 
-    await browser.wait(async () => {
+    return browser.wait(async () => {
       const nextState = await issue.element(by.css('.read-badge')).isPresent();
       return previousState !== nextState;
     }, 3500);
@@ -49,7 +49,7 @@ export class IssuesPage {
     const previousCount = await this.getUnreadIssues().count();
     await this.clickIssueMenuItem(issueNumber, 'Mark read until here');
 
-    await browser.wait(async () => {
+    return browser.wait(async () => {
       const nextCount = await this.getUnreadIssues().count();
       return previousCount !== nextCount;
     }, 4500);
@@ -61,7 +61,7 @@ export class IssuesPage {
 
   static async clickButtonByLabel (issue: number, label: string) {
     await Page.scrollIntoView(this.getIssues().get(issue));
-    await this.getIssues().get(issue)
+    return this.getIssues().get(issue)
       .element(by.cssContainingText('ion-button', label)).click();
   }
 

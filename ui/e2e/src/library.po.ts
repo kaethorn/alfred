@@ -30,17 +30,17 @@ export class LibraryPage {
 
   static async clickPublisher (publisher: string) {
     await this.waitForPublishers();
-    await element(by.cssContainingText(this.selectPublisher, publisher)).click();
+    return element(by.cssContainingText(this.selectPublisher, publisher)).click();
   }
 
   static async clickSeries (series: string) {
     await this.waitForSeries();
-    await element(by.cssContainingText(this.selectSeries, series)).click();
+    return element(by.cssContainingText(this.selectSeries, series)).click();
   }
 
   static async clickVolumeListButton (volume: string) {
     await this.waitForVolumes();
-    await element(by.cssContainingText(this.selectVolumes, volume))
+    return element(by.cssContainingText(this.selectVolumes, volume))
       .element(by.cssContainingText('ion-button', 'List')).click();
   }
 

@@ -8,7 +8,7 @@ export class Page {
     await menuButton.click();
     const button = element(by.cssContainingText('ion-item', item));
     await this.waitForElement(button);
-    await element(by.cssContainingText('ion-item', item)).click();
+    return element(by.cssContainingText('ion-item', item)).click();
   }
 
   /**
@@ -16,18 +16,18 @@ export class Page {
    * when it's already in the DOM due to being on another
    * page.
    */
-  static async waitForElement (target: ElementFinder, timeout = 5000) {
-    await browser.wait(ExpectedConditions.elementToBeClickable(target), timeout);
+  static waitForElement (target: ElementFinder, timeout = 5000) {
+    return browser.wait(ExpectedConditions.elementToBeClickable(target), timeout);
   }
 
   static async waitForText (target: ElementFinder, text: string) {
     await this.waitForElement(target);
-    await browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2500);
+    return browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2500);
   }
 
   static async scrollIntoView (target: ElementFinder) {
     await browser.executeScript('arguments[0].scrollIntoView(true)', target.getWebElement());
-    await browser.sleep(200);
+    return browser.sleep(200);
   }
 
   // Work around broken by.deepCss
