@@ -31,7 +31,7 @@ export class MongoDBTools {
     await this.connect;
     await this.resetFiles();
     await mongoose.connection.db.dropDatabase();
-    const collection = await mongoose.connection.db.createCollection('setting')
+    const collection = await mongoose.connection.db.createCollection('setting');
     return collection.insertOne({
       key    : 'comics.path',
       name   : 'Path',
