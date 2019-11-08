@@ -2,7 +2,9 @@ import * as mongoose from 'mongoose';
 
 export class MongoDBTools {
 
-  private static connection: Promise<any> = new Promise((resolve, reject) => {
+  private static connect: Promise<any> = new Promise((resolve, reject) => {
+    mongoose.set('useNewUrlParser', true);
+    mongoose.set('useUnifiedTopology', true);
     mongoose.connect('mongodb://localhost/alfred');
     mongoose.connection.on('error', error => {
       reject(error);
@@ -15,7 +17,7 @@ export class MongoDBTools {
   // Drop DB and set it up for E2E tests.
   static prepare (): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.connection.then(() => {
+      this.connect.then(() => {
         mongoose.connection.db.dropDatabase().then(() => {
           mongoose.connection.db.createCollection('setting').then(collection => {
             collection.insertOne({
