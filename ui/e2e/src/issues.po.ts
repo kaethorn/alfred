@@ -42,7 +42,7 @@ export class IssuesPage {
     await browser.wait(async () => {
       const nextState = await issue.element(by.css('.read-badge')).isPresent();
       return previousState !== nextState;
-    }, 2000);
+    }, 3500);
   }
 
   static async markAsReaduntil (issueNumber: number) {
@@ -52,7 +52,7 @@ export class IssuesPage {
     await browser.wait(async () => {
       const nextCount = await this.getUnreadIssues().count();
       return previousCount !== nextCount;
-    }, 2000);
+    }, 4500);
   }
 
   static get markReadUntilHereButton () {
