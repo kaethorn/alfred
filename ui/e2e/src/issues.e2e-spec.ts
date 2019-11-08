@@ -27,7 +27,7 @@ describe('IssuesComponent', () => {
   });
 
   it('can mark as read until a certain issue', async () => {
-    await IssuesPage.clickIssueMenuItem(4, 'Mark read until here');
+    await IssuesPage.markAsReaduntil(4);
     expect(await IssuesPage.getUnreadIssues().count()).toBe(68);
   });
 

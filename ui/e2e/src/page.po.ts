@@ -16,7 +16,7 @@ export class Page {
    * when it's already in the DOM due to being on another
    * page.
    */
-  static async waitForElement (target: ElementFinder, timeout = 4000) {
+  static async waitForElement (target: ElementFinder, timeout = 5000) {
     await browser.wait(ExpectedConditions.elementToBeClickable(target), timeout);
   }
 

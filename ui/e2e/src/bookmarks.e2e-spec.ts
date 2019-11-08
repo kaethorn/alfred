@@ -47,9 +47,12 @@ describe('BookmarksComponent', () => {
 
   describe('with a completed volume', () => {
 
-    beforeAll(async () => {
+    it('opens the volumes library page', async () => {
       await BookmarksPage.clickBookmarkMenuItem(0, 'View in library');
       await LibraryPage.waitForVolumes();
+    });
+
+    it('marks the volume as read', async () => {
       await LibraryPage.clickVolumeMenuItem('Vol. 2009', 'Mark volume as read');
     });
 
@@ -65,4 +68,3 @@ describe('BookmarksComponent', () => {
     });
   });
 });
-

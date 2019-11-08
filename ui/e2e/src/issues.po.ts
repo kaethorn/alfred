@@ -1,4 +1,4 @@
-import { by, element } from 'protractor';
+import { by, element, browser } from 'protractor';
 import { Page } from './page.po';
 
 export class IssuesPage {
@@ -9,13 +9,13 @@ export class IssuesPage {
 
   static getUnreadIssues () {
     return this.getIssues().filter((e) => {
-      return e.element(by.css('ion-badge.read-badge')).isPresent().then(present => !present);
+      return e.element(by.css('.read-badge')).isPresent().then(present => !present);
     });
   }
 
   static getSyncedIssues () {
     return this.getIssues().filter((e) => {
-      return e.element(by.css('ion-badge.synced-badge')).isPresent().then(present => present);
+      return e.element(by.css('.synced-badge')).isPresent().then(present => present);
     });
   }
 
@@ -30,10 +30,29 @@ export class IssuesPage {
     return Page.waitForElement(this.getIssues().first());
   }
 
-  static async toggleMarkAsRead (issue: number) {
-    await Page.scrollIntoView(this.getIssues().get(issue));
-    await this.getIssues().get(issue)
+  static async toggleMarkAsRead (issueNumber: number) {
+    const issue = await this.getIssues().get(issueNumber);
+    await Page.scrollIntoView(issue);
+
+    const previousState = await issue.element(by.css('.read-badge')).isPresent();
+
+    await this.getIssues().get(issueNumber)
       .element(by.css('ion-button.read-toggle')).click();
+
+    await browser.wait(async () => {
+      const nextState = await issue.element(by.css('.read-badge')).isPresent();
+      return previousState !== nextState;
+    }, 2000);
+  }
+
+  static async markAsReaduntil (issueNumber: number) {
+    const previousCount = await this.getUnreadIssues().count();
+    await this.clickIssueMenuItem(issueNumber, 'Mark read until here');
+
+    await browser.wait(async () => {
+      const nextCount = await this.getUnreadIssues().count();
+      return previousCount !== nextCount;
+    }, 2000);
   }
 
   static get markReadUntilHereButton () {
