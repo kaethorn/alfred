@@ -4,6 +4,7 @@ import { ComicsService } from '../../comics.service';
 import { StatsService } from '../../stats.service';
 import { Stats } from '../../stats';
 import { Comic, ScannerIssue } from 'src/app/comic';
+import { ComicDatabaseService } from 'src/app/comic-database.service';
 
 @Component({
   selector: 'app-scanner',
@@ -19,16 +20,19 @@ export class ScannerComponent {
   counter = 0;
   issues: ScannerIssue[] = [];
   stats: Stats;
+  cachedComicsCount = 0;
 
   indeterminate: string;
   scanProgress: EventSource;
 
   constructor (
     private statsService: StatsService,
-    private comicsService: ComicsService
+    private comicsService: ComicsService,
+    private comicDatabaseService: ComicDatabaseService,
   ) {
     this.getStats();
     this.getComicsWithErrors();
+    this.setCachedComicsCount();
   }
 
   private getStats () {
@@ -120,6 +124,17 @@ export class ScannerComponent {
 
   bundleVolumes () {
     this.comicsService.bundleVolumes().subscribe();
+  }
+
+  async deleteCachedComics () {
+    await this.comicDatabaseService.deleteAll();
+    this.setCachedComicsCount();
+  }
+
+  private async setCachedComicsCount () {
+    this.comicDatabaseService.getComics().then((comics) => {
+      this.cachedComicsCount = comics.length;
+    });
   }
 
   private close () {
