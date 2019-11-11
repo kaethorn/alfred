@@ -54,6 +54,7 @@ describe('Reader Component', () => {
 
     it('starts on the first page', async () => {
       await AppPage.clickMenuItem('Bookmarks');
+      await BookmarksPage.wait();
       await BookmarksPage.getIssueCover(0).click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(0);
     });

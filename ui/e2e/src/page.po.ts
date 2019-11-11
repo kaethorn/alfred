@@ -26,7 +26,9 @@ export class Page {
   }
 
   static async scrollIntoView (target: ElementFinder) {
-    await browser.executeScript('arguments[0].scrollIntoView(true)', target.getWebElement());
+    await browser.executeScript(
+      'arguments[0].scrollIntoView({ block: "center", behavior: "instant" })',
+      target.getWebElement());
     return browser.sleep(200);
   }
 

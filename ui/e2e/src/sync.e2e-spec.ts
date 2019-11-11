@@ -64,6 +64,7 @@ describe('Sync', () => {
       await ProxySettings.set({ offline: true });
       await AppPage.clickMenuItem('Library');
       await AppPage.clickMenuItem('Bookmarks');
+      await BookmarksPage.wait();
     });
 
     it('shows bookmarks', async () => {

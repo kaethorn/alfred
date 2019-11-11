@@ -15,6 +15,10 @@ export class BookmarksPage {
     return this.getBookmarks().all(by.css('.comic-tile'));
   }
 
+  static wait () {
+    return Page.waitForElement(this.getBookmarkItems().first());
+  }
+
   static getBookmarkTitles () {
     return this.getBookmarkItems().all(by.css('ion-card-title'));
   }
