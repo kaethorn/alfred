@@ -2,6 +2,14 @@
   (click)="onClick($event)"
   (swipeleft)="onSwipe(1)"
   (swiperight)="onSwipe(-1)">
+  <div class="wrapper" *ngIf="previousImagePathLeft">
+    <img [attr.src]="previousImagePathLeft | secure | async" class="left"
+         alt="{{ comic.title }} # {{ comic.number }}">
+  </div>
+  <div class="wrapper" *ngIf="previousImagePathRight">
+    <img [attr.src]="previousImagePathRight | secure | async" class="right"
+         alt="{{ comic.title }} # {{ comic.number }}">
+  </div>
   <div class="wrapper" *ngIf="imagePathLeft">
     <img [attr.src]="imagePathLeft | secure | async" class="left"
          alt="{{ comic.title }} # {{ comic.number }}">

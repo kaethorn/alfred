@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
 import { Comic } from '../comic';
@@ -13,11 +14,29 @@ interface IOpenOptions {
 @Component({
   selector: 'app-reader',
   templateUrl: './reader.page.html',
-  styleUrls: ['./reader.page.sass']
+  styleUrls: ['./reader.page.sass'],
+  animations: [
+    trigger('swapImages', [
+      state('loaded', style({
+        opacity: 1,
+      })),
+      state('initial', style({
+        opacity: 0.0,
+      })),
+      transition('initial => loaded', [
+        animate('1s')
+      ]),
+      transition('loaded => initial', [
+        animate('0.5s')
+      ])
+    ])
+  ]
 })
 export class ReaderPage {
 
   comic: Comic = {} as Comic;
+  previousImagePathLeft = '';
+  previousImagePathRight = '';
   imagePathLeft = '';
   imagePathRight = '';
   showControls = false;
@@ -159,6 +178,17 @@ export class ReaderPage {
   }
 
   private async setImages (sideBySide: boolean) {
+    // FIXME set transition direction
+
+    // Previous set
+    if (this.imagePathLeft.length) {
+      this.previousImagePathRight = this.imagePathLeft;
+    }
+    if (this.imagePathRight.length) {
+      this.previousImagePathLeft = this.imagePathLeft;
+    }
+
+    // Current set
     this.imagePathLeft = await this.comicStorageService
       .readPage(this.comic.id, NavigatorService.page);
     if (sideBySide) {
