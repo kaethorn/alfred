@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
-import { PopoverController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { PopoverController, ToastController } from '@ionic/angular';
 
 import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
-import { ComicsService } from '../comics.service';
-import { ThumbnailsService } from '../thumbnails.service';
+import { ComicDatabaseService } from '../comic-database.service';
+import { ComicStorageService, StoredState } from '../comic-storage.service';
 import { Comic } from '../comic';
 
 @Component({
@@ -16,26 +15,30 @@ import { Comic } from '../comic';
 export class BookmarksPage {
 
   comics: Comic[];
-  public thumbnails = new Map<string, Observable<SafeUrl>>();
+  thumbnails = new Map<string, Promise<SafeUrl>>();
+  syncing = false;
+  stored: StoredState = {};
 
   constructor (
-    private comicsService: ComicsService,
+    private comicDatabaseService: ComicDatabaseService,
     private popoverController: PopoverController,
-    private thumbnailsService: ThumbnailsService
+    private comicStorageService: ComicStorageService,
+    private toastController: ToastController,
   ) { }
 
   ionViewDidEnter () {
-    this.list();
+    this.comicDatabaseService.ready.toPromise().then(() => this.list());
   }
 
   private list () {
-    this.comicsService.listLastReadByVolume().subscribe((comics: Comic[]) => {
+    this.comicStorageService.getBookmarks().then((comics: Comic[]) => {
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
-        this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
+        this.thumbnails.set(comic.id, this.comicStorageService.getThumbnail(comic.id));
+        this.updateStoredState(comic.id);
       });
     });
-  }
+ }
 
   async openMenu (event: any, comic: Comic) {
     const popover = await this.popoverController.create({
@@ -44,9 +47,38 @@ export class BookmarksPage {
       event,
       translucent: true
     });
-    popover.onWillDismiss().finally(() => {
-      this.list();
-    });
     await popover.present();
+  }
+
+  sync (comic: Comic): void {
+    this.syncing = true;
+    this.comicStorageService.storeSurrounding(comic.id)
+      .then(() => {
+        this.updateStoredState(comic.id);
+        this.showToast('Volume cached.');
+        this.syncing = false;
+      }).catch((error) => {
+        this.showToast('Error while syncing volume.');
+        console.error(error);
+        this.syncing = false;
+      });
+  }
+
+  delete (comic: Comic): void {
+    this.comicStorageService.deleteVolume(comic).then(() => {
+      this.updateStoredState(comic.id);
+    });
+  }
+
+  private async updateStoredState (comicId: string) {
+    this.stored[comicId] = await this.comicDatabaseService.isStored(comicId);
+  }
+
+  private async showToast (message: string, duration: number = 3000) {
+    const toast = await this.toastController.create({
+      message,
+      duration
+    });
+    toast.present();
   }
 }

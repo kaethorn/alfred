@@ -25,11 +25,6 @@ export class IssueActionsComponent {
     this.popoverCtrl.dismiss();
   }
 
-  browse (comic: Comic) {
-    this.router.navigate(['/browse', comic.id], { queryParams: { page: 0 } });
-    this.popoverCtrl.dismiss();
-  }
-
   markAsReadUntil (comic: Comic): void {
     this.popoverCtrl.dismiss({ markAsReadUntil: comic });
   }

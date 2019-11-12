@@ -56,7 +56,29 @@
 </ion-card>
 
 <ion-card>
-  <ion-card-header>Maintenance</ion-card-header>
+  <ion-card-header>User maintenance</ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        Clear {{ cachedComicsCount }} cached comics in the current browser
+        <ion-button slot="end" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount == 0" color="warning">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Clear
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        Remove progress information and bookmarks of the current user.
+        <ion-button slot="end" (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Delete
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>System maintenance</ion-card-header>
   <ion-card-content>
     <ion-list>
       <ion-item>
@@ -67,15 +89,8 @@
         </ion-button>
       </ion-item>
       <ion-item>
-        Remove read progress information for all users. Does not affect comic information.
+        Remove progress information and bookmarks of all users. Does not affect comic information.
         <ion-button slot="end" (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Delete
-        </ion-button>
-      </ion-item>
-      <ion-item>
-        Remove read progress information for the current user.
-        <ion-button slot="end" (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
           <ion-icon slot="start" name="trash"></ion-icon>
           Delete
         </ion-button>

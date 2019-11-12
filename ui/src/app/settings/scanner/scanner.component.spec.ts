@@ -1,26 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestModule } from '../../../testing/test.module';
-
 import { StatsServiceMocks as statsService } from '../../../testing/stats.service.mocks';
 import { ComicsServiceMocks as comicsService } from '../../../testing/comics.service.mocks';
 import { StatsService } from '../../stats.service';
 import { ComicsService } from '../../comics.service';
 
 import { ScannerComponent } from './scanner.component';
+import { SettingsPageModule } from '../settings.module';
 
 describe('ScannerComponent', () => {
   let component: ScannerComponent;
   let fixture: ComponentFixture<ScannerComponent>;
 
   beforeEach(() => {
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: StatsService, useValue: statsService
-    }, {
-      provide: ComicsService, useValue: comicsService
+    TestBed.configureTestingModule({
+      imports: [
+        SettingsPageModule
+      ],
+      providers: [{
+        provide: StatsService, useValue: statsService
+      }, {
+        provide: ComicsService, useValue: comicsService
+      }]
     });
-    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(ScannerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

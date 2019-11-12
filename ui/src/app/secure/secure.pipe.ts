@@ -9,7 +9,10 @@ import { map } from 'rxjs/operators';
 })
 export class SecurePipe implements PipeTransform {
 
-  constructor (private http: HttpClient, private sanitizer: DomSanitizer) { }
+  constructor (
+    private http: HttpClient,
+    private sanitizer: DomSanitizer,
+  ) { }
 
   transform (url): Observable<SafeUrl> {
     return this.http.get(url, { responseType: 'blob' }).pipe(

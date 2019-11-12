@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { MomentModule } from 'ngx-moment';
+import { HttpClientModule } from '@angular/common/http';
 
 import { SettingsPage } from './settings.page';
 import { ScannerComponent } from './scanner/scanner.component';
@@ -14,6 +15,7 @@ import { QueueComponent } from './queue/queue.component';
     CommonModule,
     FormsModule,
     IonicModule,
+    HttpClientModule,
     MomentModule,
     RouterModule.forChild([{
       path: '',

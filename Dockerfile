@@ -1,4 +1,4 @@
-FROM anapsix/alpine-java:8_jdk
+FROM openjdk:11-jdk
 VOLUME /tmp
 EXPOSE 8080
 ARG DEPENDENCY=target/dependency

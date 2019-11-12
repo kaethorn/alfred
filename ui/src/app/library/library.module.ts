@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 import { PublishersComponent } from './publishers/publishers.component';
 import { SeriesComponent } from './series/series.component';
@@ -13,6 +14,7 @@ import { VolumeActionsComponent } from './volumes/volume-actions/volume-actions.
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule,
     IonicModule,
     RouterModule.forChild([{
       path: '',

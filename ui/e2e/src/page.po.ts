@@ -1,14 +1,14 @@
-import { browser, by, element, ExpectedConditions, ElementFinder } from 'protractor';
+import { browser, by, element, ExpectedConditions, ElementFinder, WebElement } from 'protractor';
 
 export class Page {
 
-  async clickMenuItem (target: ElementFinder, item: string) {
-    const menuButton = target.element(by.css('ion-icon[name="more"]'));
+  static async clickActionItem (target: ElementFinder, item: string) {
+    const menuButton = target.element(by.css('ion-button.menu'));
     await this.scrollIntoView(menuButton);
     await menuButton.click();
     const button = element(by.cssContainingText('ion-item', item));
     await this.waitForElement(button);
-    await element(by.cssContainingText('ion-item', item)).click();
+    return element(by.cssContainingText('ion-item', item)).click();
   }
 
   /**
@@ -16,24 +16,42 @@ export class Page {
    * when it's already in the DOM due to being on another
    * page.
    */
-  async waitForElement (target: ElementFinder) {
-    await browser.wait(ExpectedConditions.elementToBeClickable(target), 2000);
+  static waitForElement (target: ElementFinder, timeout = 5000) {
+    return browser.wait(ExpectedConditions.elementToBeClickable(target), timeout);
   }
 
-  async waitForText (target: ElementFinder, text: string) {
+  static async waitForText (target: ElementFinder, text: string) {
     await this.waitForElement(target);
-    await browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2500);
+    return browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2500);
   }
 
-  async scrollIntoView (target: ElementFinder) {
-    await browser.executeScript('arguments[0].scrollIntoView(true)', target.getWebElement());
-    await browser.sleep(200);
+  static async scrollIntoView (target: ElementFinder) {
+    await browser.executeScript(
+      'arguments[0].scrollIntoView({ block: "center", behavior: "instant" })',
+      target.getWebElement());
+    return browser.sleep(200);
   }
 
   // Work around broken by.deepCss
-  getShadowRoot (parentSelector: string, childSelector: string) {
+  static getShadowRoot (parentSelector: string, childSelector: string) {
     return browser.executeScript(
       'return document.querySelector(arguments[0]).shadowRoot.querySelector(arguments[1]);',
       parentSelector, childSelector);
+  }
+
+  static waitForToast (timeout = 1000) {
+    return browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), timeout);
+  }
+
+  static async getToastMessage (timeout = 4000) {
+    await this.waitForToast(timeout);
+    return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
+  }
+
+  static async waitForToastMessageGone (timeout = 6000) {
+    return browser.wait(
+      ExpectedConditions.not(
+        ExpectedConditions.presenceOf(
+          element(by.css('ion-toast')))), timeout);
   }
 }

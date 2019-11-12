@@ -1,6 +1,37 @@
 \:host
 
+  @keyframes spin
+    100%
+      transform: rotate(-360deg)
+      transform: rotate(-360deg)
+
+  ion-icon[name="sync"].syncing
+    animation: spin 2s linear infinite
+
   .comic-tile
     height: fit-content
     width: 200px
     float: left
+
+    img
+      width: 200px
+
+  .progress
+    position: absolute
+    z-index: 2
+    height: 5px
+    margin-top: -5px
+    background-color: rgba(var(--ion-color-secondary-rgb), 0.7)
+
+  a.thumbnail
+    cursor: pointer
+    display: inline-block
+    position: relative
+
+    ion-badge
+      font-size: x-large
+      position: absolute
+
+      &.synced-badge
+        left: 0.1em
+        top: -0.4em

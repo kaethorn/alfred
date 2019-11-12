@@ -1,25 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestModule } from '../../../testing/test.module';
 import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
 import { ThumbnailsServiceMocks as thumbnailsService } from '../../../testing/thumbnails.service.mocks';
 
 import { VolumesService } from '../../volumes.service';
 import { ThumbnailsService } from '../../thumbnails.service';
 import { VolumesComponent } from './volumes.component';
+import { LibraryPageModule } from '../library.module';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('VolumesComponent', () => {
   let component: VolumesComponent;
   let fixture: ComponentFixture<VolumesComponent>;
 
   beforeEach(() => {
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: VolumesService, useValue: volumesService
-    }, {
-      provide: ThumbnailsService, useValue: thumbnailsService
+    TestBed.configureTestingModule({
+      imports: [
+        LibraryPageModule,
+        RouterTestingModule,
+      ],
+      providers: [{
+        provide: VolumesService, useValue: volumesService
+      }, {
+        provide: ThumbnailsService, useValue: thumbnailsService
+      }]
     });
-    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(VolumesComponent);
     component = fixture.componentInstance;
     component.ionViewDidEnter();

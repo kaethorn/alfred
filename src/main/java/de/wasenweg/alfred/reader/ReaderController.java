@@ -77,12 +77,32 @@ public class ReaderController {
     this.progressRepository.save(progress);
   }
 
+  @Transactional
   @GetMapping("/read/{id}")
   @ResponseBody
   public ResponseEntity<StreamingResponseBody> readFromBeginning(
       @PathVariable("id") final String id,
       final Principal principal) {
-    return this.read(id, (short) 0, principal);
+    return this.read(id, (short) 0, true, principal);
+  }
+
+  @Transactional
+  @GetMapping("/read/{id}/{page}")
+  @ResponseBody
+  public ResponseEntity<StreamingResponseBody> readPage(
+      @PathVariable("id") final String id,
+      @PathVariable("page") final Short page,
+      final Principal principal) {
+    return this.read(id, page, true, principal);
+  }
+
+  @GetMapping("/download/{id}/{page}")
+  @ResponseBody
+  public ResponseEntity<StreamingResponseBody> downloadPage(
+      @PathVariable("id") final String id,
+      @PathVariable("page") final Short page,
+      final Principal principal) {
+    return this.read(id, page, false, principal);
   }
 
   /**
@@ -90,14 +110,12 @@ public class ReaderController {
    *
    * @param id   The ID of the comic to open.
    * @param page The page number from which to start.
+   * @param markAsRead Whether to marks the page as read.
    * @return The extracted page.
    */
-  @GetMapping("/read/{id}/{page}")
-  @ResponseBody
-  public ResponseEntity<StreamingResponseBody> read(
-      @PathVariable("id") final String id,
-      @PathVariable("page") final Short page,
-      final Principal principal) {
+  private ResponseEntity<StreamingResponseBody> read(
+      final String id, final Short page, final boolean markAsRead, final Principal principal) {
+
     final Optional<Comic> comicQuery = this.comicRepository.findById(id);
 
     if (!comicQuery.isPresent() || id == null || page == null) {
@@ -106,7 +124,9 @@ public class ReaderController {
 
     final Comic comic = comicQuery.get();
 
-    this.setReadState(comic, page, principal.getName());
+    if (markAsRead) {
+      this.setReadState(comic, page, principal.getName());
+    }
 
     final ComicPage comicPage = this.extractPage(comic, page);
 

@@ -1,22 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { TestModule } from '../../testing/test.module';
 import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 
 import { ComicsService } from '../comics.service';
 
 import { EditPage } from './edit.page';
+import { EditPageModule } from './edit.module';
 
 describe('EditPage', () => {
   let component: EditPage;
   let fixture: ComponentFixture<EditPage>;
 
   beforeEach(() => {
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: ComicsService, useValue: comicsService
+    TestBed.configureTestingModule({
+      imports: [
+        EditPageModule,
+        RouterTestingModule
+      ],
+      providers: [{
+        provide: ComicsService, useValue: comicsService
+      }]
     });
-    TestBed.configureTestingModule(testModule);
     fixture = TestBed.createComponent(EditPage);
     component = fixture.componentInstance;
     fixture.detectChanges();

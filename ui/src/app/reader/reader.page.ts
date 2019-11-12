@@ -2,9 +2,9 @@ import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ComicsService } from '../comics.service';
 import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
 import { Comic } from '../comic';
+import { ComicStorageService } from '../comic-storage.service';
 
 interface IOpenOptions {
   showToast?: boolean;
@@ -21,17 +21,17 @@ export class ReaderPage {
   imagePathLeft = '';
   imagePathRight = '';
   showControls = false;
-  parent: string;
+  private parent: string;
 
   constructor (
     private route: ActivatedRoute,
     private router: Router,
-    private comicsService: ComicsService,
     private navigator: NavigatorService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private comicStorageService: ComicStorageService,
   ) { }
 
-  @ViewChild('pagesLayer') pagesLayer: ElementRef;
+  @ViewChild('pagesLayer', { static: true }) pagesLayer: ElementRef;
 
   @HostListener('document:keyup.esc', ['$event'])
   handleEscape () {
@@ -47,18 +47,31 @@ export class ReaderPage {
     this.go(1);
   }
 
-  ionViewDidEnter () {
-    this.comicsService.get(this.route.snapshot.params.id).subscribe((data: Comic) => {
-      this.comic = data;
-      this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-      const parentElement = this.pagesLayer.nativeElement.parentElement;
-      this.navigator.set(
-        this.comic.pageCount,
-        this.getPage(this.comic),
-        (parentElement.clientWidth > parentElement.clientHeight) ? true : false
-      );
-      this.navigate(this.navigator.go());
+  async ionViewDidEnter () {
+    const comicId = this.route.snapshot.params.id;
+    this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
+    this.comicStorageService.get(comicId)
+      .then((comic) => {
+        this.comic = comic;
+        this.setup(this.comic);
+      }).catch(() => {
+        this.showToast('Comic book not available, please try again later.');
+        this.back();
+      });
+    this.comicStorageService.storeSurrounding(comicId).then(() => {
+      this.showToast('Volume cached.');
     });
+  }
+
+  private setup (comic: Comic) {
+    this.comic = comic;
+    const parentElement = this.pagesLayer.nativeElement.parentElement;
+    this.navigator.set(
+      this.comic.pageCount,
+      this.getPage(this.comic),
+      (parentElement.clientWidth > parentElement.clientHeight) ? true : false
+    );
+    this.navigate(this.navigator.go());
   }
 
   private getPage (comic: Comic): number {
@@ -68,7 +81,7 @@ export class ReaderPage {
     return comic.currentPage;
   }
 
-  public onClick (event: MouseEvent): void {
+  onClick (event: MouseEvent): void {
     const direction = this.getDirection(event);
     if (direction === 0) {
       this.toggleControls();
@@ -77,21 +90,23 @@ export class ReaderPage {
     }
   }
 
-  public go (direction: number, event?: MouseEvent): void {
+  go (direction: number, event?: MouseEvent): void {
     this.navigate(this.navigator.go(direction));
     if (event) {
       event.stopPropagation();
     }
   }
 
-  private open (adjacentId, options?: IOpenOptions) {
-    if (this.comic[adjacentId]) {
-      this.router.navigate(['/read', this.comic[adjacentId]], {
+  private open (adjacentAttr: string, options?: IOpenOptions) {
+    if (this.comic[adjacentAttr]) {
+      this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
+      this.router.navigate(['/read', this.comic[adjacentAttr]], {
+        replaceUrl: true,
         relativeTo: this.route,
         queryParamsHandling: 'merge'
       });
       if (options.showToast) {
-        this.showToast(`Next up: ${ this.comic.series } (${ this.comic.volume }) #${ this.comic.number }`);
+        this.showToast(`Opening next issue of ${ this.comic.series } (${ this.comic.volume }).`);
       }
     }
   }
@@ -104,23 +119,23 @@ export class ReaderPage {
     toast.present();
   }
 
-  public openNext (options?: IOpenOptions) {
+  openNext (options?: IOpenOptions) {
     this.open('nextId', options);
   }
 
-  public openPrevious (options?: IOpenOptions) {
+  openPrevious (options?: IOpenOptions) {
     this.open('previousId', options);
   }
 
-  public toggleControls (): void {
+  toggleControls (): void {
     this.showControls = !this.showControls;
   }
 
-  public onSwipe (direction): void {
+  onSwipe (direction): void {
     this.navigate(this.navigator.go(direction));
   }
 
-  public back (): void {
+  back (): void {
     this.router.navigate([this.parent]);
   }
 
@@ -132,8 +147,7 @@ export class ReaderPage {
           queryParams: { page: NavigatorService.page },
           queryParamsHandling: 'merge'
         });
-        this.imagePathLeft = `/api/read/${ this.comic.id }/${ NavigatorService.page }`;
-        this.imagePathRight = instruction.sideBySide ? `/api/read/${ this.comic.id }/${ NavigatorService.page + 1 }` : null;
+        this.setImages(instruction.sideBySide);
         break;
       case AdjacentComic.next:
         this.openNext({ showToast: true });
@@ -141,6 +155,17 @@ export class ReaderPage {
       case AdjacentComic.previous:
         this.openPrevious({ showToast: true });
         break;
+    }
+  }
+
+  private async setImages (sideBySide: boolean) {
+    this.imagePathLeft = await this.comicStorageService
+      .readPage(this.comic.id, NavigatorService.page);
+    if (sideBySide) {
+      this.imagePathRight = await this.comicStorageService
+        .readPage(this.comic.id, NavigatorService.page + 1);
+    } else {
+      this.imagePathRight = null;
     }
   }
 

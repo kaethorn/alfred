@@ -24,7 +24,8 @@
     "import-spacing": true,
     "indent": [
       true,
-      "spaces"
+      "spaces",
+      2
     ],
     "interface-over-type-literal": true,
     "label-position": true,
@@ -32,7 +33,7 @@
       true,
       140
     ],
-    "member-access": false,
+    "member-access": [true, "no-public"],
     "member-ordering": [
       true,
       {
@@ -121,14 +122,14 @@
       "check-type"
     ],
     "no-output-on-prefix": true,
-    "use-input-property-decorator": true,
-    "use-output-property-decorator": true,
-    "use-host-property-decorator": true,
+    "no-inputs-metadata-property": true,
+    "no-outputs-metadata-property": true,
+    "no-host-metadata-property": true,
     "space-before-function-paren": true,
     "no-input-rename": true,
     "no-output-rename": true,
     "object-literal-shorthand": true,
-    "use-life-cycle-interface": true,
+    "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": [ true, "Component", "Page" ],
     "directive-class-suffix": true
