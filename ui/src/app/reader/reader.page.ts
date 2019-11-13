@@ -10,37 +10,39 @@ import { ComicStorageService } from '../comic-storage.service';
 interface IOpenOptions {
   showToast?: boolean;
 }
+interface PageSource {
+  src: string;
+  page: number;
+  loaded: boolean;
+  visible: false;
+}
 
 @Component({
   selector: 'app-reader',
   templateUrl: './reader.page.html',
   styleUrls: ['./reader.page.sass'],
   animations: [
-    trigger('swapImages', [
-      state('loaded', style({
-        opacity: 1,
-      })),
-      state('initial', style({
-        opacity: 0.0,
-      })),
-      transition('initial => loaded', [
-        animate('1s')
+    trigger('swap', [
+      transition(':enter', [
+        style({
+          transform: 'translateX(100%)',
+          opacity: 0
+        }),
+        animate('0.5s', style({
+          opacity: 1,
+          transform: 'translateX(0)'
+        })),
       ]),
-      transition('loaded => initial', [
-        animate('0.5s')
-      ])
-    ])
+    ]),
   ]
 })
 export class ReaderPage {
 
   comic: Comic = {} as Comic;
-  previousImagePathLeft = '';
-  previousImagePathRight = '';
-  imagePathLeft = '';
-  imagePathRight = '';
+  images: PageSource[];
   showControls = false;
   private parent: string;
+  private sideBySide = false;
 
   constructor (
     private route: ActivatedRoute,
@@ -83,6 +85,9 @@ export class ReaderPage {
   }
 
   private setup (comic: Comic) {
+    this.images = new Array(comic.pageCount).fill(null).map((value, index) => {
+      return { page: index, src: null, loaded: false, visible: false };
+    });
     this.comic = comic;
     const parentElement = this.pagesLayer.nativeElement.parentElement;
     this.navigator.set(
@@ -161,6 +166,8 @@ export class ReaderPage {
   private navigate (instruction: NavigationInstruction) {
     switch (instruction.adjacent) {
       case AdjacentComic.same:
+        this.comic.currentPage = NavigatorService.page;
+        this.sideBySide = instruction.sideBySide;
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { page: NavigatorService.page },
@@ -177,26 +184,30 @@ export class ReaderPage {
     }
   }
 
-  private async setImages (sideBySide: boolean) {
-    // FIXME set transition direction
-
-    // Previous set
-    if (this.imagePathLeft.length) {
-      this.previousImagePathRight = this.imagePathLeft;
-    }
-    if (this.imagePathRight.length) {
-      this.previousImagePathLeft = this.imagePathLeft;
-    }
-
-    // Current set
-    this.imagePathLeft = await this.comicStorageService
-      .readPage(this.comic.id, NavigatorService.page);
+  private setImages (sideBySide: boolean) {
+    this.setImage(NavigatorService.page);
     if (sideBySide) {
-      this.imagePathRight = await this.comicStorageService
-        .readPage(this.comic.id, NavigatorService.page + 1);
-    } else {
-      this.imagePathRight = null;
+      this.setImage(NavigatorService.page + 1);
     }
+  }
+
+  private setImage (pageNumber: number) {
+    const image = this.images[pageNumber];
+    if (!image.loaded) {
+      this.comicStorageService.readPage(this.comic.id, pageNumber).then(url => {
+        image.src = url;
+      });
+    }
+  }
+
+  imageLoaded (image: PageSource) {
+    image.loaded = true;
+  }
+
+  isImageVisible (image: PageSource) {
+    return image && image.src &&
+      ( (image.page === this.comic.currentPage) ||
+        (this.sideBySide && image.page === this.comic.currentPage + 1) );
   }
 
   /**
