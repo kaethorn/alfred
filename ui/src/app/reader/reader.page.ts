@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import { trigger, style, animate, transition } from '@angular/animations';
 
 import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
 import { Comic } from '../comic';
@@ -16,6 +16,7 @@ interface PageSource {
   loaded: boolean;
   visible: false;
 }
+type Direction = ('initial' | 'forward' | 'backward');
 
 @Component({
   selector: 'app-reader',
@@ -23,13 +24,27 @@ interface PageSource {
   styleUrls: ['./reader.page.sass'],
   animations: [
     trigger('swap', [
-      transition(':enter', [
+      transition('void => initial', [
         style({
-          transform: 'translateX(100%)',
           opacity: 0
         }),
+        animate('1.5s', style({
+          opacity: 1
+        })),
+      ]),
+      transition('void => forward', [
+        style({
+          transform: 'translateX(100%)',
+        }),
         animate('0.5s', style({
-          opacity: 1,
+          transform: 'translateX(0)',
+        })),
+      ]),
+      transition('void => backward', [
+        style({
+          transform: 'translateX(-100%)',
+        }),
+        animate('0.5s', style({
           transform: 'translateX(0)'
         })),
       ]),
@@ -41,8 +56,10 @@ export class ReaderPage {
   comic: Comic = {} as Comic;
   images: PageSource[];
   showControls = false;
+  direction: Direction = 'initial';
   private parent: string;
   private sideBySide = false;
+  private isInitialLoad = true;
 
   constructor (
     private route: ActivatedRoute,
@@ -164,6 +181,11 @@ export class ReaderPage {
   }
 
   private navigate (instruction: NavigationInstruction) {
+    if (!this.isInitialLoad) {
+      this.direction = NavigatorService.offset < 0 ? 'backward' : 'forward';
+    } else {
+      this.isInitialLoad = false;
+    }
     switch (instruction.adjacent) {
       case AdjacentComic.same:
         this.comic.currentPage = NavigatorService.page;

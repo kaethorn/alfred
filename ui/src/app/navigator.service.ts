@@ -16,6 +16,7 @@ export interface NavigationInstruction {
 })
 export class NavigatorService {
   static page = 0;
+  static offset = 1;
   private pageCount: number;
   private sideBySide: boolean;
 
@@ -32,6 +33,7 @@ export class NavigatorService {
    */
   go (offset: number = 0): NavigationInstruction {
     let direction: AdjacentComic = AdjacentComic.same;
+    NavigatorService.offset = offset;
 
     if (offset < 0) {
       if (NavigatorService.page > 0) {

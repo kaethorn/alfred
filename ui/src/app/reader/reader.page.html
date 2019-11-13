@@ -3,7 +3,7 @@
   (swipeleft)="onSwipe(1)"
   (swiperight)="onSwipe(-1)">
   <div *ngFor="let image of images">
-    <div *ngIf="isImageVisible(image)" class="wrapper" @swap>
+    <div *ngIf="isImageVisible(image)" class="wrapper" [@swap]="direction">
       <img [attr.src]="image.src | secure | async"
           (load)="imageLoaded(image)"
           alt="{{ comic.title }} # {{ comic.number }}" />
