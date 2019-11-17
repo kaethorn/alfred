@@ -14,7 +14,6 @@ interface PageSource {
   src: string;
   page: number;
   loaded: boolean;
-  visible: false;
 }
 type Direction = ('initial' | 'forward' | 'backward');
 
@@ -103,7 +102,7 @@ export class ReaderPage {
 
   private setup (comic: Comic) {
     this.images = new Array(comic.pageCount).fill(null).map((value, index) => {
-      return { page: index, src: null, loaded: false, visible: false };
+      return { page: index, src: null, loaded: false };
     });
     this.comic = comic;
     const parentElement = this.pagesLayer.nativeElement.parentElement;

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { comic1 as comic } from '../../testing/comic.fixtures';
 
@@ -53,6 +54,7 @@ describe('ReaderPage', () => {
     TestBed.configureTestingModule({
       imports: [
         ReaderPageModule,
+        NoopAnimationsModule,
         RouterTestingModule.withRoutes([
           { path: 'read/:id', component: ReaderPage }
         ])
