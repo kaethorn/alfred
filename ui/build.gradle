@@ -9,6 +9,10 @@ node {
   download = true
 }
 
+npm_update {
+  args = ['--production', '--loglevel', 'warn']
+}
+
 jar.dependsOn 'npm_run_buildProd'
 
 jar {
