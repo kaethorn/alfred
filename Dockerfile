@@ -6,7 +6,7 @@ COPY src src
 COPY ui ui
 COPY config config
 RUN gradle build unpack -x test -x check
-WORKDIR build/dependency
+WORKDIR /workspace/app/build/dependency
 RUN jar -xf ../libs/*.jar
 
 FROM openjdk:11-jre
