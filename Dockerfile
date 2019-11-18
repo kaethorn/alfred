@@ -1,7 +1,7 @@
 FROM gradle:5.5-jdk11 as builder
 WORKDIR /workspace/app
 COPY settings.gradle build.gradle ./
-RUN gradle dependencies
+RUN gradle dependencies &> /dev/null
 COPY src src
 COPY ui ui
 COPY config config
