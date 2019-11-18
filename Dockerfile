@@ -6,7 +6,8 @@ COPY src src
 COPY ui ui
 COPY config config
 RUN gradle build unpack -x test -x check
-RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
+WORKDIR build/dependency
+RUN jar -xf ../libs/*.jar
 
 FROM openjdk:11-jre
 VOLUME /tmp
