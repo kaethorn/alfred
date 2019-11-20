@@ -130,6 +130,15 @@ In docker, this can be achieved by settings a volume and an environment variable
 will log to `./logs/alfred.log` on the host.
 
 
+## Notes
+
+### Reverse proxy
+
+When running the application through a reverse proxy, make sure to enable streaming. This will allow for server-sent events to push updates during a library scan. Otherwise, there would be no feedback until the scan is complete.
+
+To enable streaming in lighttpd, use the `server.stream-response-body` option.
+
+
 ## Develop
 
 ### Gradle
