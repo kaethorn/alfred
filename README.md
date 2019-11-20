@@ -20,12 +20,76 @@ A web based comic management system for your [ComicRack](http://comicrack.cyolit
 
 ## Requirements
 
-* Java 8
-* A MongoDB
-* (optional) Docker
+A Dockerfile allows building the application without the need to install Java. Building it
+* Java 11 and a MongoDB
+* or Docker
 * Zipped comic book files (.cbz) containing embedded `ComicInfo.xml` metadata files from ComicRack, see [docs](http://comicrack.cyolito.com/software/windows/windows-documentation/7-meta-data-in-comic-files).
 * A Client ID for Google Sign-In.
+* (optional) A [Comic Vine API](https://comicvine.gamespot.com/api/) key.
 
+## Run
+
+### 1. Network
+
+Set up a common network:
+
+```sh
+docker network create alfred-net
+```
+
+### 2a. New MongoDB
+
+Set up a new MongoDB connected to the network:
+
+```sh
+docker run --name mongo -p 27017:27017 --net=alfred-net mongo
+```
+
+### 2b. Existing MongoDB
+
+If you want to use an existing MongoDB instead, run and connect it to the network:
+
+```sh
+docker start mongo
+docker network connect alfred-net mongo
+```
+
+### 3. Build
+
+Build the docker image:
+
+```sh
+docker build -t de.wasenweg/alfred .
+```
+
+### 4. Run
+
+Run the image and connect to the MongoDB:
+
+```sh
+docker run -p 5000:8080 --net=alfred-net -v /path/to/comics:/comics de.wasenweg/alfred
+```
+
+Replace `/path/to/comics` with the path to your comic library.
+
+The application will now be available at <http://localhost:5000>.
+
+You can also pass all required options, like so:
+
+```sh
+docker run --dns 8.8.8.8 -p 8080:8080 --net=alfred-net --rm \
+  -v <Path to your comic library>:/comics \
+  -v <Path to where you want to receive log files>:/logs \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred \
+  -e COMICS.COMIC_VINE_API_KEY=<Your Comic Vine API key> \
+  -e LOGGING_FILE=/logs/alfred.log \
+  -e AUTH.CLIENT.ID=<Your Google Client ID, ends in .apps.googleusercontent.com> \
+  -e AUTH.USERS=<List of allowed user IDs, e.g. email addresses> \
+  -e AUTH.JWT.SECRET=<Your own generated or custom JWT secret> \
+  --name alfred \
+  de.wasenweg/alfred
+```
 
 ## Configuration
 
@@ -65,66 +129,8 @@ In docker, this can be achieved by settings a volume and an environment variable
 
 will log to `./logs/alfred.log` on the host.
 
-## Run
 
-### Docker using Gradle
-
-```sh
-./gradlew build docker
-docker run de.wasenweg/alfred
-```
-
-### Docker manually
-
-This will basically replicate what the Gradle docker plugin manages.
-
-#### 1. Network
-
-Set up a common network:
-
-```sh
-docker network create alfred-net
-```
-
-#### 2a. New MongoDB
-
-Set up a new MongoDB connected to the network:
-
-```sh
-docker run --name mongo -p 27017:27017 --net=alfred-net mongo
-```
-
-#### 2b. Existing MongoDB
-
-If you want to use an existing MongoDB instead, run and connect it to the network:
-
-```sh
-docker start mongo
-docker network connect alfred-net mongo
-```
-
-#### 3. Build
-
-Build the docker image:
-
-```sh
-./gradlew clean build
-mkdir target
-unzip build/libs/alfred.jar -d target/dependency
-docker build -t de.wasenweg/alfred .
-```
-
-#### 4. Run
-
-Run the image and connect to the MongoDB:
-
-```sh
-docker run -p 5000:8080 --net=alfred-net -v /path/to/comics:/comics alfred
-```
-
-Replace `/path/to/comics` with the path to your comic library.
-
-The application will now be available at <http://localhost:5000>.
+## Develop
 
 ### Gradle
 
@@ -135,8 +141,6 @@ To run the application on the host system directly, make sure to have a MongoDB 
 ```
 
 The application will now be available at <http://localhost:8080>.
-
-## Develop
 
 ### End-to-end tests
 

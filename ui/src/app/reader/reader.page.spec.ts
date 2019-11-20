@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { comic1 as comic } from '../../testing/comic.fixtures';
 
@@ -14,6 +15,8 @@ describe('ReaderPage', () => {
   let component: ReaderPage;
   let fixture: ComponentFixture<ReaderPage>;
   let router;
+  let comicStorageService;
+
   const clickRightSide = async () => {
     fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
@@ -44,15 +47,16 @@ describe('ReaderPage', () => {
 
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
-    const comicStorageService = jasmine
+    comicStorageService = jasmine
       .createSpyObj('ComicStorageService', ['get', 'readPage', 'storeSurrounding']);
-    comicStorageService.get.and.returnValue(Promise.resolve(comic));
+    comicStorageService.get.and.returnValue(Promise.resolve(Object.assign({}, comic)));
     comicStorageService.readPage.and.returnValue(Promise.resolve('/api/read/923/0'));
     comicStorageService.storeSurrounding.and.returnValue(Promise.resolve({}));
 
     TestBed.configureTestingModule({
       imports: [
         ReaderPageModule,
+        NoopAnimationsModule,
         RouterTestingModule.withRoutes([
           { path: 'read/:id', component: ReaderPage }
         ])
@@ -169,12 +173,13 @@ describe('ReaderPage', () => {
       });
 
       it('loads only the cover', () => {
-        expect(component.imagePathRight).toBeNull();
+        expect(comicStorageService.readPage.calls.mostRecent().args[1]).toBe(0);
       });
 
       describe('to the next page', () => {
 
         beforeEach(async () => {
+          comicStorageService.readPage.calls.reset();
           await clickRightSide();
         });
 
@@ -183,14 +188,13 @@ describe('ReaderPage', () => {
         });
 
         it('displays two pages', () => {
-          expect(component.imagePathLeft).not.toBeNull();
-          expect(component.imagePathRight).not.toBeNull();
+          expect(comicStorageService.readPage.calls.count()).toBe(2);
         });
 
         it('navigating back displays only the cover', async () => {
+          comicStorageService.readPage.calls.reset();
           await clickLeftSide();
-          expect(component.imagePathLeft).not.toBeNull();
-          expect(component.imagePathRight).toBeNull();
+          expect(comicStorageService.readPage.calls.count()).toBe(1);
         });
       });
 

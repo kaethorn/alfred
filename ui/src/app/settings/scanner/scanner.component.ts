@@ -54,7 +54,7 @@ export class ScannerComponent {
   scan () {
     this.issues = [];
 
-    this.scanProgress = new EventSource('/api/scan-progress');
+    this.scanProgress = new EventSource('/api/scan-progress?ngsw-bypass');
 
     this.scanProgress.addEventListener('start', (event: any) => {
       this.indeterminate = 'Counting files';

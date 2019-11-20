@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,7 +60,8 @@ public class ScannerService {
   private SettingsService settingsService;
 
   private void sendEvent(final String data, final String name) {
-    this.emitter.onNext(ServerSentEvent.builder(data).id(String.valueOf(this.hashCode())).event(name).build());
+    final String timestamp = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date());
+    this.emitter.onNext(ServerSentEvent.builder(data).id(timestamp).event(name).build());
   }
 
   private void reportStart(final String path) {

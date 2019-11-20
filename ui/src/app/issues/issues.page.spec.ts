@@ -17,7 +17,8 @@ describe('IssuesPage', () => {
     TestBed.configureTestingModule({
       imports: [
         IssuesPageModule,
-        RouterTestingModule
+        RouterTestingModule.withRoutes([
+        ])
       ],
       providers: [{
         provide: ComicsService, useValue: comicsService
