@@ -1,6 +1,4 @@
 [![Build Status](https://travis-ci.org/kaethorn/alfred.svg?branch=master)](https://travis-ci.org/kaethorn/alfred)
-[![CodeFactor](https://www.codefactor.io/repository/github/kaethorn/alfred/badge)](https://www.codefactor.io/repository/github/kaethorn/alfred)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ef19770451cb4dc692488da4382f9ffc)](https://app.codacy.com/app/scf/alfred?utm_source=github.com&utm_medium=referral&utm_content=kaethorn/alfred&utm_campaign=Badge_Grade_Dashboard)
 
 # Features
 
@@ -18,23 +16,14 @@ A web based comic management system for your [ComicRack](http://comicrack.cyolit
 
 # Requirements
 
-* Java 8
-* A MongoDB
-* (optional) Docker
+A Dockerfile allows building the application without the need to install Java. Building it
+* Java 11 and a MongoDB
+* or Docker
 * Zipped comic book files (.cbz) containing embedded `ComicInfo.xml` metadata files from ComicRack, see [docs](http://comicrack.cyolito.com/software/windows/windows-documentation/7-meta-data-in-comic-files).
+* A Client ID for Google Sign-In.
+* (optional) A [Comic Vine API](https://comicvine.gamespot.com/api/) key.
 
 # Run
-
-## Docker using Gradle
-
-```sh
-./gradlew build docker
-docker run de.wasenweg/alfred
-```
-
-## Docker manually
-
-This will basically replicate what the Gradle docker plugin manages.
 
 ### 1. Network
 
@@ -66,9 +55,6 @@ docker network connect alfred-net mongo
 Build the docker image:
 
 ```sh
-./gradlew clean build
-mkdir target
-unzip build/libs/alfred.jar -d target/dependency
 docker build -t de.wasenweg/alfred .
 ```
 
@@ -77,14 +63,82 @@ docker build -t de.wasenweg/alfred .
 Run the image and connect to the MongoDB:
 
 ```sh
-docker run -p 5000:8080 --net=alfred-net -v /path/to/comics:/comics alfred
+docker run -p 5000:8080 --net=alfred-net -v /path/to/comics:/comics de.wasenweg/alfred
 ```
 
 Replace `/path/to/comics` with the path to your comic library.
 
 The application will now be available at <http://localhost:5000>.
 
-## Gradle
+You can also pass all required options, like so:
+
+```sh
+docker run --dns 8.8.8.8 -p 8080:8080 --net=alfred-net --rm \
+  -v <Path to your comic library>:/comics \
+  -v <Path to where you want to receive log files>:/logs \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred \
+  -e COMICS.COMIC_VINE_API_KEY=<Your Comic Vine API key> \
+  -e LOGGING_FILE=/logs/alfred.log \
+  -e AUTH.CLIENT.ID=<Your Google Client ID, ends in .apps.googleusercontent.com> \
+  -e AUTH.USERS=<List of allowed user IDs, e.g. email addresses> \
+  -e AUTH.JWT.SECRET=<Your own generated or custom JWT secret> \
+  --name alfred \
+  de.wasenweg/alfred
+```
+
+## Configuration
+
+Apart from the JWT secret (`auth.jwt.secret`), all settings can initially be passed to the application via [Spring's configuration options](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html). They're then stored and maintained in the MongoDB `settings` collection and take precedence over configuration options. Once the application is running, settings can be changed on the `settings` page.
+
+### Comics path (`comics.path`)
+
+The default comics path is `/comics` which allows you to associate it via a Docker volume mount.
+
+### Client ID (`auth.client.id`)
+
+Create a set of client credentials in the [Google API console](https://console.developers.google.com/apis/credentials). Configure the `Authorized JavaScript origins` as well as `Authorized redirect URIs` to reflect the host name of your Alfred instance. The Client ID format should be `000000.apps.googleusercontent.com`.
+
+Then pass that client ID as `auth.client.id` to the application. There are [various ways](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) to achieve that. Running the application via docker, you could pass an environment variable: `docker run -e AUTH.CLIENT.ID=000000.apps.googleusercontent.com ...`.
+
+### Allowed users (`auth.users`)
+
+Users are identified through their email addresses and the initial set of allowed users must be passed to the application on the inital run. They're a comma separated list of email addresses associated with a Google ID. Only users with the email addresses specified in this property will be allowed to use the application and its API.
+
+### JWT secret (`auth.jwt.secret`)
+
+Once the application authenticates the user, it issues its own JWT authentication token which requires a secret key. A default key is supplied but should be overridden whenever the application is run (it's not stored in the DB).
+
+### Comic Vine API key (`comics.comicVineApiKey`)
+
+Comic books not containing a meta data XML or an XML without enough attributes won't be usable. Missing meta data can be fetched from the [Comic Vine API](https://comicvine.gamespot.com/api/) for which you need an API key.
+
+## Logging
+
+By default, the application logs only to the console it was started in. In order to output logs to a file, use the `logging.file` application property, e.g. start the app with `LOGGING_FILE=alfred.log`.
+
+In docker, this can be achieved by settings a volume and an environment variable. Starting the container with these parameters
+
+```
+-v $PWD/logs:/logs -e LOGGING_FILE=/logs/alfred.log
+```
+
+will log to `./logs/alfred.log` on the host.
+
+
+## Notes
+
+### Reverse proxy
+
+When running the application through a reverse proxy, make sure to enable streaming. This will allow for server-sent events to push updates during a library scan. Otherwise, there would be no feedback until the scan is complete.
+
+To enable streaming in lighttpd, use the `server.stream-response-body` option.
+
+
+## Develop
+
+### Gradle
+>>>>>>> master
 
 To run the application on the host system directly, make sure to have a MongoDB running, e.g. on `localhost`, then run:
 
@@ -94,9 +148,7 @@ To run the application on the host system directly, make sure to have a MongoDB 
 
 The application will now be available at <http://localhost:8080>.
 
-# Develop
-
-## End-to-end tests
+### End-to-end tests
 
 ### Preparation
 

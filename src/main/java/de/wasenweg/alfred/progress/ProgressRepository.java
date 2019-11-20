@@ -9,5 +9,7 @@ import java.util.Optional;
 @RepositoryRestResource(collectionResourceRel = "progress", path = "progress")
 public interface ProgressRepository extends MongoRepository<Progress, String> {
 
-    Optional<Progress> findByUserIdAndComicId(final String userId, final ObjectId comicId);
+  Optional<Progress> findByUserIdAndComicId(final String userId, final ObjectId comicId);
+
+  void deleteByUserId(final String userId);
 }

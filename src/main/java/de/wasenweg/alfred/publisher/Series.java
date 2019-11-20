@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Series {
 
-    private String id;
+  private String id;
 
-    private String series;
-    private String publisher;
-    private Short volumesCount;
+  private String series;
+  private String publisher;
+  private Short volumesCount;
 }

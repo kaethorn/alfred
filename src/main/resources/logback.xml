@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="reactor.Flux.EmitterProcessor" level="WARN"/>
+    <logger name="de.wasenweg.alfred.scanner.ScannerService" level="DEBUG"/>
+</configuration>

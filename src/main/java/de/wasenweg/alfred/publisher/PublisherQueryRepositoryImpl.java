@@ -7,6 +7,7 @@ import de.wasenweg.alfred.volumes.Volume;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
@@ -22,51 +23,61 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @RepositoryRestResource(collectionResourceRel = "publishers", path = "publishers")
 public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+  @Autowired
+  private MongoTemplate mongoTemplate;
 
-    @Override
-    public List<Publisher> findAllPublishers(final String userId) {
-        return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
-            group("publisher", "series"),
-            group("publisher")
-                .last("_id.publisher").as("publisher")
-                .count().as("seriesCount"),
-            sort(Sort.Direction.ASC, "publisher")
+  @Override
+  public List<Publisher> findAllPublishers(final String userId) {
+    return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+        match(where("errors").exists(false)),
+        group("publisher", "series", "volume")
+        .last("publisher").as("publisher")
+        .last("series").as("series"),
+        group("publisher", "series")
+        .last("_id.series").as("series")
+        .last("_id.publisher").as("publisher")
+        .count().as("volumesCount"),
+        sort(Sort.Direction.ASC, "series"),
+        group("publisher")
+        .last("publisher").as("publisher")
+        .push(Aggregation.ROOT).as("series")
+        .count().as("seriesCount"),
+        sort(Sort.Direction.ASC, "publisher")
         ), Comic.class, Publisher.class).getMappedResults();
-    }
+  }
 
-    @Override
-    public List<Series> findAllSeries(final String userId, final String publisher) {
-        return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
-            match(where("publisher").is(publisher)),
-            group("series", "volume")
-                .last("publisher").as("publisher"),
-            group("series")
-                .last("_id.series").as("series")
-                .last("publisher").as("publisher")
-                .count().as("volumesCount"),
-            sort(Sort.Direction.ASC, "series")
+  @Override
+  public List<Series> findAllSeries(final String userId, final String publisher) {
+    return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+        match(where("publisher").is(publisher).and("errors").exists(false)),
+        group("series", "volume")
+        .last("publisher").as("publisher"),
+        group("series")
+        .last("_id.series").as("series")
+        .last("publisher").as("publisher")
+        .count().as("volumesCount"),
+        sort(Sort.Direction.ASC, "series"),
+        sort(Sort.Direction.ASC, "publisher")
         ), Comic.class, Series.class).getMappedResults();
-    }
+  }
 
-    @Override
-    public List<Volume> findAllVolumes(final String userId, final String publisher, final String series) {
-        return mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
-            match(where("publisher").is(publisher).and("series").is(series)),
-            sort(Sort.Direction.ASC, "position"),
-            group("volume")
-                .last("volume").as("volume")
-                .last("series").as("series")
-                .last("publisher").as("publisher")
-                .count().as("issueCount")
-                .min("read").as("read")
-                .sum(ConditionalOperators
-                     .when(where("read").is(true))
-                     .then(1).otherwise(0))
-                     .as("readCount")
-                .first("thumbnail").as("thumbnail"),
-            sort(Sort.Direction.ASC, "volume")
+  @Override
+  public List<Volume> findAllVolumes(final String userId, final String publisher, final String series) {
+    return this.mongoTemplate.aggregate(ProgressHelper.aggregateWithProgress(userId,
+        match(where("publisher").is(publisher).and("series").is(series).and("errors").exists(false)),
+        sort(Sort.Direction.ASC, "position"),
+        group("volume")
+          .last("volume").as("volume")
+          .last("series").as("series")
+          .last("publisher").as("publisher")
+          .count().as("issueCount")
+          .min("read").as("read")
+          .sum(ConditionalOperators
+              .when(where("read").is(true))
+              .then(1).otherwise(0))
+              .as("readCount")
+          .first("_id").as("firstComicId"),
+        sort(Sort.Direction.ASC, "volume")
         ), Comic.class, Volume.class).getMappedResults();
-    }
+  }
 }

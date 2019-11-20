@@ -16,22 +16,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Setting {
 
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    @NonNull
-    private String key;
-    @NonNull
-    private String name;
-    @NonNull
-    private String value;
-    @NonNull
-    private String comment;
+  @NonNull
+  private String key;
+  @NonNull
+  private String name;
+  @NonNull
+  private String value;
+  @NonNull
+  private String comment;
 
-    @Override
-    public String toString() {
-        return String.format(
-                "Setting[id=%s, key='%s', value='%s']",
-                id, key, value);
-    }
+  @Override
+  public String toString() {
+    return String.format(
+        "Setting[id=%s, key='%s', value='%s']",
+        this.id, this.key, this.value);
+  }
 }

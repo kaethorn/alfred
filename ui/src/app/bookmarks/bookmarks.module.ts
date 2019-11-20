@@ -6,12 +6,14 @@ import { RouterModule } from '@angular/router';
 
 import { BookmarksPage } from './bookmarks.page';
 import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
+import { SecureModule } from '../secure/secure.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    SecureModule,
     RouterModule.forChild([{
       path: '',
       component: BookmarksPage

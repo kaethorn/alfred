@@ -1,25 +1,26 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { TestModule } from '../../../testing/test.module';
 import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
 
 import { VolumesService } from '../../volumes.service';
 import { PublishersComponent } from './publishers.component';
+import { LibraryPageModule } from '../library.module';
 
 describe('PublishersComponent', () => {
   let component: PublishersComponent;
   let fixture: ComponentFixture<PublishersComponent>;
 
-  beforeEach(async(() => {
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: VolumesService, useValue: volumesService
-    });
-    TestBed.configureTestingModule(testModule).compileComponents();
-  }));
-
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        LibraryPageModule,
+        RouterTestingModule
+      ],
+      providers: [{
+        provide: VolumesService, useValue: volumesService
+      }]
+    });
     fixture = TestBed.createComponent(PublishersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

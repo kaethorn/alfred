@@ -30,18 +30,17 @@
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
               },
-              "src/manifest.json"
+              "src/manifest.webmanifest"
             ],
             "styles": [
               {
-                "input": "src/theme/variables.scss"
-              },
-              {
-                "input": "src/global.scss"
+                "input": "src/global.sass"
               }
             ],
             "scripts": [],
-            "es5BrowserSupport": true
+            "es5BrowserSupport": true,
+            "ngswConfigPath": "ngsw-config.json",
+            "serviceWorker": true
           },
           "configurations": {
             "production": {
@@ -66,8 +65,7 @@
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
                 }
-              ],
-              "ngswConfigPath": "src/ngsw-config.json"
+              ]
             },
             "ci": {
               "progress": false
@@ -115,7 +113,12 @@
                 "input": "src/assets",
                 "output": "/assets"
               },
-              "src/manifest.json"
+              {
+                "glob": "**/*",
+                "input": "node_modules/ionicons/dist/ionicons/svg",
+                "output": "/svg"
+              },
+              "src/manifest.webmanifest"
             ]
           },
           "configurations": {

@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { SafeUrl } from '@angular/platform-browser';
 import { PopoverController } from '@ionic/angular';
 
+import { StoredState, ComicStorageService } from '../../comic-storage.service';
 import { VolumesService } from '../../volumes.service';
 import { ComicsService } from '../../comics.service';
+import { ComicDatabaseService } from 'src/app/comic-database.service';
 import { Volume } from '../../volume';
 import { Comic } from '../../comic';
 import { VolumeActionsComponent } from './volume-actions/volume-actions.component';
@@ -20,14 +22,17 @@ export class VolumesComponent {
   volumes: Volume[];
   publisher = '';
   series = '';
+  thumbnails = new Map<string, Promise<SafeUrl>>();
+  stored: StoredState = {};
 
   constructor (
     private router: Router,
     private route: ActivatedRoute,
-    private sanitizer: DomSanitizer,
     private comicsService: ComicsService,
+    private comicStorageService: ComicStorageService,
     private volumesService: VolumesService,
-    private popoverController: PopoverController
+    private popoverController: PopoverController,
+    private comicDatabaseService: ComicDatabaseService,
   ) { }
 
   ionViewDidEnter () {
@@ -41,23 +46,27 @@ export class VolumesComponent {
       .subscribe((data: Volume[]) => {
         this.volumesData = data;
         this.volumes = this.volumesData;
+        this.volumes.forEach((volume: Volume) => {
+          this.thumbnails.set(volume.firstComicId, this.comicStorageService.getThumbnail(volume.firstComicId));
+          this.updateStoredState(volume.firstComicId);
+        });
       });
   }
 
-  thumbnail (volume: Volume): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ volume.thumbnail }`);
-  }
-
-  public resumeVolume (volume: Volume): void {
+  resumeVolume (volume: Volume): void {
     if (volume.read) {
       this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {
-          this.router.navigate(['/read', comic.id, comic.currentPage]);
+          this.router.navigate(['/read', comic.id], {
+            queryParams: { page: comic.currentPage, parent: `/library/publishers/${ comic.publisher }/series/${ comic.series }/volumes` }
+          });
         });
     } else {
       this.comicsService.getLastUnreadByVolume(volume.publisher, volume.series, volume.volume)
         .subscribe((comic: Comic) => {
-          this.router.navigate(['/read', comic.id, comic.currentPage]);
+          this.router.navigate(['/read', comic.id], {
+            queryParams: { page: comic.currentPage, parent: `/library/publishers/${ comic.publisher }/series/${ comic.series }/volumes` }
+          });
         });
     }
   }
@@ -78,5 +87,9 @@ export class VolumesComponent {
   filter (value: string) {
     this.volumes = this.volumesData
       .filter(volume => volume.volume.match(value));
+  }
+
+  private async updateStoredState (comicId: string) {
+    this.stored[comicId] = await this.comicDatabaseService.isStored(comicId);
   }
 }

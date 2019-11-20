@@ -1,11 +1,44 @@
-<div class="layer" #layer
-  (click)="onClick($event)" (swipeleft)="onSwipe(1)" (swiperight)="onSwipe(-1)">
-  <div class="wrapper">
-    <img *ngIf="imagePathLeft" [src]="imagePathLeft" class="left"
-         alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
+<div class="pages-layer" #pagesLayer
+  (click)="onClick($event)"
+  (swipeleft)="onSwipe(1)"
+  (swiperight)="onSwipe(-1)">
+  <div *ngFor="let image of images">
+    <div *ngIf="isImageVisible(image)" class="wrapper" [@swap]="direction">
+      <img [attr.src]="image.src | secure | async"
+          (load)="imageLoaded(image)"
+          alt="{{ comic.title }} # {{ comic.number }}" />
+    </div>
   </div>
-  <div class="wrapper">
-    <img *ngIf="imagePathRight" [src]="imagePathRight" class="right"
-         alt="{{ comic.title }} # {{ comic.number }} page {{ currentPage }}">
+</div>
+
+<div class="control-layer" *ngIf="showControls" (click)="toggleControls()">
+  <div class="top">
+    <ion-button color="secondary" (click)="back()">
+      <ion-icon name="close"></ion-icon>
+    </ion-button>
+  </div>
+  <div class="center">
+    <div class="volume">
+      <ion-text color="primary">{{ comic.series }} Vol. {{ comic.volume }} #{{ comic.number }}</ion-text>
+    </div>
+    <div class="title">
+      <ion-text color="primary">
+        {{ comic.title }}
+      </ion-text>
+    </div>
+  </div>
+  <div class="bottom">
+    <ion-button color="secondary" (click)="openPrevious()">
+      <ion-icon name="skip-backward"></ion-icon>
+    </ion-button>
+    <ion-button color="secondary" (click)="go(-1)">
+      <ion-icon name="arrow-round-back"></ion-icon>
+    </ion-button>
+    <ion-button color="secondary" (click)="go(+1)">
+      <ion-icon name="arrow-round-forward"></ion-icon>
+    </ion-button>
+    <ion-button color="secondary" (click)="openNext()">
+      <ion-icon name="skip-forward"></ion-icon>
+    </ion-button>
   </div>
 </div>

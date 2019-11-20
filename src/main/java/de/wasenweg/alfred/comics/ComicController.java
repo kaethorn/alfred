@@ -1,12 +1,18 @@
 package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.progress.ProgressService;
+import de.wasenweg.alfred.scanner.ApiMetaDataService;
+import de.wasenweg.alfred.scanner.FileMetaDataService;
+import de.wasenweg.alfred.scanner.ScannerIssue;
+import de.wasenweg.alfred.scanner.ScannerService;
+import de.wasenweg.alfred.util.BaseController;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,81 +25,101 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RequestMapping(value = "/api/comics", produces = { "application/hal+json" })
 @RestController
-public class ComicController {
+public class ComicController extends BaseController<Comic> {
 
-    @Autowired
-    private ProgressService progressService;
+  @Autowired
+  private ProgressService progressService;
 
-    @Autowired
-    private ComicQueryRepositoryImpl queryRepository;
+  @Autowired
+  private ScannerService scannerService;
 
-    @Autowired
-    private ComicRepository comicRepository;
+  @Autowired
+  private FileMetaDataService fileMetaDataService;
 
-    @GetMapping("/{comicId}")
-    public Resource<Comic> findById(@PathVariable("comicId") final String comicId) {
-        return addLink(this.comicRepository.findById(comicId));
+  @Autowired
+  private ApiMetaDataService apiMetaDataService;
+
+  @Autowired
+  private ComicQueryRepositoryImpl queryRepository;
+
+  @Autowired
+  private ComicRepository comicRepository;
+
+  @GetMapping("")
+  public Resources<Resource<Comic>> findAll() {
+    return this.wrap(this.comicRepository.findAll());
+  }
+
+  @GetMapping("/{comicId}")
+  public Resource<Comic> findById(
+      final Principal principal,
+      @PathVariable("comicId") final String comicId) {
+    return this.wrap(this.queryRepository.findById(principal.getName(), comicId));
+  }
+
+  @PutMapping("")
+  public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
+    this.comicRepository.save(comic);
+    this.fileMetaDataService.write(comic);
+    this.scannerService.processComic(comic);
+    return this.wrap(comic);
+  }
+
+  @PutMapping("/scrape")
+  public Resource<Comic> scrape(@Valid @RequestBody final Comic comic) {
+    final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
+    if (issues.size() > 0) {
+      throw new ResourceNotFoundException("Error while querying ComicVine.");
     }
+    this.comicRepository.save(comic);
+    this.fileMetaDataService.write(comic);
+    return this.wrap(comic);
+  }
 
-    @GetMapping("/search/findAllLastReadPerVolume")
-    public Resources<Resource<Comic>> findAllLastReadPerVolume(final Principal principal) {
-        return addCollectionLink(this.queryRepository.findAllLastReadPerVolume(principal.getName()));
-    }
+  @GetMapping("/search/findAllLastReadPerVolume")
+  public Resources<Resource<Comic>> findAllLastReadPerVolume(final Principal principal) {
+    return this.wrap(this.queryRepository.findAllLastReadPerVolume(principal.getName()));
+  }
 
-    @GetMapping("/search/findLastReadForVolume")
-    public Resource<Comic> findLastReadForVolume(
-            final Principal principal,
-            @Param("publisher") final String publisher,
-            @Param("series") final String series,
-            @Param("volume") final String volume) {
-        return addLink(this.queryRepository.findLastReadForVolume(principal.getName(), publisher, series, volume));
-    }
+  @GetMapping("/search/findLastReadForVolume")
+  public Resource<Comic> findLastReadForVolume(
+      final Principal principal,
+      @Param("publisher") final String publisher,
+      @Param("series") final String series,
+      @Param("volume") final String volume) {
+    return this.wrap(this.queryRepository.findLastReadForVolume(principal.getName(), publisher, series, volume));
+  }
 
-    @GetMapping("/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition")
-    public Resources<Resource<Comic>> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
-            final Principal principal,
-            @Param("publisher") final String publisher,
-            @Param("series") final String series,
-            @Param("volume") final String volume) {
-        return addCollectionLink(this.queryRepository.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
-                principal.getName(), publisher, series, volume));
-    }
+  @GetMapping("/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition")
+  public Resources<Resource<Comic>> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+      final Principal principal,
+      @Param("publisher") final String publisher,
+      @Param("series") final String series,
+      @Param("volume") final String volume) {
+    return this.wrap(this.queryRepository.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+        principal.getName(), publisher, series, volume));
+  }
 
-    @PutMapping("/markAsRead")
-    public Resource<Comic> markAsRead(@Valid @RequestBody final Comic comic, final Principal principal) {
-        return addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, true)));
-    }
+  @PutMapping("/markAsRead")
+  public Resource<Comic> markAsRead(@Valid @RequestBody final Comic comic, final Principal principal) {
+    return this.wrap(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, true)));
+  }
 
-    @PutMapping("/markAsUnread")
-    public Resource<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
-        return addLink(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, false)));
-    }
+  @PutMapping("/markAsUnread")
+  public Resource<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
+    return this.wrap(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, false)));
+  }
 
-    private Resources<Resource<Comic>> addCollectionLink(final List<Comic> comics) {
-        return new Resources<Resource<Comic>>(
-                comics.stream()
-                    .map(comic -> {
-                        return addLink(comic);
-                    }).collect(Collectors.toList()),
-                linkTo(ComicController.class).withSelfRel());
-    }
+  @DeleteMapping("")
+  public void deleteComics() {
+    this.comicRepository.deleteAll();
+  }
 
-    private Resource<Comic> addLink(final Optional<Comic> comic) {
-        if (comic.isPresent()) {
-            return addLink(comic.get());
-        } else {
-            throw new ResourceNotFoundException();
-        }
-    }
-
-    private Resource<Comic> addLink(final Comic comic) {
-        final Link link = linkTo(ComicController.class).slash(comic.getId()).withSelfRel();
-        return new Resource<Comic>(comic, link);
-    }
+  @GetMapping("/bundle")
+  public void bundle() {
+    this.scannerService.associateVolumes();
+  }
 }

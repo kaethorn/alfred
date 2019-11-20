@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Volumes
+      <i>{{ series }}</i> volumes
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -42,7 +42,11 @@
        class="read-badge" color="secondary">
         &#10004;
       </ion-badge>
-      <img [src]="thumbnail(volume)">
+      <ion-badge *ngIf="stored[volume.firstComicId]"
+        class="synced-badge" color="secondary">
+        &#9921;
+      </ion-badge>
+      <img [attr.src]="thumbnails.get(volume.firstComicId) | async">
     </a>
     <ion-item>
       <ion-button slot="start" fill="clear"
@@ -50,7 +54,9 @@
         <ion-icon name="list"></ion-icon>
         List
       </ion-button>
-      <ion-icon (click)="openMenu($event, volume)" name="more" slot="end"></ion-icon>
+      <ion-button class="menu" fill="clear" slot="end" (click)="openMenu($event, volume)">
+        <ion-icon color="tertiary" name="more"></ion-icon>
+      </ion-button>
     </ion-item>
   </ion-card>
 </ion-content>

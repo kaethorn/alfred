@@ -18,7 +18,7 @@ export class BookmarkActionsComponent {
     private router: Router,
     private navParams: NavParams
   ) {
-    this.comic = navParams.get('comic');
+    this.comic = this.navParams.get('comic');
   }
 
   goToVolume (comic: Comic): void {

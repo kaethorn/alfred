@@ -1,0 +1,245 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Editing <i>{{ comic?.fileName }}</i>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="comicForm" (ngSubmit)="onSubmit()">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Series</p>
+            </ion-label>
+            <ion-input formControlName="series">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Publisher</p>
+            </ion-label>
+            <ion-input formControlName="publisher">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Volume</p>
+            </ion-label>
+            <ion-input formControlName="volume">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Number</p>
+            </ion-label>
+            <ion-input formControlName="number">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Year</p>
+            </ion-label>
+            <ion-input type="number" formControlName="year">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Month</p>
+            </ion-label>
+            <ion-input type="number" formControlName="month">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-item-divider>
+          <ion-label>
+            Content
+          </ion-label>
+        </ion-item-divider>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Title</p>
+            </ion-label>
+            <ion-input formControlName="title">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Summary</p>
+            </ion-label>
+            <ion-textarea autoGrow="true" formControlName="summary">
+            </ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Characters</p>
+            </ion-label>
+            <ion-input formControlName="characters">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Teams</p>
+            </ion-label>
+            <ion-input formControlName="teams">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Locations</p>
+            </ion-label>
+            <ion-input formControlName="locations">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-item-divider>
+          <ion-label>
+            Credits
+          </ion-label>
+        </ion-item-divider>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Writer</p>
+            </ion-label>
+            <ion-input formControlName="writer">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Penciller</p>
+            </ion-label>
+            <ion-input formControlName="penciller">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Inker</p>
+            </ion-label>
+            <ion-input formControlName="inker">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Colorist</p>
+            </ion-label>
+            <ion-input formControlName="colorist">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Letterer</p>
+            </ion-label>
+            <ion-input formControlName="letterer">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Cover Artist</p>
+            </ion-label>
+            <ion-input formControlName="coverArtist">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Editor</p>
+            </ion-label>
+            <ion-input formControlName="editor">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" size-sm>
+          <ion-item>
+            <ion-label>Manga</ion-label>
+            <ion-toggle formControlName="manga">
+            </ion-toggle>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">
+              <p>Notes</p>
+            </ion-label>
+            <ion-input formControlName="notes">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button color="secondary" (click)="scrape()" [disabled]="scrapeInProgress">
+            SCRAPE
+          </ion-button>
+          <ion-button type="submit" color="primary" [disabled]="!comicForm.valid || editInProgress">
+            SAVE
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

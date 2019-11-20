@@ -28,22 +28,35 @@
     </ion-item>
   </ion-card>
 
-  <!-- FIXME is this check needed, scanner will be moved to settings anyway? -->
   <div *ngIf="comics?.length > 0">
     <ion-card *ngFor="let comic of comics" class="comic-tile">
       <ion-card-header>
         <ion-card-title>{{ comic.series }} #{{ comic.number }}</ion-card-title>
         <ion-card-subtitle>Vol. {{ comic.volume }}</ion-card-subtitle>
       </ion-card-header>
-      <a [routerLink]="['/read', comic.id, comic.currentPage]">
-        <img [src]="thumbnail(comic)">
+      <a class="thumbnail" [routerLink]="['/read', comic.id]"
+         [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
+        <ion-badge *ngIf="stored[comic.id]"
+          class="synced-badge" color="secondary">
+          &#9921;
+        </ion-badge>
+        <img [attr.src]="thumbnails.get(comic.id) | async">
+        <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
       </a>
       <ion-item>
-        <ion-button fill="clear" [routerLink]="['/read', comic.id, comic.currentPage]" slot="start">
-          <ion-icon slot="start" name="play"></ion-icon>
-          Resume
+        <ion-button *ngIf="stored[comic.id]; else allowSync" fill="clear" (click)="delete(comic)">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          Synced
         </ion-button>
-        <ion-icon (click)="openMenu($event, comic)" slot="end" name="more"></ion-icon>
+        <ng-template #allowSync>
+          <ion-button fill="clear" (click)="sync(comic)">
+            <ion-icon slot="start" name="sync" [ngClass]="{ 'syncing': syncing }"></ion-icon>
+            Sync
+          </ion-button>
+        </ng-template>
+        <ion-button class="menu" fill="clear" slot="end" (click)="openMenu($event, comic)">
+          <ion-icon color="tertiary" name="more"></ion-icon>
+        </ion-button>
       </ion-item>
     </ion-card>
   </div>

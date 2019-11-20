@@ -29,6 +29,12 @@ export class VolumesService {
     );
   }
 
+  listPublishersWithSeries (): Observable<Publisher[]> {
+    return this.http.get(`/api/publishers/series`).pipe(
+      this.consumeHateoas('publishers')
+    );
+  }
+
   listSeries (publisher: string): Observable<Series[]> {
     return this.http.get(`/api/publishers/${ publisher }/series`).pipe(
       this.consumeHateoas('series')

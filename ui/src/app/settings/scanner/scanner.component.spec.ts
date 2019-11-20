@@ -1,25 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TestModule } from '../../../testing/test.module';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StatsServiceMocks as statsService } from '../../../testing/stats.service.mocks';
+import { ComicsServiceMocks as comicsService } from '../../../testing/comics.service.mocks';
 import { StatsService } from '../../stats.service';
+import { ComicsService } from '../../comics.service';
 
 import { ScannerComponent } from './scanner.component';
+import { SettingsPageModule } from '../settings.module';
 
 describe('ScannerComponent', () => {
   let component: ScannerComponent;
   let fixture: ComponentFixture<ScannerComponent>;
 
-  beforeEach(async(() => {
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: StatsService, useValue: statsService
-    });
-    TestBed.configureTestingModule(testModule).compileComponents();
-  }));
-
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        SettingsPageModule
+      ],
+      providers: [{
+        provide: StatsService, useValue: statsService
+      }, {
+        provide: ComicsService, useValue: comicsService
+      }]
+    });
     fixture = TestBed.createComponent(ScannerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -31,8 +34,10 @@ describe('ScannerComponent', () => {
 
   describe('#scan', () => {
 
-    beforeEach(function () {
-      this.addEventListenerSpy = spyOn(EventSource.prototype, 'addEventListener');
+    let addEventListenerSpy;
+
+    beforeEach(() => {
+      addEventListenerSpy = spyOn(EventSource.prototype, 'addEventListener');
       spyOn(EventSource.prototype, 'close');
       component.scan();
     });
@@ -43,15 +48,15 @@ describe('ScannerComponent', () => {
       expect(EventSource.prototype.addEventListener)
         .toHaveBeenCalledWith('current-file', jasmine.any(Function));
       expect(EventSource.prototype.addEventListener)
-        .toHaveBeenCalledWith('error', jasmine.any(Function));
+        .toHaveBeenCalledWith('scan-issue', jasmine.any(Function));
       expect(EventSource.prototype.addEventListener)
         .toHaveBeenCalledWith('done', jasmine.any(Function));
     });
 
     describe('when complete', () => {
 
-      beforeEach(function () {
-        const doneCallback = this.addEventListenerSpy.calls.mostRecent().args[1];
+      beforeEach(() => {
+        const doneCallback = addEventListenerSpy.calls.mostRecent().args[1];
         spyOn(component.scanned, 'emit');
         doneCallback();
       });

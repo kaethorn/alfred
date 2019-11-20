@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
+import { SecureModule } from '../secure/secure.module';
 import { ReaderPage } from './reader.page';
 
 @NgModule({
@@ -11,6 +12,7 @@ import { ReaderPage } from './reader.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    SecureModule,
     RouterModule.forChild([{
       path: '',
       component: ReaderPage

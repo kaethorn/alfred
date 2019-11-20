@@ -1,0 +1,121 @@
+{
+  "error": "OK",
+  "limit": 10,
+  "number_of_page_results": 10,
+  "number_of_total_results": 1602,
+  "offset": 10,
+  "results": [
+    {
+      "id": 52040,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-3166/",
+        "id": 3166,
+        "name": "Editions H\u00e9ritage"
+      },
+      "resource_type": "volume",
+      "start_year": "1982"
+    },
+    {
+      "id": 52396,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2094/",
+        "id": 2094,
+        "name": "Abril"
+      },
+      "resource_type": "volume",
+      "start_year": "1984"
+    },
+    {
+      "id": 44426,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2677/",
+        "id": 2677,
+        "name": "Norbert Hethke Verlag"
+      },
+      "resource_type": "volume",
+      "start_year": "1989"
+    },
+    {
+      "id": 117375,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-246/",
+        "id": 246,
+        "name": "Carlsen Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "1991"
+    },
+    {
+      "id": 52741,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-3234/",
+        "id": 3234,
+        "name": "Reiner-Feest-Verlag"
+      },
+      "resource_type": "volume",
+      "start_year": "1986"
+    },
+    {
+      "id": 87345,
+      "name": "Batman and...",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2378/",
+        "id": 2378,
+        "name": "Murray Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "1982"
+    },
+    {
+      "id": 51658,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-175/",
+        "id": 175,
+        "name": "Signet Books"
+      },
+      "resource_type": "volume",
+      "start_year": "1966"
+    },
+    {
+      "id": 74828,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-5802/",
+        "id": 5802,
+        "name": "Epucol"
+      },
+      "resource_type": "volume",
+      "start_year": "1970"
+    },
+    {
+      "id": 74832,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-4107/",
+        "id": 4107,
+        "name": "Interpresse"
+      },
+      "resource_type": "volume",
+      "start_year": "1972"
+    },
+    {
+      "id": 44423,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2561/",
+        "id": 2561,
+        "name": "Dino Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "1997"
+    }
+  ],
+  "status_code": 1,
+  "version": "1.0"
+}

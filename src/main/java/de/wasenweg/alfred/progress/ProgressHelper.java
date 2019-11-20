@@ -19,28 +19,27 @@ import static org.springframework.data.mongodb.core.aggregation.ObjectOperators.
 
 public class ProgressHelper {
 
-    // Merge progress flags for the current user
-    public static List<AggregationOperation> mergeProgress(final String userId) {
-        return Stream.of(
-            lookup("progress", "_id", "comicId", "progress"),
-            replaceRoot().withValueOf(
-                merge(Aggregation.ROOT)
-                .mergeWithValuesOf(
-                    arrayOf(
-                        filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
+  // Merge progress flags for the current user
+  public static List<AggregationOperation> mergeProgress(final String userId) {
+    return Stream.of(
+        lookup("progress", "_id", "comicId", "progress"),
+        replaceRoot().withValueOf(
+            merge(Aggregation.ROOT)
+            .mergeWithValuesOf(
+                arrayOf(
+                    filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
                     ).elementAt(0))
-                // Restore comic _id previously overwritten with progress _id.
-                .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
-            project().andExclude("progress", "comicId", "userId")
-        ).collect(Collectors.toList());
-    }
+            // Restore comic _id previously overwritten with progress _id.
+            .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
+        project().andExclude("progress", "comicId", "userId")
+    ).collect(Collectors.toList());
+  }
 
-    // Syntactic sugar
-    public static Aggregation aggregateWithProgress(final String userId, final AggregationOperation... operations) {
-        return Aggregation.newAggregation(
-                Stream.concat(
-                        mergeProgress(userId).stream(),
-                        Stream.of(operations))
-                .collect(Collectors.toList()));
-    }
+  // Syntactic sugar
+  public static Aggregation aggregateWithProgress(final String userId, final AggregationOperation... operations) {
+    return Aggregation.newAggregation(
+        Stream.concat(
+            mergeProgress(userId).stream(),
+            Stream.of(operations)).collect(Collectors.toList()));
+  }
 }

@@ -21,21 +21,21 @@ import java.util.Date;
 @Document
 public class Progress {
 
-    @Id
-    private String id;
+  @Id
+  private String id;
 
-    @NonNull
-    private String userId;
+  @NonNull
+  private String userId;
 
-    @NonNull
-    private ObjectId comicId;
+  @NonNull
+  private ObjectId comicId;
 
-    @Builder.Default
-    private boolean read = false;
+  @Builder.Default
+  private boolean read = false;
 
-    @NonNull
-    @Builder.Default
-    private Short currentPage = 0;
+  @NonNull
+  @Builder.Default
+  private Short currentPage = 0;
 
-    private Date lastRead;
+  private Date lastRead;
 }

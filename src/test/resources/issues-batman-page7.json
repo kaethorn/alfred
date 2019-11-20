@@ -1,0 +1,611 @@
+{
+  "error": "OK",
+  "limit": 100,
+  "number_of_page_results": 100,
+  "number_of_total_results": 716,
+  "offset": 600,
+  "results": [
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120819/",
+      "id": 120819,
+      "issue_number": "68",
+      "name": "The New Crimes Of Two-Face!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120820/",
+      "id": 120820,
+      "issue_number": "67",
+      "name": "The Mystery Rope!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120821/",
+      "id": 120821,
+      "issue_number": "66",
+      "name": "The Joker's Comedy Of Errors"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120822/",
+      "id": 120822,
+      "issue_number": "65",
+      "name": "The Empress Of The Underworld!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120823/",
+      "id": 120823,
+      "issue_number": "64",
+      "name": "The Candid Camera Killer!; Th Forgotten Men Of Crime!; The Return Of Killer Moth!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120824/",
+      "id": 120824,
+      "issue_number": "63",
+      "name": "The Joker's Crime Costumes! / The Case of the Flying Saucers / The Origin of Killer Moth!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120825/",
+      "id": 120825,
+      "issue_number": "61",
+      "name": "The Origin Of Batplane II!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120826/",
+      "id": 120826,
+      "issue_number": "60",
+      "name": "Crime Through the Ages!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120827/",
+      "id": 120827,
+      "issue_number": "59",
+      "name": "Batman In The Future!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120828/",
+      "id": 120828,
+      "issue_number": "57",
+      "name": "The Trial of Bruce Wayne!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120829/",
+      "id": 120829,
+      "issue_number": "54",
+      "name": "The Treasure Hunter!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120830/",
+      "id": 120830,
+      "issue_number": "53",
+      "name": "A Hairpin, a Hoe, a Hacksaw, a Hole In the Ground!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120831/",
+      "id": 120831,
+      "issue_number": "51",
+      "name": "The Wonderful Mr. Wimble"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120832/",
+      "id": 120832,
+      "issue_number": "50",
+      "name": "The Return Of Two-Face!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120833/",
+      "id": 120833,
+      "issue_number": "48",
+      "name": "The 1,000 Secrets of the Bat-Cave!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120834/",
+      "id": 120834,
+      "issue_number": "47",
+      "name": "The Origin of Batman"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120839/",
+      "id": 120839,
+      "issue_number": "46",
+      "name": "Batman And Robin Battle Mutiny In This Big House"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120841/",
+      "id": 120841,
+      "issue_number": "45",
+      "name": "A Batman And Robin Christmas Adventure"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-120842/",
+      "id": 120842,
+      "issue_number": "43",
+      "name": "The Blackbird of Banditry!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-121729/",
+      "id": 121729,
+      "issue_number": "614",
+      "name": "Hush Chapter Seven : The Joke"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-121730/",
+      "id": 121730,
+      "issue_number": "613",
+      "name": "Hush Chapter Six: The Opera"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-121731/",
+      "id": 121731,
+      "issue_number": "649",
+      "name": "All They Do Is Watch Us Kill, Part 2 of 3"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-121732/",
+      "id": 121732,
+      "issue_number": "660",
+      "name": "Grotesk, Part 2"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-121733/",
+      "id": 121733,
+      "issue_number": "661",
+      "name": "Grotesk, Part 3"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-121734/",
+      "id": 121734,
+      "issue_number": "657",
+      "name": "Batman & Son, Part 3: Wonderboys"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-121997/",
+      "id": 121997,
+      "issue_number": "651",
+      "name": "Face the Face: Part 2"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122055/",
+      "id": 122055,
+      "issue_number": "650",
+      "name": "All They Do Is Watch Us Kill, Part 3 of 3: It Only Hurts When I Laugh"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122114/",
+      "id": 122114,
+      "issue_number": "673",
+      "name": "Joe Chill in HELL"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122133/",
+      "id": 122133,
+      "issue_number": "640",
+      "name": "Family Reunion, Part 2: While the Cat's Away"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122206/",
+      "id": 122206,
+      "issue_number": "641",
+      "name": "Family Reunion, Conclusion: Face To Face"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122221/",
+      "id": 122221,
+      "issue_number": "642",
+      "name": "Breaking the Skin : Into the Jaws of Killer Croc!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122252/",
+      "id": 122252,
+      "issue_number": "643",
+      "name": "War Crimes, Part 2 of 4: Minor Discrepancies"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122287/",
+      "id": 122287,
+      "issue_number": "644",
+      "name": "War Crimes, Part 4 of 4: Judgement at Gotham"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122291/",
+      "id": 122291,
+      "issue_number": "36",
+      "name": "Sir Batman and Robin in King Arthurs Court"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122300/",
+      "id": 122300,
+      "issue_number": "645",
+      "name": "Show Me Yesterday, For I Can't Find Today  : A Robins Tale"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122317/",
+      "id": 122317,
+      "issue_number": "646",
+      "name": "Franchise, Part 1 of 2: Supply Side Economics  : Bombastic Battle!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122356/",
+      "id": 122356,
+      "issue_number": "647",
+      "name": "Franchise, Part 2 of 2: The Away Team"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122357/",
+      "id": 122357,
+      "issue_number": "648",
+      "name": "All They Do Is Watch Us Kill, Part 1of 3"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122427/",
+      "id": 122427,
+      "issue_number": "652",
+      "name": "Face the Face, Part 4 of 8 (Face the Face)"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122428/",
+      "id": 122428,
+      "issue_number": "653",
+      "name": "Face the Face, Part 6 of 8 (Face the Face)"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122497/",
+      "id": 122497,
+      "issue_number": "37",
+      "name": "The Joker Steals The Batman's Thunder! : The Joker Follows Suit"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122557/",
+      "id": 122557,
+      "issue_number": "38",
+      "name": "The Penguin on Parole!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122589/",
+      "id": 122589,
+      "issue_number": "40",
+      "name": "The 13 Club!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122664/",
+      "id": 122664,
+      "issue_number": "41",
+      "name": "Batman, Interplanetary Policeman!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122711/",
+      "id": 122711,
+      "issue_number": "42",
+      "name": "Claws of the Catwoman!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122749/",
+      "id": 122749,
+      "issue_number": "44",
+      "name": "Gamble WIth Doom!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122820/",
+      "id": 122820,
+      "issue_number": "55",
+      "name": "The Case of the 48 Jokers"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-122894/",
+      "id": 122894,
+      "issue_number": "89",
+      "name": "Bruce Wayne's Aunt Agatha!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123003/",
+      "id": 123003,
+      "issue_number": "133",
+      "name": "Batwoman's Publicity Agent"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123013/",
+      "id": 123013,
+      "issue_number": "137",
+      "name": "Robin's New Boss"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123098/",
+      "id": 123098,
+      "issue_number": "148",
+      "name": "The Joker's Greatest Triumph"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123223/",
+      "id": 123223,
+      "issue_number": "155",
+      "name": "Return of the Penguin ; Batman's Psychic Twin"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123306/",
+      "id": 123306,
+      "issue_number": "157",
+      "name": "The Villain of the Year ; The Hunt for Batman's Secret Identity"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123425/",
+      "id": 123425,
+      "issue_number": "162",
+      "name": "The Batman Creature ; Robin's New Secret Identity"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123567/",
+      "id": 123567,
+      "issue_number": "186",
+      "name": "The Joker's Original Robberies"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123596/",
+      "id": 123596,
+      "issue_number": "200",
+      "name": "The Man Who Radiated Fear!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123644/",
+      "id": 123644,
+      "issue_number": "201",
+      "name": "Batman's Gangland Guardians"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123755/",
+      "id": 123755,
+      "issue_number": "202",
+      "name": "Gateway to Death!  ; Menace of the Motorcycle Marauders!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-123917/",
+      "id": 123917,
+      "issue_number": "203",
+      "name": "The Secrets of the Batcave!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124059/",
+      "id": 124059,
+      "issue_number": "204",
+      "name": "Operation Blindfold!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124117/",
+      "id": 124117,
+      "issue_number": "674",
+      "name": "Batman Dies at Dawn"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124181/",
+      "id": 124181,
+      "issue_number": "205",
+      "name": "Blind As a ... Bat?"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124245/",
+      "id": 124245,
+      "issue_number": "206",
+      "name": "Batman Walks the Last Mile!  : This Is the...End!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124305/",
+      "id": 124305,
+      "issue_number": "207",
+      "name": "The Doomsday Ball! : Death Trap!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124417/",
+      "id": 124417,
+      "issue_number": "262",
+      "name": "The Scarecrow's Trail of Fear! ; The Round Robin Death Threats ; Where There's a Will - There's a Slay!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124527/",
+      "id": 124527,
+      "issue_number": "263",
+      "name": "Riddler on the Move!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124594/",
+      "id": 124594,
+      "issue_number": "265",
+      "name": "Batman's Greatest Failure!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124727/",
+      "id": 124727,
+      "issue_number": "381",
+      "name": "Darkly Moved the Pawns"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124801/",
+      "id": 124801,
+      "issue_number": "606",
+      "name": "Death-Wish for Two"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124874/",
+      "id": 124874,
+      "issue_number": "607",
+      "name": "Death-Wish for Two Conclusion  : Deadshot Shot Dead!"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124939/",
+      "id": 124939,
+      "issue_number": "608",
+      "name": "Hush Chapter One: The Ransom"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-124980/",
+      "id": 124980,
+      "issue_number": "609",
+      "name": "Hush Chapter Two: The Friend"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-125046/",
+      "id": 125046,
+      "issue_number": "610",
+      "name": "Hush Chapter Three: The Beast (In the Mouth of Madness!)"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-125134/",
+      "id": 125134,
+      "issue_number": "611",
+      "name": "Hush Chapter Four: The City  (Welcome to the Jungle!)"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-125222/",
+      "id": 125222,
+      "issue_number": "612",
+      "name": "Hush Chapter Five: The Battle"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-125291/",
+      "id": 125291,
+      "issue_number": "615",
+      "name": "Hush Chapter Eight : The Dead"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-128267/",
+      "id": 128267,
+      "issue_number": "675",
+      "name": "The Fiend With Nine Eyes"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-130247/",
+      "id": 130247,
+      "issue_number": "676",
+      "name": "Batman R.I.P.: Midnight in the House of Hurt"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-131010/",
+      "id": 131010,
+      "issue_number": "677",
+      "name": "Batman R.I.P.: Batman in the Underworld"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-132216/",
+      "id": 132216,
+      "issue_number": "678",
+      "name": "Batman R.I.P.: Zur En Arrh"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-135457/",
+      "id": 135457,
+      "issue_number": "679",
+      "name": "Batman R.I.P.: Miracle on Crime Alley"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-139676/",
+      "id": 139676,
+      "issue_number": "680",
+      "name": "Batman R.I.P.: The Thin White Duke Of Death"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-143147/",
+      "id": 143147,
+      "issue_number": "681",
+      "name": "Batman R.I.P.: The Conclusion - Hearts in Darkness"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-144296/",
+      "id": 144296,
+      "issue_number": "682",
+      "name": "The Butler Did It"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-148610/",
+      "id": 148610,
+      "issue_number": "683",
+      "name": "What the Butler Saw"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-149279/",
+      "id": 149279,
+      "issue_number": "684",
+      "name": "Batman: Last Rites, Last Days of Gotham Part 2 of 2"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-150662/",
+      "id": 150662,
+      "issue_number": "685",
+      "name": "Catspaw"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-151795/",
+      "id": 151795,
+      "issue_number": "686",
+      "name": "Whatever Happened to the Caped Crusader?, Part 1"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-159731/",
+      "id": 159731,
+      "issue_number": "687",
+      "name": "A Battle Within (Battle For The Cowl Epilogue)"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-163254/",
+      "id": 163254,
+      "issue_number": "688",
+      "name": "Long Shadows, Part One: Old Sins Cast Long Shadows"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-166783/",
+      "id": 166783,
+      "issue_number": "689",
+      "name": "Long Shadows, Part Two: New Day, New Knight"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-169367/",
+      "id": 169367,
+      "issue_number": "690",
+      "name": "Long Shadows, Part Three: Tripwires"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-176039/",
+      "id": 176039,
+      "issue_number": "691",
+      "name": "Long Shadows, Conclusion: Two Knights. Two Faces."
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-178923/",
+      "id": 178923,
+      "issue_number": "692",
+      "name": "Life After Death, Part 1: The Awakening"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-182539/",
+      "id": 182539,
+      "issue_number": "693",
+      "name": "Life After Death, Part 2: Charades"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-187623/",
+      "id": 187623,
+      "issue_number": "694",
+      "name": "Life After Death, Part 3: Fractured Pieces"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-192328/",
+      "id": 192328,
+      "issue_number": "695",
+      "name": "Life After Death, Part 4: Smoke And Mirrors"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-197348/",
+      "id": 197348,
+      "issue_number": "696",
+      "name": "Life After Death, Part 5: Mind Games"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-200764/",
+      "id": 200764,
+      "issue_number": "697",
+      "name": "Life After Death, Part 6: Liberator"
+    },
+    {
+      "api_detail_url": "https://comicvine.gamespot.com/api/issue/4000-206605/",
+      "id": 206605,
+      "issue_number": "698",
+      "name": "Riddle Me This, Part 1: Black Magic Tricks"
+    }
+  ],
+  "status_code": 1,
+  "version": "1.0"
+}

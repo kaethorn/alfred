@@ -1,0 +1,121 @@
+{
+  "error": "OK",
+  "limit": 10,
+  "number_of_page_results": 10,
+  "number_of_total_results": 1602,
+  "offset": 0,
+  "results": [
+    {
+      "id": 796,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-10/",
+        "id": 10,
+        "name": "DC Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "1940"
+    },
+    {
+      "id": 77146,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2538/",
+        "id": 2538,
+        "name": "Grupo Editorial Vid"
+      },
+      "resource_type": "volume",
+      "start_year": "1987"
+    },
+    {
+      "id": 41807,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2350/",
+        "id": 2350,
+        "name": "Panini Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2002"
+    },
+    {
+      "id": 78252,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2903/",
+        "id": 2903,
+        "name": "Ediciones Zinco"
+      },
+      "resource_type": "volume",
+      "start_year": "1987"
+    },
+    {
+      "id": 60760,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2350/",
+        "id": 2350,
+        "name": "Panini Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2012"
+    },
+    {
+      "id": 49597,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-3432/",
+        "id": 3432,
+        "name": "ECC Ediciones"
+      },
+      "resource_type": "volume",
+      "start_year": "2012"
+    },
+    {
+      "id": 109498,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2350/",
+        "id": 2350,
+        "name": "Panini Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2017"
+    },
+    {
+      "id": 78254,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2569/",
+        "id": 2569,
+        "name": "Norma Editorial"
+      },
+      "resource_type": "volume",
+      "start_year": "2001"
+    },
+    {
+      "id": 41845,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2350/",
+        "id": 2350,
+        "name": "Panini Comics"
+      },
+      "resource_type": "volume",
+      "start_year": "2005"
+    },
+    {
+      "id": 57809,
+      "name": "Batman",
+      "publisher": {
+        "api_detail_url": "https://comicvine.gamespot.com/api/publisher/4010-2957/",
+        "id": 2957,
+        "name": "SatellitF\u00f6rlaget"
+      },
+      "resource_type": "volume",
+      "start_year": "1989"
+    }
+  ],
+  "status_code": 1,
+  "version": "1.0"
+}

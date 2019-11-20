@@ -1,16 +1,6 @@
 <ion-card>
   <ion-card-header>Library management</ion-card-header>
   <ion-card-content>
-    <ion-list class="stats">
-      <ion-list-header>
-        Statistics
-      </ion-list-header>
-      <ion-item *ngFor="let stat of stats | keyvalue">
-        <ion-label>{{ stat.key }}</ion-label>
-        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
-      </ion-item>
-    </ion-list>
-
     <ion-list *ngIf="total" class="progress" lines="none">
       <ion-item>
         <ion-progress-bar [value]="counter/total"></ion-progress-bar>
@@ -22,21 +12,96 @@
       </ion-item>
     </ion-list>
 
-    <ion-list *ngIf="errors.length" class="errors">
-      <ion-list-header>Scan errors</ion-list-header>
-      <ion-item *ngFor="let error of errors">
-        <ion-badge color="clear">{{ error.date }}</ion-badge>
-        <ion-badge color="danger">{{ error.message }}</ion-badge>
+    <ion-list *ngIf="indeterminate" class="progress" lines="none">
+      <ion-item>
+        <ion-progress-bar type="indeterminate"></ion-progress-bar>
+      </ion-item>
+      <ion-item>
+        <ion-badge color="clear">
+          {{ indeterminate }}
+        </ion-badge>
       </ion-item>
     </ion-list>
 
-    <ion-list lines="none">
+    <ion-list>
       <ion-item>
-        <ion-button slot="end" (click)="scan()" [disabled]="total > 0" color="primary">
+        Scan the library folder for new comic books.
+        <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
+          <ion-icon name="search"></ion-icon>
           SCAN
         </ion-button>
       </ion-item>
+      <ion-item *ngIf="issues.length">
+        <ion-icon slot="start" color="danger" name="alert"></ion-icon>
+          Found {{ issues.length }} errors in the comic book library.
+        <ion-button slot="end" [routerLink]="['queue']">
+          <ion-icon slot="start" name="list"></ion-icon>
+          View 
+        </ion-button>
+      </ion-item>
     </ion-list>
+  </ion-card-content>
+</ion-card>
 
+<ion-card>
+  <ion-card-header>Statistics</ion-card-header>
+  <ion-card-content>
+    <ion-list class="stats">
+      <ion-item *ngFor="let stat of stats | keyvalue">
+        <ion-label>{{ stat.key }}</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>User maintenance</ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        Clear {{ cachedComicsCount }} cached comics in the current browser
+        <ion-button slot="end" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount == 0" color="warning">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Clear
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        Remove progress information and bookmarks of the current user.
+        <ion-button slot="end" (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Delete
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-card-header>System maintenance</ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        Remove scanned comic book information. Does not delete files from disk.
+        <ion-button slot="end" (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Delete
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        Remove progress information and bookmarks of all users. Does not affect comic information.
+        <ion-button slot="end" (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Delete
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        Associate comics in a volume. Automatically done after scanning.
+        <ion-button slot="end" (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
+          <ion-icon slot="start" name="paper"></ion-icon>
+          Bundle
+        </ion-button>
+      </ion-item>
+    </ion-list>
   </ion-card-content>
 </ion-card>

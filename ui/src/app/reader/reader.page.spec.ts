@@ -1,65 +1,79 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { defer } from 'rxjs';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { TestModule } from '../../testing/test.module';
-import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 import { comic1 as comic } from '../../testing/comic.fixtures';
 
-import { ComicsService } from '../comics.service';
+import { ComicStorageService } from '../comic-storage.service';
 import { ReaderPage } from './reader.page';
+import { ReaderPageModule } from './reader.module';
 
 describe('ReaderPage', () => {
+
   let component: ReaderPage;
   let fixture: ComponentFixture<ReaderPage>;
   let router;
-  const clickRightSide = () => {
-    fixture.debugElement.query(By.css('.layer'))
+  let comicStorageService;
+
+  const clickRightSide = async () => {
+    fixture.debugElement.query(By.css('.pages-layer'))
+      .triggerEventHandler('click', {
+        clientX      : 700,
+        currentTarget: { offsetWidth: 800 }
+      });
+    await fixture.whenStable();
+    fixture.detectChanges();
+  };
+  const clickLeftSide = async () => {
+    fixture.debugElement.query(By.css('.pages-layer'))
+      .triggerEventHandler('click', {
+        clientX      : 100,
+        currentTarget: { offsetWidth: 800 }
+      });
+    await fixture.whenStable();
+    fixture.detectChanges();
+  };
+  const clickCenter = async () => {
+    fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
         clientX      : 500,
         currentTarget: { offsetWidth: 800 }
       });
+    await fixture.whenStable();
+    fixture.detectChanges();
   };
-  const clickLeftSide = () => {
-    fixture.debugElement.query(By.css('.layer'))
-      .triggerEventHandler('click', {
-        clientX      : 300,
-        currentTarget: { offsetWidth: 800 }
-      });
-  };
-
-  beforeEach(async(() => {
-    router = jasmine.createSpyObj('Router', ['navigate']);
-
-    const testModule: any = TestModule();
-    testModule.providers.push({
-      provide: ComicsService, useValue: comicsService
-    });
-    testModule.providers.push({
-      provide: ActivatedRoute, useValue: { snapshot: { params: {
-        id: '493',
-        page: '0'
-      }}}
-    });
-    testModule.providers.push({
-      provide: Router, useValue: router
-    });
-
-    testModule.imports.pop();
-    testModule.imports.push(
-      RouterTestingModule.withRoutes([
-        { path: 'read/:id/:page', component: ReaderPage }
-      ])
-    );
-
-    TestBed.configureTestingModule(testModule).compileComponents();
-  }));
 
   beforeEach(() => {
-    // Allow steering ComicsService response:
-    comicsService.get.and.returnValue(defer(() => Promise.resolve(comic)));
+    router = jasmine.createSpyObj('Router', ['navigate']);
+    comicStorageService = jasmine
+      .createSpyObj('ComicStorageService', ['get', 'readPage', 'storeSurrounding']);
+    comicStorageService.get.and.returnValue(Promise.resolve(Object.assign({}, comic)));
+    comicStorageService.readPage.and.returnValue(Promise.resolve('/api/read/923/0'));
+    comicStorageService.storeSurrounding.and.returnValue(Promise.resolve({}));
+
+    TestBed.configureTestingModule({
+      imports: [
+        ReaderPageModule,
+        NoopAnimationsModule,
+        RouterTestingModule.withRoutes([
+          { path: 'read/:id', component: ReaderPage }
+        ])
+      ],
+      providers: [{
+        provide: ComicStorageService, useValue: comicStorageService
+      }, {
+        provide: ActivatedRoute, useValue: {
+          snapshot: {
+            params: { id: '493' },
+            queryParams: { page: 0 }
+          }
+        }
+      }, {
+        provide: Router, useValue: router
+      }]
+    });
 
     fixture = TestBed.createComponent(ReaderPage);
     component = fixture.componentInstance;
@@ -80,7 +94,23 @@ describe('ReaderPage', () => {
       fixture.detectChanges();
 
       expect(component.comic.id).toBe('923');
-      expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 0]);
+      expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);
+    });
+
+    describe('when clicking the center', () => {
+
+      it('shows the controls when clicking in the center', async () => {
+        expect(fixture.debugElement.query(By.css('.control-layer'))).toBeNull();
+        await clickCenter();
+        expect(fixture.debugElement.query(By.css('.control-layer'))).not.toBeNull();
+      });
+
+      it('does not navigate', async () => {
+        await fixture.whenStable();
+        router.navigate.calls.reset();
+        clickCenter();
+        expect(router.navigate).not.toHaveBeenCalled();
+      });
     });
 
     describe('in single page mode', () => {
@@ -89,7 +119,7 @@ describe('ReaderPage', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        component.layer = {
+        component.pagesLayer = {
           nativeElement: {
             parentElement: {
               clientWidth : 1000,
@@ -101,27 +131,27 @@ describe('ReaderPage', () => {
 
       describe('to the next page', () => {
 
-        beforeEach(() => {
-          clickRightSide();
+        beforeEach(async () => {
+          await clickRightSide();
         });
 
         it('sets the current page and updates the route', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 1]);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
         });
       });
 
       describe('to the end of the comic', () => {
 
-        beforeEach(() => {
-          clickRightSide();
-          clickRightSide();
-          clickRightSide();
+        beforeEach(async () => {
+          await clickRightSide();
+          await clickRightSide();
+          await clickRightSide();
         });
 
-        it('does not exceed the last page', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
-          clickRightSide();
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
+        it('does not exceed the last page', async () => {
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          await clickRightSide();
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
         });
       });
     });
@@ -132,7 +162,7 @@ describe('ReaderPage', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        component.layer = {
+        component.pagesLayer = {
           nativeElement: {
             parentElement: {
               clientWidth : 2000,
@@ -143,42 +173,42 @@ describe('ReaderPage', () => {
       });
 
       it('loads only the cover', () => {
-        expect(component.imagePathRight).toBeNull();
+        expect(comicStorageService.readPage.calls.mostRecent().args[1]).toBe(0);
       });
 
       describe('to the next page', () => {
 
-        beforeEach(() => {
-          clickRightSide();
+        beforeEach(async () => {
+          comicStorageService.readPage.calls.reset();
+          await clickRightSide();
         });
 
         it('sets the current page and updates the route', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 1]);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
         });
 
         it('displays two pages', () => {
-          expect(component.imagePathLeft).not.toBeNull();
-          expect(component.imagePathRight).not.toBeNull();
+          expect(comicStorageService.readPage.calls.count()).toBe(2);
         });
 
-        it('navigating back displays only the cover', () => {
-          clickLeftSide();
-          expect(component.imagePathLeft).not.toBeNull();
-          expect(component.imagePathRight).toBeNull();
+        it('navigating back displays only the cover', async () => {
+          comicStorageService.readPage.calls.reset();
+          await clickLeftSide();
+          expect(comicStorageService.readPage.calls.count()).toBe(1);
         });
       });
 
       describe('to the end of the comic', () => {
 
-        beforeEach(() => {
-          clickRightSide();
-          clickRightSide();
+        beforeEach(async () => {
+          await clickRightSide();
+          await clickRightSide();
         });
 
-        it('does not exceed the last page', () => {
-          expect(router.navigate).toHaveBeenCalledWith(['/read', '923', 3]);
-          clickRightSide();
-          expect(router.navigate).not.toHaveBeenCalledWith(['/read', '923', 4]);
+        it('does not exceed the last page', async () => {
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          await clickRightSide();
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
         });
       });
     });
