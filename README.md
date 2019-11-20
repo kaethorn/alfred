@@ -138,7 +138,6 @@ To enable streaming in lighttpd, use the `server.stream-response-body` option.
 ## Develop
 
 ### Gradle
->>>>>>> master
 
 To run the application on the host system directly, make sure to have a MongoDB running, e.g. on `localhost`, then run:
 
