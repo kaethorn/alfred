@@ -1,6 +1,5 @@
 import { LibraryPage } from './library.po';
 import { SettingsPage } from './settings.po';
-import { AppPage } from './app.po';
 import { MongoDBTools } from './mongodb.tools';
 import { Page } from './page.po';
 
