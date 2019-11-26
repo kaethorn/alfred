@@ -17,14 +17,21 @@ describe('UserSettingsService', () => {
     TestBed.resetTestingModule();
   });
 
-  describe('#constructor', () => {
+  describe('#load', () => {
 
-    it('loads empty user settings', () => {
-      expect(service.get()).toBeDefined();
-    });
+    describe('without settings', () => {
 
-    it('determines dark mode user preference', () => {
-      expect(service.get().darkMode).toBeDefined();
+      beforeEach(() => {
+        service.load();
+      });
+
+      it('loads empty user settings', () => {
+        expect(service.get()).toBeDefined();
+      });
+
+      it('determines dark mode user preference', () => {
+        expect(service.get().darkMode).toBeDefined();
+      });
     });
 
     describe('with existing settings', () => {

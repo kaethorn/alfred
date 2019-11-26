@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class UserSettingsService {
 
-  private userSettings: { [key: string]: any; };
+  private userSettings: { [key: string]: any; } = {};
 
   constructor () { }
 
