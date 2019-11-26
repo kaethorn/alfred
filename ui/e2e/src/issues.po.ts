@@ -7,10 +7,16 @@ export class IssuesPage {
     return element.all(by.css('app-issues ion-card'));
   }
 
+  static getUnreadIssues () {
+    return this.getIssues().filter((issue) => {
+      return issue.$('.read-badge').isPresent().then(read => !read);
+    });
+  }
+
   static async getUnreadIssuesCount (): Promise<number> {
     return this.getIssues().reduce(async (result, issue) => {
-      const present = await issue.element(by.css('.read-badge')).isPresent();
-      return present ? result : result + 1;
+      const read = await issue.element(by.css('.read-badge')).isPresent();
+      return read ? result : result + 1;
     }, 0);
   }
 
