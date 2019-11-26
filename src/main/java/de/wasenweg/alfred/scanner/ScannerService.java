@@ -173,6 +173,7 @@ public class ScannerService {
     } catch (final SAXException | IOException exception) {
       this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
     } catch (final NoMetaDataException exception) {
+      this.logger.info(String.format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
       final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
       this.fileMetaDataService.write(comic);
       issues.forEach(issue -> {

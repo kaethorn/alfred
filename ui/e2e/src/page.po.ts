@@ -21,7 +21,11 @@ export class Page {
    * page.
    */
   static waitForElement (target: ElementFinder, timeout = 5000) {
-    return browser.wait(ExpectedConditions.elementToBeClickable(target), timeout);
+    return browser.wait(
+      ExpectedConditions.and(
+        ExpectedConditions.elementToBeClickable(target),
+        ExpectedConditions.presenceOf(target)
+    ), timeout);
   }
 
   static async waitForText (target: ElementFinder, text: string) {

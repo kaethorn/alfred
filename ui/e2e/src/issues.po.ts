@@ -1,4 +1,4 @@
-import { by, element, browser } from 'protractor';
+import { by, element, browser, ElementFinder } from 'protractor';
 import { Page } from './page.po';
 
 export class IssuesPage {
@@ -7,10 +7,11 @@ export class IssuesPage {
     return element.all(by.css('app-issues ion-card'));
   }
 
-  static getUnreadIssues () {
-    return this.getIssues().filter((e) => {
-      return e.element(by.css('.read-badge')).isPresent().then(present => !present);
-    });
+  static async getUnreadIssuesCount (): Promise<number> {
+    return this.getIssues().reduce(async (result, issue) => {
+      const present = await issue.element(by.css('.read-badge')).isPresent();
+      return present ? result : result + 1;
+    }, 0);
   }
 
   static getSyncedIssues () {
@@ -46,12 +47,13 @@ export class IssuesPage {
   }
 
   static async markAsReaduntil (issueNumber: number) {
-    const previousCount = await this.getUnreadIssues().count();
+    const previousCount = await this.getUnreadIssuesCount();
     await this.clickIssueMenuItem(issueNumber, 'Mark read until here');
 
-    return browser.wait(async () => {
-      const nextCount = await this.getUnreadIssues().count();
-      return previousCount !== nextCount;
+    return browser.wait(() => {
+      return this.getUnreadIssuesCount().then(count => {
+        return count !== previousCount;
+      });
     }, 7500);
   }
 
