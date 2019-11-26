@@ -2,6 +2,10 @@ import { browser, by, element, ExpectedConditions, ElementFinder, WebElement } f
 
 export class Page {
 
+  static getTitleText () {
+    return element.all(by.css('app-root ion-toolbar ion-title')).last().getText();
+  }
+
   static async clickActionItem (target: ElementFinder, item: string) {
     const menuButton = target.element(by.css('ion-button.menu'));
     await this.scrollIntoView(menuButton);

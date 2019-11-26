@@ -1,5 +1,6 @@
 import { AppPage } from './app.po';
 import { MongoDBTools } from './mongodb.tools';
+import { browser } from 'protractor';
 
 describe('AppComponent', () => {
 
@@ -9,7 +10,7 @@ describe('AppComponent', () => {
 
   it('displays the top level library view', async () => {
     await AppPage.navigateTo();
-    expect(await AppPage.getTitleText()).toContain('Series');
+    expect(await browser.getCurrentUrl()).toContain('library/publishers');
   });
 
   it('informs the user how to populate the library', async () => {
