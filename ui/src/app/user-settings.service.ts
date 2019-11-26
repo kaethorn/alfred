@@ -7,16 +7,14 @@ export class UserSettingsService {
 
   private userSettings: { [key: string]: any; };
 
-  constructor () {
-    this.load();
-  }
+  constructor () { }
 
   get () {
     return this.userSettings;
   }
 
   save () {
-    this.toggleDarkMode();
+    this.toggleColorScheme();
     localStorage.setItem('userSettings', JSON.stringify(this.userSettings));
   }
 
@@ -29,17 +27,17 @@ export class UserSettingsService {
     if (!('darkMode' in this.userSettings)) {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
       this.userSettings.darkMode = prefersDark.matches;
-      this.toggleDarkMode();
+      this.toggleColorScheme();
       prefersDark.addEventListener('change', (mediaQuery) => {
         this.userSettings.darkMode = mediaQuery.matches;
         this.save();
       });
     } else {
-      this.toggleDarkMode();
+      this.toggleColorScheme();
     }
   }
 
-  private toggleDarkMode () {
+  private toggleColorScheme () {
     document.body.classList.toggle('dark', this.userSettings.darkMode);
   }
 }
