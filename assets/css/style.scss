@@ -5,7 +5,11 @@
 @import url('https://fonts.googleapis.com/css?family=Playball');
 
 body {
-  background-color: #cbd2cf;
+  background-color: #393939;
+}
+
+.main-content {
+  color: #d7dddd;
 }
 
 .page-header {
@@ -30,7 +34,7 @@ body {
 }
 
 .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
-  color: #393939;
+  color: white;
 }
 
 @media screen and (min-width: 64em) {
