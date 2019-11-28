@@ -195,10 +195,8 @@ To enable streaming in lighttpd, use the `server.stream-response-body` option.
 Start a test instance
 
 ```sh
-docker network create alfred-net
 docker pull mongo:3.6
 docker run -d --name mongo mongo:3.6
-docker network connect alfred-net mongo
 
 ./gradlew clean build -x check
 java -jar build/libs/alfred.jar --spring.profiles.active=test --spring.data.mongodb.uri=mongodb://localhost/alfred
