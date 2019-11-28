@@ -1,48 +1,54 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>
-      Series
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content *ngIf="publishers?.length == 0; else hasPublishers">
+  <ion-content>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>Empty library</ion-card-subtitle>
+        <ion-card-title>No comics found</ion-card-title>
+      </ion-card-header>
 
-<ion-toolbar>
-  <ion-searchbar placeholder="Search series"
-    #libraryFilter
-    (ionInput)="filter(libraryFilter.value)">
-  </ion-searchbar>
-</ion-toolbar>
-
-<ion-content>
-  <ion-card *ngIf="publishers?.length == 0">
-    <ion-card-header>
-      <ion-card-subtitle>Empty library</ion-card-subtitle>
-      <ion-card-title>No comics found</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <ion-button expand="block" href="/settings">
-        <ion-icon name="search"></ion-icon>
-        Scan for comics
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-list *ngFor="let publisher of publishers">
-    <ion-item class="publisher">
-      <ion-button fill="clear" size="small" color="primary"
-        [routerLink]="['/library/publishers/' + publisher.publisher + '/series']">
-        {{ publisher.publisher }}
-      </ion-button>
-    </ion-item>
-    <ion-item *ngFor="let serie of publisher.series" class="serie">
-      <ion-button fill="solid" color="secondary"
-        [routerLink]="['/library/publishers/' + serie.publisher + '/series/' + serie.series + '/volumes']">
-        {{ serie.series }}
-      </ion-button>
-    </ion-item>
-  </ion-list>
+      <ion-card-content>
+        <ion-button expand="block" href="/settings">
+          <ion-icon name="search"></ion-icon>
+          Scan for comics
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-content>
 </ion-content>
+
+<ng-template #hasPublishers>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>
+        Series
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-toolbar>
+    <ion-searchbar placeholder="Search series"
+      #libraryFilter
+      (ionInput)="filter(libraryFilter.value)">
+    </ion-searchbar>
+  </ion-toolbar>
+
+  <ion-content>
+    <ion-list *ngFor="let publisher of publishers">
+      <ion-item class="publisher">
+        <ion-button fill="clear" size="small" color="primary"
+          [routerLink]="['/library/publishers/' + publisher.publisher + '/series']">
+          {{ publisher.publisher }}
+        </ion-button>
+      </ion-item>
+      <ion-item *ngFor="let serie of publisher.series" class="serie">
+        <ion-button fill="solid" color="secondary"
+          [routerLink]="['/library/publishers/' + serie.publisher + '/series/' + serie.series + '/volumes']">
+          {{ serie.series }}
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ng-template>

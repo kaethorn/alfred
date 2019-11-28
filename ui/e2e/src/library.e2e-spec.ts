@@ -1,7 +1,7 @@
 import { LibraryPage } from './library.po';
 import { SettingsPage } from './settings.po';
-import { AppPage } from './app.po';
 import { MongoDBTools } from './mongodb.tools';
+import { Page } from './page.po';
 
 describe('LibraryComponent', () => {
 
@@ -15,7 +15,7 @@ describe('LibraryComponent', () => {
 
   it('sorts publishers alphabetically', async () => {
     await LibraryPage.navigateTo();
-    expect(await AppPage.getTitleText()).toContain('Series');
+    expect(await Page.getTitleText()).toContain('Series');
     expect(await LibraryPage.getAllPublishers().getText())
       .toEqual(['DC COMICS', 'F5 ENTERATINMENT', 'TOP COW']);
   });
@@ -28,7 +28,7 @@ describe('LibraryComponent', () => {
   it('sorts series alphabetically', async () => {
     await LibraryPage.clickPublisher('DC Comics');
     await LibraryPage.waitForSeries();
-    expect(await AppPage.getTitleText()).toContain('DC Comics series');
+    expect(await Page.getTitleText()).toContain('DC Comics series');
     expect(await LibraryPage.getAllSeries().getText())
       .toEqual([ 'BATGIRL', 'BATMAN' ]);
   });
@@ -36,7 +36,7 @@ describe('LibraryComponent', () => {
   it('sorts volumes alphabetically', async () => {
     await LibraryPage.clickSeries('Batgirl');
     await LibraryPage.waitForVolumes();
-    expect(await AppPage.getTitleText()).toContain('Batgirl volumes');
+    expect(await Page.getTitleText()).toContain('Batgirl volumes');
     expect(await LibraryPage.getVolumeTitles().getText())
       .toEqual(['Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016']);
   });

@@ -23,26 +23,27 @@ describe('IssuesComponent', () => {
   });
 
   it('shows all issues in unread state', async () => {
-    expect(await IssuesPage.getUnreadIssues().count()).toBe(73);
+    expect(await IssuesPage.getUnreadIssuesCount()).toBe(73);
   });
 
   it('can mark as read until a certain issue', async () => {
     await IssuesPage.markAsReaduntil(4);
-    expect(await IssuesPage.getUnreadIssues().count()).toBe(68);
+    expect(await IssuesPage.getUnreadIssuesCount()).toBe(68);
   });
 
   it('can mark an individual issue as read', async () => {
     await IssuesPage.toggleMarkAsRead(10);
-    expect(await IssuesPage.getUnreadIssues().count()).toBe(67);
+    expect(await IssuesPage.getUnreadIssuesCount()).toBe(67);
   });
 
   it('can mark an individual issue as not read', async () => {
     await IssuesPage.toggleMarkAsRead(10);
-    expect(await IssuesPage.getUnreadIssues().count()).toBe(68);
+    expect(await IssuesPage.getUnreadIssuesCount()).toBe(68);
   });
 
   it('has links back to the library', async () => {
     await IssuesPage.clickIssueMenuItem(0, 'View in library');
+    await LibraryPage.waitForVolumes();
     expect(await LibraryPage.getVolumeTitles().getText())
       .toEqual(['Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016']);
   });

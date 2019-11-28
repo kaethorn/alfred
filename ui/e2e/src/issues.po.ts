@@ -8,9 +8,16 @@ export class IssuesPage {
   }
 
   static getUnreadIssues () {
-    return this.getIssues().filter((e) => {
-      return e.element(by.css('.read-badge')).isPresent().then(present => !present);
+    return this.getIssues().filter((issue) => {
+      return issue.$('.read-badge').isPresent().then(read => !read);
     });
+  }
+
+  static async getUnreadIssuesCount (): Promise<number> {
+    return this.getIssues().reduce(async (result, issue) => {
+      const read = await issue.element(by.css('.read-badge')).isPresent();
+      return read ? result : result + 1;
+    }, 0);
   }
 
   static getSyncedIssues () {
@@ -42,17 +49,18 @@ export class IssuesPage {
     return browser.wait(async () => {
       const nextState = await issue.element(by.css('.read-badge')).isPresent();
       return previousState !== nextState;
-    }, 3500);
+    }, 6500);
   }
 
   static async markAsReaduntil (issueNumber: number) {
-    const previousCount = await this.getUnreadIssues().count();
+    const previousCount = await this.getUnreadIssuesCount();
     await this.clickIssueMenuItem(issueNumber, 'Mark read until here');
 
-    return browser.wait(async () => {
-      const nextCount = await this.getUnreadIssues().count();
-      return previousCount !== nextCount;
-    }, 4500);
+    return browser.wait(() => {
+      return this.getUnreadIssuesCount().then(count => {
+        return count !== previousCount;
+      });
+    }, 7500);
   }
 
   static get markReadUntilHereButton () {
