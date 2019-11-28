@@ -2,34 +2,69 @@
 
 # Alfred
 
-A web based comic management system for your [ComicRack](http://comicrack.cyolito.com/) library.
+A web based comic book reader and library manager.
 
 ![Alfred](./art/alfred.svg)
 
 ## Features
 
-* Browse and read comics on your network.
-* Web application.
-* Mobile application (Android or iOS).
+* Scan & manage CBZ comic books on your local network.
+* Access your comic books from the internet.
+* Log in with your Google account.
+* Read comic books using a progressive web app.
+* Continue reading while being offline.
+* Automatically sync progress when connectivity is restored.
+* Switch color schemes (aka dark mode).
+* Make use of embedded metadata from [ComicRack](http://comicrack.cyolito.com/).
+* Look up missing metadata from the [Comic Vine API](https://comicvine.gamespot.com/api/).
 
 ## Stack
 
-* Spring Boot 2.
+* Spring Boot 2 back end.
 * MongoDB.
-* Ionic v4 application.
+* Google Sign-In.
+* Ionic v4 PWA.
+
 
 ## Requirements
 
-A Dockerfile allows building the application without the need to install Java. Building it
-* Java 11 and a MongoDB
-* or Docker
-* Zipped comic book files (.cbz) containing embedded `ComicInfo.xml` metadata files from ComicRack, see [docs](http://comicrack.cyolito.com/software/windows/windows-documentation/7-meta-data-in-comic-files).
-* A Client ID for Google Sign-In.
-* (optional) A [Comic Vine API](https://comicvine.gamespot.com/api/) key.
+Building requires either **Java 11 SDK** or **Docker**.
 
-## Run
+Running the application requires a **Java 11 JRE** or **Docker** and a Client ID for **Google Sign-In**.
 
-### 1. Network
+
+## Usage
+
+### Docker
+
+This is the recommended way to build and run Alfred.
+
+#### TL;DR
+
+```sh
+docker network create alfred-net
+docker start mongo || docker run -d -p 27017:27017 --name mongo mongo:3.6
+docker network connect alfred-net mongo
+docker build -t de.wasenweg/alfred .
+docker run --dns 8.8.8.8 -p 5000:8080 --net=alfred-net --rm \
+  -v <Path to your comic library>:/comics \
+  -v <Path to where you want to receive log files>:/logs \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred \
+  -e COMICS_COMIC_VINE_API_KEY=<Your Comic Vine API key> \
+  -e LOGGING_FILE=/logs/alfred.log \
+  -e AUTH_CLIENT.ID=<Your Google Client ID, ends in .apps.googleusercontent.com> \
+  -e AUTH_USERS=<List of allowed user IDs, e.g. email addresses> \
+  -e AUTH_JWT.SECRET=<Your own generated or custom JWT secret> \
+  --name alfred \
+  de.wasenweg/alfred
+```
+
+Configuration options are explained [here](#configuration).
+
+For a detailed explanation of, please continue:
+
+#### 1. Network
 
 Set up a common network:
 
@@ -37,7 +72,7 @@ Set up a common network:
 docker network create alfred-net
 ```
 
-### 2a. New MongoDB
+#### 2a. New MongoDB
 
 Set up a new MongoDB connected to the network:
 
@@ -45,7 +80,7 @@ Set up a new MongoDB connected to the network:
 docker run --name mongo -p 27017:27017 --net=alfred-net mongo
 ```
 
-### 2b. Existing MongoDB
+#### 2b. Existing MongoDB
 
 If you want to use an existing MongoDB instead, run and connect it to the network:
 
@@ -54,7 +89,7 @@ docker start mongo
 docker network connect alfred-net mongo
 ```
 
-### 3. Build
+#### 3. Build
 
 Build the docker image:
 
@@ -62,7 +97,7 @@ Build the docker image:
 docker build -t de.wasenweg/alfred .
 ```
 
-### 4. Run
+#### 4. Run
 
 Run the image and connect to the MongoDB:
 
@@ -74,26 +109,23 @@ Replace `/path/to/comics` with the path to your comic library.
 
 The application will now be available at <http://localhost:5000>.
 
-You can also pass all required options, like so:
+### Alternative (Gradle)
+
+Running Alfred on the host system directly requires **Java 11 SDK** and a running MongoDB instance, e.g. on `localhost`.
 
 ```sh
-docker run --dns 8.8.8.8 -p 8080:8080 --net=alfred-net --rm \
-  -v <Path to your comic library>:/comics \
-  -v <Path to where you want to receive log files>:/logs \
-  -e SPRING_PROFILES_ACTIVE=prod \
-  -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred \
-  -e COMICS.COMIC_VINE_API_KEY=<Your Comic Vine API key> \
-  -e LOGGING_FILE=/logs/alfred.log \
-  -e AUTH.CLIENT.ID=<Your Google Client ID, ends in .apps.googleusercontent.com> \
-  -e AUTH.USERS=<List of allowed user IDs, e.g. email addresses> \
-  -e AUTH.JWT.SECRET=<Your own generated or custom JWT secret> \
-  --name alfred \
-  de.wasenweg/alfred
+./gradlew clean build -x check
+java -jar build/libs/alfred.jar --spring.data.mongodb.uri=mongodb://localhost/alfred
 ```
+
+The application will now be available at <http://localhost:8080>.
+
 
 ## Configuration
 
 Apart from the JWT secret (`auth.jwt.secret`), all settings can initially be passed to the application via [Spring's configuration options](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html). They're then stored and maintained in the MongoDB `settings` collection and take precedence over configuration options. Once the application is running, settings can be changed on the `settings` page.
+
+To pass an option via docker, use an environment variable, e.g.: `docker run -e AUTH_CLIENT_ID=000000.apps.googleusercontent.com ...`.
 
 ### Comics path (`comics.path`)
 
@@ -102,8 +134,6 @@ The default comics path is `/comics` which allows you to associate it via a Dock
 ### Client ID (`auth.client.id`)
 
 Create a set of client credentials in the [Google API console](https://console.developers.google.com/apis/credentials). Configure the `Authorized JavaScript origins` as well as `Authorized redirect URIs` to reflect the host name of your Alfred instance. The Client ID format should be `000000.apps.googleusercontent.com`.
-
-Then pass that client ID as `auth.client.id` to the application. There are [various ways](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) to achieve that. Running the application via docker, you could pass an environment variable: `docker run -e AUTH.CLIENT.ID=000000.apps.googleusercontent.com ...`.
 
 ### Allowed users (`auth.users`)
 
@@ -116,6 +146,23 @@ Once the application authenticates the user, it issues its own JWT authenticatio
 ### Comic Vine API key (`comics.comicVineApiKey`)
 
 Comic books not containing a meta data XML or an XML without enough attributes won't be usable. Missing meta data can be fetched from the [Comic Vine API](https://comicvine.gamespot.com/api/) for which you need an API key.
+
+
+## Metadata
+
+Comic book files need to be in CBZ format which is essentially a zip archive containing page images. In order to recoginize a comic book, Alfred needs at least the following information:
+
+* A **publisher**, e.g. `DC Comics`.
+* A **series**, e.g. `Batman`.
+* A **volume**, e.g. `1940`.
+* An **issue number**, e.g. `380`.
+
+It expects to find these in a file named `ComicInfo.xml` which is located on the top level of the zip archive. Its format is loosley compatible with that produced by ComicRack, see [docs](http://comicrack.cyolito.com/software/windows/windows-documentation/7-meta-data-in-comic-files).
+
+Failing that, Alfred will attempt to retrieve metadata from the [Comic Vine API](https://comicvine.gamespot.com/api/) based on information found in the file path, which is why it must match the followin structure:
+
+`/any/directory/<publisher>/<series> (<volume>)/<series> <issue number> (<volume>).cbz`
+
 
 ## Logging
 
@@ -139,17 +186,7 @@ When running the application through a reverse proxy, make sure to enable stream
 To enable streaming in lighttpd, use the `server.stream-response-body` option.
 
 
-## Develop
-
-### Gradle
-
-To run the application on the host system directly, make sure to have a MongoDB running, e.g. on `localhost`, then run:
-
-```sh
-./gradlew clean build && java -jar build/libs/alfred.jar --spring.data.mongodb.uri=mongodb://localhost/alfred
-```
-
-The application will now be available at <http://localhost:8080>.
+## Development
 
 ### End-to-end tests
 
@@ -163,12 +200,11 @@ docker pull mongo:3.6
 docker run -d --name mongo mongo:3.6
 docker network connect alfred-net mongo
 
-./gradlew build docker -x test
-
-docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=test -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred --net=alfred-net --rm -v $PWD/src/test/resources/fixtures/full:/comics --name alfred de.wasenweg/alfred
+./gradlew clean build -x check
+java -jar build/libs/alfred.jar --spring.profiles.active=test --spring.data.mongodb.uri=mongodb://localhost/alfred
 ```
 
-Install dependencies
+Switch to UI and dependencies:
 
 `cd ui && npm i`
 
@@ -194,7 +230,7 @@ npm run protractorHeadless
 
 #### Debug tests
 
-In order to debug, add a `debugger;` to the test you want to debug and then run the protractor config manually with node. Example for debugging `library.e2e-spec.ts`:
+In order to debug, add a `debugger;` next to the statement you want to debug and then run the protractor config manually through node. Example for debugging `library.e2e-spec.ts`:
 
 ```sh
 node --inspect-brk node_modules/protractor/bin/protractor e2e/protractor.conf.js --specs=e2e/src/library.e2e-spec.ts
