@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 import { User } from './user';
 import { Router, RouterEvent } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { UserSettingsService } from './user-settings.service';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,9 @@ export class AppComponent {
     private statusBar: StatusBar,
     private userService: UserService,
     private router: Router,
+    private userSettingsService: UserSettingsService,
   ) {
+    this.userSettingsService.load();
     this.initializeApp();
     this.userService.user.subscribe((user: User) => {
       this.user = user;

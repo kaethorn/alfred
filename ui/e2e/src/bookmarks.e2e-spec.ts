@@ -34,6 +34,7 @@ describe('BookmarksComponent', () => {
 
     it('updates the read issue counter', async () => {
       await IssuesPage.clickIssueMenuItem(3, 'View in library');
+      await LibraryPage.waitForVolumes();
       await LibraryPage.expectVolumeStats(
         [ '0 of 73 issues read', '1 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
     });

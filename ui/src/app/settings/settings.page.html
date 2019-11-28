@@ -11,6 +11,22 @@
 
 <ion-content>
   <ion-card>
+    <ion-card-header>User settings</ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-label>
+            <p>Dark mode</p>
+          </ion-label>
+          <ion-toggle [(ngModel)]="userSettings.darkMode"
+            (ionChange)="saveUserSettings()" name="Dark mode">
+          </ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
     <ion-card-header>Server settings</ion-card-header>
     <ion-card-content>
       <form (ngSubmit)="onSubmit()" #settingsForm="ngForm">

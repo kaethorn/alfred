@@ -2,6 +2,10 @@ import { browser, by, element, ExpectedConditions, ElementFinder, WebElement } f
 
 export class Page {
 
+  static getTitleText () {
+    return element.all(by.css('app-root ion-toolbar ion-title')).last().getText();
+  }
+
   static async clickActionItem (target: ElementFinder, item: string) {
     const menuButton = target.element(by.css('ion-button.menu'));
     await this.scrollIntoView(menuButton);
@@ -17,7 +21,11 @@ export class Page {
    * page.
    */
   static waitForElement (target: ElementFinder, timeout = 5000) {
-    return browser.wait(ExpectedConditions.elementToBeClickable(target), timeout);
+    return browser.wait(
+      ExpectedConditions.and(
+        ExpectedConditions.elementToBeClickable(target),
+        ExpectedConditions.presenceOf(target)
+    ), timeout);
   }
 
   static async waitForText (target: ElementFinder, text: string) {
