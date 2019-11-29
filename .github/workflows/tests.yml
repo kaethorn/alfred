@@ -8,18 +8,5 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build
-      run: docker-compose -p alfred -f docker-compose.unit-test.yml up -d
-    - name: Unit tests
-      run: docker run --rm alfred_unit-test gradle check -s -x jar
-
-  ui-tests:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Start
-      run: docker-compose -p alfred -f docker-compose.ui-test.yml up -d
-    - name: Wait for Alfred
-      run: while ! (curl --output /dev/null --silent --head --fail http://localhost:8080); do (echo -n . && sleep 1); done
-    - name: UI tests
-      run: docker run --rm --network alfred_default -e DOCKER_MODE=true -v /dev/shm:/dev/shm alfred_ui-test npm run e2eHeadless
+      run: docker-compose -f .docker-compose.test.yml up
 

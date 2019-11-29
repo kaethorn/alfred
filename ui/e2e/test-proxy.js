@@ -1,7 +1,6 @@
 const express = require('express');
 const proxy = require('http-proxy-middleware');
 
-const host = process.env.DOCKER_MODE === 'true' ? 'alfred' : 'localhost';
 let server;
 const flags = {
   offline: false
@@ -39,7 +38,7 @@ module.exports = {
 
     // Proxy requests to the web server
     app.use('', proxy(proxyFilter, {
-      target: `http://${ host }:8080`
+      target: 'http://localhost:8080'
     }));
 
     return new Promise((resolve, reject) => {
