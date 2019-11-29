@@ -1,9 +1,8 @@
 version: '3'
 services:
 
-  alfred-unit-test:
+  unit-test:
     build:
       context: .
       dockerfile: .Dockerfile-unit-test
-    command: gradle check -s -x jar
 

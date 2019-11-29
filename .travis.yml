@@ -4,9 +4,14 @@ jobs:
   include:
     - stage: Unit tests
       script:
-        - docker-compose -f docker-compose.unit-test.yml up
+        - docker-compose -p alfred -f docker-compose.unit-test.yml up -d
+        - docker run --rm alfred_unit-test gradle check -s -x jar
 
     - stage: UI tests
       script:
-        - docker-compose -f docker-compose.ui-test.yml up --abort-on-container-exit
+        - docker-compose -p alfred -f docker-compose.ui-test.yml up -d
+        - echo -n 'Waiting for Spring Boot app '
+        - while ! (curl --output /dev/null --silent --head --fail http://alfred:8080); do (echo -n . && sleep 1); done
+        - echo ' up!'
+        - docker run --rm --network alfred_default -e DOCKER_MODE=true -v /dev/shm:/dev/shm alfred_ui-test npm run e2eHeadless
 

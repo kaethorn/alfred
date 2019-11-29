@@ -1,7 +1,7 @@
 version: '3'
 services:
 
-  alfred-ui-test:
+  ui-test:
     build:
       context: .
       dockerfile: .Dockerfile-ui-test
@@ -11,11 +11,6 @@ services:
       - /dev/shm:/dev/shm
     depends_on:
       - alfred
-    command: bash -c "
-      echo -n 'Waiting for Spring Boot app ';
-      while ! (curl --output /dev/null --silent --head --fail http://alfred:8080); do (echo -n . && sleep 1); done;
-      echo ' up!';
-      npm run e2eHeadless"
 
   alfred:
     build: .
