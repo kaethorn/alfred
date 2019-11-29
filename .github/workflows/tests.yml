@@ -19,7 +19,7 @@ jobs:
     - name: Start
       run: docker-compose -p alfred -f docker-compose.ui-test.yml up -d
     - name: Wait for Alfred
-      run: while ! (curl --output /dev/null --silent --head --fail http://alfred:8080); do (echo -n . && sleep 1); done
+      run: while ! (curl --output /dev/null --silent --head --fail http://localhost:8080); do (echo -n . && sleep 1); done
     - name: UI tests
       run: docker run --rm --network alfred_default -e DOCKER_MODE=true -v /dev/shm:/dev/shm alfred_ui-test npm run e2eHeadless
 

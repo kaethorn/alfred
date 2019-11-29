@@ -11,7 +11,7 @@ jobs:
       script:
         - docker-compose -p alfred -f docker-compose.ui-test.yml up -d
         - echo -n 'Waiting for Spring Boot app '
-        - while ! (curl --output /dev/null --silent --head --fail http://alfred:8080); do (echo -n . && sleep 1); done
+        - while ! (curl --output /dev/null --silent --head --fail http://localhost:8080); do (echo -n . && sleep 1); done
         - echo ' up!'
         - docker run --rm --network alfred_default -e DOCKER_MODE=true -v /dev/shm:/dev/shm alfred_ui-test npm run e2eHeadless
 
