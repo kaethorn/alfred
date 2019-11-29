@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { exec } from 'child_process';
 
 export class MongoDBTools {
 
