@@ -1,9 +1,11 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
+import { Page } from './page.po';
 
 export class SettingsPage {
 
-  static navigateTo () {
-    return browser.get('/settings');
+  static async navigateTo () {
+    await browser.get('/settings');
+    return Page.waitForElement(this.getComicsPathInput());
   }
 
   static getComicsPathInput () {

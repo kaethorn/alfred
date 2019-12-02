@@ -3,8 +3,9 @@ import { Page } from './page.po';
 
 export class BookmarksPage {
 
-  static navigateTo () {
-    return browser.get('/bookmarks');
+  static async navigateTo () {
+    await browser.get('/bookmarks');
+    return Page.waitForElement(this.getBookmarks());
   }
 
   static getBookmarks () {
@@ -29,16 +30,16 @@ export class BookmarksPage {
 
   static getSyncButton (volume: number) {
     return element.all(by.css('ion-card.comic-tile')).get(volume)
-      .element(by.cssContainingText('ion-button', 'Sync'));
+      .element(by.css('ion-button.sync'));
   }
 
-  static getSyncedButton (volume: number) {
+  static getUnsyncButton (volume: number) {
     return element.all(by.css('ion-card.comic-tile')).get(volume)
-      .element(by.cssContainingText('ion-button', 'Synced'));
+      .element(by.css('ion-button.unsync'));
   }
 
   static waitForSync (volume: number) {
-    return Page.waitForElement(this.getSyncedButton(volume));
+    return Page.waitForElement(this.getUnsyncButton(volume));
   }
 
   static waitForUnsync (volume: number) {

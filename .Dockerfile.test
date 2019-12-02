@@ -18,7 +18,7 @@ COPY ui ui
 COPY config config
 RUN gradle -q build
 
-# Start the application and detach it
+# Start the application and run tests
 COPY .boot-and-test.sh boot-and-test.sh
 CMD ./boot-and-test.sh
 
