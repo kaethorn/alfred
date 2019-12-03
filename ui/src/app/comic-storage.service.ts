@@ -58,7 +58,7 @@ export class ComicStorageService {
       if (comic.pageCount - 1 === page) {
         comic.read = true;
       }
-      await this.saveComic(comic);
+      await this.saveComicProgress(comic);
       await this.comicDatabaseService.save(comic);
       return this.comicDatabaseService.getImageUrl(comicId, page);
     } else {
@@ -182,8 +182,8 @@ export class ComicStorageService {
       comicA.volume === comicB.volume;
   }
 
-  private saveComic (comic: Comic) {
-    this.comicsService.update(comic).subscribe(
+  private saveComicProgress (comic: Comic) {
+    this.comicsService.updateProgress(comic).subscribe(
       () => this.queueService.process(),
       () => this.queueService.add(comic));
   }

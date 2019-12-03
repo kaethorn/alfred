@@ -127,7 +127,6 @@ describe('Reader Component', () => {
       expect(await Page.getToastMessage()).toEqual('Opening next issue of Batgirl (2008).');
       await Page.waitForToastMessageGone();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(0);
-      await browser.sleep(250);
     });
 
     it('marks the previous issue as read on the bookmarks page', async () => {
