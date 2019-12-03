@@ -1,4 +1,4 @@
-![](https://github.com/kaethorn/alfred/workflows/Tests/badge.svg)
+![](https://github.com/kaethorn/alfred/workflows/Tests/badge.svg?branch=master)
 
 # About
 
