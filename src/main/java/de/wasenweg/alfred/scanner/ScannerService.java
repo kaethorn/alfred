@@ -19,6 +19,8 @@ import org.xml.sax.SAXException;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -170,7 +172,7 @@ public class ScannerService {
       this.fileMetaDataService.read(file, comic).forEach(issue -> {
         this.reportIssue(comic, issue);
       });
-    } catch (final SAXException | IOException exception) {
+    } catch (final SAXException | IOException | ParserConfigurationException exception) {
       this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
     } catch (final NoMetaDataException exception) {
       this.logger.info(String.format("No metadata found for %s, querying ComicVine API.", comic.getPath()));

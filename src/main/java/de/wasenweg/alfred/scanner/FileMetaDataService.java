@@ -5,7 +5,6 @@ import de.wasenweg.alfred.util.ZipReaderUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,16 +45,9 @@ public class FileMetaDataService {
 
   private Logger logger = LoggerFactory.getLogger(FileMetaDataService.class);
 
-  private DocumentBuilder docBuilder = null;
-
-  @Autowired
-  public FileMetaDataService() {
+  private DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
     final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-    try {
-      this.docBuilder = docBuilderFactory.newDocumentBuilder();
-    } catch (final ParserConfigurationException exception) {
-      exception.printStackTrace();
-    }
+    return docBuilderFactory.newDocumentBuilder();
   }
 
   private void writeStringElement(final Document document, final String elementName, final String value) {
@@ -115,10 +107,10 @@ public class FileMetaDataService {
   }
 
   private Optional<Document> getDocument(final ZipFile file, final ZipEntry entry)
-      throws SAXException, IOException {
+      throws SAXException, IOException, ParserConfigurationException {
 
     return Optional.ofNullable(
-        this.docBuilder.parse(file.getInputStream(entry)));
+        this.getDocumentBuilder().parse(file.getInputStream(entry)));
   }
 
   private String readShortValue(final Short value) {
@@ -128,14 +120,16 @@ public class FileMetaDataService {
     return value.toString();
   }
 
-  private String marshal(final Comic comic) throws SAXException, IOException, TransformerException {
+  private String marshal(final Comic comic)
+      throws SAXException, IOException, TransformerException, ParserConfigurationException {
+
     Document document;
     final ZipFile file = this.getZipFile(comic);
 
     try {
       document = this.getDocument(file, this.findMetaDataFile(file)).get();
     } catch (final NoMetaDataException exception) {
-      document = this.docBuilder.newDocument();
+      document = this.getDocumentBuilder().newDocument();
       document.appendChild(document.createElement("ComicInfo"));
     }
     file.close();
@@ -168,7 +162,7 @@ public class FileMetaDataService {
   }
 
   private void parseComicInfoXml(final ZipFile file, final Comic comic)
-      throws SAXException, IOException, NoMetaDataException {
+      throws SAXException, IOException, NoMetaDataException, ParserConfigurationException {
 
     final Optional<Document> documentOptional = this.getDocument(file, this.findMetaDataFile(file));
 
@@ -231,7 +225,7 @@ public class FileMetaDataService {
   }
 
   public List<ScannerIssue> read(final ZipFile file, final Comic comic)
-      throws SAXException, IOException, NoMetaDataException {
+      throws SAXException, IOException, NoMetaDataException, ParserConfigurationException {
     this.scannerIssues.clear();
     this.setPageCountFromImages(file, comic);
     this.parseComicInfoXml(file, comic);
@@ -250,7 +244,7 @@ public class FileMetaDataService {
       writer.close();
       fs.close();
       this.logger.info("Finished writing ComicInfo.XML for " + comic.getPath());
-    } catch (final IOException | SAXException | TransformerException exception) {
+    } catch (final IOException | SAXException | TransformerException | ParserConfigurationException exception) {
       exception.printStackTrace();
     }
   }

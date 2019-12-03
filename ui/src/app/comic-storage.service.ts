@@ -58,7 +58,7 @@ export class ComicStorageService {
       if (comic.pageCount - 1 === page) {
         comic.read = true;
       }
-      await this.saveComic(comic);
+      await this.saveComicProgress(comic);
       await this.comicDatabaseService.save(comic);
       return this.comicDatabaseService.getImageUrl(comicId, page);
     } else {
@@ -78,18 +78,14 @@ export class ComicStorageService {
   getBookmarks (): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
       this.comicsService.listLastReadByVolume().subscribe((comics: Comic[]) => {
-        if (this.queueService.hasItems()) {
-          this.queueService.process().subscribe(
-            () => {},
-            () => resolve(comics),
-            () => {
-              this.comicsService.listLastReadByVolume().subscribe((updatedComics: Comic[]) => {
-                resolve(updatedComics);
-              });
-          });
-        } else {
-          resolve(comics);
-        }
+        this.queueService.process().subscribe(
+          () => {},
+          () => resolve(comics),
+          () => {
+            this.comicsService.listLastReadByVolume().subscribe((updatedComics: Comic[]) => {
+              resolve(updatedComics);
+            });
+        });
       }, () => {
         this.comicDatabaseService.getComics().then((comics: Comic[]) => {
           from(comics).pipe(
@@ -186,8 +182,8 @@ export class ComicStorageService {
       comicA.volume === comicB.volume;
   }
 
-  private saveComic (comic: Comic) {
-    this.comicsService.update(comic).subscribe(
+  private saveComicProgress (comic: Comic) {
+    this.comicsService.updateProgress(comic).subscribe(
       () => this.queueService.process(),
       () => this.queueService.add(comic));
   }

@@ -29,7 +29,7 @@ export class QueueService {
       flatMap(comics => from(comics)),
       concatMap((comic) => {
         delete comic.dirty;
-        const update = this.comicsService.update(comic);
+        const update = this.comicsService.updateProgress(comic);
         update.subscribe(() => {
           this.comicDatabaseService.save(comic);
         }, () => {

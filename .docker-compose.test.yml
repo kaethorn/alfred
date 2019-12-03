@@ -1,0 +1,22 @@
+version: '3'
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: .Dockerfile.test
+    ports:
+      - '8080:8080'
+    volumes:
+      - $PWD/src/test/resources/fixtures/full:/comics
+      - /dev/shm:/dev/shm
+    environment:
+      DOCKER_MODE: 'true'
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_DATA_MONGODB_URI: mongodb://mongo/alfred
+
+  mongo:
+    image: 'mongo:3.6'
+    logging:
+      driver: none
+

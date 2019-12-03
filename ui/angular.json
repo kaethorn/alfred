@@ -126,7 +126,7 @@
               "progress": false,
               "watch": false,
               "codeCoverage": true,
-              "browsers": "ChromeHeadless",
+              "browsers": "ChromeHeadlessDocker",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

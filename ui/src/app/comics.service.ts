@@ -102,6 +102,12 @@ export class ComicsService {
     );
   }
 
+  updateProgress (comic: Comic): Observable<Comic> {
+    return this.http.put<Comic>('api/comics/progress', comic).pipe(
+      map(this.addId)
+    );
+  }
+
   scrape (comic: Comic): Observable<Comic> {
     return this.http.put<Comic>('api/comics/scrape', comic).pipe(
       map(this.addId)
