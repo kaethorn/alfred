@@ -1,0 +1,12 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: docker-compose -f .docker-compose.test.yml up --abort-on-container-exit
+

@@ -34,7 +34,7 @@ repositories {
 }
 
 checkstyle {
-  toolVersion '8.22'
+  toolVersion '8.26'
 }
 
 task unpack(type: Copy) {

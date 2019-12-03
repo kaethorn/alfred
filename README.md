@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/kaethorn/alfred.svg?branch=master)](https://travis-ci.org/kaethorn/alfred)
+![](https://github.com/kaethorn/alfred/workflows/Tests/badge.svg)
 
 # About
 

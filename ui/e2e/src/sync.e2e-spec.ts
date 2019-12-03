@@ -38,7 +38,7 @@ describe('Sync', () => {
     expect(await IssuesPage.getSyncedIssueNumbers()).toEqual(['1', '2', '3', '4', '5']);
 
     await BookmarksPage.navigateTo();
-    expect(await BookmarksPage.getSyncedButton(0).isPresent()).toBe(true);
+    expect(await BookmarksPage.getUnsyncButton(0).isPresent()).toBe(true);
     expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
     expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #2' ]);
   });
@@ -53,7 +53,7 @@ describe('Sync', () => {
     expect(await IssuesPage.getSyncedIssueNumbers()).toEqual(['2', '3', '4', '5', '6']);
 
     await BookmarksPage.navigateTo();
-    expect(await BookmarksPage.getSyncedButton(0).isPresent()).toBe(true);
+    expect(await BookmarksPage.getUnsyncButton(0).isPresent()).toBe(true);
     expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
     expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #3' ]);
   });
@@ -81,7 +81,7 @@ describe('Sync', () => {
     });
 
     it('unsyncs the volume', async () => {
-      await BookmarksPage.getSyncedButton(0).click();
+      await BookmarksPage.getUnsyncButton(0).click();
       await BookmarksPage.waitForUnsync(0);
     });
 

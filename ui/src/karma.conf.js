@@ -26,6 +26,15 @@ module.exports = function (config) {
     logLevel : config.LOG_INFO,
     autoWatch: true,
     browsers : [ 'Chrome' ],
+    customLaunchers: {
+      ChromeHeadlessDocker: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox'
+        ],
+      },
+    },
     singleRun: false,
     proxies  : {
       '/api/read/923/0': '/assets/icons/alfred.svg'

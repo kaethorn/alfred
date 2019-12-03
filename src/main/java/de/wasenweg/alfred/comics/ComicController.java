@@ -68,6 +68,12 @@ public class ComicController extends BaseController<Comic> {
     return this.wrap(comic);
   }
 
+  @PutMapping("/progress")
+  public Resource<Comic> updateProgress(@Valid @RequestBody final Comic comic) {
+    this.comicRepository.save(comic);
+    return this.wrap(comic);
+  }
+
   @PutMapping("/scrape")
   public Resource<Comic> scrape(@Valid @RequestBody final Comic comic) {
     final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
