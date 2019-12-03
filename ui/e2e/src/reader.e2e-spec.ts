@@ -65,6 +65,7 @@ describe('Reader Component', () => {
       await ReaderPage.getImage().click();
       await ReaderPage.getOverlayNextButton().click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(1);
+      await browser.sleep(500);
     });
 
     it('quits the reader and returns to the bookmarks', async () => {
