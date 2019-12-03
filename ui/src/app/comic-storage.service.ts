@@ -78,18 +78,14 @@ export class ComicStorageService {
   getBookmarks (): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
       this.comicsService.listLastReadByVolume().subscribe((comics: Comic[]) => {
-        if (this.queueService.hasItems()) {
-          this.queueService.process().subscribe(
-            () => {},
-            () => resolve(comics),
-            () => {
-              this.comicsService.listLastReadByVolume().subscribe((updatedComics: Comic[]) => {
-                resolve(updatedComics);
-              });
-          });
-        } else {
-          resolve(comics);
-        }
+        this.queueService.process().subscribe(
+          () => {},
+          () => resolve(comics),
+          () => {
+            this.comicsService.listLastReadByVolume().subscribe((updatedComics: Comic[]) => {
+              resolve(updatedComics);
+            });
+        });
       }, () => {
         this.comicDatabaseService.getComics().then((comics: Comic[]) => {
           from(comics).pipe(

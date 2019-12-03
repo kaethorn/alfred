@@ -64,14 +64,16 @@
         "/api/thumbnails/**"
       ]
     }, {
-      "name": "search-api",
+      "name": "no-cache",
       "cacheConfig": {
         "maxSize": 0,
         "maxAge": "0u",
         "strategy": "freshness"
       },
       "urls": [
-        "/api/search/**"
+        "/api/search/**",
+        "/api/progress/**",
+        "/api/queue"
       ]
     }
   ]

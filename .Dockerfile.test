@@ -19,11 +19,9 @@ COPY config config
 RUN gradle -q build
 
 # Start the application and run tests
-RUN nohup bash -c 'gradle -q bootRun > /dev/null &'
-
-# Wait for app to start
-RUN while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do sleep 1; done
-
-# Start UI tests
-CMD gradle -q npm_run_e2eHeadless
+CMD bash -c 'gradle bootRun &> /dev/null & \
+  echo -n "Waiting for boot to complete " && \
+  while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do echo -n "." && sleep 1; done && \
+  echo " done!" && \
+  gradle -q npm_run_e2eHeadless'
 
