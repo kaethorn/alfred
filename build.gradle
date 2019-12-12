@@ -49,6 +49,7 @@ dependencies {
   compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
   compile 'org.springframework.boot:spring-boot-starter-security'
   compile 'org.springframework.boot:spring-boot-starter-webflux'
+  compile 'org.springframework.boot:spring-boot-starter-actuator'
 
   compile 'com.google.api-client:google-api-client:1.29.2'
   compile 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
