@@ -1,9 +1,12 @@
 import { by, element, protractor, browser } from 'protractor';
+import { Page } from './page.po';
 
 export class ReaderPage {
 
-  static getImage (offset = 0) {
-    return element.all(by.css('app-reader img')).get(offset);
+  static async openOverlay (offset = 0) {
+    await Page.waitForElement(element.all(by.css('app-reader img')).first());
+    await element.all(by.css('app-reader img')).get(offset).click();
+    await Page.waitForElement(element.all(by.css('app-reader .bottom ion-button')).first());
   }
 
   static getNavigationButtons () {

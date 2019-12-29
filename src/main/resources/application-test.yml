@@ -8,6 +8,12 @@ spring:
       version: 3.6.12
       features: NO_HTTP_INTERFACE_ARG
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
 comics:
   path: src/test/resources/fixtures/full
 comicVine:

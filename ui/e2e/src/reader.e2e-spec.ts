@@ -62,7 +62,7 @@ describe('Reader Component', () => {
     it('continues but does not finish the issue', async () => {
       // Wait for caching to fail
       await browser.sleep(500);
-      await ReaderPage.getImage().click();
+      await ReaderPage.openOverlay();
       await ReaderPage.getOverlayNextButton().click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(1);
       await browser.sleep(500);
@@ -113,14 +113,14 @@ describe('Reader Component', () => {
     });
 
     it('reads until the last page', async () => {
-      await ReaderPage.getImage().click();
+      await ReaderPage.openOverlay();
       await ReaderPage.getOverlayNextButton().click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(3);
     });
 
     it('opens the next issue', async () => {
       const previousId = await ReaderPage.getIssueIdFromUrl();
-      await ReaderPage.getImage().click();
+      await ReaderPage.openOverlay();
       await ReaderPage.getOverlayNextButton().click();
 
       const nextId = await ReaderPage.getIssueIdFromUrl();
