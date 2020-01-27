@@ -41,6 +41,7 @@ public class ReaderController {
   @Autowired
   private ProgressRepository progressRepository;
 
+  @Transactional
   private ComicPage extractPage(final Comic comic, final Short page) {
     final ComicPage result = new ComicPage();
     ZipFile file = null;
