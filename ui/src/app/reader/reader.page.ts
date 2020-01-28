@@ -1,19 +1,13 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import { trigger, style, animate, transition } from '@angular/animations';
 
-import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
+import { NavigatorService, NavigationInstruction, AdjacentComic, PageSource } from '../navigator.service';
 import { Comic } from '../comic';
 import { ComicStorageService } from '../comic-storage.service';
 
 interface IOpenOptions {
   showToast?: boolean;
-}
-interface PageSource {
-  src: string;
-  page: number;
-  loaded: boolean;
 }
 type Direction = ('initial' | 'forward' | 'backward');
 
@@ -21,43 +15,14 @@ type Direction = ('initial' | 'forward' | 'backward');
   selector: 'app-reader',
   templateUrl: './reader.page.html',
   styleUrls: ['./reader.page.sass'],
-  animations: [
-    trigger('swap', [
-      transition('void => initial', [
-        style({
-          opacity: 0
-        }),
-        animate('1.5s', style({
-          opacity: 1
-        })),
-      ]),
-      transition('void => forward', [
-        style({
-          transform: 'translateX(100%)',
-        }),
-        animate('0.5s', style({
-          transform: 'translateX(0)',
-        })),
-      ]),
-      transition('void => backward', [
-        style({
-          transform: 'translateX(-100%)',
-        }),
-        animate('0.5s', style({
-          transform: 'translateX(0)'
-        })),
-      ]),
-    ]),
-  ]
 })
 export class ReaderPage {
 
   comic: Comic = {} as Comic;
-  images: PageSource[];
+  imageSets: PageSource[][];
   showControls = false;
   direction: Direction = 'initial';
   private parent: string;
-  private sideBySide = false;
   private isInitialLoad = true;
 
   constructor (
@@ -101,17 +66,23 @@ export class ReaderPage {
   }
 
   private setup (comic: Comic) {
-    this.images = new Array(comic.pageCount).fill(null).map((value, index) => {
-      return { page: index, src: null, loaded: false };
-    });
     this.comic = comic;
-    const parentElement = this.pagesLayer.nativeElement.parentElement;
-    this.navigator.set(
+    this.imageSets = this.navigator.set(
       this.comic.pageCount,
       this.getPage(this.comic),
-      (parentElement.clientWidth > parentElement.clientHeight) ? true : false
+      this.isSideBySide()
     );
+    for (const set of this.imageSets) {
+      for (const image of set) {
+        this.setImage(image);
+      }
+    }
     this.navigate(this.navigator.go());
+  }
+
+  private isSideBySide (): boolean {
+    const parentElement = this.pagesLayer.nativeElement.parentElement;
+    return parentElement.clientWidth > parentElement.clientHeight;
   }
 
   private getPage (comic: Comic): number {
@@ -119,6 +90,10 @@ export class ReaderPage {
       return Number.parseInt(this.route.snapshot.queryParams.page, 10) || 0;
     }
     return comic.currentPage;
+  }
+
+  getSet (): number {
+    return this.navigator.getSet();
   }
 
   onClick (event: MouseEvent): void {
@@ -188,13 +163,12 @@ export class ReaderPage {
     switch (instruction.adjacent) {
       case AdjacentComic.same:
         this.comic.currentPage = NavigatorService.page;
-        this.sideBySide = instruction.sideBySide;
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { page: NavigatorService.page },
           queryParamsHandling: 'merge'
         });
-        this.setImages(instruction.sideBySide);
+        this.comicStorageService.markPageAsRead(this.comic.id, NavigatorService.page);
         break;
       case AdjacentComic.next:
         this.openNext({ showToast: true });
@@ -205,17 +179,9 @@ export class ReaderPage {
     }
   }
 
-  private setImages (sideBySide: boolean) {
-    this.setImage(NavigatorService.page);
-    if (sideBySide) {
-      this.setImage(NavigatorService.page + 1);
-    }
-  }
-
-  private setImage (pageNumber: number) {
-    const image = this.images[pageNumber];
+  private setImage (image: PageSource) {
     if (!image.loaded) {
-      this.comicStorageService.readPage(this.comic.id, pageNumber).then(url => {
+      this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
         image.src = url;
       });
     }
@@ -223,12 +189,6 @@ export class ReaderPage {
 
   imageLoaded (image: PageSource) {
     image.loaded = true;
-  }
-
-  isImageVisible (image: PageSource) {
-    return image && image.src &&
-      ( (image.page === this.comic.currentPage) ||
-        (this.sideBySide && image.page === this.comic.currentPage + 1) );
   }
 
   /**

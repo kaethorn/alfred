@@ -11,21 +11,39 @@ export interface NavigationInstruction {
   adjacent: AdjacentComic;
 }
 
+export interface PageSource {
+  src?: string;
+  page: number;
+  loaded: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class NavigatorService {
   static page = 0;
   static offset = 1;
-  private pageCount: number;
-  private sideBySide: boolean;
+  static sideBySide: boolean;
+  static pageCount: number;
 
   constructor () {}
 
-  set (pageCount: number, currentPage: number, sideBySide: boolean) {
+  private partition (): PageSource[][] {
+    const setCount = Math.round(NavigatorService.sideBySide ?
+      ((NavigatorService.pageCount ? NavigatorService.pageCount : -1) + 1) / 2 : NavigatorService.pageCount);
+
+    return Array.from(Array(setCount).keys())
+      .map(set => NavigatorService.sideBySide ?
+        set === 0 ? [set] : (2 * set < NavigatorService.pageCount) ? [2 * set - 1, 2 * set] : [2 * set - 1] :
+        [set])
+      .map(set => set.map(index => ({ page: index, loaded: false })));
+  }
+
+  set (pageCount: number, currentPage: number, sideBySide: boolean): PageSource[][] {
     NavigatorService.page = currentPage;
-    this.pageCount = pageCount;
-    this.sideBySide = sideBySide;
+    NavigatorService.pageCount = pageCount;
+    NavigatorService.sideBySide = sideBySide;
+    return this.partition();
   }
 
   /**
@@ -41,10 +59,10 @@ export class NavigatorService {
       } else {
         direction = AdjacentComic.previous;
       }
-      NavigatorService.page -= (this.sideBySide && NavigatorService.page > 0) ? 1 : 0;
+      NavigatorService.page -= (NavigatorService.sideBySide && NavigatorService.page > 0) ? 1 : 0;
     } else if (offset > 0) {
-      const increment = (this.sideBySide && NavigatorService.page > 0) ? 2 : 1;
-      if ((NavigatorService.page + increment) < this.pageCount) {
+      const increment = (NavigatorService.sideBySide && NavigatorService.page > 0) ? 2 : 1;
+      if ((NavigatorService.page + increment) < NavigatorService.pageCount) {
         NavigatorService.page += increment;
       } else {
         direction = AdjacentComic.next;
@@ -53,7 +71,7 @@ export class NavigatorService {
 
     // Restore side by side view which always loads page `n` and `n + 1` except
     // for the cover.
-    if (this.sideBySide) {
+    if (NavigatorService.sideBySide) {
       NavigatorService.page = NavigatorService.page - (NavigatorService.page + 1) % 2;
       if (NavigatorService.page < 0) {
         NavigatorService.page = 0;
@@ -61,8 +79,13 @@ export class NavigatorService {
     }
 
     return {
-      sideBySide: this.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (this.pageCount - 1),
+      sideBySide: NavigatorService.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (NavigatorService.pageCount - 1),
       adjacent: direction
     };
+  }
+
+  getSet (): number {
+    return NavigatorService.sideBySide ?
+      Math.round(NavigatorService.page / 2) : NavigatorService.page;
   }
 }

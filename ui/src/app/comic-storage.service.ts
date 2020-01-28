@@ -46,20 +46,32 @@ export class ComicStorageService {
   }
 
   /**
-   * Reads the given page of this comic, setting the read state.
+   * Marks the given page of this comic as read.
+   * @param comicId The ID of the comic
+   * @param page Page number
+   * @returns A Promise that resolved when finished.
+   */
+  async markPageAsRead (comicId: string, page: number): Promise<any> {
+    const comic = await this.get(comicId);
+    comic.currentPage = page;
+    comic.lastRead = new Date();
+    if (comic.pageCount - 1 === page) {
+      comic.read = true;
+    }
+
+    await this.saveComicProgress(comic);
+    if (await this.comicDatabaseService.isStored(comicId)) {
+      return this.comicDatabaseService.save(comic);
+    }
+  }
+
+  /**
+   * Retrieves the given page of this comic, without setting the read state.
    * @param page Page number
    * @returns The URL to the image.
    */
-  async readPage (comicId: string, page: number): Promise<string> {
+  async getPageUrl (comicId: string, page: number): Promise<string> {
     if (await this.comicDatabaseService.isStored(comicId)) {
-      const comic = await this.get(comicId);
-      comic.currentPage = page;
-      comic.lastRead = new Date();
-      if (comic.pageCount - 1 === page) {
-        comic.read = true;
-      }
-      await this.saveComicProgress(comic);
-      await this.comicDatabaseService.save(comic);
       return this.comicDatabaseService.getImageUrl(comicId, page);
     } else {
       return Promise.resolve(`/api/read/${ comicId }/${ page }`);
