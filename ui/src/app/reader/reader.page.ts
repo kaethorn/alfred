@@ -168,7 +168,7 @@ export class ReaderPage {
           queryParams: { page: NavigatorService.page },
           queryParamsHandling: 'merge'
         });
-        this.comicStorageService.markPageAsRead(this.comic.id, NavigatorService.page);
+        this.comicStorageService.saveProgress(this.comic);
         break;
       case AdjacentComic.next:
         this.openNext({ showToast: true });

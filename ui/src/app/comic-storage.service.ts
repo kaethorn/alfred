@@ -47,20 +47,18 @@ export class ComicStorageService {
 
   /**
    * Marks the given page of this comic as read.
-   * @param comicId The ID of the comic
+   * @param comic The comic to store
    * @param page Page number
    * @returns A Promise that resolved when finished.
    */
-  async markPageAsRead (comicId: string, page: number): Promise<any> {
-    const comic = await this.get(comicId);
-    comic.currentPage = page;
+  async saveProgress (comic: Comic): Promise<any> {
     comic.lastRead = new Date();
-    if (comic.pageCount - 1 === page) {
+    if (comic.pageCount - 1 <= comic.currentPage) {
       comic.read = true;
     }
 
     await this.saveComicProgress(comic);
-    if (await this.comicDatabaseService.isStored(comicId)) {
+    if (await this.comicDatabaseService.isStored(comic.id)) {
       return this.comicDatabaseService.save(comic);
     }
   }
