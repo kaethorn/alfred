@@ -61,20 +61,11 @@ export class NavigatorService {
       }
       NavigatorService.page -= (NavigatorService.sideBySide && NavigatorService.page > 0) ? 1 : 0;
     } else if (offset > 0) {
-      const increment = (NavigatorService.sideBySide && NavigatorService.page > 0) ? 2 : 1;
+      const increment = (NavigatorService.sideBySide && NavigatorService.page < NavigatorService.pageCount - 2) ? 2 : 1;
       if ((NavigatorService.page + increment) < NavigatorService.pageCount) {
         NavigatorService.page += increment;
       } else {
         direction = AdjacentComic.next;
-      }
-    }
-
-    // Restore side by side view which always loads page `n` and `n + 1` except
-    // for the cover.
-    if (NavigatorService.sideBySide) {
-      NavigatorService.page = NavigatorService.page - (NavigatorService.page + 1) % 2;
-      if (NavigatorService.page < 0) {
-        NavigatorService.page = 0;
       }
     }
 
