@@ -113,14 +113,16 @@ describe('Reader Component', () => {
     });
 
     it('reads until the last page', async () => {
-      await ReaderPage.openOverlay();
+      await ReaderPage.openOverlay(1);
       await ReaderPage.getOverlayNextButton().click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(3);
+      // Wait for animation
+      await browser.sleep(1000);
     });
 
     it('opens the next issue', async () => {
       const previousId = await ReaderPage.getIssueIdFromUrl();
-      await ReaderPage.openOverlay();
+      await ReaderPage.openOverlay(3);
       await ReaderPage.getOverlayNextButton().click();
 
       const nextId = await ReaderPage.getIssueIdFromUrl();
