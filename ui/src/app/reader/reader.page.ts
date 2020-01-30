@@ -21,9 +21,7 @@ export class ReaderPage {
   comic: Comic = {} as Comic;
   imageSets: PageSource[][];
   showControls = false;
-  direction: Direction = 'initial';
   private parent: string;
-  private isInitialLoad = true;
 
   constructor (
     private route: ActivatedRoute,
@@ -155,11 +153,6 @@ export class ReaderPage {
   }
 
   private navigate (instruction: NavigationInstruction) {
-    if (!this.isInitialLoad) {
-      this.direction = NavigatorService.offset < 0 ? 'backward' : 'forward';
-    } else {
-      this.isInitialLoad = false;
-    }
     switch (instruction.adjacent) {
       case AdjacentComic.same:
         this.comic.currentPage = NavigatorService.page;
