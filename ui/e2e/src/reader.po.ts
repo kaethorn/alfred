@@ -4,7 +4,7 @@ import { Page } from './page.po';
 export class ReaderPage {
 
   static async openOverlay (offset = 0) {
-    await Page.waitForElement(element.all(by.css('app-reader img')).first());
+    await Page.waitForElement(element.all(by.css('app-reader img')).get(offset));
     await element.all(by.css('app-reader img')).get(offset).click();
     await Page.waitForElement(element.all(by.css('app-reader .bottom ion-button')).first());
   }
