@@ -2,9 +2,7 @@ package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.util.ZipReaderUtil;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,12 +36,11 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@Slf4j
 @Service
 public class FileMetaDataService {
 
   private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
-
-  private Logger logger = LoggerFactory.getLogger(FileMetaDataService.class);
 
   private DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
     final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -79,7 +76,7 @@ public class FileMetaDataService {
           .message("Couldn't read " + elementName + " value of '" + value + "'. Falling back to '0'")
           .type(ScannerIssue.Type.WARNING)
           .build();
-      this.logger.warn(parsingEvent.getMessage());
+      log.warn(parsingEvent.getMessage());
       this.scannerIssues.add(parsingEvent);
       return (short)0;
     }
@@ -97,7 +94,7 @@ public class FileMetaDataService {
     try {
       return Comic.mapPosition(number);
     } catch (final InvalidIssueNumberException exception) {
-      this.logger.warn(exception.getMessage(), exception);
+      log.warn(exception.getMessage(), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message(exception.getMessage())
           .type(ScannerIssue.Type.WARNING)
@@ -243,7 +240,7 @@ public class FileMetaDataService {
       writer.write(this.marshal(comic));
       writer.close();
       fs.close();
-      this.logger.info("Finished writing ComicInfo.XML for " + comic.getPath());
+      log.info("Finished writing ComicInfo.XML for " + comic.getPath());
     } catch (final IOException | SAXException | TransformerException | ParserConfigurationException exception) {
       exception.printStackTrace();
     }

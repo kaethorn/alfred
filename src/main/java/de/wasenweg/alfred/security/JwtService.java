@@ -5,9 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,14 +15,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Map;
 
+@Slf4j
 @Service
 @Profile({"prod"})
 public class JwtService implements IJwtService {
 
-  private Logger logger = LoggerFactory.getLogger(JwtService.class);
-
   public Boolean verifyToken(final String token, final String secret) {
-    this.logger.info("Verifying token: {}", token);
+    log.info("Verifying token: {}", token);
     Boolean verified = false;
 
     try {
@@ -36,7 +33,7 @@ public class JwtService implements IJwtService {
 
       final Claim claim = jwt.getClaim("API_ALLOWED");
       if (claim.isNull()) {
-        this.logger.info("Token claim does not contain API_ALLOWED");
+        log.info("Token claim does not contain API_ALLOWED");
         return false;
       }
       verified = claim.asBoolean();
@@ -55,7 +52,7 @@ public class JwtService implements IJwtService {
 
       SecurityContextHolder.getContext().setAuthentication(newAuth);
     } catch (final Exception e) {
-      this.logger.info("Exception while verifying token: {}", e.getLocalizedMessage());
+      log.info("Exception while verifying token: {}", e.getLocalizedMessage());
       verified = false;
     }
 
