@@ -2,20 +2,16 @@ package de.wasenweg.alfred.scanner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.settings.SettingsService;
 import de.wasenweg.alfred.thumbnails.ThumbnailService;
 import de.wasenweg.alfred.volumes.Volume;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
-
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 
@@ -37,11 +33,10 @@ import java.util.stream.IntStream;
 import java.util.zip.ZipFile;
 
 @Service
+@Slf4j
 public class ScannerService {
 
   private EmitterProcessor<ServerSentEvent<String>> emitter;
-
-  private Logger logger = LoggerFactory.getLogger(ScannerService.class);
 
   @Autowired
   private ApiMetaDataService apiMetaDataService;
@@ -68,27 +63,27 @@ public class ScannerService {
 
   private void reportStart(final String path) {
     this.sendEvent("start", "start");
-    this.logger.info("Reading comics in {}", path);
+    log.info("Reading comics in {}", path);
   }
 
   private void reportProgress(final String path) {
     this.sendEvent(path, "current-file");
-    this.logger.debug("Parsing comic {}", path);
+    log.debug("Parsing comic {}", path);
   }
 
   private void reportTotal(final int total) {
     this.sendEvent(String.valueOf(total), "total");
-    this.logger.info("Found {} comics.", total);
+    log.info("Found {} comics.", total);
   }
 
   private void reportCleanUp() {
     this.sendEvent("cleanUp", "cleanUp");
-    this.logger.info("Purging orphaned comics.");
+    log.info("Purging orphaned comics.");
   }
 
   private void reportAssociation() {
     this.sendEvent("association", "association");
-    this.logger.info("Associating volumes.");
+    log.info("Associating volumes.");
   }
 
   private void reportFinish() {
@@ -96,7 +91,7 @@ public class ScannerService {
   }
 
   private void reportIssue(final Exception exception) {
-    this.logger.error(exception.getLocalizedMessage(), exception);
+    log.error(exception.getLocalizedMessage(), exception);
     this.reportIssue(
         ScannerIssue.builder()
           .message(exception.getLocalizedMessage())
@@ -105,7 +100,7 @@ public class ScannerService {
   }
 
   private void reportIssue(final Comic comic, final Exception exception) {
-    this.logger.error(exception.getLocalizedMessage());
+    log.error(exception.getLocalizedMessage());
     this.reportIssue(
         comic,
         ScannerIssue.builder()
@@ -115,7 +110,7 @@ public class ScannerService {
   }
 
   private void reportIssue(final Comic comic, final Exception exception, final ScannerIssue.Type type) {
-    this.logger.error(exception.getLocalizedMessage(), exception);
+    log.error(exception.getLocalizedMessage(), exception);
     this.reportIssue(
         comic,
         ScannerIssue.builder()
@@ -175,7 +170,7 @@ public class ScannerService {
     } catch (final SAXException | IOException | ParserConfigurationException exception) {
       this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
     } catch (final NoMetaDataException exception) {
-      this.logger.info(String.format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
+      log.info(String.format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
       final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
       this.fileMetaDataService.write(comic);
       issues.forEach(issue -> {
@@ -231,12 +226,12 @@ public class ScannerService {
 
         this.reportTotal(comicFiles.size());
         comicFiles.forEach(path -> this.processComicByPath(path));
-        this.logger.info("Parsed {} comics.", comicFiles.size());
+        log.info("Parsed {} comics.", comicFiles.size());
 
         this.cleanOrphans(comicFiles);
         this.associateVolumes();
 
-        this.logger.info("Done scanning.");
+        log.info("Done scanning.");
       } catch (final IOException exception) {
         this.reportIssue(exception);
       }
@@ -280,21 +275,21 @@ public class ScannerService {
 
     // Traverse each volume
     volumes.forEach((volume, comics) -> {
-      this.logger.debug("Associating {} comics for {}.", comics.size(), volume.toString());
+      log.debug("Associating {} comics for {}.", comics.size(), volume.toString());
       // Traverse each comic in the volume
       IntStream.range(0, comics.size()).forEach(index -> {
         final Comic comic = comics.get(index);
-        this.logger.trace("Associating comic {}.", comic.getPosition());
+        log.trace("Associating comic {}.", comic.getPosition());
         if (index > 0) {
           final Comic previousComic = comics.get(index - 1);
           comic.setPreviousId(previousComic.getId());
-          this.logger.trace("Associating comic {} with previous comic {}", comic.getPosition(),
+          log.trace("Associating comic {} with previous comic {}", comic.getPosition(),
               previousComic.getPosition());
         }
         if (index < (comics.size() - 1)) {
           final Comic nextComic = comics.get(index + 1);
           comic.setNextId(nextComic.getId());
-          this.logger.trace("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
+          log.trace("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
         }
         this.comicRepository.save(comic);
       });

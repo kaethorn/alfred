@@ -34,6 +34,7 @@ describe('Reader Component', () => {
 
   it('shows cached bookmarks', async () => {
     expect(await Page.getToastMessage()).toEqual('Volume cached.');
+    await Page.waitForToastMessageGone();
     await BookmarksPage.navigateTo();
     expect(await BookmarksPage.getUnsyncButton(0).isPresent()).toBe(true);
     expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
@@ -60,11 +61,12 @@ describe('Reader Component', () => {
     });
 
     it('continues but does not finish the issue', async () => {
-      // Wait for caching to fail
-      await browser.sleep(500);
+      expect(await Page.getToastMessage()).toEqual('Volume cached.');
+      await Page.waitForToastMessageGone();
+
       await ReaderPage.openOverlay();
       await ReaderPage.getOverlayNextButton().click();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(1);
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
       await browser.sleep(500);
     });
 
@@ -109,18 +111,20 @@ describe('Reader Component', () => {
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
       expect(await Page.getToastMessage()).toEqual('Volume cached.');
       await Page.waitForToastMessageGone();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(1);
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
     });
 
     it('reads until the last page', async () => {
-      await ReaderPage.openOverlay();
+      await ReaderPage.openOverlay(1);
       await ReaderPage.getOverlayNextButton().click();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(3);
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(4);
+      // Wait for animation
+      await browser.sleep(1000);
     });
 
     it('opens the next issue', async () => {
       const previousId = await ReaderPage.getIssueIdFromUrl();
-      await ReaderPage.openOverlay();
+      await ReaderPage.openOverlay(3);
       await ReaderPage.getOverlayNextButton().click();
 
       const nextId = await ReaderPage.getIssueIdFromUrl();

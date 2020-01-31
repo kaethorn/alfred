@@ -1,11 +1,8 @@
 package de.wasenweg.alfred.scanner;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import de.wasenweg.alfred.comics.Comic;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,12 +18,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@Slf4j
 @Service
 public class ApiMetaDataService {
 
   private ComicVineService comicVineService;
-
-  private Logger logger = LoggerFactory.getLogger(ApiMetaDataService.class);
 
   private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
   private Pattern pattern;
@@ -67,7 +63,7 @@ public class ApiMetaDataService {
     try {
       return Comic.mapPosition(number);
     } catch (final InvalidIssueNumberException exception) {
-      this.logger.warn(exception.getMessage(), exception);
+      log.warn(exception.getMessage(), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message(exception.getMessage())
           .type(ScannerIssue.Type.WARNING)
@@ -125,7 +121,7 @@ public class ApiMetaDataService {
     try {
       this.query(comic);
     } catch (final Exception exception) {
-      this.logger.error("Error while fetching information for " + comic.getPath(), exception);
+      log.error("Error while fetching information for " + comic.getPath(), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Error during Comic Vine API meta data retrieval")
           .type(ScannerIssue.Type.ERROR)

@@ -10,7 +10,10 @@ exports.config = {
     './src/**/*.e2e-spec.ts'
   ],
   capabilities: {
-    browserName: 'chrome'
+    browserName: 'chrome',
+    chromeOptions: {
+      args: ['--window-size=3840,2160']
+    }
   },
   directConnect           : true,
   baseUrl                 : 'http://localhost:8090/',

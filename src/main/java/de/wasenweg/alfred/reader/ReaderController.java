@@ -41,42 +41,6 @@ public class ReaderController {
   @Autowired
   private ProgressRepository progressRepository;
 
-  private ComicPage extractPage(final Comic comic, final Short page) {
-    final ComicPage result = new ComicPage();
-    ZipFile file = null;
-    try {
-      file = new ZipFile(comic.getPath());
-      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
-      final ZipEntry entry = sortedEntries.get(page);
-      final String fileName = entry.getName();
-      result.setStream(file.getInputStream(entry));
-      result.setSize(entry.getSize());
-      result.setType(URLConnection.guessContentTypeFromName(fileName));
-      result.setName(fileName);
-    } catch (final Exception e) {
-      e.printStackTrace();
-    }
-
-    return result;
-  }
-
-  @Transactional
-  private void setReadState(final Comic comic, final Short page, final String userId) {
-    final ObjectId comicId = new ObjectId(comic.getId());
-    final Progress progress = this.progressRepository
-        .findByUserIdAndComicId(userId, comicId)
-        .orElse(Progress.builder().comicId(comicId).userId(userId).build());
-
-    progress.setCurrentPage(page);
-    progress.setLastRead(new Date());
-
-    if (page == comic.getPageCount() - 1) {
-      progress.setRead(true);
-    }
-
-    this.progressRepository.save(progress);
-  }
-
   @Transactional
   @GetMapping("/read/{id}")
   @ResponseBody
@@ -103,6 +67,39 @@ public class ReaderController {
       @PathVariable("page") final Short page,
       final Principal principal) {
     return this.read(id, page, false, principal);
+  }
+
+  @GetMapping("/download/{id}")
+  @ResponseBody
+  public ResponseEntity<StreamingResponseBody> download(@PathVariable("id") final String id)
+      throws FileNotFoundException {
+    final Optional<Comic> comicQuery = this.comicRepository.findById(id);
+
+    if (!comicQuery.isPresent()) {
+      return null;
+    }
+
+    final Comic comic = comicQuery.get();
+
+    final File file = new File(comic.getPath());
+
+    final InputStream inputStream = new FileInputStream(file);
+
+    final StreamingResponseBody responseBody = outputStream -> {
+      int numberOfBytesToWrite;
+      final byte[] data = new byte[1024];
+      while ((numberOfBytesToWrite = inputStream.read(data, 0, data.length)) != -1) {
+        outputStream.write(data, 0, numberOfBytesToWrite);
+      }
+
+      inputStream.close();
+    };
+
+    return ResponseEntity
+        .ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName())
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(responseBody);
   }
 
   /**
@@ -139,44 +136,50 @@ public class ReaderController {
       comicPage.getStream().close();
     };
 
+    final MediaType mediaType = MediaType.parseMediaType(comicPage.getType());
+
     return ResponseEntity
         .ok()
         .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + comicPage.getName())
         .contentLength(comicPage.getSize())
-        .contentType(MediaType.parseMediaType(comicPage.getType()))
+        .contentType(mediaType)
         .body(responseBody);
   }
 
-  @GetMapping("/download/{id}")
-  @ResponseBody
-  public ResponseEntity<StreamingResponseBody> download(@PathVariable("id") final String id)
-      throws FileNotFoundException {
-    final Optional<Comic> comicQuery = this.comicRepository.findById(id);
-
-    if (!comicQuery.isPresent() || id == null) {
-      return null;
+  @Transactional
+  private ComicPage extractPage(final Comic comic, final Short page) {
+    final ComicPage result = new ComicPage();
+    ZipFile file = null;
+    try {
+      file = new ZipFile(comic.getPath());
+      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
+      final ZipEntry entry = sortedEntries.get(page);
+      final String fileName = entry.getName();
+      result.setStream(file.getInputStream(entry));
+      result.setSize(entry.getSize());
+      result.setType(URLConnection.guessContentTypeFromName(fileName));
+      result.setName(fileName);
+    } catch (final Exception e) {
+      e.printStackTrace();
     }
 
-    final Comic comic = comicQuery.get();
+    return result;
+  }
 
-    final File file = new File(comic.getPath());
+  @Transactional
+  private void setReadState(final Comic comic, final Short page, final String userId) {
+    final ObjectId comicId = new ObjectId(comic.getId());
+    final Progress progress = this.progressRepository
+        .findByUserIdAndComicId(userId, comicId)
+        .orElse(Progress.builder().comicId(comicId).userId(userId).build());
 
-    final InputStream inputStream = new FileInputStream(file);
+    progress.setCurrentPage(page);
+    progress.setLastRead(new Date());
 
-    final StreamingResponseBody responseBody = outputStream -> {
-      int numberOfBytesToWrite;
-      final byte[] data = new byte[1024];
-      while ((numberOfBytesToWrite = inputStream.read(data, 0, data.length)) != -1) {
-        outputStream.write(data, 0, numberOfBytesToWrite);
-      }
+    if (page == comic.getPageCount() - 1) {
+      progress.setRead(true);
+    }
 
-      inputStream.close();
-    };
-
-    return ResponseEntity
-        .ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName())
-        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .body(responseBody);
+    this.progressRepository.save(progress);
   }
 }

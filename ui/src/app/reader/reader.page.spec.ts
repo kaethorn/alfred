@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { comic1 as comic } from '../../testing/comic.fixtures';
 
@@ -48,15 +47,15 @@ describe('ReaderPage', () => {
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
     comicStorageService = jasmine
-      .createSpyObj('ComicStorageService', ['get', 'readPage', 'storeSurrounding']);
+      .createSpyObj('ComicStorageService', ['get', 'saveProgress', 'getPageUrl', 'storeSurrounding']);
     comicStorageService.get.and.returnValue(Promise.resolve(Object.assign({}, comic)));
-    comicStorageService.readPage.and.returnValue(Promise.resolve('/api/read/923/0'));
+    comicStorageService.saveProgress.and.returnValue(Promise.resolve());
+    comicStorageService.getPageUrl.and.returnValue(Promise.resolve('/api/read/923/0'));
     comicStorageService.storeSurrounding.and.returnValue(Promise.resolve({}));
 
     TestBed.configureTestingModule({
       imports: [
         ReaderPageModule,
-        NoopAnimationsModule,
         RouterTestingModule.withRoutes([
           { path: 'read/:id', component: ReaderPage }
         ])
@@ -116,9 +115,6 @@ describe('ReaderPage', () => {
     describe('in single page mode', () => {
 
       beforeEach(async () => {
-        await fixture.whenStable();
-        fixture.detectChanges();
-
         component.pagesLayer = {
           nativeElement: {
             parentElement: {
@@ -127,6 +123,15 @@ describe('ReaderPage', () => {
             }
           }
         };
+        component.ionViewDidEnter();
+
+        await fixture.whenStable();
+        fixture.detectChanges();
+      });
+
+      it('loads only the cover', () => {
+        expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+          .toEqual('translateX(-000vw)');
       });
 
       describe('to the next page', () => {
@@ -151,7 +156,9 @@ describe('ReaderPage', () => {
         it('does not exceed the last page', async () => {
           expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
+          await clickRightSide();
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
         });
       });
     });
@@ -159,9 +166,6 @@ describe('ReaderPage', () => {
     describe('in side by side mode', () => {
 
       beforeEach(async () => {
-        await fixture.whenStable();
-        fixture.detectChanges();
-
         component.pagesLayer = {
           nativeElement: {
             parentElement: {
@@ -170,31 +174,36 @@ describe('ReaderPage', () => {
             }
           }
         };
+        component.ionViewDidEnter();
+
+        await fixture.whenStable();
+        fixture.detectChanges();
       });
 
       it('loads only the cover', () => {
-        expect(comicStorageService.readPage.calls.mostRecent().args[1]).toBe(0);
+        expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+          .toEqual('translateX(-000vw)');
       });
 
       describe('to the next page', () => {
 
         beforeEach(async () => {
-          comicStorageService.readPage.calls.reset();
           await clickRightSide();
         });
 
-        it('sets the current page and updates the route', () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
+        it('updates the route', () => {
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(2);
         });
 
         it('displays two pages', () => {
-          expect(comicStorageService.readPage.calls.count()).toBe(2);
+          expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+            .toEqual('translateX(-100vw)');
         });
 
         it('navigating back displays only the cover', async () => {
-          comicStorageService.readPage.calls.reset();
           await clickLeftSide();
-          expect(comicStorageService.readPage.calls.count()).toBe(1);
+          expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+            .toEqual('translateX(-000vw)');
         });
       });
 
@@ -206,9 +215,9 @@ describe('ReaderPage', () => {
         });
 
         it('does not exceed the last page', async () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
         });
       });
     });

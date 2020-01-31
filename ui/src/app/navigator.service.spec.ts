@@ -6,6 +6,10 @@ describe('NavigatorService', () => {
   let service: NavigatorService;
 
   beforeEach(async () => {
+    NavigatorService.page = 0;
+    NavigatorService.offset = 1;
+    delete NavigatorService.sideBySide;
+    delete NavigatorService.pageCount;
     service = TestBed.get(NavigatorService);
   });
 
@@ -37,7 +41,7 @@ describe('NavigatorService', () => {
           });
 
           it('navigates to the previous pair of pages', () => {
-            expect(NavigatorService.page).toBe(1);
+            expect(NavigatorService.page).toBe(2);
           });
         });
 
@@ -126,7 +130,7 @@ describe('NavigatorService', () => {
           });
 
           it('navigates to the next pair of pages', () => {
-            expect(NavigatorService.page).toBe(5);
+            expect(NavigatorService.page).toBe(6);
           });
         });
 
@@ -214,24 +218,28 @@ describe('NavigatorService', () => {
         describe('when on a following page', () => {
 
           beforeEach(() => {
-            service.set(10, 1, true);
+            service.set(10, 0, true);
             service.go(0);
           });
 
-          it('continues on odd pages', () => {
-            expect(NavigatorService.page).toBe(1);
+          it('continues on even pages', () => {
+            expect(NavigatorService.page).toBe(0);
+
+            service.set(10, 1, true);
+            service.go(0);
+            expect(NavigatorService.page).toBe(2);
 
             service.set(10, 2, true);
             service.go(0);
-            expect(NavigatorService.page).toBe(1);
+            expect(NavigatorService.page).toBe(2);
 
             service.set(10, 3, true);
             service.go(0);
-            expect(NavigatorService.page).toBe(3);
+            expect(NavigatorService.page).toBe(4);
 
             service.set(10, 4, true);
             service.go(0);
-            expect(NavigatorService.page).toBe(3);
+            expect(NavigatorService.page).toBe(4);
           });
         });
       });
@@ -262,6 +270,126 @@ describe('NavigatorService', () => {
           });
         });
       });
+    });
+  });
+
+  describe('#set', () => {
+
+    it('sets static attributes', () => {
+      expect(NavigatorService.page).toBe(0);
+      expect(NavigatorService.offset).toBe(1);
+      expect(NavigatorService.sideBySide).toBeUndefined();
+      expect(NavigatorService.pageCount).toBeUndefined();
+
+      service.set(10, 1, false);
+
+      expect(NavigatorService.page).toBe(1);
+      expect(NavigatorService.offset).toBe(1);
+      expect(NavigatorService.sideBySide).toBe(false);
+      expect(NavigatorService.pageCount).toBe(10);
+    });
+
+    describe('in side by side mode', () => {
+
+      it('returns an array of page sets', () => {
+        expect(service.set(0, 0, true)).toEqual([]);
+        expect(service.set(1, 0, true)).toEqual([
+          [{
+            page: 0, loaded: false
+          }]
+        ]);
+        expect(service.set(4, 0, true)).toEqual([
+          [{
+            page: 0, loaded: false
+          }],
+          [{
+            page: 1, loaded: false
+          }, {
+            page: 2, loaded: false
+          }],
+          [{
+            page: 3, loaded: false
+          }]
+        ]);
+        expect(service.set(5, 0, true)).toEqual([
+          [{
+            page: 0, loaded: false
+          }],
+          [{
+            page: 1, loaded: false
+          }, {
+            page: 2, loaded: false
+          }],
+          [{
+            page: 3, loaded: false
+          }, {
+            page: 4, loaded: false
+          }]
+        ]);
+      });
+    });
+
+    describe('in single page mode', () => {
+
+      it('returns an array of page sets', () => {
+        expect(service.set(0, 0, false)).toEqual([]);
+        expect(service.set(1, 0, false)).toEqual([
+          [{
+            page: 0, loaded: false
+          }]
+        ]);
+        expect(service.set(4, 0, false)).toEqual([
+          [{
+            page: 0, loaded: false
+          }],
+          [{
+            page: 1, loaded: false
+          }],
+          [{
+            page: 2, loaded: false
+          }],
+          [{
+            page: 3, loaded: false
+          }]
+        ]);
+      });
+    });
+  });
+
+  describe('#set', () => {
+
+    it('returns the current set index in side by side mode', () => {
+      service.set(10, 0, true);
+      expect(service.getSet()).toBe(0);
+
+      service.set(10, 1, true);
+      expect(service.getSet()).toBe(1);
+
+      service.set(10, 2, true);
+      expect(service.getSet()).toBe(1);
+
+      service.set(10, 3, true);
+      expect(service.getSet()).toBe(2);
+
+      service.set(10, 4, true);
+      expect(service.getSet()).toBe(2);
+    });
+
+    it('returns the current set index in single page mode', () => {
+      service.set(10, 0, false);
+      expect(service.getSet()).toBe(0);
+
+      service.set(10, 1, false);
+      expect(service.getSet()).toBe(1);
+
+      service.set(10, 2, false);
+      expect(service.getSet()).toBe(2);
+
+      service.set(10, 3, false);
+      expect(service.getSet()).toBe(3);
+
+      service.set(10, 4, false);
+      expect(service.getSet()).toBe(4);
     });
   });
 });
