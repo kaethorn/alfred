@@ -9,7 +9,6 @@ import { ComicStorageService } from '../comic-storage.service';
 interface IOpenOptions {
   showToast?: boolean;
 }
-type Direction = ('initial' | 'forward' | 'backward');
 
 @Component({
   selector: 'app-reader',

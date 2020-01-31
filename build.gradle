@@ -22,7 +22,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'checkstyle'
 
 bootJar {
-  baseName = 'alfred'
+  archiveBaseName = 'alfred'
 }
 
 group = 'de.wasenweg'
@@ -44,31 +44,31 @@ task unpack(type: Copy) {
 }
 
 dependencies {
-  compile 'org.springframework.boot:spring-boot-starter-web'
-  compile 'org.springframework.boot:spring-boot-starter-data-rest'
-  compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
-  compile 'org.springframework.boot:spring-boot-starter-security'
-  compile 'org.springframework.boot:spring-boot-starter-webflux'
-  compile 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+  implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+  implementation 'org.springframework.boot:spring-boot-starter-webflux'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-  compile 'com.google.api-client:google-api-client:1.29.2'
-  compile 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
-  compile 'com.auth0:java-jwt:3.8.1'
-  compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
-  compile 'org.projectlombok:lombok:1.18.8'
-  compile 'org.webjars:webjars-locator-core'
-  compile 'org.webjars:sockjs-client:1.0.2'
-  compile 'com.google.guava:guava'
+  implementation 'com.google.api-client:google-api-client:1.29.2'
+  implementation 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
+  implementation 'com.auth0:java-jwt:3.8.1'
+  implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+  implementation 'org.projectlombok:lombok:1.18.8'
+  implementation 'org.webjars:webjars-locator-core'
+  implementation 'org.webjars:sockjs-client:1.0.2'
+  implementation 'com.google.guava:guava'
 
-  testCompile 'org.glassfish.jersey.media:jersey-media-sse:2.27'
-  testCompile 'org.springframework.boot:spring-boot-starter-test'
-  testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
-  testCompile 'io.projectreactor:reactor-test'
-  testCompile 'org.springframework.security:spring-security-test'
-  testCompile 'org.powermock:powermock-module-junit4:2.0.0'
-  testCompile 'org.powermock:powermock-api-mockito2:2.0.0'
-  testCompile 'org.mock-server:mockserver-netty:5.6.1'
-  testCompile 'org.mock-server:mockserver-client-java:5.6.1'
+  testImplementation 'org.glassfish.jersey.media:jersey-media-sse:2.27'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
+  testImplementation 'io.projectreactor:reactor-test'
+  testImplementation 'org.springframework.security:spring-security-test'
+  testImplementation 'org.powermock:powermock-module-junit4:2.0.0'
+  testImplementation 'org.powermock:powermock-api-mockito2:2.0.0'
+  testImplementation 'org.mock-server:mockserver-netty:5.6.1'
+  testImplementation 'org.mock-server:mockserver-client-java:5.6.1'
 
   implementation(project(':ui'))
 }
