@@ -5,7 +5,6 @@ import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.util.ZipReaderUtil;
-
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
