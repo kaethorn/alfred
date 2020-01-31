@@ -41,7 +41,7 @@ describe('NavigatorService', () => {
           });
 
           it('navigates to the previous pair of pages', () => {
-            expect(NavigatorService.page).toBe(1);
+            expect(NavigatorService.page).toBe(2);
           });
         });
 
@@ -130,7 +130,7 @@ describe('NavigatorService', () => {
           });
 
           it('navigates to the next pair of pages', () => {
-            expect(NavigatorService.page).toBe(5);
+            expect(NavigatorService.page).toBe(6);
           });
         });
 
@@ -218,24 +218,28 @@ describe('NavigatorService', () => {
         describe('when on a following page', () => {
 
           beforeEach(() => {
-            service.set(10, 1, true);
+            service.set(10, 0, true);
             service.go(0);
           });
 
-          it('continues on odd pages', () => {
-            expect(NavigatorService.page).toBe(1);
+          it('continues on even pages', () => {
+            expect(NavigatorService.page).toBe(0);
+
+            service.set(10, 1, true);
+            service.go(0);
+            expect(NavigatorService.page).toBe(2);
 
             service.set(10, 2, true);
             service.go(0);
-            expect(NavigatorService.page).toBe(1);
+            expect(NavigatorService.page).toBe(2);
 
             service.set(10, 3, true);
             service.go(0);
-            expect(NavigatorService.page).toBe(3);
+            expect(NavigatorService.page).toBe(4);
 
             service.set(10, 4, true);
             service.go(0);
-            expect(NavigatorService.page).toBe(3);
+            expect(NavigatorService.page).toBe(4);
           });
         });
       });

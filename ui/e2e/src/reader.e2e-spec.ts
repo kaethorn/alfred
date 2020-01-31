@@ -64,7 +64,7 @@ describe('Reader Component', () => {
       await browser.sleep(500);
       await ReaderPage.openOverlay();
       await ReaderPage.getOverlayNextButton().click();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(1);
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
       await browser.sleep(500);
     });
 
@@ -109,13 +109,13 @@ describe('Reader Component', () => {
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
       expect(await Page.getToastMessage()).toEqual('Volume cached.');
       await Page.waitForToastMessageGone();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(1);
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
     });
 
     it('reads until the last page', async () => {
       await ReaderPage.openOverlay(1);
       await ReaderPage.getOverlayNextButton().click();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(3);
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(4);
       // Wait for animation
       await browser.sleep(1000);
     });

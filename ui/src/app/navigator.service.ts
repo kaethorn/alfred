@@ -69,6 +69,15 @@ export class NavigatorService {
       }
     }
 
+    // Restore side by side view which always loads page `n` and `n + 1` except
+    // for the cover.
+    if (NavigatorService.sideBySide) {
+      NavigatorService.page = NavigatorService.page + NavigatorService.page % 2;
+      if (NavigatorService.page >= NavigatorService.pageCount - 1) {
+        NavigatorService.page = NavigatorService.pageCount - 1;
+      }
+    }
+
     return {
       sideBySide: NavigatorService.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (NavigatorService.pageCount - 1),
       adjacent: direction

@@ -47,9 +47,9 @@ describe('ReaderPage', () => {
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
     comicStorageService = jasmine
-      .createSpyObj('ComicStorageService', ['get', 'markPageAsRead', 'getPageUrl', 'storeSurrounding']);
+      .createSpyObj('ComicStorageService', ['get', 'saveProgress', 'getPageUrl', 'storeSurrounding']);
     comicStorageService.get.and.returnValue(Promise.resolve(Object.assign({}, comic)));
-    comicStorageService.markPageAsRead.and.returnValue(Promise.resolve());
+    comicStorageService.saveProgress.and.returnValue(Promise.resolve());
     comicStorageService.getPageUrl.and.returnValue(Promise.resolve('/api/read/923/0'));
     comicStorageService.storeSurrounding.and.returnValue(Promise.resolve({}));
 
@@ -115,9 +115,6 @@ describe('ReaderPage', () => {
     describe('in single page mode', () => {
 
       beforeEach(async () => {
-        await fixture.whenStable();
-        fixture.detectChanges();
-
         component.pagesLayer = {
           nativeElement: {
             parentElement: {
@@ -126,6 +123,15 @@ describe('ReaderPage', () => {
             }
           }
         };
+        component.ionViewDidEnter();
+
+        await fixture.whenStable();
+        fixture.detectChanges();
+      });
+
+      it('loads only the cover', () => {
+        expect(fixture.debugElement.query(By.css('.pages-layer')).styles)
+          .toEqual({ transform: 'translateX(-000vw)' });
       });
 
       describe('to the next page', () => {
@@ -150,7 +156,9 @@ describe('ReaderPage', () => {
         it('does not exceed the last page', async () => {
           expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
+          await clickRightSide();
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
         });
       });
     });
@@ -158,9 +166,6 @@ describe('ReaderPage', () => {
     describe('in side by side mode', () => {
 
       beforeEach(async () => {
-        await fixture.whenStable();
-        fixture.detectChanges();
-
         component.pagesLayer = {
           nativeElement: {
             parentElement: {
@@ -169,10 +174,13 @@ describe('ReaderPage', () => {
             }
           }
         };
+        component.ionViewDidEnter();
+
+        await fixture.whenStable();
+        fixture.detectChanges();
       });
 
       it('loads only the cover', () => {
-        expect(comicStorageService.markPageAsRead.calls.mostRecent().args[1]).toBe(0);
         expect(fixture.debugElement.query(By.css('.pages-layer')).styles)
           .toEqual({ transform: 'translateX(-000vw)' });
       });
@@ -184,7 +192,7 @@ describe('ReaderPage', () => {
         });
 
         it('updates the route', () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(2);
         });
 
         it('displays two pages', () => {
@@ -207,9 +215,9 @@ describe('ReaderPage', () => {
         });
 
         it('does not exceed the last page', async () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
         });
       });
     });

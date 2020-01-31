@@ -158,7 +158,7 @@ export class ComicStorageService {
     for (const comicToDelete of comicsToDelete) {
       await this.comicDatabaseService.delete(comicToDelete);
     }
-    return Promise.resolve(cachedIds);
+    return cachedIds;
   }
 
   /**
