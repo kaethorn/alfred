@@ -20,7 +20,9 @@ export class ReaderPage {
   comic: Comic = {} as Comic;
   imageSets: PageSource[][];
   showControls = false;
+  transformation = {};
   private parent: string;
+  private initialNavigation = true;
 
   constructor (
     private route: ActivatedRoute,
@@ -89,8 +91,17 @@ export class ReaderPage {
     return comic.currentPage;
   }
 
-  getSet (): number {
-    return this.navigator.getSet();
+  private setTransformation (): void {
+    const currentSet = this.navigator.getSet();
+
+    this.transformation = {
+      transform: `translateX(-${ currentSet }00vw)`,
+      transition: this.initialNavigation ? '' : 'transform 0.8s ease-out'
+    };
+
+    if (this.initialNavigation) {
+      this.initialNavigation = false;
+    }
   }
 
   onClick (event: MouseEvent): void {
@@ -160,6 +171,7 @@ export class ReaderPage {
           queryParams: { page: NavigatorService.page },
           queryParamsHandling: 'merge'
         });
+        this.setTransformation();
         this.comicStorageService.saveProgress(this.comic);
         break;
       case AdjacentComic.next:

@@ -1,5 +1,5 @@
 <div class="pages-layer" #pagesLayer
-  [ngStyle]="{ transform: 'translateX(-' + getSet() + '00vw)' }"
+  [ngStyle]="transformation"
   (click)="onClick($event)"
   (swipeleft)="onSwipe(1)"
   (swiperight)="onSwipe(-1)">
