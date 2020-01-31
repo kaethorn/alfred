@@ -130,8 +130,8 @@ describe('ReaderPage', () => {
       });
 
       it('loads only the cover', () => {
-        expect(fixture.debugElement.query(By.css('.pages-layer')).styles)
-          .toEqual({ transform: 'translateX(-000vw)' });
+        expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+          .toEqual('translateX(-000vw)');
       });
 
       describe('to the next page', () => {
@@ -181,8 +181,8 @@ describe('ReaderPage', () => {
       });
 
       it('loads only the cover', () => {
-        expect(fixture.debugElement.query(By.css('.pages-layer')).styles)
-          .toEqual({ transform: 'translateX(-000vw)' });
+        expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+          .toEqual('translateX(-000vw)');
       });
 
       describe('to the next page', () => {
@@ -196,14 +196,14 @@ describe('ReaderPage', () => {
         });
 
         it('displays two pages', () => {
-          expect(fixture.debugElement.query(By.css('.pages-layer')).styles)
-            .toEqual({ transform: 'translateX(-100vw)' });
+          expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+            .toEqual('translateX(-100vw)');
         });
 
         it('navigating back displays only the cover', async () => {
           await clickLeftSide();
-          expect(fixture.debugElement.query(By.css('.pages-layer')).styles)
-            .toEqual({ transform: 'translateX(-000vw)' });
+          expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+            .toEqual('translateX(-000vw)');
         });
       });
 
