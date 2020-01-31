@@ -34,6 +34,7 @@ describe('Reader Component', () => {
 
   it('shows cached bookmarks', async () => {
     expect(await Page.getToastMessage()).toEqual('Volume cached.');
+    await Page.waitForToastMessageGone();
     await BookmarksPage.navigateTo();
     expect(await BookmarksPage.getUnsyncButton(0).isPresent()).toBe(true);
     expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
@@ -60,8 +61,9 @@ describe('Reader Component', () => {
     });
 
     it('continues but does not finish the issue', async () => {
-      // Wait for caching to fail
-      await browser.sleep(500);
+      expect(await Page.getToastMessage()).toEqual('Volume cached.');
+      await Page.waitForToastMessageGone();
+
       await ReaderPage.openOverlay();
       await ReaderPage.getOverlayNextButton().click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);

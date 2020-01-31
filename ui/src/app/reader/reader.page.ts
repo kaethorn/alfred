@@ -54,13 +54,13 @@ export class ReaderPage {
       .then((comic) => {
         this.comic = comic;
         this.setup(this.comic);
+        this.comicStorageService.storeSurrounding(comicId).then(() => {
+          this.showToast('Volume cached.');
+        });
       }).catch(() => {
         this.showToast('Comic book not available, please try again later.');
         this.back();
       });
-    this.comicStorageService.storeSurrounding(comicId).then(() => {
-      this.showToast('Volume cached.');
-    });
   }
 
   private setup (comic: Comic) {
