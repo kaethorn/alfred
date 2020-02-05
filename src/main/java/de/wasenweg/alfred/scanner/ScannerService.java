@@ -95,7 +95,7 @@ public class ScannerService {
     this.reportIssue(
         ScannerIssue.builder()
           .message(exception.getLocalizedMessage())
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
   }
 
@@ -105,22 +105,21 @@ public class ScannerService {
         comic,
         ScannerIssue.builder()
           .message(exception.getLocalizedMessage())
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
   }
 
-  private void reportIssue(final Comic comic, final Exception exception, final ScannerIssue.Type type) {
+  private void reportIssue(final Comic comic, final Exception exception, final ScannerIssue.Severity severity) {
     log.error(exception.getLocalizedMessage(), exception);
     this.reportIssue(
         comic,
         ScannerIssue.builder()
           .message(exception.getLocalizedMessage())
-          .type(type)
+          .severity(severity)
           .build());
   }
 
   private void reportIssue(final Comic comic, final ScannerIssue issue) {
-    issue.setPath(comic.getPath());
     final List<ScannerIssue> errors = Optional
         .ofNullable(comic.getErrors())
         .orElse(new ArrayList<ScannerIssue>());
@@ -168,7 +167,7 @@ public class ScannerService {
         this.reportIssue(comic, issue);
       });
     } catch (final SAXException | IOException | ParserConfigurationException exception) {
-      this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
+      this.reportIssue(comic, exception, ScannerIssue.Severity.WARNING);
     } catch (final NoMetaDataException exception) {
       log.info(String.format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
       final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);

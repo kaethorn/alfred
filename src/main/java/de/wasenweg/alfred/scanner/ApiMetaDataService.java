@@ -66,7 +66,7 @@ public class ApiMetaDataService {
       log.warn(exception.getMessage(), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message(exception.getMessage())
-          .type(ScannerIssue.Type.WARNING)
+          .severity(ScannerIssue.Severity.WARNING)
           .build());
       return new DecimalFormat("0000.0").format(new BigDecimal(0));
     }
@@ -112,7 +112,7 @@ public class ApiMetaDataService {
     if (missingAttributes.size() > 0) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Missing meta data: " + String.join(", ", missingAttributes))
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
     }
 
@@ -124,7 +124,7 @@ public class ApiMetaDataService {
       log.error("Error while fetching information for " + comic.getPath(), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Error during Comic Vine API meta data retrieval")
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
     }
 
@@ -151,13 +151,13 @@ public class ApiMetaDataService {
     if (filteredIssues.size() == 0) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("No matching issue found")
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
     }
     if (filteredIssues.size() > 1) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("No unique issue found")
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
     }
 
@@ -184,7 +184,7 @@ public class ApiMetaDataService {
     } else {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("No result in volume search")
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
       return "";
     }
@@ -211,7 +211,7 @@ public class ApiMetaDataService {
     if (issues.isEmpty()) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Empty volume")
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
     }
     return issues;

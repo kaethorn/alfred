@@ -27,7 +27,7 @@
           <h4><i>{{ error.message }}</i></h4>
           <sub>{{ error.date | amTimeAgo }}</sub>
         </ion-label>
-        <ion-icon slot="start" color="{{ issueTypesToColor[error.type] }}" name="alert"></ion-icon>
+        <ion-icon slot="start" color="{{ issueSeverityToColor[error.severity] }}" name="alert"></ion-icon>
       </ion-item>
     </ion-list>
     <ion-button slot="end" [routerLink]="['/edit', comic.id]">

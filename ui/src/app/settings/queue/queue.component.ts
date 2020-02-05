@@ -10,7 +10,7 @@ import { ComicsService } from '../../comics.service';
 export class QueueComponent {
 
   comics: Array<Comic> = [];
-  issueTypesToColor = { ERROR: 'danger', WARNING: 'warning', INFO: 'secondary' };
+  issueSeverityToColor = { ERROR: 'danger', WARNING: 'warning', INFO: 'secondary' };
 
   constructor (
     private comicsService: ComicsService,

@@ -333,7 +333,7 @@ public class ComicsIntegrationTest {
     comic.setYear(Short.parseShort("2010"));
     comic.setMonth(Short.parseShort("10"));
     comic.setErrors(Arrays.asList(
-        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
+        ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
 
     // Returns the comic with new values and without errors
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
@@ -448,7 +448,7 @@ public class ComicsIntegrationTest {
 
     this.comicRepository.save(comic);
     final ScannerIssue error = ScannerIssue.builder()
-        .type(ScannerIssue.Type.ERROR)
+        .severity(ScannerIssue.Severity.ERROR)
         .message("Mock Error")
         .build();
 
@@ -519,7 +519,7 @@ public class ComicsIntegrationTest {
     comic.setVolume("1940");
     comic.setNumber("701");
     comic.setErrors(Arrays.asList(
-        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
+        ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
 
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)

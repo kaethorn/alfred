@@ -74,7 +74,7 @@ public class FileMetaDataService {
     } catch (final Exception exception) {
       final ScannerIssue parsingEvent = ScannerIssue.builder()
           .message("Couldn't read " + elementName + " value of '" + value + "'. Falling back to '0'")
-          .type(ScannerIssue.Type.WARNING)
+          .severity(ScannerIssue.Severity.WARNING)
           .build();
       log.warn(parsingEvent.getMessage());
       this.scannerIssues.add(parsingEvent);
@@ -97,7 +97,7 @@ public class FileMetaDataService {
       log.warn(exception.getMessage(), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message(exception.getMessage())
-          .type(ScannerIssue.Type.WARNING)
+          .severity(ScannerIssue.Severity.WARNING)
           .build());
       return new DecimalFormat("0000.0").format(new BigDecimal(0));
     }

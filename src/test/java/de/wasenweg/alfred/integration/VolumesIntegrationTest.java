@@ -170,7 +170,7 @@ public class VolumesIntegrationTest {
     final Comic pivotal = this.comicRepository.findByPath("/a1.cbz").get();
     pivotal.setPublisher("Pub B");
     pivotal.setErrors(Arrays.asList(
-        ScannerIssue.builder().type(ScannerIssue.Type.ERROR).message("Mock Error").build()));
+        ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
     this.comicRepository.save(pivotal);
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
