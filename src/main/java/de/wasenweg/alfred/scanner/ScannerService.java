@@ -207,12 +207,13 @@ public class ScannerService {
    *
    * Mandatory fields are `publisher`, `series`, `volume` and `issue number`.
    *
-   * Process: 1. Ignore all files that do not end in `.cbz`. 2. Attempt to parse
-   * mandatory fields from meta data XML. Exit on success. 3. Ignore all files
-   * that do not match pattern containing mandatory fields, e.g.
-   * `{publisher}/{series} ({volume})/{series} ({volume}) {issue number} .*.cbz`.
-   * 4. Attempt to match & scrape meta data from Comic Vine API. 5. On match,
-   * write meta data XML and exit. Otherwise report error and ignore file.
+   * Process:
+   * 1. Ignore all files that do not end in `.cbz`.
+   * 2. Attempt to parse mandatory fields from meta data XML. Exit on success.
+   * 3. Ignore all files that do not match pattern containing mandatory fields, e.g.
+   *    `{publisher}/{series} ({volume})/{series} ({volume}) {issue number}.cbz`.
+   * 4. Attempt to match & scrape meta data from Comic Vine API.
+   * 5. On match, write meta data XML and exit. Otherwise report error and ignore file.
    */
   public Flux<ServerSentEvent<String>> scanComics() {
     this.emitter = EmitterProcessor.create();
