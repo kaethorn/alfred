@@ -93,6 +93,7 @@ public class Comic {
   private boolean read = false;
 
   private List<ScannerIssue> errors;
+  private List<String> files;
 
   @Builder.Default
   private Short currentPage = (short) 0;

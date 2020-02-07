@@ -16,10 +16,20 @@ export class ThumbnailsService {
     private http: HttpClient
   ) {}
 
-  get (comicId: string): Observable<SafeUrl> {
-    return this.http.get<Thumbnail>(`api/thumbnails/${ comicId }`).pipe(
+  getFrontCover (comicId: string): Observable<Thumbnail> {
+    return this.http.get<Thumbnail>(`api/thumbnails/front-cover/${ comicId }`).pipe(
       map((thumbnail: any) => {
-        return this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.thumbnail }`);
+        thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.thumbnail }`);
+        return thumbnail;
+      })
+    );
+  }
+
+  getBackCover (comicId: string): Observable<Thumbnail> {
+    return this.http.get<Thumbnail>(`api/thumbnails/back-cover/${ comicId }`).pipe(
+      map((thumbnail: any) => {
+        thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.thumbnail }`);
+        return thumbnail;
       })
     );
   }

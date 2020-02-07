@@ -5,6 +5,7 @@ import de.wasenweg.alfred.scanner.ApiMetaDataService;
 import de.wasenweg.alfred.scanner.FileMetaDataService;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import de.wasenweg.alfred.scanner.ScannerService;
+import de.wasenweg.alfred.thumbnails.ThumbnailRepository;
 import de.wasenweg.alfred.util.BaseController;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ import java.util.Optional;
 public class ComicController extends BaseController<Comic> {
 
   @Autowired
+  private ComicService comicService;
+
+  @Autowired
   private ProgressService progressService;
 
   @Autowired
@@ -47,6 +51,9 @@ public class ComicController extends BaseController<Comic> {
 
   @Autowired
   private ComicRepository comicRepository;
+
+  @Autowired
+  private ThumbnailRepository thumbnailRepository;
 
   @GetMapping("")
   public Resources<Resource<Comic>> findAll() {
@@ -90,6 +97,11 @@ public class ComicController extends BaseController<Comic> {
     return this.wrap(this.queryRepository.findAllLastReadPerVolume(principal.getName()));
   }
 
+  @GetMapping("/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc")
+  public Resources<Resource<Comic>> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc(final Principal principal) {
+    return this.wrap(this.comicRepository.findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc());
+  }
+
   @GetMapping("/search/findLastReadForVolume")
   public Resource<Comic> findLastReadForVolume(
       final Principal principal,
@@ -122,6 +134,14 @@ public class ComicController extends BaseController<Comic> {
   @DeleteMapping("")
   public void deleteComics() {
     this.comicRepository.deleteAll();
+    this.thumbnailRepository.deleteAll();
+  }
+
+  @DeleteMapping("/{comicId}/page/{filePath}")
+  public Resource<Comic> deletePage(
+      @PathVariable("comicId") final String comicId,
+      @PathVariable("filePath") final String filePath) {
+    return this.wrap(this.comicService.deletePage(comicId, filePath));
   }
 
   @GetMapping("/bundle")

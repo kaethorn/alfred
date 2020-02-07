@@ -138,7 +138,7 @@ public class ScannerService {
 
   private void setThumbnail(final ZipFile file, final Comic comic) {
     try {
-      this.thumbnailService.setComic(file, comic);
+      this.thumbnailService.read(file, comic);
     } catch (final NoImagesException exception) {
       this.reportIssue(comic, exception);
     } finally {

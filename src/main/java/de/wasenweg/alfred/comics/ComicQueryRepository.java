@@ -22,4 +22,6 @@ public interface ComicQueryRepository {
       final String volume);
 
   List<Comic> findAllWithErrors();
+
+  List<Comic> findAllWithoutErrors();
 }

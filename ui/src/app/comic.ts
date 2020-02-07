@@ -17,6 +17,7 @@ export interface ScannerIssue {
   date: Date;
   type: ScannerIssueType;
   message: string;
+  fixable: boolean;
   severity: ScannerIssueSeverity;
 }
 
@@ -54,4 +55,5 @@ export interface Comic {
   lastRead?: Date;
   dirty?: number;
   errors?: ScannerIssue[];
+  files: string[];
 }

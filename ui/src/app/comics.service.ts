@@ -26,7 +26,7 @@ export class ComicsService {
   }
 
   list (): Observable<Comic[]> {
-    return this.http.get('api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc').pipe(
+    return this.http.get('api/comics/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
@@ -34,6 +34,13 @@ export class ComicsService {
 
   listComicsWithErrors (): Observable<Comic[]> {
     return this.http.get('api/queue').pipe(
+      this.consumeHateoas(),
+      map((data: any) => data.map(this.addId))
+    );
+  }
+
+  listComicsWithoutErrors (): Observable<Comic[]> {
+    return this.http.get('api/queue/valid').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
@@ -136,6 +143,12 @@ export class ComicsService {
 
   deleteProgressForCurrentUser (): Observable<any> {
     return this.http.delete('api/progress/me');
+  }
+
+  deletePage (comic: Comic, path: string): Observable<Comic> {
+    return this.http.delete<Comic>(`api/comics/${ comic.id }/page/${ encodeURIComponent(path) }`).pipe(
+      map(this.addId)
+    );
   }
 
   bundleVolumes (): Observable<any> {

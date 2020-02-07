@@ -20,8 +20,13 @@ public class QueueController extends BaseController<Comic> {
   @Autowired
   private ComicQueryRepositoryImpl comicQueryRepository;
 
-  @GetMapping()
+  @GetMapping
   public Resources<Resource<Comic>> get() {
     return this.wrap(this.comicQueryRepository.findAllWithErrors());
+  }
+
+  @GetMapping("/valid")
+  public Resources<Resource<Comic>> getValid() {
+    return this.wrap(this.comicQueryRepository.findAllWithoutErrors());
   }
 }

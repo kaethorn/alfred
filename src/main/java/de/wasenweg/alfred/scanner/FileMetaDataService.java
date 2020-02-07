@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -206,17 +207,6 @@ public class FileMetaDataService {
     throw new NoMetaDataException();
   }
 
-  private void setPageCountFromImages(final ZipFile file, final Comic comic) {
-    short pageCount;
-    try {
-      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
-      pageCount = (short) sortedEntries.size();
-    } catch (final Exception exception) {
-      pageCount = (short) 0;
-    }
-    comic.setPageCount(pageCount);
-  }
-
   public ZipFile getZipFile(final Comic comic) throws IOException {
     return new ZipFile(comic.getPath());
   }
@@ -224,9 +214,44 @@ public class FileMetaDataService {
   public List<ScannerIssue> read(final ZipFile file, final Comic comic)
       throws SAXException, IOException, NoMetaDataException, ParserConfigurationException {
     this.scannerIssues.clear();
-    this.setPageCountFromImages(file, comic);
+    this.parseFiles(file, comic);
     this.parseComicInfoXml(file, comic);
     return this.scannerIssues;
+  }
+
+  /**
+   * Retrieves and validates information regarding the archive file structure.
+   *
+   * 1. Determines the page count
+   * 2. Checks if there are any directories in the archive
+   * 3. Saves all file names
+   * @param file The zip file
+   * @param comic The comic entity
+   */
+  private void parseFiles(final ZipFile file, final Comic comic) {
+    List<ZipEntry> sortedEntries;
+    try {
+      sortedEntries = ZipReaderUtil.getEntries(file);
+    } catch (final Exception exception) {
+      sortedEntries = new ArrayList<>();
+    }
+
+    final short pageCount = (short) sortedEntries.stream()
+        .filter(ZipReaderUtil::isImage)
+        .count();
+    comic.setPageCount(pageCount);
+
+    if (sortedEntries.stream().anyMatch(entry -> entry.isDirectory())) {
+      final ScannerIssue parsingEvent = ScannerIssue.builder()
+          .message("Found directory entries in the archive.")
+          .type(ScannerIssue.Type.NOT_FLAT)
+          .fixable(true)
+          .severity(ScannerIssue.Severity.WARNING).build();
+      log.warn(parsingEvent.getMessage());
+      this.scannerIssues.add(parsingEvent);
+    }
+
+    comic.setFiles(sortedEntries.stream().map(entry -> entry.getName()).collect(Collectors.toList()));
   }
 
   public void write(final Comic comic) {

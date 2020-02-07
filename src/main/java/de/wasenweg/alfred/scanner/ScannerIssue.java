@@ -30,6 +30,10 @@ public class ScannerIssue {
 
   private String message;
   private Severity severity;
+  private Type type;
+
+  @Builder.Default
+  private boolean fixable = false;
 
   @Builder.Default
   private Date date = new Date();

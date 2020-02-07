@@ -1,5 +1,6 @@
 package de.wasenweg.alfred.thumbnails;
 
+import de.wasenweg.alfred.thumbnails.Thumbnail.ThumbnailType;
 import de.wasenweg.alfred.util.BaseController;
 
 import org.bson.types.ObjectId;
@@ -17,8 +18,13 @@ public class ThumbnailController extends BaseController<Thumbnail> {
   @Autowired
   private ThumbnailRepository thumbnailRepository;
 
-  @GetMapping("/{comicId}")
-  public Resource<Thumbnail> findByComicId(@PathVariable("comicId") final String comicId) {
-    return this.wrap(this.thumbnailRepository.findByComicId(new ObjectId(comicId)));
+  @GetMapping("/front-cover/{comicId}")
+  public Resource<Thumbnail> findFrontCoverByComicId(@PathVariable("comicId") final String comicId) {
+    return this.wrap(this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.FRONT_COVER));
+  }
+
+  @GetMapping("/back-cover/{comicId}")
+  public Resource<Thumbnail> findBackCoverByComicId(@PathVariable("comicId") final String comicId) {
+    return this.wrap(this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.BACK_COVER));
   }
 }
