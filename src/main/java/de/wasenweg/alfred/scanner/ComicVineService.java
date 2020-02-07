@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class ComicVineService {
 
-  @Value("${comicVine.baseUrl:https://comicvine.gamespot.com/api/}")
+  @Value("${comics.comicVine.baseUrl:https://comicvine.gamespot.com/api/}")
   private String baseUrl;
   private String apiKey;
   private ObjectMapper mapper;

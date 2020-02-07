@@ -16,5 +16,5 @@ management:
 
 comics:
   path: src/test/resources/fixtures/full
-comicVine:
-  baseUrl: http://localhost:1080
+  comicVine:
+    baseUrl: http://localhost:1080
