@@ -41,7 +41,7 @@ public class ComicVineService {
   ) {
     this.environment = environment;
     this.mapper = new ObjectMapper();
-    this.apiKey = settingsService.get("comics.comicVineApiKey");
+    this.apiKey = settingsService.get("comics.comicVine.ApiKey");
     // Throttle to 200 requests per hour
     this.throttle = RateLimiter.create(200.0 / 3600.0);
   }
