@@ -13,7 +13,7 @@ export class SettingsPage {
   }
 
   static getSaveButton () {
-    return element(by.cssContainingText('app-settings ion-button', 'SAVE'));
+    return element(by.cssContainingText('app-settings ion-button', 'Save'));
   }
 
   private static get progress () {
@@ -29,7 +29,7 @@ export class SettingsPage {
   }
 
   static getScanButton () {
-    return element(by.cssContainingText('app-scanner ion-button', 'SCAN'));
+    return element(by.cssContainingText('app-scanner ion-button', 'Scan'));
   }
 
   static getScanProgress () {

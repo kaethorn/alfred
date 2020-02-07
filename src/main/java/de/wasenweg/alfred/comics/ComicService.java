@@ -2,7 +2,6 @@ package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.thumbnails.ThumbnailService;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
