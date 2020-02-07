@@ -25,10 +25,10 @@ describe('ThumbnailsService', () => {
   describe('#get', () => {
 
     it('returns a sanitized URL', () => {
-      service.get(comic.id).subscribe(thumbnail => {
-        expect((thumbnail as any).changingThisBreaksApplicationSecurity).toContain('abcedf1234');
+      service.getFrontCover(comic.id).subscribe(thumbnail => {
+        expect((thumbnail.url as any).changingThisBreaksApplicationSecurity).toContain('abcedf1234');
       });
-      const req = httpMock.expectOne(`api/thumbnails/${comic.id}`);
+      const req = httpMock.expectOne(`api/thumbnails/front-cover/${comic.id}`);
       expect(req.request.method).toBe('GET');
       req.flush(thumbnail1);
     });
