@@ -32,6 +32,10 @@ export class SettingsPage {
     return element(by.cssContainingText('app-scanner ion-button', 'Scan'));
   }
 
+  static getClearButton () {
+    return element(by.cssContainingText('app-scanner ion-button', 'Clear'));
+  }
+
   static getScanProgress () {
     return this.progress.getText();
   }
@@ -51,6 +55,16 @@ export class SettingsPage {
   static async scan () {
     await this.navigateTo();
     expect(await this.getScanButton().isPresent()).toBe(true);
+
+    // Clear IndexedDB
+    const canClear: boolean = await this.getClearButton().getAttribute('disabled').then(attr => {
+      return attr !== 'true';
+    });
+    if (canClear) {
+      await this.getClearButton().click();
+    }
+
+    // Scan and expect progress
     await this.getScanButton().click();
     await this.waitForScanStart();
     expect(await this.getScanProgress())

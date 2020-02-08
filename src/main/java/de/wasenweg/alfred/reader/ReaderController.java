@@ -91,7 +91,6 @@ public class ReaderController {
 
     final InputStream inputStream = new FileInputStream(file);
 
-    // FIXME DRY
     final StreamingResponseBody responseBody = outputStream -> {
       int numberOfBytesToWrite;
       final byte[] data = new byte[1024];
