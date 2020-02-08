@@ -45,6 +45,8 @@ describe('Reader Component', () => {
     await BookmarksPage.clickBookmarkMenuItem(0, 'View in volume');
     await IssuesPage.wait();
     await IssuesPage.toggleMarkAsRead(1);
+    expect(await Page.getToastMessage()).toEqual('Volume cached.');
+    await Page.waitForToastMessageGone();
   });
 
   describe('reading while offline', () => {

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ToastController } from '@ionic/angular';
+
 import { Comic } from '../../comic';
 import { ComicsService } from '../../comics.service';
 
@@ -14,6 +16,7 @@ export class QueueComponent {
 
   constructor (
     private comicsService: ComicsService,
+    private toastController: ToastController,
   ) { }
 
   ionViewWillEnter () {
@@ -25,5 +28,23 @@ export class QueueComponent {
       .subscribe((data: Comic[]) => {
         this.comics = data;
       });
+  }
+
+  ignore (comic: Comic): void {
+    delete comic.errors;
+    this.comicsService.update(comic).subscribe(() => {
+      this.showToast('Comic errors ignored.');
+      this.list();
+    }, () => {
+      this.showToast('Error while ignoring comic errors.');
+    });
+  }
+
+  private async showToast (message: string, duration: number = 2000) {
+    const toast = await this.toastController.create({
+      message,
+      duration
+    });
+    toast.present();
   }
 }

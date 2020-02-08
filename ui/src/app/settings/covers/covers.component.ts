@@ -54,7 +54,7 @@ export class CoversComponent {
         this.updateThumbnails(comic);
         this.showToast('Back cover deleted.');
       }, () => {
-        this.showToast('Error whilte deleting back cover.');
+        this.showToast('Error while deleting back cover.');
       });
     });
   }
