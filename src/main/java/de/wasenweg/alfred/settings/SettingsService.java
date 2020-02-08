@@ -47,11 +47,11 @@ public class SettingsService {
     });
   }
 
-  private Optional<String> getEnvironmentValue(final String key) {
-    return Optional.ofNullable(this.environment.getProperty(key));
-  }
-
   public String get(final String key) {
     return this.settingRepository.findByKey(key).get().getValue();
+  }
+
+  private Optional<String> getEnvironmentValue(final String key) {
+    return Optional.ofNullable(this.environment.getProperty(key));
   }
 }

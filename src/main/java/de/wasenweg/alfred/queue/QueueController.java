@@ -1,10 +1,8 @@
 package de.wasenweg.alfred.queue;
 
 import de.wasenweg.alfred.comics.Comic;
-import de.wasenweg.alfred.comics.ComicQueryRepositoryImpl;
 import de.wasenweg.alfred.util.BaseController;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -18,15 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class QueueController extends BaseController<Comic> {
 
   @Autowired
-  private ComicQueryRepositoryImpl comicQueryRepository;
+  private QueueService queueService;
 
   @GetMapping
   public Resources<Resource<Comic>> get() {
-    return this.wrap(this.comicQueryRepository.findAllWithErrors());
+    return this.wrap(this.queueService.get());
   }
 
   @GetMapping("/valid")
   public Resources<Resource<Comic>> getValid() {
-    return this.wrap(this.comicQueryRepository.findAllWithoutErrors());
+    return this.wrap(this.queueService.getValid());
   }
 }

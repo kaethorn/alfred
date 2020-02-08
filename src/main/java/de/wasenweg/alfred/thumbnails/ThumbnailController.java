@@ -1,9 +1,7 @@
 package de.wasenweg.alfred.thumbnails;
 
-import de.wasenweg.alfred.thumbnails.Thumbnail.ThumbnailType;
 import de.wasenweg.alfred.util.BaseController;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,15 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class ThumbnailController extends BaseController<Thumbnail> {
 
   @Autowired
-  private ThumbnailRepository thumbnailRepository;
+  private ThumbnailService thumbnailService;
 
   @GetMapping("/front-cover/{comicId}")
   public Resource<Thumbnail> findFrontCoverByComicId(@PathVariable("comicId") final String comicId) {
-    return this.wrap(this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.FRONT_COVER));
+    return this.wrap(this.thumbnailService.findFrontCoverByComicId(comicId));
   }
 
   @GetMapping("/back-cover/{comicId}")
   public Resource<Thumbnail> findBackCoverByComicId(@PathVariable("comicId") final String comicId) {
-    return this.wrap(this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.BACK_COVER));
+    return this.wrap(this.thumbnailService.findBackCoverByComicId(comicId));
   }
 }

@@ -1,7 +1,6 @@
 package de.wasenweg.alfred.stats;
 
 import de.wasenweg.alfred.util.BaseController;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.GetMapping;

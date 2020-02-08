@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -19,6 +20,14 @@ public class ThumbnailService {
 
   @Autowired
   private ThumbnailRepository thumbnailRepository;
+
+  public Optional<Thumbnail> findFrontCoverByComicId(final String comicId) {
+    return this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.FRONT_COVER);
+  }
+
+  public Optional<Thumbnail> findBackCoverByComicId(final String comicId) {
+    return this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.BACK_COVER);
+  }
 
   /*
    * Saves the front- and back cover thumbnails.

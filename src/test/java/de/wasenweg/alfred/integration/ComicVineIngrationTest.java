@@ -36,6 +36,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles(profiles = "test")
 public class ComicVineIngrationTest {
 
+  @Rule
+  public TemporaryFolder testBed = new TemporaryFolder();
+
   @LocalServerPort
   private int port;
 
@@ -47,9 +50,6 @@ public class ComicVineIngrationTest {
 
   @Autowired
   private IntegrationTestHelper helper;
-
-  @Rule
-  public TemporaryFolder testBed = new TemporaryFolder();
 
   @BeforeClass
   public static void startServer() throws IOException {

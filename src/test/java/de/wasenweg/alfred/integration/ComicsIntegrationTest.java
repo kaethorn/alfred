@@ -44,6 +44,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class ComicsIntegrationTest {
 
+  @Rule
+  public TemporaryFolder testBed = new TemporaryFolder();
+
   @Autowired
   private ComicRepository comicRepository;
 
@@ -55,9 +58,6 @@ public class ComicsIntegrationTest {
 
   @Autowired
   private IntegrationTestHelper helper;
-
-  @Rule
-  public TemporaryFolder testBed = new TemporaryFolder();
 
   private MockMvc mockMvc;
 

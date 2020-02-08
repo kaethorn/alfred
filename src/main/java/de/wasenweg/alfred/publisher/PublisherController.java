@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -22,17 +21,13 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class PublisherController {
 
   @Autowired
-  private PublisherQueryRepositoryImpl repository;
+  private PublisherService publisherService;
 
   @GetMapping
   public Resources<Resource<Publisher>> findAllPublishers(final Principal principal) {
-    final List<Publisher> publishers = this.repository.findAllPublishers(principal.getName());
     return new Resources<Resource<Publisher>>(
-        publishers.stream()
-        .map(publisher -> {
-          return new Resource<Publisher>(
-              publisher,
-              this.getSeriesLink(publisher.getPublisher()));
+        this.publisherService.findAllPublishers(principal.getName()).stream().map(publisher -> {
+          return new Resource<Publisher>(publisher, this.getSeriesLink(publisher.getPublisher()));
         }).collect(Collectors.toList()),
         linkTo(PublisherController.class).withSelfRel());
   }
@@ -41,13 +36,9 @@ public class PublisherController {
   public Resources<Resource<Series>> findAllSeriesByPublisher(
       final Principal principal,
       @PathVariable final String publisher) {
-    final List<Series> series = this.repository.findAllSeries(principal.getName(), publisher);
     return new Resources<Resource<Series>>(
-        series.stream()
-        .map(serie -> {
-          return new Resource<Series>(
-              serie,
-              this.getVolumeLink(serie.getPublisher(), serie.getSeries()));
+        this.publisherService.findAllSeriesByPublisher(principal.getName(), publisher).stream().map(serie -> {
+          return new Resource<Series>(serie, this.getVolumeLink(serie.getPublisher(), serie.getSeries()));
         }).collect(Collectors.toList()),
         this.getSeriesLink(publisher));
   }
@@ -57,9 +48,9 @@ public class PublisherController {
       final Principal principal,
       @PathVariable final String publisher,
       @PathVariable final String series) {
-    final List<Volume> volumes = this.repository
-        .findAllVolumes(principal.getName(), publisher, series);
-    return new Resources<Volume>(volumes, this.getVolumeLink(publisher, series));
+    return new Resources<Volume>(
+        this.publisherService.findAllVolumesByPublisherAndSeries(principal.getName(), publisher, series),
+        this.getVolumeLink(publisher, series));
   }
 
   private Link getSeriesLink(final String publisher) {

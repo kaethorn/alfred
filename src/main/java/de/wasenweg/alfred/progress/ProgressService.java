@@ -19,6 +19,17 @@ public class ProgressService {
   @Autowired
   private MongoTemplate mongoTemplate;
 
+  @Autowired
+  private ProgressRepository progressRepository;
+
+  public void deleteProgress() {
+    this.progressRepository.deleteAll();
+  }
+
+  public void deleteProgressForCurrentUser(final String userId) {
+    this.progressRepository.deleteByUserId(userId);
+  }
+
   public Comic updateComic(final String userId, final Comic comic, final Boolean read) {
     final Query query = Query.query(Criteria
         .where("comicId").is(new ObjectId(comic.getId()))

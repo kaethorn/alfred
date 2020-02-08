@@ -1,16 +1,8 @@
 package de.wasenweg.alfred.comics;
 
-import de.wasenweg.alfred.progress.ProgressService;
-import de.wasenweg.alfred.scanner.ApiMetaDataService;
-import de.wasenweg.alfred.scanner.FileMetaDataService;
-import de.wasenweg.alfred.scanner.ScannerIssue;
-import de.wasenweg.alfred.scanner.ScannerService;
-import de.wasenweg.alfred.thumbnails.ThumbnailRepository;
 import de.wasenweg.alfred.util.BaseController;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @RequestMapping(value = "/api/comics", produces = { "application/hal+json" })
 @RestController
@@ -34,72 +24,41 @@ public class ComicController extends BaseController<Comic> {
   @Autowired
   private ComicService comicService;
 
-  @Autowired
-  private ProgressService progressService;
-
-  @Autowired
-  private ScannerService scannerService;
-
-  @Autowired
-  private FileMetaDataService fileMetaDataService;
-
-  @Autowired
-  private ApiMetaDataService apiMetaDataService;
-
-  @Autowired
-  private ComicQueryRepositoryImpl queryRepository;
-
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private ThumbnailRepository thumbnailRepository;
-
   @GetMapping("")
   public Resources<Resource<Comic>> findAll() {
-    return this.wrap(this.comicRepository.findAll());
+    return this.wrap(this.comicService.findAll());
   }
 
   @GetMapping("/{comicId}")
   public Resource<Comic> findById(
       final Principal principal,
       @PathVariable("comicId") final String comicId) {
-    return this.wrap(this.queryRepository.findById(principal.getName(), comicId));
+    return this.wrap(this.comicService.findById(principal.getName(), comicId));
   }
 
   @PutMapping("")
   public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
-    this.comicRepository.save(comic);
-    this.fileMetaDataService.write(comic);
-    this.scannerService.processComic(comic);
-    return this.wrap(comic);
+    return this.wrap(this.comicService.update(comic));
   }
 
   @PutMapping("/progress")
   public Resource<Comic> updateProgress(@Valid @RequestBody final Comic comic) {
-    this.comicRepository.save(comic);
-    return this.wrap(comic);
+    return this.wrap(this.comicService.updateProgress(comic));
   }
 
   @PutMapping("/scrape")
   public Resource<Comic> scrape(@Valid @RequestBody final Comic comic) {
-    final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
-    if (issues.size() > 0) {
-      throw new ResourceNotFoundException("Error while querying ComicVine.");
-    }
-    this.comicRepository.save(comic);
-    this.fileMetaDataService.write(comic);
-    return this.wrap(comic);
+    return this.wrap(this.comicService.scrape(comic));
   }
 
   @GetMapping("/search/findAllLastReadPerVolume")
   public Resources<Resource<Comic>> findAllLastReadPerVolume(final Principal principal) {
-    return this.wrap(this.queryRepository.findAllLastReadPerVolume(principal.getName()));
+    return this.wrap(this.comicService.findAllLastReadPerVolume(principal.getName()));
   }
 
   @GetMapping("/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc")
-  public Resources<Resource<Comic>> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc(final Principal principal) {
-    return this.wrap(this.comicRepository.findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc());
+  public Resources<Resource<Comic>> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc() {
+    return this.wrap(this.comicService.findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc());
   }
 
   @GetMapping("/search/findLastReadForVolume")
@@ -108,7 +67,7 @@ public class ComicController extends BaseController<Comic> {
       @Param("publisher") final String publisher,
       @Param("series") final String series,
       @Param("volume") final String volume) {
-    return this.wrap(this.queryRepository.findLastReadForVolume(principal.getName(), publisher, series, volume));
+    return this.wrap(this.comicService.findLastReadForVolume(principal.getName(), publisher, series, volume));
   }
 
   @GetMapping("/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition")
@@ -117,24 +76,23 @@ public class ComicController extends BaseController<Comic> {
       @Param("publisher") final String publisher,
       @Param("series") final String series,
       @Param("volume") final String volume) {
-    return this.wrap(this.queryRepository.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+    return this.wrap(this.comicService.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
         principal.getName(), publisher, series, volume));
   }
 
   @PutMapping("/markAsRead")
   public Resource<Comic> markAsRead(@Valid @RequestBody final Comic comic, final Principal principal) {
-    return this.wrap(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, true)));
+    return this.wrap(this.comicService.markAsRead(comic, principal.getName()));
   }
 
   @PutMapping("/markAsUnread")
   public Resource<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
-    return this.wrap(Optional.ofNullable(this.progressService.updateComic(principal.getName(), comic, false)));
+    return this.wrap(this.comicService.markAsUnread(comic, principal.getName()));
   }
 
   @DeleteMapping("")
   public void deleteComics() {
-    this.comicRepository.deleteAll();
-    this.thumbnailRepository.deleteAll();
+    this.comicService.deleteComics();
   }
 
   @DeleteMapping("/{comicId}/page/{filePath}")
@@ -146,6 +104,6 @@ public class ComicController extends BaseController<Comic> {
 
   @GetMapping("/bundle")
   public void bundle() {
-    this.scannerService.associateVolumes();
+    this.comicService.bundle();
   }
 }

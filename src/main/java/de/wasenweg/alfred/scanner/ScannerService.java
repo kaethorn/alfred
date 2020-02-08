@@ -211,6 +211,7 @@ public class ScannerService {
    * 5. On match, write meta data XML and exit. Otherwise report error and ignore file.
    */
   public Flux<ServerSentEvent<String>> scanComics() {
+    log.info("Triggered scan-progress.");
     this.emitter = EmitterProcessor.create();
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
     this.reportStart(comicsPath.toString());

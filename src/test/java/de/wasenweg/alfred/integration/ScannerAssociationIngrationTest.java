@@ -31,6 +31,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles(profiles = "test")
 public class ScannerAssociationIngrationTest {
 
+  @Rule
+  public TemporaryFolder testBed = new TemporaryFolder();
+
   @LocalServerPort
   private int port;
 
@@ -42,9 +45,6 @@ public class ScannerAssociationIngrationTest {
 
   @Autowired
   private IntegrationTestHelper helper;
-
-  @Rule
-  public TemporaryFolder testBed = new TemporaryFolder();
 
   @After
   public void tearDown() {

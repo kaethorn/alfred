@@ -12,15 +12,15 @@ import java.security.Principal;
 public class ProgressController {
 
   @Autowired
-  private ProgressRepository progressRepository;
+  ProgressService progressService;
 
   @DeleteMapping("")
   public void deleteProgress() {
-    this.progressRepository.deleteAll();
+    this.progressService.deleteProgress();
   }
 
   @DeleteMapping("/me")
   public void deleteProgressForCurrentUser(final Principal principal) {
-    this.progressRepository.deleteByUserId(principal.getName());
+    this.progressService.deleteProgressForCurrentUser(principal.getName());
   }
 }
