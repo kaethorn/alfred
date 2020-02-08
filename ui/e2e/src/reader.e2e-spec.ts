@@ -116,6 +116,8 @@ describe('Reader Component', () => {
       await ReaderPage.openOverlay(1);
       await ReaderPage.getOverlayNextButton().click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(4);
+      // Wait for animation
+      await browser.sleep(1000);
     });
 
     it('opens the next issue', async () => {
