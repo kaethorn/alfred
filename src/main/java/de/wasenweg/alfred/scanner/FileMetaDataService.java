@@ -83,14 +83,6 @@ public class FileMetaDataService {
     }
   }
 
-  private Short getPageCount(final Document document) {
-    final String pageCount = this.readStringElement(document, "PageCount");
-    if (pageCount.isEmpty()) {
-      return (short) document.getElementsByTagName("Page").getLength();
-    }
-    return Short.parseShort(pageCount);
-  }
-
   private String mapPosition(final String number) {
     try {
       return Comic.mapPosition(number);
@@ -189,7 +181,6 @@ public class FileMetaDataService {
     comic.setCoverArtist(this.readStringElement(document, "CoverArtist"));
     comic.setEditor(this.readStringElement(document, "Editor"));
     comic.setWeb(this.readStringElement(document, "Web"));
-    comic.setPageCount(this.getPageCount(document));
     comic.setManga(this.readStringElement(document, "Manga").equals("Yes"));
     comic.setCharacters(this.readStringElement(document, "Characters"));
     comic.setTeams(this.readStringElement(document, "Teams"));
@@ -214,8 +205,8 @@ public class FileMetaDataService {
   public List<ScannerIssue> read(final ZipFile file, final Comic comic)
       throws SAXException, IOException, NoMetaDataException, ParserConfigurationException {
     this.scannerIssues.clear();
-    this.parseFiles(file, comic);
     this.parseComicInfoXml(file, comic);
+    this.parseFiles(file, comic);
     return this.scannerIssues;
   }
 

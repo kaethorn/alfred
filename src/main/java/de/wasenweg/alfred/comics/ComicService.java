@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.zip.ZipFile;
 
+import static java.lang.String.format;
+
 @Service
 @Slf4j
 public class ComicService {
@@ -35,7 +37,7 @@ public class ComicService {
           Files.delete(source);
         }
         fs.close();
-        log.info(String.format("Deleted file %s in comic %s", filePath, comic.getPath()));
+        log.info(format("Deleted file %s in comic %s", filePath, comic.getPath()));
         final ZipFile zipFile = new ZipFile(comic.getPath());
         this.thumbnailService.read(zipFile, comic);
         zipFile.close();

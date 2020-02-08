@@ -5,6 +5,8 @@ import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.util.ZipReaderUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,9 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static java.lang.String.format;
+
+@Slf4j
 @RequestMapping("/api")
 @RestController
 public class ReaderController {
@@ -59,6 +64,7 @@ public class ReaderController {
     return this.read(id, page, true, principal);
   }
 
+  @Transactional
   @GetMapping("/download/{id}/{page}")
   @ResponseBody
   public ResponseEntity<StreamingResponseBody> downloadPage(
@@ -68,6 +74,7 @@ public class ReaderController {
     return this.read(id, page, false, principal);
   }
 
+  @Transactional
   @GetMapping("/download/{id}")
   @ResponseBody
   public ResponseEntity<StreamingResponseBody> download(@PathVariable("id") final String id)
@@ -84,6 +91,7 @@ public class ReaderController {
 
     final InputStream inputStream = new FileInputStream(file);
 
+    // FIXME DRY
     final StreamingResponseBody responseBody = outputStream -> {
       int numberOfBytesToWrite;
       final byte[] data = new byte[1024];
@@ -119,38 +127,44 @@ public class ReaderController {
     }
 
     final Comic comic = comicQuery.get();
+    log.debug(format(
+        "Reading page %s (page count %s) of %s, files: [%s]",
+        page, comic.getPageCount(), comic.toString(), String.join(",", comic.getFiles())));
 
     if (markAsRead) {
       this.setReadState(comic, page, principal.getName());
     }
 
-    final ComicPage comicPage = this.extractPage(comic, page);
+    try {
+      final ZipFile file = new ZipFile(comic.getPath());
+      final ComicPage comicPage = this.extractPage(file, page);
+      final StreamingResponseBody responseBody = outputStream -> {
+        int numberOfBytesToWrite;
+        final byte[] data = new byte[1024];
+        while ((numberOfBytesToWrite = comicPage.getStream().read(data, 0, data.length)) != -1) {
+          outputStream.write(data, 0, numberOfBytesToWrite);
+        }
+        comicPage.getStream().close();
+        file.close();
+      };
 
-    final StreamingResponseBody responseBody = outputStream -> {
-      int numberOfBytesToWrite;
-      final byte[] data = new byte[1024];
-      while ((numberOfBytesToWrite = comicPage.getStream().read(data, 0, data.length)) != -1) {
-        outputStream.write(data, 0, numberOfBytesToWrite);
-      }
-      comicPage.getStream().close();
-    };
+      final MediaType mediaType = MediaType.parseMediaType(comicPage.getType());
 
-    final MediaType mediaType = MediaType.parseMediaType(comicPage.getType());
-
-    return ResponseEntity
-        .ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + comicPage.getName())
-        .contentLength(comicPage.getSize())
-        .contentType(mediaType)
-        .body(responseBody);
+      return ResponseEntity
+          .ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + comicPage.getName())
+          .contentLength(comicPage.getSize())
+          .contentType(mediaType)
+          .body(responseBody);
+    } catch (final Exception exception) {
+      log.error(exception.getLocalizedMessage());
+      return ResponseEntity.unprocessableEntity().body(null);
+    }
   }
 
-  @Transactional
-  private ComicPage extractPage(final Comic comic, final Short page) {
+  private ComicPage extractPage(final ZipFile file, final Short page) {
     final ComicPage result = new ComicPage();
-    ZipFile file = null;
     try {
-      file = new ZipFile(comic.getPath());
       final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
       final ZipEntry entry = sortedEntries.get(page);
       final String fileName = entry.getName();
@@ -161,6 +175,8 @@ public class ReaderController {
     } catch (final Exception e) {
       e.printStackTrace();
     }
+
+    log.debug(format("Extracted page number %s: %s", page, result.toString()));
 
     return result;
   }

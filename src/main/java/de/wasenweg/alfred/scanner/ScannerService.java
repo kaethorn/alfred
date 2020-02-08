@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.zip.ZipFile;
 
+import static java.lang.String.format;
+
 @Service
 @Slf4j
 public class ScannerService {
@@ -136,20 +138,6 @@ public class ScannerService {
     }
   }
 
-  private void setThumbnail(final ZipFile file, final Comic comic) {
-    try {
-      this.thumbnailService.read(file, comic);
-    } catch (final NoImagesException exception) {
-      this.reportIssue(comic, exception);
-    } finally {
-      try {
-        file.close();
-      } catch (final IOException exception) {
-        this.reportIssue(comic, exception);
-      }
-    }
-  }
-
   public void processComic(final Comic comic) {
     comic.setErrors(null);
 
@@ -166,10 +154,15 @@ public class ScannerService {
       this.fileMetaDataService.read(file, comic).forEach(issue -> {
         this.reportIssue(comic, issue);
       });
+
+      this.comicRepository.save(comic);
+      this.thumbnailService.read(file, comic);
     } catch (final SAXException | IOException | ParserConfigurationException exception) {
       this.reportIssue(comic, exception, ScannerIssue.Severity.WARNING);
+    } catch (final NoImagesException exception) {
+      this.reportIssue(comic, exception);
     } catch (final NoMetaDataException exception) {
-      log.info(String.format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
+      log.info(format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
       final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
       this.fileMetaDataService.write(comic);
       issues.forEach(issue -> {
@@ -178,12 +171,15 @@ public class ScannerService {
       if (issues.size() == 0) {
         this.fileMetaDataService.write(comic);
       }
+    } finally {
+      try {
+        file.close();
+      } catch (final IOException exception) {
+        this.reportIssue(comic, exception);
+      }
+      // Save the comic again to store errors that might have occursed as Exceptions
+      this.comicRepository.save(comic);
     }
-
-    this.comicRepository.save(comic);
-    this.setThumbnail(file, comic);
-    // Save the comic again to store errors occurring while creating thumb nails:
-    this.comicRepository.save(comic);
   }
 
   private void processComicByPath(final Path path) {

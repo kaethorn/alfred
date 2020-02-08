@@ -17,6 +17,8 @@ import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
+import static java.lang.String.format;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -129,7 +131,7 @@ public class Comic {
 
   @Override
   public String toString() {
-    return String.format(
+    return format(
         "Comic[id=%s, series='%s', volume='%s', number='%s']",
         this.id, this.series, this.volume, this.number);
   }
