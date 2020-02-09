@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -21,25 +21,24 @@ public class UserController {
   private UserService userService;
 
   @GetMapping("/verify/{token}")
-  public ResponseEntity<User> verify(@PathVariable("token") final String token) {
-    return new ResponseEntity<User>(
-      this.userService.verify(token).orElseThrow(() -> new HttpClientErrorException(HttpStatus.UNAUTHORIZED)),
-      HttpStatus.OK);
+  public ResponseEntity<?> verify(@PathVariable("token") final String token) {
+    final Optional<User> maybeUser = this.userService.verify(token);
+    if (maybeUser.isPresent()) {
+      return new ResponseEntity<User>(maybeUser.get(), HttpStatus.OK);
+    }
+    return new ResponseEntity<Error>(HttpStatus.UNAUTHORIZED);
   }
 
   @PostMapping("/sign-in/{token}")
-  public ResponseEntity<User> signIn(@PathVariable("token") final String token) {
-
+  public ResponseEntity<?> signIn(@PathVariable("token") final String token) {
     try {
-      return new ResponseEntity<User>(
-        this.userService.signIn(token).orElseThrow(() -> {
-          return new HttpClientErrorException(HttpStatus.FORBIDDEN);
-        }),
-        HttpStatus.OK);
+      final Optional<User> maybeUser = this.userService.signIn(token);
+      if (maybeUser.isPresent()) {
+        return new ResponseEntity<User>(maybeUser.get(), HttpStatus.OK);
+      }
+      return new ResponseEntity<Error>(HttpStatus.FORBIDDEN);
     } catch (final Exception exception) {
-      exception.printStackTrace();
+      return new ResponseEntity<Error>(HttpStatus.UNAUTHORIZED);
     }
-
-    throw new HttpServerErrorException(HttpStatus.UNAUTHORIZED);
   }
 }
