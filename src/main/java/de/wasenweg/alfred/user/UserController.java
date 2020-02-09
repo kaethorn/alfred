@@ -36,9 +36,9 @@ public class UserController {
       if (maybeUser.isPresent()) {
         return new ResponseEntity<User>(maybeUser.get(), HttpStatus.OK);
       }
-      return new ResponseEntity<Error>(HttpStatus.FORBIDDEN);
+      return new ResponseEntity<Error>(new Error("User not allowed."), HttpStatus.FORBIDDEN);
     } catch (final Exception exception) {
-      return new ResponseEntity<Error>(HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<Error>(new Error(exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
     }
   }
 }
