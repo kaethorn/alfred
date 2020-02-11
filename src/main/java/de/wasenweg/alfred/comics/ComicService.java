@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.ZipFile;
 
 import static java.lang.String.format;
 
@@ -118,17 +117,15 @@ public class ComicService {
     final Optional<Comic> maybeComic = this.comicRepository.findById(comicId);
     if (maybeComic.isPresent()) {
       final Comic comic = maybeComic.get();
-      final Path zipFilePath = Paths.get(comic.getPath());
-      try (final FileSystem fs = FileSystems.newFileSystem(zipFilePath, null)) {
+      final Path path = Paths.get(comic.getPath());
+      try (final FileSystem fs = FileSystems.newFileSystem(path, null)) {
         final Path source = fs.getPath(filePath);
         if (Files.exists(source)) {
           Files.delete(source);
         }
         fs.close();
         log.info(format("Deleted file %s in comic %s", filePath, comic.getPath()));
-        final ZipFile zipFile = new ZipFile(comic.getPath());
-        this.thumbnailService.read(zipFile, comic);
-        zipFile.close();
+        this.thumbnailService.read(comic);
       } catch (final IOException exception) {
         exception.printStackTrace();
       }

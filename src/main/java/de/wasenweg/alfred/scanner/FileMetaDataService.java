@@ -1,7 +1,6 @@
 package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
-import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -18,6 +17,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
@@ -25,17 +25,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.ProviderNotFoundException;
 import java.nio.file.StandardOpenOption;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+
+import static java.lang.String.format;
 
 @Slf4j
 @Service
@@ -96,13 +96,6 @@ public class FileMetaDataService {
     }
   }
 
-  private Optional<Document> getDocument(final ZipFile file, final ZipEntry entry)
-      throws SAXException, IOException, ParserConfigurationException {
-
-    return Optional.ofNullable(
-        this.getDocumentBuilder().parse(file.getInputStream(entry)));
-  }
-
   private String readShortValue(final Short value) {
     if (value == null) {
       return null;
@@ -113,16 +106,13 @@ public class FileMetaDataService {
   private String marshal(final Comic comic)
       throws SAXException, IOException, TransformerException, ParserConfigurationException {
 
-    Document document;
-    final ZipFile file = this.getZipFile(comic);
-
+    Document document = null;
     try {
-      document = this.getDocument(file, this.findMetaDataFile(file)).get();
-    } catch (final NoMetaDataException exception) {
+      document = this.getDocument(comic);
+    } catch (final Exception exception) {
       document = this.getDocumentBuilder().newDocument();
       document.appendChild(document.createElement("ComicInfo"));
     }
-    file.close();
 
     this.writeStringElement(document, "Title", comic.getTitle());
     this.writeStringElement(document, "Series", comic.getSeries());
@@ -145,22 +135,18 @@ public class FileMetaDataService {
     this.writeStringElement(document, "Characters", comic.getCharacters());
     this.writeStringElement(document, "Teams", comic.getTeams());
     this.writeStringElement(document, "Locations", comic.getLocations());
+
     final StringWriter stringWriter = new StringWriter();
     TransformerFactory.newInstance().newTransformer()
       .transform(new DOMSource(document), new StreamResult(stringWriter));
     return stringWriter.toString();
   }
 
-  private void parseComicInfoXml(final ZipFile file, final Comic comic)
-      throws SAXException, IOException, NoMetaDataException, ParserConfigurationException {
+  private void parseComicInfoXml(final Comic comic)
+      throws SAXException, IOException, ParserConfigurationException,
+      ProviderNotFoundException, NoMetaDataException {
 
-    final Optional<Document> documentOptional = this.getDocument(file, this.findMetaDataFile(file));
-
-    if (!documentOptional.isPresent()) {
-      return;
-    }
-
-    final Document document = documentOptional.get();
+    final Document document = this.getDocument(comic);
 
     document.getDocumentElement().normalize();
     comic.setTitle(this.readStringElement(document, "Title"));
@@ -187,26 +173,28 @@ public class FileMetaDataService {
     comic.setLocations(this.readStringElement(document, "Locations"));
   }
 
-  private ZipEntry findMetaDataFile(final ZipFile file) throws NoMetaDataException {
-    final Enumeration<? extends ZipEntry> entries = file.entries();
-    while (entries.hasMoreElements()) {
-      final ZipEntry entry = entries.nextElement();
-      if (entry.getName().equals("ComicInfo.xml")) {
-        return entry;
-      }
+  private Document getDocument(final Comic comic)
+      throws IOException, SAXException, ParserConfigurationException,
+      ProviderNotFoundException, NoMetaDataException {
+
+    try {
+      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null);
+      final InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"));
+      final Document document = this.getDocumentBuilder().parse(xmlStream);
+      xmlStream.close();
+      return document;
+    } catch (final NoSuchFileException exception) {
+      throw new NoMetaDataException();
     }
-    throw new NoMetaDataException();
   }
 
-  public ZipFile getZipFile(final Comic comic) throws IOException {
-    return new ZipFile(comic.getPath());
-  }
+  public List<ScannerIssue> read(final Comic comic)
+      throws SAXException, IOException, NoMetaDataException, ParserConfigurationException,
+      NoImagesException, ProviderNotFoundException, InvalidFileException {
 
-  public List<ScannerIssue> read(final ZipFile file, final Comic comic)
-      throws SAXException, IOException, NoMetaDataException, ParserConfigurationException {
     this.scannerIssues.clear();
-    this.parseComicInfoXml(file, comic);
-    this.parseFiles(file, comic);
+    this.parseComicInfoXml(comic);
+    this.parseFiles(comic);
     return this.scannerIssues;
   }
 
@@ -216,38 +204,44 @@ public class FileMetaDataService {
    * 1. Determines the page count
    * 2. Checks if there are any directories in the archive
    * 3. Saves all file names
-   * @param file The zip file
    * @param comic The comic entity
    */
-  private void parseFiles(final ZipFile file, final Comic comic) {
-    List<ZipEntry> sortedEntries;
-    try {
-      sortedEntries = ZipReaderUtil.getEntries(file);
-    } catch (final Exception exception) {
-      sortedEntries = new ArrayList<>();
+  private void parseFiles(final Comic comic) throws IOException, NoImagesException, InvalidFileException {
+    short pageCount = 0;
+    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+      final List<Path> files = new ArrayList<>();
+      for (final Path rootDirectory : fs.getRootDirectories()) {
+        Files.list(rootDirectory).forEach(entry -> files.add(entry));
+      }
+      pageCount = (short) files.stream()
+          .filter(file -> Files.isRegularFile(file) && file.toString().matches(".*(png|jpg)$"))
+          .count();
+
+      if (files.stream().anyMatch(file -> Files.isDirectory(file))) {
+        final ScannerIssue parsingEvent = ScannerIssue.builder()
+            .message("Found directory entries in the archive.")
+            .type(ScannerIssue.Type.NOT_FLAT)
+            .fixable(true)
+            .severity(ScannerIssue.Severity.WARNING).build();
+        log.warn(parsingEvent.getMessage());
+        this.scannerIssues.add(parsingEvent);
+      }
+
+      try {
+        comic.setFiles(files.stream().map(entry -> entry.toString()).collect(Collectors.toList()));
+      } catch (final Exception exception) {
+        throw new InvalidFileException(exception);
+      }
     }
 
-    final short pageCount = (short) sortedEntries.stream()
-        .filter(ZipReaderUtil::isImage)
-        .count();
     comic.setPageCount(pageCount);
-
-    if (sortedEntries.stream().anyMatch(entry -> entry.isDirectory())) {
-      final ScannerIssue parsingEvent = ScannerIssue.builder()
-          .message("Found directory entries in the archive.")
-          .type(ScannerIssue.Type.NOT_FLAT)
-          .fixable(true)
-          .severity(ScannerIssue.Severity.WARNING).build();
-      log.warn(parsingEvent.getMessage());
-      this.scannerIssues.add(parsingEvent);
+    if (pageCount < 1) {
+      throw new NoImagesException();
     }
-
-    comic.setFiles(sortedEntries.stream().map(entry -> entry.getName()).collect(Collectors.toList()));
   }
 
   public void write(final Comic comic) {
-    final Path zipFilePath = Paths.get(comic.getPath());
-    try (final FileSystem fs = FileSystems.newFileSystem(zipFilePath, null)) {
+    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
       final Path source = fs.getPath("/ComicInfo.xml");
       if (Files.exists(source)) {
         Files.delete(source);
@@ -256,9 +250,9 @@ public class FileMetaDataService {
       writer.write(this.marshal(comic));
       writer.close();
       fs.close();
-      log.info("Finished writing ComicInfo.XML for " + comic.getPath());
+      log.info(format("Finished writing ComicInfo.xml to %s", comic.getPath()));
     } catch (final IOException | SAXException | TransformerException | ParserConfigurationException exception) {
-      exception.printStackTrace();
+      log.error(format("Failed to write ComicInfo.xml to %s", comic.getPath()));
     }
   }
 }

@@ -20,11 +20,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.nio.channels.FileChannel;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import static java.lang.String.format;
 
@@ -61,22 +64,30 @@ public class ReaderService {
     }
 
     try {
-      final ZipFile file = new ZipFile(comic.getPath());
-      final ComicPage comicPage = this.extractPage(file, page);
+      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null);
+      final Path path = ZipReaderUtil.getImages(fs).get(page);
+      final String fileName = path.toString();
+      final InputStream fileStream = Files.newInputStream(path);
+      final long fileSize = FileChannel.open(path).size();
+      final String fileType = URLConnection.guessContentTypeFromName(fileName);
+      log.debug(format("Extracting page %s of type %s with size %s.", fileName, fileType, fileSize));
+
       final StreamingResponseBody responseBody = outputStream -> {
         int numberOfBytesToWrite;
         final byte[] data = new byte[1024];
-        while ((numberOfBytesToWrite = comicPage.getStream().read(data, 0, data.length)) != -1) {
+        while ((numberOfBytesToWrite = fileStream.read(data, 0, data.length)) != -1) {
           outputStream.write(data, 0, numberOfBytesToWrite);
         }
-        comicPage.getStream().close();
-        file.close();
+        fileStream.close();
+        fs.close();
       };
 
-      final MediaType mediaType = MediaType.parseMediaType(comicPage.getType());
-
-      return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + comicPage.getName())
-          .contentLength(comicPage.getSize()).contentType(mediaType).body(responseBody);
+      final MediaType mediaType = MediaType.parseMediaType(fileType);
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + fileName)
+          .contentLength(fileSize)
+          .contentType(mediaType)
+          .body(responseBody);
     } catch (final Exception exception) {
       log.error(exception.getLocalizedMessage());
       throw new ResourceNotFoundException(exception.getLocalizedMessage());
@@ -113,25 +124,6 @@ public class ReaderService {
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName())
         .contentType(MediaType.APPLICATION_OCTET_STREAM)
         .body(responseBody);
-  }
-
-  private ComicPage extractPage(final ZipFile file, final Short page) {
-    final ComicPage result = new ComicPage();
-    try {
-      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
-      final ZipEntry entry = sortedEntries.get(page);
-      final String fileName = entry.getName();
-      result.setStream(file.getInputStream(entry));
-      result.setSize(entry.getSize());
-      result.setType(URLConnection.guessContentTypeFromName(fileName));
-      result.setName(fileName);
-    } catch (final Exception e) {
-      e.printStackTrace();
-    }
-
-    log.debug(format("Extracted page number %s: %s", page, result.toString()));
-
-    return result;
   }
 
   private void setReadState(final Comic comic, final Short page, final String userId) {

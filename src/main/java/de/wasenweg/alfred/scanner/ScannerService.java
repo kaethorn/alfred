@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.ProviderNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +31,6 @@ import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.zip.ZipFile;
 
 import static java.lang.String.format;
 
@@ -141,25 +141,16 @@ public class ScannerService {
   public void processComic(final Comic comic) {
     comic.setErrors(null);
 
-    final ZipFile file;
     try {
-      file = this.fileMetaDataService.getZipFile(comic);
-    } catch (final IOException exception) {
-      this.reportIssue(comic, exception);
-      this.comicRepository.save(comic);
-      return;
-    }
-
-    try {
-      this.fileMetaDataService.read(file, comic).forEach(issue -> {
+      this.fileMetaDataService.read(comic).forEach(issue -> {
         this.reportIssue(comic, issue);
       });
 
       this.comicRepository.save(comic);
-      this.thumbnailService.read(file, comic);
+      this.thumbnailService.read(comic);
     } catch (final SAXException | IOException | ParserConfigurationException exception) {
       this.reportIssue(comic, exception, ScannerIssue.Severity.WARNING);
-    } catch (final NoImagesException exception) {
+    } catch (final NoImagesException | ProviderNotFoundException | InvalidFileException exception) {
       this.reportIssue(comic, exception);
     } catch (final NoMetaDataException exception) {
       log.info(format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
@@ -172,11 +163,6 @@ public class ScannerService {
         this.fileMetaDataService.write(comic);
       }
     } finally {
-      try {
-        file.close();
-      } catch (final IOException exception) {
-        this.reportIssue(comic, exception);
-      }
       // Save the comic again to store errors that might have occursed as Exceptions
       this.comicRepository.save(comic);
     }

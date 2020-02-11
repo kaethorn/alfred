@@ -10,10 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 @Service
 public class ThumbnailService {
@@ -33,35 +37,34 @@ public class ThumbnailService {
    * Saves the front- and back cover thumbnails.
    */
   @Transactional
-  public void read(final ZipFile file, final Comic comic) throws NoImagesException {
-
-    try {
-      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
+  public void read(final Comic comic) throws NoImagesException, IOException {
+    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+      final List<Path> sortedEntries = ZipReaderUtil.getImages(fs);
 
       if (sortedEntries.size() > 0) {
-        final ObjectId comicId = new ObjectId(comic.getId());
-        this.setThumbnail(comicId, file, sortedEntries.get(0), ThumbnailType.FRONT_COVER);
-        this.setThumbnail(comicId, file, sortedEntries.get(sortedEntries.size() - 1), ThumbnailType.BACK_COVER);
-      } else {
-        throw new NoImagesException();
+        this.saveThumbnail(comic, sortedEntries.get(0), ThumbnailType.FRONT_COVER);
+        this.saveThumbnail(comic, sortedEntries.get(sortedEntries.size() - 1), ThumbnailType.BACK_COVER);
       }
     } catch (final Exception exception) {
-      throw new NoImagesException(exception);
+      throw new NoThumbnailsException(exception);
     }
   }
 
-  private void setThumbnail(final ObjectId comicId, final ZipFile file, final ZipEntry entry, final ThumbnailType type)
+  private void saveThumbnail(final Comic comic, final Path file, final ThumbnailType type)
       throws IOException {
 
+    final ObjectId comicId = new ObjectId(comic.getId());
     final Thumbnail thumbnail = this.thumbnailRepository
         .findByComicIdAndType(comicId, type)
         .orElse(Thumbnail.builder()
             .comicId(comicId)
             .type(type)
-            .path(entry.getName())
+            .path(file.toString())
             .build());
 
-    thumbnail.setThumbnail(ThumbnailUtils.get(file.getInputStream(entry)).toByteArray());
+    final InputStream thumbnailStream = Files.newInputStream(file);
+    thumbnail.setThumbnail(ThumbnailUtils.get(thumbnailStream).toByteArray());
     this.thumbnailRepository.save(thumbnail);
+    thumbnailStream.close();
   }
 }

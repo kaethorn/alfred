@@ -181,7 +181,9 @@ export class ComicStorageService {
         .then((thumbnail) => {
           resolve(this.sanitizer.bypassSecurityTrustResourceUrl(thumbnail));
         }).catch(() => {
-          this.thumbnailsService.getFrontCover(comicId).subscribe(resolve, reject);
+          this.thumbnailsService.getFrontCover(comicId)
+            .pipe(map(thumbnail => thumbnail.url))
+            .subscribe(resolve, reject);
         });
     });
   }
