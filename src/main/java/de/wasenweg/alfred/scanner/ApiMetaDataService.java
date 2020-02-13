@@ -12,8 +12,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -22,72 +20,10 @@ import java.util.stream.Stream;
 @Service
 public class ApiMetaDataService {
 
+  @Autowired
   private ComicVineService comicVineService;
 
   private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
-  private Pattern pattern;
-
-  @Autowired
-  public ApiMetaDataService(final ComicVineService comicVineService) {
-    this.comicVineService = comicVineService;
-
-    final String publisherDirPattern = "^.*?(?<publisher>[^/]+)/";
-    final String seriesDirPattern = "(?<series1>[^/]+) \\((?<volume1>\\d{4})\\)/";
-    final String fileNamePattern = "(?<series2>[^/]+) (?<number>[\\d\\.a½/]+) \\((?<volume2>\\d{4})\\)( [^/]+)?\\.cbz$";
-    this.pattern = Pattern
-        .compile(publisherDirPattern + seriesDirPattern + fileNamePattern);
-  }
-
-  private List<String> findMissingAttributes(final Comic comic) {
-    final List<String> missingAttributes = new ArrayList<String>();
-    if (comic.getPublisher() == null) {
-      missingAttributes.add("publisher");
-    }
-    if (comic.getSeries() == null) {
-      missingAttributes.add("series");
-    }
-    if (comic.getVolume() == null) {
-      missingAttributes.add("volume");
-    }
-    if (comic.getNumber() == null) {
-      missingAttributes.add("number");
-    }
-    return missingAttributes;
-  }
-
-  private Boolean isValid(final Comic comic) {
-    return this.findMissingAttributes(comic).isEmpty();
-  }
-
-  private String mapPosition(final String number) {
-    try {
-      return Comic.mapPosition(number);
-    } catch (final InvalidIssueNumberException exception) {
-      log.warn(exception.getMessage(), exception);
-      this.scannerIssues.add(ScannerIssue.builder()
-          .message(exception.getMessage())
-          .severity(ScannerIssue.Severity.WARNING)
-          .build());
-      return new DecimalFormat("0000.0").format(new BigDecimal(0));
-    }
-  }
-
-  /**
-   * Expected format:
-   * `/{publisher}/{series} ({volume})/{series} #{number} ({volume}).cbz`
-   */
-  private void setPathParts(final Comic comic) {
-    final Matcher matcher = this.pattern.matcher(comic.getPath());
-    if (matcher.matches()
-        && matcher.group("series1").equals(matcher.group("series2"))
-        && matcher.group("volume1").equals(matcher.group("volume2"))) {
-      comic.setPublisher(matcher.group("publisher"));
-      comic.setSeries(matcher.group("series1"));
-      comic.setVolume(matcher.group("volume1"));
-      comic.setNumber(matcher.group("number"));
-      comic.setPosition(this.mapPosition(comic.getNumber()));
-    }
-  }
 
   /**
    * Scrapes and saves information for the given comic.
@@ -101,14 +37,23 @@ public class ApiMetaDataService {
   public List<ScannerIssue> set(final Comic comic) {
     this.scannerIssues.clear();
 
-    if (!this.isValid(comic)) {
+    if (!comic.isValid()) {
       // Attempt to extract meta data from file path
-      this.setPathParts(comic);
+      try {
+        comic.setPathParts();
+      } catch (final InvalidIssueNumberException exception) {
+        log.warn(exception.getMessage(), exception);
+        this.scannerIssues.add(ScannerIssue.builder()
+            .message(exception.getMessage())
+            .severity(ScannerIssue.Severity.WARNING)
+            .build());
+        comic.setPosition(new DecimalFormat("0000.0").format(new BigDecimal(0)));
+      }
     }
 
     // If neither the XML nor the file path contain enough hints about which
     // comic book this is, we inform the user.
-    final List<String> missingAttributes = this.findMissingAttributes(comic);
+    final List<String> missingAttributes = comic.findMissingAttributes();
     if (missingAttributes.size() > 0) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Missing meta data: " + String.join(", ", missingAttributes))
@@ -165,7 +110,7 @@ public class ApiMetaDataService {
   }
 
   @Cacheable("volumeIds")
-  private String findVolumeId(final String publisher, final String series, final String volume) {
+  public String findVolumeId(final String publisher, final String series, final String volume) {
     int page = 0;
     JsonNode response = this.comicVineService.findVolumesBySeries(series, page);
     List<JsonNode> results = this.filterVolumeSearchResults(publisher, series, volume, response.get("results"));
@@ -191,7 +136,7 @@ public class ApiMetaDataService {
   }
 
   @Cacheable("volumeIssues")
-  private List<JsonNode> findVolumeIssues(final String volumeId) {
+  public List<JsonNode> findVolumeIssues(final String volumeId) {
     int page = 0;
     final JsonNode response = this.comicVineService.findIssuesInVolume(volumeId, page);
     JsonNode results = response.get("results");
@@ -267,7 +212,7 @@ public class ApiMetaDataService {
     return "";
   }
 
-  private void applyIssueDetails(final String url, final Comic comic) {
+  public void applyIssueDetails(final String url, final Comic comic) {
     final JsonNode response = this.comicVineService.getIssueDetails(url).get("results");
     comic.setTitle(this.getNodeText(response, "name"));
     comic.setSummary(this.getNodeText(response, "description"));

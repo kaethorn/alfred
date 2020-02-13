@@ -65,8 +65,6 @@ dependencies {
   testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
   testImplementation 'io.projectreactor:reactor-test'
   testImplementation 'org.springframework.security:spring-security-test'
-  testImplementation 'org.powermock:powermock-module-junit4:2.0.0'
-  testImplementation 'org.powermock:powermock-api-mockito2:2.0.0'
   testImplementation 'org.mock-server:mockserver-netty:5.6.1'
   testImplementation 'org.mock-server:mockserver-client-java:5.6.1'
 
