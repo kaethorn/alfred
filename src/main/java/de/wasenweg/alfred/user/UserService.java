@@ -3,11 +3,12 @@ package de.wasenweg.alfred.user;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.apache.ApacheHttpTransport;
+import com.google.api.client.http.apache.v2.ApacheHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import de.wasenweg.alfred.security.IJwtService;
 import de.wasenweg.alfred.security.JwtCreator;
 import de.wasenweg.alfred.settings.SettingsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.String.format;
+
 @Service
+@Slf4j
 public class UserService {
 
   @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
@@ -82,7 +86,7 @@ public class UserService {
           .token(apiToken)
           .build());
     } else {
-      System.out.println("Invalid ID token: " + token);
+      log.info(format("Invalid ID token: %s.", token));
     }
 
     throw new GeneralSecurityException();
