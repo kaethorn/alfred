@@ -73,6 +73,7 @@ public class UserService {
       if (users.contains(email)) {
         claims.add("API_ALLOWED");
       } else {
+        log.debug(format("User %s is not present in the white list. Rejecting.", email));
         return Optional.ofNullable(null);
       }
 
