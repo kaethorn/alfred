@@ -4,12 +4,10 @@ import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
-
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,23 +15,23 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.test.StepVerifier;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
-@ActiveProfiles(profiles = "test")
+@ActiveProfiles("test")
 public class ScannerIngrationTest {
 
-  @Rule
-  public TemporaryFolder testBed = new TemporaryFolder();
+  @TempDir
+  File testBed;
 
   @LocalServerPort
   private int port;
@@ -47,7 +45,7 @@ public class ScannerIngrationTest {
   @Autowired
   private IntegrationTestHelper helper;
 
-  @After
+  @AfterEach
   public void tearDown() {
     this.comicRepository.deleteAll();
     this.progressRepository.deleteAll();
@@ -63,7 +61,7 @@ public class ScannerIngrationTest {
     StepVerifier.create(this.helper.triggerScan(this.port))
         .expectNext("start")
         .expectNext("1")
-        .expectNext(this.testBed.getRoot().getAbsolutePath() + "/Batman 402 (1940).cbz")
+        .expectNext(this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz")
         .expectNext("cleanUp")
         .expectNext("association")
         .expectNext("done")

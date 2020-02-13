@@ -6,15 +6,13 @@ import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.mockserver.MockServer;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.scanner.ScannerIssue;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,13 +20,14 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.w3c.dom.Document;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -38,14 +37,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class })
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 public class ComicsIntegrationTest {
 
-  @Rule
-  public TemporaryFolder testBed = new TemporaryFolder();
+  @TempDir
+  File testBed;
 
   @Autowired
   private ComicRepository comicRepository;
@@ -61,17 +60,17 @@ public class ComicsIntegrationTest {
 
   private MockMvc mockMvc;
 
-  @BeforeClass
+  @BeforeAll
   public static void startServer() throws IOException {
     MockServer.startServer();
   }
 
-  @AfterClass
+  @AfterAll
   public static void stopServer() {
     MockServer.stop();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mockMvc = MockMvcBuilders
         .webAppContextSetup(this.context)
@@ -79,7 +78,7 @@ public class ComicsIntegrationTest {
         .build();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     this.comicRepository.deleteAll();
     this.progressRepository.deleteAll();
@@ -93,7 +92,7 @@ public class ComicsIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(2))
         .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V1_1.getTitle()))
         .andExpect(jsonPath("$._embedded.comics[1].title").value(ComicFixtures.COMIC_V1_2.getTitle()));
@@ -113,7 +112,7 @@ public class ComicsIntegrationTest {
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.title").value(ComicFixtures.COMIC_V1_2.getTitle()));
   }
 
@@ -131,7 +130,7 @@ public class ComicsIntegrationTest {
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.title").value(ComicFixtures.COMIC_V1_1.getTitle()));
   }
 
@@ -147,7 +146,7 @@ public class ComicsIntegrationTest {
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.title").value(ComicFixtures.COMIC_V1_1.getTitle()));
   }
 
@@ -167,7 +166,7 @@ public class ComicsIntegrationTest {
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.title").value(ComicFixtures.COMIC_V1_2.getTitle()));
   }
 
@@ -188,7 +187,7 @@ public class ComicsIntegrationTest {
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.title").value(ComicFixtures.COMIC_V1_1.getTitle()));
   }
 
@@ -217,7 +216,7 @@ public class ComicsIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(2))
         .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V1_2.getTitle()))
         .andExpect(jsonPath("$._embedded.comics[1].title").value(ComicFixtures.COMIC_V3_3.getTitle()));
@@ -235,7 +234,7 @@ public class ComicsIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
         .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V1_1.getTitle()));
   }
@@ -255,7 +254,7 @@ public class ComicsIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());
   }
 
@@ -269,7 +268,7 @@ public class ComicsIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());
   }
 
@@ -287,7 +286,7 @@ public class ComicsIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
         .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V3_3.getTitle()));
   }
@@ -304,7 +303,7 @@ public class ComicsIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
         .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V3_1.getTitle()));
   }
@@ -314,7 +313,7 @@ public class ComicsIntegrationTest {
   public void updateIncompleteComic() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
-    final String comicPath = this.testBed.getRoot().getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
+    final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
     final Comic comic = Comic.builder()
         .path(comicPath)
         .fileName("Batman 701 (1940).cbz")
@@ -338,10 +337,10 @@ public class ComicsIntegrationTest {
     // Returns the comic with new values and without errors
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .accept(MediaTypes.HAL_JSON_UTF8_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
         .content(this.helper.comicToJson(comic)))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
         .andExpect(jsonPath("$.publisher").value("DC Comics"))
         .andExpect(jsonPath("$.volume").value("1940"))
@@ -377,7 +376,7 @@ public class ComicsIntegrationTest {
   public void updateComic() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
-    final String comicPath = this.testBed.getRoot().getAbsolutePath() + "/Batman 402 (1940).cbz";
+    final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = Comic.builder()
         .path(comicPath)
         .fileName("Batman 402 (1940).cbz")
@@ -397,10 +396,10 @@ public class ComicsIntegrationTest {
     // Returns the comic with new values
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .accept(MediaTypes.HAL_JSON_UTF8_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
         .content(this.helper.comicToJson(comic)))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
         .andExpect(jsonPath("$.publisher").value("DC Comics"))
         .andExpect(jsonPath("$.volume").value("1940"))
@@ -436,7 +435,7 @@ public class ComicsIntegrationTest {
   public void scrape() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
-    final String comicPath = this.testBed.getRoot().getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
+    final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
     final Comic comic = Comic.builder()
         .path(comicPath)
         .fileName("Batman 701 (1940).cbz")
@@ -461,10 +460,10 @@ public class ComicsIntegrationTest {
     // Returns the comic with scraped values but keeps errors
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .accept(MediaTypes.HAL_JSON_UTF8_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
         .content(this.helper.comicToJson(comic)))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
         .andExpect(jsonPath("$.publisher").value("DC Comics"))
         .andExpect(jsonPath("$.volume").value("1940"))
@@ -502,7 +501,7 @@ public class ComicsIntegrationTest {
     // Given
     MockServer.stop();
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
-    final String comicPath = this.testBed.getRoot().getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
+    final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
     final Comic comic = Comic.builder()
         .path(comicPath)
         .fileName("Batman 701 (1940).cbz")
@@ -523,7 +522,7 @@ public class ComicsIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .accept(MediaTypes.HAL_JSON_UTF8_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
         .content(this.helper.comicToJson(comic)))
         .andExpect(status().is(404));
   }

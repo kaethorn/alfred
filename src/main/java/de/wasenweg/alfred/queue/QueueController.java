@@ -4,8 +4,8 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.util.BaseController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,12 +19,12 @@ public class QueueController extends BaseController<Comic> {
   private QueueService queueService;
 
   @GetMapping
-  public Resources<Resource<Comic>> get() {
+  public CollectionModel<EntityModel<Comic>> get() {
     return this.wrap(this.queueService.get());
   }
 
   @GetMapping("/valid")
-  public Resources<Resource<Comic>> getValid() {
+  public CollectionModel<EntityModel<Comic>> getValid() {
     return this.wrap(this.queueService.getValid());
   }
 }

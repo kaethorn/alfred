@@ -7,7 +7,6 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.settings.Setting;
 import de.wasenweg.alfred.settings.SettingRepository;
 
-import org.junit.rules.TemporaryFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -19,6 +18,7 @@ import reactor.core.publisher.Flux;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystem;
@@ -72,10 +72,10 @@ public class IntegrationTestHelper {
     return document.getDocumentElement().getElementsByTagName(name).item(0).getTextContent();
   }
 
-  public void setComicsPath(final String comicsPath, final TemporaryFolder temp) {
+  public void setComicsPath(final String comicsPath, final File temp) {
     this.copyResources(temp, comicsPath);
     final Setting comicsPathSetting = this.settingsRepository.findByKey("comics.path").get();
-    comicsPathSetting.setValue(temp.getRoot().getAbsolutePath());
+    comicsPathSetting.setValue(temp.getAbsolutePath());
     this.settingsRepository.save(comicsPathSetting);
   }
 
@@ -88,12 +88,12 @@ public class IntegrationTestHelper {
     }
   }
 
-  private void copyResources(final TemporaryFolder temp, final String resourcePath) {
+  private void copyResources(final File temp, final String resourcePath) {
     final Path source = Paths.get(resourcePath);
     try {
       Files.walk(source).forEach(file -> {
         try {
-          Files.copy(file, temp.getRoot().toPath().resolve(source.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
+          Files.copy(file, temp.toPath().resolve(source.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException exception) {
           exception.printStackTrace();
         }

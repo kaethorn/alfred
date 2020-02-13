@@ -3,8 +3,8 @@ package de.wasenweg.alfred.comics;
 import de.wasenweg.alfred.util.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,44 +25,44 @@ public class ComicController extends BaseController<Comic> {
   private ComicService comicService;
 
   @GetMapping("")
-  public Resources<Resource<Comic>> findAll() {
+  public CollectionModel<EntityModel<Comic>> findAll() {
     return this.wrap(this.comicService.findAll());
   }
 
   @GetMapping("/{comicId}")
-  public Resource<Comic> findById(
+  public EntityModel<Comic> findById(
       final Principal principal,
       @PathVariable("comicId") final String comicId) {
     return this.wrap(this.comicService.findById(principal.getName(), comicId));
   }
 
   @PutMapping("")
-  public Resource<Comic> update(@Valid @RequestBody final Comic comic) {
+  public EntityModel<Comic> update(@Valid @RequestBody final Comic comic) {
     return this.wrap(this.comicService.update(comic));
   }
 
   @PutMapping("/progress")
-  public Resource<Comic> updateProgress(@Valid @RequestBody final Comic comic) {
+  public EntityModel<Comic> updateProgress(@Valid @RequestBody final Comic comic) {
     return this.wrap(this.comicService.updateProgress(comic));
   }
 
   @PutMapping("/scrape")
-  public Resource<Comic> scrape(@Valid @RequestBody final Comic comic) {
+  public EntityModel<Comic> scrape(@Valid @RequestBody final Comic comic) {
     return this.wrap(this.comicService.scrape(comic));
   }
 
   @GetMapping("/search/findAllLastReadPerVolume")
-  public Resources<Resource<Comic>> findAllLastReadPerVolume(final Principal principal) {
+  public CollectionModel<EntityModel<Comic>> findAllLastReadPerVolume(final Principal principal) {
     return this.wrap(this.comicService.findAllLastReadPerVolume(principal.getName()));
   }
 
   @GetMapping("/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc")
-  public Resources<Resource<Comic>> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc() {
+  public CollectionModel<EntityModel<Comic>> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc() {
     return this.wrap(this.comicService.findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc());
   }
 
   @GetMapping("/search/findLastReadForVolume")
-  public Resource<Comic> findLastReadForVolume(
+  public EntityModel<Comic> findLastReadForVolume(
       final Principal principal,
       @Param("publisher") final String publisher,
       @Param("series") final String series,
@@ -71,7 +71,7 @@ public class ComicController extends BaseController<Comic> {
   }
 
   @GetMapping("/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition")
-  public Resources<Resource<Comic>> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
+  public CollectionModel<EntityModel<Comic>> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
       final Principal principal,
       @Param("publisher") final String publisher,
       @Param("series") final String series,
@@ -81,12 +81,12 @@ public class ComicController extends BaseController<Comic> {
   }
 
   @PutMapping("/markAsRead")
-  public Resource<Comic> markAsRead(@Valid @RequestBody final Comic comic, final Principal principal) {
+  public EntityModel<Comic> markAsRead(@Valid @RequestBody final Comic comic, final Principal principal) {
     return this.wrap(this.comicService.markAsRead(comic, principal.getName()));
   }
 
   @PutMapping("/markAsUnread")
-  public Resource<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
+  public EntityModel<Comic> markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
     return this.wrap(this.comicService.markAsUnread(comic, principal.getName()));
   }
 
@@ -96,7 +96,7 @@ public class ComicController extends BaseController<Comic> {
   }
 
   @DeleteMapping("/{comicId}/page/{filePath}")
-  public Resource<Comic> deletePage(
+  public EntityModel<Comic> deletePage(
       @PathVariable("comicId") final String comicId,
       @PathVariable("filePath") final String filePath) {
     return this.wrap(this.comicService.deletePage(comicId, filePath));

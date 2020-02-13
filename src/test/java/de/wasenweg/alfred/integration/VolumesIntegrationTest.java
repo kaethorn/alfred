@@ -5,17 +5,16 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.scanner.ScannerIssue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class })
 @EnableAutoConfiguration
 @ActiveProfiles("test")
@@ -45,7 +44,7 @@ public class VolumesIntegrationTest {
 
   private MockMvc mockMvc;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mockMvc = MockMvcBuilders
         .webAppContextSetup(this.context)
@@ -64,7 +63,7 @@ public class VolumesIntegrationTest {
         ComicFixtures.COMIC_V3_3));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     this.comicRepository.deleteAll();
     this.progressRepository.deleteAll();
@@ -74,7 +73,7 @@ public class VolumesIntegrationTest {
   public void findAllPublishers() throws Exception {
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.publishers.length()").value(1))
         .andExpect(jsonPath("$._embedded.publishers[0].publisher")
             .value(ComicFixtures.COMIC_V1_1.getPublisher()))
@@ -88,7 +87,7 @@ public class VolumesIntegrationTest {
     this.mockMvc.perform(MockMvcRequestBuilders
         .get("/api/publishers/" + ComicFixtures.COMIC_V1_1.getPublisher() + "/series"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.series.length()").value(1))
         .andExpect(jsonPath("$._embedded.series[0].series")
             .value(ComicFixtures.COMIC_V1_1.getSeries()))
@@ -104,7 +103,7 @@ public class VolumesIntegrationTest {
             + ComicFixtures.COMIC_V1_1.getPublisher() + "/series/"
             + ComicFixtures.COMIC_V1_1.getSeries() + "/volumes"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.volumes.length()").value(3))
 
         // Volume 1
@@ -151,7 +150,7 @@ public class VolumesIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.publishers.length()").value(2))
         .andExpect(jsonPath("$._embedded.publishers[0].publisher")
             .value(ComicFixtures.COMIC_V1_1.getPublisher()))
@@ -175,7 +174,7 @@ public class VolumesIntegrationTest {
 
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.publishers.length()").value(1))
         .andExpect(jsonPath("$._embedded.publishers[0].publisher")
             .value(ComicFixtures.COMIC_V1_1.getPublisher()))

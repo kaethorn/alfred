@@ -73,7 +73,7 @@ public class MockServer {
 
     @Override
     public HttpResponse handle(final HttpRequest httpRequest) {
-      final String offsetString = httpRequest.getQueryStringParameters().getFirstValue("offset");
+      final String offsetString = httpRequest.getQueryStringParameters().getValues("offset").get(0);
       final int page = Integer.parseInt(offsetString) / 100 + 1;
       try {
         return response()
