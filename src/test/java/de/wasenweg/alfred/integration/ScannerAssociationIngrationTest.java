@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ScannerAssociationIngrationTest {
 
   @TempDir
-  File testBed;
+  private File testBed;
 
   @LocalServerPort
   private int port;

@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ComicsIntegrationTest {
 
   @TempDir
-  File testBed;
+  private File testBed;
 
   @Autowired
   private ComicRepository comicRepository;
