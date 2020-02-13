@@ -177,8 +177,7 @@ public class FileMetaDataService {
       throws IOException, SAXException, ParserConfigurationException,
       ProviderNotFoundException, NoMetaDataException {
 
-    try {
-      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null);
+    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
       final InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"));
       final Document document = this.getDocumentBuilder().parse(xmlStream);
       xmlStream.close();

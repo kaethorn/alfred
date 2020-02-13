@@ -20,13 +20,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 
@@ -47,28 +47,20 @@ public class IntegrationTestHelper {
   }
 
   public Boolean zipContainsFile(final String zipPath, final String filePath) {
-    try {
-      final ZipFile zipFile = new ZipFile(zipPath);
-      final Boolean found = zipFile.stream()
-          .filter(entry -> entry.getName().equals(filePath))
-          .collect(Collectors.toList()).size() > 0;
-      zipFile.close();
-      return found;
-    } catch (final IOException exception) {
+    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
+      return Files.exists(fs.getPath(filePath)) ? true : false;
+    } catch (final Exception exception) {
       exception.printStackTrace();
       return false;
     }
   }
 
   public Document parseComicInfo(final String zipPath) {
-    try {
+    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
       final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      final ZipFile zipFile = new ZipFile(zipPath);
-      final ZipEntry comicInfo = zipFile.stream()
-          .filter(entry -> entry.getName().equals("ComicInfo.xml"))
-          .collect(Collectors.toList()).get(0);
-      final Document document = docBuilder.parse(zipFile.getInputStream(comicInfo));
-      zipFile.close();
+      final InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"));
+      final Document document = docBuilder.parse(xmlStream);
+      xmlStream.close();
       return document;
     } catch (final Exception exception) {
       exception.printStackTrace();
