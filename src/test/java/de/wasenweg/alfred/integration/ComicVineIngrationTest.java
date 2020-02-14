@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ComicVineIngrationTest {
 
   @TempDir
-  private File testBed;
+  public File testBed;
 
   @LocalServerPort
   private int port;
