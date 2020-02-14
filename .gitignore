@@ -8,6 +8,7 @@
 /sample*
 /.gradletasknamecache
 /.vscode
+/lombok.config
 
 ### STS ###
 .apt_generated
