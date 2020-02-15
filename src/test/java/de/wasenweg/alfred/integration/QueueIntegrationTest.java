@@ -3,17 +3,14 @@ package de.wasenweg.alfred.integration;
 import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
-
+import de.wasenweg.alfred.scanner.ScannerIssue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,36 +19,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import reactor.test.StepVerifier;
 
-import java.io.File;
-import java.time.Duration;
+import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = { AlfredApplication.class })
 @EnableAutoConfiguration
 @ActiveProfiles("test")
-public class ThumbnailsIntegrationTest {
-
-  @TempDir
-  public File testBed;
-
-  @LocalServerPort
-  private int port;
+public class QueueIntegrationTest {
 
   @Autowired
   private ComicRepository comicRepository;
 
   @Autowired
   private WebApplicationContext context;
-
-  @Autowired
-  private IntegrationTestHelper helper;
 
   private MockMvc mockMvc;
 
@@ -62,17 +49,16 @@ public class ThumbnailsIntegrationTest {
         .apply(springSecurity())
         .build();
 
-    this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
+    final Comic comic = Comic.builder()
+        .path("/none.cbz")
+        .fileName("Batman 701 (1940).cbz")
+        .number("701")
+        .publisher("DC Comics")
+        .series("Batman")
+        .volume("1940")
+        .build();
 
-    StepVerifier.create(this.helper.triggerScan(this.port))
-        .expectNext("start")
-        .expectNext("1")
-        .expectNext(this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz")
-        .expectNext("cleanUp")
-        .expectNext("association")
-        .expectNext("done")
-        .thenCancel()
-        .verify(Duration.ofSeconds(2L));
+    this.comicRepository.save(comic);
   }
 
   @AfterEach
@@ -82,31 +68,56 @@ public class ThumbnailsIntegrationTest {
 
   @Test
   @DirtiesContext
-  public void savesFrontCoverThumbnail() throws Exception {
+  public void getInvalidReturnsInvalid() throws Exception {
+    assertEquals(this.comicRepository.count(), 1);
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
+    comic.setErrors(Arrays.asList(
+        ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
+    assertEquals(this.comicRepository.count(), 1);
+    this.comicRepository.save(comic);
+    assertEquals(this.comicRepository.count(), 1);
 
     // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/thumbnails/front-cover/" + comic.getId()))
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
-        .andExpect(jsonPath("$._links.self.href").exists())
-        .andExpect(jsonPath("$.type").value("FRONT_COVER"))
-        .andExpect(jsonPath("$.path").value("/1.png"));
+        .andExpect(jsonPath("$._embedded.comics.length()").value(1));
   }
 
   @Test
   @DirtiesContext
-  public void savesBackCoverThumbnail() throws Exception {
-    // Given
-    final Comic comic = this.comicRepository.findAll().get(0);
-
-    // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/thumbnails/back-cover/" + comic.getId()))
+  public void getInvalidOmitsvalid() throws Exception {
+    // Given / When / Then
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
-        .andExpect(jsonPath("$._links.self.href").exists())
-        .andExpect(jsonPath("$.type").value("BACK_COVER"))
-        .andExpect(jsonPath("$.path").value("/3.png"));
+        .andExpect(jsonPath("$._embedded.comics").doesNotExist());
+  }
+
+  @Test
+  @DirtiesContext
+  public void getValidReturnsValid() throws Exception {
+    // Given / When / Then
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue/valid"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$._embedded.comics.length()").value(1));
+  }
+
+  @Test
+  @DirtiesContext
+  public void getValidOmitsInvalid() throws Exception {
+    // Given
+    final Comic comic = this.comicRepository.findAll().get(0);
+    comic.setErrors(Arrays.asList(
+        ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
+    this.comicRepository.save(comic);
+
+    // When / Then
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue/valid"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$._embedded.comics").doesNotExist());
   }
 }
