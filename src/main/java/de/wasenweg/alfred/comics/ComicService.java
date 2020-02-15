@@ -124,8 +124,11 @@ public class ComicService {
           Files.delete(source);
         }
         fs.close();
-        log.info(format("Deleted file %s in comic %s", filePath, comic.getPath()));
         this.thumbnailService.read(comic);
+        this.fileMetaDataService.parseFiles(comic);
+        this.comicRepository.save(comic);
+        log.info(format("Deleted file %s in comic %s", filePath, comic.getPath()));
+        return Optional.of(comic);
       } catch (final IOException exception) {
         exception.printStackTrace();
       }

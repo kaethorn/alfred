@@ -205,7 +205,7 @@ public class FileMetaDataService {
    * 3. Saves all file names
    * @param comic The comic entity
    */
-  private void parseFiles(final Comic comic) throws IOException, NoImagesException, InvalidFileException {
+  public void parseFiles(final Comic comic) throws IOException, NoImagesException, InvalidFileException {
     short pageCount = 0;
     try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
       final List<Path> files = new ArrayList<>();
@@ -227,7 +227,10 @@ public class FileMetaDataService {
       }
 
       try {
-        comic.setFiles(files.stream().map(entry -> entry.toString()).collect(Collectors.toList()));
+        comic.setFiles(files.stream()
+            .map(entry -> entry.toString())
+            .sorted()
+            .collect(Collectors.toList()));
       } catch (final Exception exception) {
         throw new InvalidFileException(exception);
       }

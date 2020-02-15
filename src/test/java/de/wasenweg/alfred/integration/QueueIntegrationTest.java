@@ -22,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -69,14 +68,11 @@ public class QueueIntegrationTest {
   @Test
   @DirtiesContext
   public void getInvalidReturnsInvalid() throws Exception {
-    assertEquals(this.comicRepository.count(), 1);
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
     comic.setErrors(Arrays.asList(
         ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
-    assertEquals(this.comicRepository.count(), 1);
     this.comicRepository.save(comic);
-    assertEquals(this.comicRepository.count(), 1);
 
     // When / Then
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue"))
