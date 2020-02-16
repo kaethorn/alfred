@@ -3,7 +3,6 @@ package de.wasenweg.alfred.integration;
 import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
