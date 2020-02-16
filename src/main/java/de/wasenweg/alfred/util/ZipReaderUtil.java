@@ -21,7 +21,7 @@ public class ZipReaderUtil {
     return StreamSupport.stream(fs.getRootDirectories().spliterator(), true)
         .flatMap(rootDirectory -> {
           try {
-            return Files.list(rootDirectory);
+            return Files.walk(rootDirectory);
           } catch (final IOException e) {
             return Stream.empty();
           }

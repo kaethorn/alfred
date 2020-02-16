@@ -1,6 +1,7 @@
 package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
+import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -208,10 +209,7 @@ public class FileMetaDataService {
   public void parseFiles(final Comic comic) throws IOException, NoImagesException, InvalidFileException {
     short pageCount = 0;
     try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
-      final List<Path> files = new ArrayList<>();
-      for (final Path rootDirectory : fs.getRootDirectories()) {
-        Files.list(rootDirectory).forEach(entry -> files.add(entry));
-      }
+      final List<Path> files = ZipReaderUtil.getEntries(fs);
       pageCount = (short) files.stream()
           .filter(file -> Files.isRegularFile(file) && file.toString().matches(".*(png|jpg)$"))
           .count();
