@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class ZipReaderUtil {
 
@@ -18,16 +17,15 @@ public class ZipReaderUtil {
    * @return List of paths to zip entries.
    */
   public static List<Path> getEntries(final FileSystem fs) {
-    return StreamSupport.stream(fs.getRootDirectories().spliterator(), true)
-        .flatMap(rootDirectory -> {
-          try {
-            return Files.walk(rootDirectory);
-          } catch (final IOException e) {
-            return Stream.empty();
-          }
-        })
-        .sorted()
-        .collect(Collectors.toList());
+    final Path rootDirectory = fs.getRootDirectories().iterator().next();
+    try {
+      return Files.walk(rootDirectory)
+          .sorted()
+          .filter(entry -> !entry.equals(rootDirectory))
+          .collect(Collectors.toList());
+    } catch (final IOException exception) {
+      return new ArrayList<>();
+    }
   }
 
   /**

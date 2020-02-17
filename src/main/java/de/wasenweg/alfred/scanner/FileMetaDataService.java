@@ -214,7 +214,7 @@ public class FileMetaDataService {
           .filter(file -> Files.isRegularFile(file) && file.toString().matches(".*(png|jpg)$"))
           .count();
 
-      if (files.stream().anyMatch(file -> Files.isDirectory(file))) {
+      if (files.stream().anyMatch(Files::isDirectory)) {
         final ScannerIssue parsingEvent = ScannerIssue.builder()
             .message("Found directory entries in the archive.")
             .type(ScannerIssue.Type.NOT_FLAT)

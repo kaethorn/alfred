@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Comic } from './comic';
+import { Comic, ScannerIssue } from './comic';
 
 @Injectable({
   providedIn: 'root'
@@ -159,5 +159,11 @@ export class ComicsService {
     return this.http.get(`/api/download/${ comicId }/${ page }`, {
       responseType: 'blob'
     });
+  }
+
+  fixIssue (comic: Comic, error: ScannerIssue): Observable<Comic> {
+    return this.http.put(`/api/queue/fix/${ error.type }`, comic).pipe(
+      map(this.addId)
+    );
   }
 }

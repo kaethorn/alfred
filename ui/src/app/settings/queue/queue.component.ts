@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Comic } from '../../comic';
+import { Comic, ScannerIssue } from '../../comic';
 import { ComicsService } from '../../comics.service';
 
 @Component({
@@ -19,6 +19,10 @@ export class QueueComponent {
 
   ionViewWillEnter () {
     this.list();
+  }
+
+  fix (comic: Comic, error: ScannerIssue) {
+    this.comicsService.fixIssue(comic, error).subscribe();
   }
 
   private list (): void {
