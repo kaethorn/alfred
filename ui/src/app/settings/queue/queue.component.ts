@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 
 import { Comic, ScannerIssue } from '../../comic';
 import { ComicsService } from '../../comics.service';
@@ -15,6 +16,7 @@ export class QueueComponent {
 
   constructor (
     private comicsService: ComicsService,
+    private toastController: ToastController,
   ) { }
 
   ionViewWillEnter () {
@@ -22,7 +24,12 @@ export class QueueComponent {
   }
 
   fix (comic: Comic, error: ScannerIssue) {
-    this.comicsService.fixIssue(comic, error).subscribe();
+    this.comicsService.fixIssue(comic, error).subscribe(() => {
+      this.list();
+      this.showToast(`Flattened comic archive "${ comic.fileName }".`);
+    }, () => {
+      this.showToast(`Error while flattening comic archive "${ comic.fileName }".`);
+    });
   }
 
   private list (): void {
@@ -30,5 +37,13 @@ export class QueueComponent {
       .subscribe((data: Comic[]) => {
         this.comics = data;
       });
+  }
+
+  private async showToast (message: string, duration: number = 4000) {
+    const toast = await this.toastController.create({
+      message,
+      duration
+    });
+    toast.present();
   }
 }

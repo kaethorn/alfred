@@ -52,9 +52,9 @@ export class CoversComponent {
     this.backCoverThumbnails.get(comic.id).subscribe(thumbail => {
       this.comicsService.deletePage(comic, thumbail.path).subscribe(() => {
         this.updateThumbnails(comic);
-        this.showToast('Back cover deleted.');
+        this.showToast(`Back cover of "${ comic.fileName }" deleted.`);
       }, () => {
-        this.showToast('Error while deleting back cover.');
+        this.showToast(`Error while deleting back cover of "${ comic.fileName }".`);
       });
     });
   }
@@ -64,7 +64,7 @@ export class CoversComponent {
     this.backCoverThumbnails.set(comic.id, this.thumbnailsService.getBackCover(comic.id));
   }
 
-  private async showToast (message: string, duration: number = 3000) {
+  private async showToast (message: string, duration: number = 4000) {
     const toast = await this.toastController.create({
       message,
       duration

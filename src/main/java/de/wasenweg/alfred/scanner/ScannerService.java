@@ -138,7 +138,7 @@ public class ScannerService {
     }
   }
 
-  public void processComic(final Comic comic) {
+  public Comic processComic(final Comic comic) {
     comic.setErrors(null);
 
     try {
@@ -162,10 +162,8 @@ public class ScannerService {
       if (issues.size() == 0) {
         this.fileMetaDataService.write(comic);
       }
-    } finally {
-      // Save the comic again to store errors that might have occursed as Exceptions
-      this.comicRepository.save(comic);
     }
+    return this.comicRepository.save(comic);
   }
 
   private void processComicByPath(final Path path) {

@@ -4,6 +4,7 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicQueryRepositoryImpl;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.scanner.FileMetaDataService;
+import de.wasenweg.alfred.scanner.ScannerService;
 import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class QueueService {
 
   @Autowired
   private ComicRepository comicRepository;
+
+  @Autowired
+  private ScannerService scannerService;
 
   public List<Comic> get() {
     return this.comicQueryRepository.findAllWithErrors();
@@ -83,8 +87,7 @@ public class QueueService {
           });
     }
 
-    this.fileMetaDataService.parseFiles(comic);
     log.info(format("Flattened %s.", comic.getPath()));
-    return this.comicRepository.save(comic);
+    return this.scannerService.processComic(comic);
   }
 }
