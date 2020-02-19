@@ -41,7 +41,7 @@
     "ngx-moment": "^3.4.0",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/architect": "^0.803.8",
