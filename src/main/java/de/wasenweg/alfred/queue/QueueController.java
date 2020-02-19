@@ -4,7 +4,6 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import de.wasenweg.alfred.util.BaseController;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class QueueController extends BaseController<Comic> {
 
-  @Autowired
-  private QueueService queueService;
+  private final QueueService queueService;
 
   @GetMapping
   public CollectionModel<EntityModel<Comic>> get() {

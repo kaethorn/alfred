@@ -1,7 +1,7 @@
 package de.wasenweg.alfred.publisher;
 
 import de.wasenweg.alfred.volumes.Volume;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -17,10 +17,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(value = "/api/publishers", produces = { "application/hal+json" })
+@RequiredArgsConstructor
 public class PublisherController {
 
-  @Autowired
-  private PublisherService publisherService;
+  private final PublisherService publisherService;
 
   @GetMapping
   public CollectionModel<EntityModel<Publisher>> findAllPublishers(final Principal principal) {

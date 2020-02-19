@@ -3,10 +3,8 @@ package de.wasenweg.alfred.scanner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.RateLimiter;
-
 import de.wasenweg.alfred.settings.SettingsService;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -18,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,23 +25,23 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ComicVineService {
 
   @Value("${comics.comicVine.baseUrl:https://comicvine.gamespot.com/api/}")
   private String baseUrl;
+
+  private final SettingsService settingsService;
+  private final Environment environment;
+
   private String apiKey;
   private ObjectMapper mapper;
   private RateLimiter throttle;
-  private Environment environment;
 
-  @Autowired
-  public ComicVineService(
-      final SettingsService settingsService,
-      final Environment environment
-  ) {
-    this.environment = environment;
+  @PostConstruct
+  private void setup() {
     this.mapper = new ObjectMapper();
-    this.apiKey = settingsService.get("comics.comicVine.ApiKey");
+    this.apiKey = this.settingsService.get("comics.comicVine.ApiKey");
     // Throttle to 200 requests per hour
     this.throttle = RateLimiter.create(200.0 / 3600.0);
   }

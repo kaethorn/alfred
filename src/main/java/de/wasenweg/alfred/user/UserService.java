@@ -8,8 +8,8 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import de.wasenweg.alfred.security.IJwtService;
 import de.wasenweg.alfred.security.JwtCreator;
 import de.wasenweg.alfred.settings.SettingsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,20 +25,15 @@ import static java.lang.String.format;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
 
   @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
   private String jwtSecret;
 
-  @Autowired
-  private JwtCreator tokenCreator;
-
-  @Autowired
-  private IJwtService jwtService;
-
-  @Autowired
-  private SettingsService settingsService;
-
+  private final JwtCreator tokenCreator;
+  private final IJwtService jwtService;
+  private final SettingsService settingsService;
 
   public Optional<User> verify(final String token) {
     if (this.jwtService.verifyToken(token, this.jwtSecret)) {

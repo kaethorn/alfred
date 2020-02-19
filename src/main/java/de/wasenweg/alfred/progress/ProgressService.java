@@ -2,9 +2,8 @@ package de.wasenweg.alfred.progress;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.volumes.Volume;
-
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,13 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class ProgressService {
 
-  @Autowired
-  private MongoTemplate mongoTemplate;
-
-  @Autowired
-  private ProgressRepository progressRepository;
+  private final MongoTemplate mongoTemplate;
+  private final ProgressRepository progressRepository;
 
   public void deleteProgress() {
     this.progressRepository.deleteAll();

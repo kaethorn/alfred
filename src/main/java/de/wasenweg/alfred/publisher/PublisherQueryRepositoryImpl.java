@@ -3,8 +3,7 @@ package de.wasenweg.alfred.publisher;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.progress.ProgressHelper;
 import de.wasenweg.alfred.volumes.Volume;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -21,10 +20,10 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
 @RepositoryRestResource(collectionResourceRel = "publishers", path = "publishers")
+@RequiredArgsConstructor
 public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
-  @Autowired
-  private MongoTemplate mongoTemplate;
+  private final MongoTemplate mongoTemplate;
 
   @Override
   public List<Publisher> findAllPublishers(final String userId) {

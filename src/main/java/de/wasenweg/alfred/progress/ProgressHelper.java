@@ -1,7 +1,6 @@
 package de.wasenweg.alfred.progress;
 
 import com.mongodb.BasicDBObject;
-
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.ComparisonOperators;

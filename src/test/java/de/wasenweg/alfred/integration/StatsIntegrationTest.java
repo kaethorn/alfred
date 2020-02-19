@@ -3,6 +3,7 @@ package de.wasenweg.alfred.integration;
 import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,17 +29,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class })
 @EnableAutoConfiguration
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class StatsIntegrationTest {
 
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private ProgressRepository progressRepository;
-
-  @Autowired
-  private WebApplicationContext context;
+  private final ComicRepository comicRepository;
+  private final ProgressRepository progressRepository;
+  private final WebApplicationContext context;
 
   private MockMvc mockMvc;
 

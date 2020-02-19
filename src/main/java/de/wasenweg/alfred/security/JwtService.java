@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Map;
 
-@Slf4j
 @Service
+@Slf4j
 @Profile({"prod"})
 public class JwtService implements IJwtService {
 

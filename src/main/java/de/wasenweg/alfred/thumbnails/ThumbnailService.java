@@ -4,8 +4,8 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.NoImagesException;
 import de.wasenweg.alfred.thumbnails.Thumbnail.ThumbnailType;
 import de.wasenweg.alfred.util.ZipReaderUtil;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ThumbnailService {
 
-  @Autowired
-  private ThumbnailRepository thumbnailRepository;
+  private final ThumbnailRepository thumbnailRepository;
 
   public Optional<Thumbnail> findFrontCoverByComicId(final String comicId) {
     return this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.FRONT_COVER);

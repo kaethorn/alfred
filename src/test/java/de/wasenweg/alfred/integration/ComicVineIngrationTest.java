@@ -5,7 +5,7 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.mockserver.MockServer;
 import de.wasenweg.alfred.progress.ProgressRepository;
-
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +21,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.w3c.dom.Document;
-
 import reactor.test.StepVerifier;
 
 import java.io.File;
@@ -33,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class ComicVineIngrationTest {
 
@@ -42,14 +42,9 @@ public class ComicVineIngrationTest {
   @LocalServerPort
   private int port;
 
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private ProgressRepository progressRepository;
-
-  @Autowired
-  private IntegrationTestHelper helper;
+  private final ComicRepository comicRepository;
+  private final ProgressRepository progressRepository;
+  private final IntegrationTestHelper helper;
 
   @BeforeAll
   public static void startServer() throws IOException {

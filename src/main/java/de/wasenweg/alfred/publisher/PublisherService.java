@@ -1,16 +1,16 @@
 package de.wasenweg.alfred.publisher;
 
 import de.wasenweg.alfred.volumes.Volume;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PublisherService {
 
-  @Autowired
-  private PublisherQueryRepositoryImpl repository;
+  private final PublisherQueryRepositoryImpl repository;
 
   public List<Publisher> findAllPublishers(final String userId) {
     return this.repository.findAllPublishers(userId);

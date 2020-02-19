@@ -1,7 +1,7 @@
 package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.util.BaseController;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -17,12 +17,12 @@ import javax.validation.Valid;
 
 import java.security.Principal;
 
-@RequestMapping(value = "/api/comics", produces = { "application/hal+json" })
 @RestController
+@RequestMapping(value = "/api/comics", produces = { "application/hal+json" })
+@RequiredArgsConstructor
 public class ComicController extends BaseController<Comic> {
 
-  @Autowired
-  private ComicService comicService;
+  private final ComicService comicService;
 
   @GetMapping("")
   public CollectionModel<EntityModel<Comic>> findAll() {

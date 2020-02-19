@@ -1,6 +1,6 @@
 package de.wasenweg.alfred.scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,10 +9,10 @@ import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ScannerController {
 
-  @Autowired
-  private ScannerService scannerService;
+  private final ScannerService scannerService;
 
   @GetMapping("/scan-progress")
   public Flux<ServerSentEvent<String>> streamScanProgress() {

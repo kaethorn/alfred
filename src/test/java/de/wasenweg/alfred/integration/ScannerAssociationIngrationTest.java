@@ -4,6 +4,7 @@ import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class ScannerAssociationIngrationTest {
 
@@ -35,14 +37,9 @@ public class ScannerAssociationIngrationTest {
   @LocalServerPort
   private int port;
 
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private ProgressRepository progressRepository;
-
-  @Autowired
-  private IntegrationTestHelper helper;
+  private final ComicRepository comicRepository;
+  private final ProgressRepository progressRepository;
+  private final IntegrationTestHelper helper;
 
   @AfterEach
   public void tearDown() {

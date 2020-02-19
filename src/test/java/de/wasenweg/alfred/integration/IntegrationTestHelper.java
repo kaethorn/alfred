@@ -2,17 +2,15 @@ package de.wasenweg.alfred.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.settings.Setting;
 import de.wasenweg.alfred.settings.SettingRepository;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.w3c.dom.Document;
-
 import reactor.core.publisher.Flux;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -31,10 +29,10 @@ import java.nio.file.StandardCopyOption;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 
 @Component
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class IntegrationTestHelper {
 
-  @Autowired
-  private SettingRepository settingsRepository;
+  private final SettingRepository settingsRepository;
 
   public Flux<String> triggerScan(final int port) {
     return WebClient

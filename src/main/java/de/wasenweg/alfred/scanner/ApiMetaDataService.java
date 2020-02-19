@@ -2,8 +2,8 @@ package de.wasenweg.alfred.scanner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.wasenweg.alfred.comics.Comic;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-@Slf4j
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ApiMetaDataService {
 
-  @Autowired
-  private ComicVineService comicVineService;
+  private final ComicVineService comicVineService;
 
   private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
 

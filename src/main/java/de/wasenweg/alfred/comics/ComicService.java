@@ -7,8 +7,8 @@ import de.wasenweg.alfred.scanner.ScannerIssue;
 import de.wasenweg.alfred.scanner.ScannerService;
 import de.wasenweg.alfred.thumbnails.ThumbnailRepository;
 import de.wasenweg.alfred.thumbnails.ThumbnailService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -25,31 +25,17 @@ import static java.lang.String.format;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ComicService {
 
-  @Autowired
-  private ThumbnailRepository thumbnailRepository;
-
-  @Autowired
-  private ComicQueryRepositoryImpl queryRepository;
-
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private ThumbnailService thumbnailService;
-
-  @Autowired
-  private ScannerService scannerService;
-
-  @Autowired
-  private FileMetaDataService fileMetaDataService;
-
-  @Autowired
-  private ApiMetaDataService apiMetaDataService;
-
-  @Autowired
-  private ProgressService progressService;
+  private final ThumbnailRepository thumbnailRepository;
+  private final ComicQueryRepositoryImpl queryRepository;
+  private final ComicRepository comicRepository;
+  private final ThumbnailService thumbnailService;
+  private final ScannerService scannerService;
+  private final FileMetaDataService fileMetaDataService;
+  private final ApiMetaDataService apiMetaDataService;
+  private final ProgressService progressService;
 
   public List<Comic> findAll() {
     return this.comicRepository.findAll();

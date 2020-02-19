@@ -5,9 +5,9 @@ import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.util.ZipReaderUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,15 +31,13 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
-@Slf4j
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ReaderService {
 
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private ProgressRepository progressRepository;
+  private final ComicRepository comicRepository;
+  private final ProgressRepository progressRepository;
 
   /**
    * Returns the page of the given comic.

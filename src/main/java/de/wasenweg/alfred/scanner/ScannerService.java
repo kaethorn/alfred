@@ -7,8 +7,8 @@ import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.settings.SettingsService;
 import de.wasenweg.alfred.thumbnails.ThumbnailService;
 import de.wasenweg.alfred.volumes.Volume;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -36,27 +36,16 @@ import static java.lang.String.format;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ScannerService {
 
   private EmitterProcessor<ServerSentEvent<String>> emitter;
-
-  @Autowired
-  private ApiMetaDataService apiMetaDataService;
-
-  @Autowired
-  private FileMetaDataService fileMetaDataService;
-
-  @Autowired
-  private ObjectMapper objectMapper;
-
-  @Autowired
-  private ThumbnailService thumbnailService;
-
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private SettingsService settingsService;
+  private final ApiMetaDataService apiMetaDataService;
+  private final FileMetaDataService fileMetaDataService;
+  private final ObjectMapper objectMapper;
+  private final ThumbnailService thumbnailService;
+  private final ComicRepository comicRepository;
+  private final SettingsService settingsService;
 
   private void sendEvent(final String data, final String name) {
     final String timestamp = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date());

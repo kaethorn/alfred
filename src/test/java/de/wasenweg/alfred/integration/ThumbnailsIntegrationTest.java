@@ -3,6 +3,7 @@ package de.wasenweg.alfred.integration;
 import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class ThumbnailsIntegrationTest {
 
@@ -43,14 +45,9 @@ public class ThumbnailsIntegrationTest {
   @LocalServerPort
   private int port;
 
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private WebApplicationContext context;
-
-  @Autowired
-  private IntegrationTestHelper helper;
+  private final ComicRepository comicRepository;
+  private final WebApplicationContext context;
+  private final IntegrationTestHelper helper;
 
   private MockMvc mockMvc;
 

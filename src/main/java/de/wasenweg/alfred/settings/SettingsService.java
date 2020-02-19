@@ -1,25 +1,24 @@
 package de.wasenweg.alfred.settings;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SettingsService {
 
   private final ArrayList<Setting> defaults = new ArrayList<Setting>();
-
   private final SettingRepository settingRepository;
   private final Environment environment;
 
-  @Autowired
-  public SettingsService(final SettingRepository settingRepository, final Environment environment) {
-    this.settingRepository = settingRepository;
-    this.environment = environment;
-
+  @PostConstruct
+  private void setup() {
     // Built in defaults:
     this.defaults.add(new Setting("comics.path", "Path", "/comics", "Path to your comic library"));
     this.defaults.add(new Setting("comics.comicVine.ApiKey", "Comi Vine API key", "", "Comic Vine API key from https://comicvine.gamespot.com/api/"));

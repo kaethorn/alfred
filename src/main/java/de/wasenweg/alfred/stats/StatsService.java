@@ -2,16 +2,16 @@ package de.wasenweg.alfred.stats;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.progress.Progress;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class StatsService {
 
-  @Autowired
-  private MongoTemplate mongoTemplate;
+  private final MongoTemplate mongoTemplate;
 
   public Stats getStats() {
     return Stats.builder()
