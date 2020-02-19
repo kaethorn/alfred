@@ -39,7 +39,7 @@ public class ComicVineService {
   private RateLimiter throttle;
 
   @PostConstruct
-  private void setup() {
+  public void setup() {
     this.mapper = new ObjectMapper();
     this.apiKey = this.settingsService.get("comics.comicVine.ApiKey");
     // Throttle to 200 requests per hour
