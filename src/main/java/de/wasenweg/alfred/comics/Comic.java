@@ -14,8 +14,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.lang.String.format;
 
 @Data
 @Builder
@@ -23,6 +28,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Document
 public class Comic {
+
+  private static final String publisherDirPattern = "^.*?(?<publisher>[^/]+)/";
+  private static final String seriesDirPattern = "(?<series1>[^/]+) \\((?<volume1>\\d{4})\\)/";
+  private static final String fileNamePattern = "(?<series2>[^/]+) (?<number>[\\d\\.a½/]+) \\((?<volume2>\\d{4})\\)( [^/]+)?\\.cbz$";
+  private static Pattern pattern = Pattern
+        .compile(publisherDirPattern + seriesDirPattern + fileNamePattern);
 
   @Id
   private String id;
@@ -93,6 +104,7 @@ public class Comic {
   private boolean read = false;
 
   private List<ScannerIssue> errors;
+  private List<String> files;
 
   @Builder.Default
   private Short currentPage = (short) 0;
@@ -107,6 +119,44 @@ public class Comic {
   public void setNumber(final String number) {
     this.number = number;
     this.position = Comic.mapPosition(number);
+  }
+
+  public Boolean isValid() {
+    return this.findMissingAttributes().isEmpty();
+  }
+
+  /**
+   * Expected format:
+   * `/{publisher}/{series} ({volume})/{series} #{number} ({volume}).cbz`
+   */
+  public void setPathParts() throws InvalidIssueNumberException {
+    final Matcher matcher = pattern.matcher(this.getPath());
+    if (matcher.matches()
+        && matcher.group("series1").equals(matcher.group("series2"))
+        && matcher.group("volume1").equals(matcher.group("volume2"))) {
+      this.setPublisher(matcher.group("publisher"));
+      this.setSeries(matcher.group("series1"));
+      this.setVolume(matcher.group("volume1"));
+      this.setNumber(matcher.group("number"));
+      this.setPosition(Comic.mapPosition(this.getNumber()));
+    }
+  }
+
+  public List<String> findMissingAttributes() {
+    final List<String> missingAttributes = new ArrayList<String>();
+    if (this.getPublisher() == null) {
+      missingAttributes.add("publisher");
+    }
+    if (this.getSeries() == null) {
+      missingAttributes.add("series");
+    }
+    if (this.getVolume() == null) {
+      missingAttributes.add("volume");
+    }
+    if (this.getNumber() == null) {
+      missingAttributes.add("number");
+    }
+    return missingAttributes;
   }
 
   public static String mapPosition(final String number) throws InvalidIssueNumberException {
@@ -128,7 +178,7 @@ public class Comic {
 
   @Override
   public String toString() {
-    return String.format(
+    return format(
         "Comic[id=%s, series='%s', volume='%s', number='%s']",
         this.id, this.series, this.volume, this.number);
   }

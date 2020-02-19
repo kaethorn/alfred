@@ -1,22 +1,21 @@
 package de.wasenweg.alfred.stats;
 
 import de.wasenweg.alfred.util.BaseController;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
+import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping(value = "/api/stats", produces = { "application/hal+json" })
 @RestController
+@RequestMapping(value = "/api/stats", produces = { "application/hal+json" })
+@RequiredArgsConstructor
 public class StatsController extends BaseController<Stats> {
 
-  @Autowired
-  private StatsService service;
+  private final StatsService service;
 
   @GetMapping()
-  public Resource<Stats> getStats() {
+  public EntityModel<Stats> getStats() {
     return this.wrapRoot(this.service.getStats());
   }
 }

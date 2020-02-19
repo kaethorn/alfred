@@ -175,13 +175,27 @@ export class ComicStorageService {
     }
   }
 
-  async getThumbnail (comicId: string): Promise<SafeUrl> {
+  getFrontCoverThumbnail (comicId: string): Promise<SafeUrl> {
     return new Promise((resolve, reject) => {
       this.comicDatabaseService.getImageUrl(comicId, 0)
         .then((thumbnail) => {
           resolve(this.sanitizer.bypassSecurityTrustResourceUrl(thumbnail));
         }).catch(() => {
-          this.thumbnailsService.get(comicId).subscribe(resolve, reject);
+          this.thumbnailsService.getFrontCover(comicId)
+            .pipe(map(thumbnail => thumbnail.url))
+            .subscribe(resolve, reject);
+        });
+    });
+  }
+
+  async getBackCoverThumbnail (comicId: string): Promise<SafeUrl> {
+    const comic = await this.get(comicId);
+    return new Promise((resolve, reject) => {
+      this.comicDatabaseService.getImageUrl(comicId, comic.pageCount - 1)
+        .then((thumbnail) => {
+          resolve(this.sanitizer.bypassSecurityTrustResourceUrl(thumbnail));
+        }).catch(() => {
+          this.thumbnailsService.getBackCover(comicId).subscribe(resolve, reject);
         });
     });
   }

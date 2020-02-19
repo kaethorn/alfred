@@ -2,41 +2,69 @@ package de.wasenweg.alfred.thumbnails;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.NoImagesException;
+import de.wasenweg.alfred.thumbnails.Thumbnail.ThumbnailType;
 import de.wasenweg.alfred.util.ZipReaderUtil;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ThumbnailService {
 
-  @Autowired
-  private ThumbnailRepository thumbnailRepository;
+  private final ThumbnailRepository thumbnailRepository;
+
+  public Optional<Thumbnail> findFrontCoverByComicId(final String comicId) {
+    return this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.FRONT_COVER);
+  }
+
+  public Optional<Thumbnail> findBackCoverByComicId(final String comicId) {
+    return this.thumbnailRepository.findByComicIdAndType(new ObjectId(comicId), ThumbnailType.BACK_COVER);
+  }
 
   /*
-   * Finds the thumbnail in the given zip file.
+   * Saves the front- and back cover thumbnails.
    */
-  public void setComic(final ZipFile file, final Comic comic) throws NoImagesException {
-
-    try {
-      final List<ZipEntry> sortedEntries = ZipReaderUtil.getImages(file);
+  @Transactional
+  public void read(final Comic comic) throws NoImagesException, IOException {
+    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+      final List<Path> sortedEntries = ZipReaderUtil.getImages(fs);
 
       if (sortedEntries.size() > 0) {
-        final ObjectId comicId = new ObjectId(comic.getId());
-        final Thumbnail thumbnail = this.thumbnailRepository.findByComicId(comicId).orElse(
-            Thumbnail.builder().comicId(comicId).build());
-
-        thumbnail.setThumbnail(ThumbnailUtils.get(file.getInputStream(sortedEntries.get(0))).toByteArray());
-        this.thumbnailRepository.save(thumbnail);
-      } else {
-        throw new NoImagesException();
+        this.saveThumbnail(comic, sortedEntries.get(0), ThumbnailType.FRONT_COVER);
+        this.saveThumbnail(comic, sortedEntries.get(sortedEntries.size() - 1), ThumbnailType.BACK_COVER);
       }
     } catch (final Exception exception) {
-      throw new NoImagesException(exception);
+      throw new NoThumbnailsException(exception);
     }
+  }
+
+  private void saveThumbnail(final Comic comic, final Path file, final ThumbnailType type)
+      throws IOException {
+
+    final ObjectId comicId = new ObjectId(comic.getId());
+    final Thumbnail thumbnail = this.thumbnailRepository
+        .findByComicIdAndType(comicId, type)
+        .orElse(Thumbnail.builder()
+            .comicId(comicId)
+            .type(type)
+            .path(file.toString())
+            .build());
+
+    final InputStream thumbnailStream = Files.newInputStream(file);
+    thumbnail.setThumbnail(ThumbnailUtils.get(thumbnailStream).toByteArray());
+    this.thumbnailRepository.save(thumbnail);
+    thumbnailStream.close();
   }
 }

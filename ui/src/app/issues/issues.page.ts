@@ -88,7 +88,7 @@ export class IssuesPage {
       .subscribe((data: Comic[]) => {
         this.comics = data;
         this.comics.forEach((comic: Comic) => {
-          this.thumbnails.set(comic.id, this.thumbnailsService.get(comic.id));
+          this.thumbnails.set(comic.id, this.thumbnailsService.getFrontCover(comic.id));
           this.updateStoredState(comic.id);
           this.comicStorageService.saveIfStored(comic);
         });

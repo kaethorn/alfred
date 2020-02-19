@@ -22,11 +22,7 @@ export class LoginPage {
     this.userService.setupGoogleSignIn();
     this.userService.user.subscribe((user: User | string) => {
       this.ngZone.run(() => {
-        if (typeof user === 'string') {
-          this.message = user;
-          return;
-        }
-        this.message = null;
+        this.message = typeof user === 'string' ? user : null;
         if (this.route.snapshot.queryParams.target) {
           this.router.navigate([this.route.snapshot.queryParams.target]);
         } else {

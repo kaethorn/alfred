@@ -19,8 +19,8 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
 @Profile({"dev", "test"})
 public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
 

@@ -20,12 +20,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Thumbnail {
 
+  public enum ThumbnailType {
+    FRONT_COVER,
+    BACK_COVER
+  }
+
   @Id
   private String id;
 
   @NonNull
   @Indexed
   private ObjectId comicId;
+
+  @NonNull
+  @Indexed
+  private ThumbnailType type;
+
+  private String path;
 
   private byte[] thumbnail;
 }

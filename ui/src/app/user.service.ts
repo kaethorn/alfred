@@ -48,7 +48,8 @@ export class UserService {
               localStorage.setItem('token', user.token);
               localStorage.setItem('user', JSON.stringify(user));
             }, (response: HttpErrorResponse) => {
-              this.user.next(`Login failure: ${ response.statusText }.`);
+              const message = response.error.message ? response.error.message : response.message;
+              this.user.next(`Login failure: ${ message }`);
             });
           }, () => {
             this.user.next('Login failure: Google-SignIn error.');

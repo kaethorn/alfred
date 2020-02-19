@@ -47,7 +47,7 @@ export class VolumesComponent {
         this.volumesData = data;
         this.volumes = this.volumesData;
         this.volumes.forEach((volume: Volume) => {
-          this.thumbnails.set(volume.firstComicId, this.comicStorageService.getThumbnail(volume.firstComicId));
+          this.thumbnails.set(volume.firstComicId, this.comicStorageService.getFrontCoverThumbnail(volume.firstComicId));
           this.updateStoredState(volume.firstComicId);
         });
       });
