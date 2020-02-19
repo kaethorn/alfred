@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Comic } from './comic';
+import { Comic, ScannerIssue } from './comic';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class ComicsService {
   }
 
   list (): Observable<Comic[]> {
-    return this.http.get('api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc').pipe(
+    return this.http.get('api/comics/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
@@ -34,6 +34,13 @@ export class ComicsService {
 
   listComicsWithErrors (): Observable<Comic[]> {
     return this.http.get('api/queue').pipe(
+      this.consumeHateoas(),
+      map((data: any) => data.map(this.addId))
+    );
+  }
+
+  listComicsWithoutErrors (): Observable<Comic[]> {
+    return this.http.get('api/queue/valid').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
@@ -138,6 +145,12 @@ export class ComicsService {
     return this.http.delete('api/progress/me');
   }
 
+  deletePage (comic: Comic, path: string): Observable<Comic> {
+    return this.http.delete<Comic>(`api/comics/${ comic.id }/page/${ encodeURIComponent(path) }`).pipe(
+      map(this.addId)
+    );
+  }
+
   bundleVolumes (): Observable<any> {
     return this.http.get('api/comics/bundle');
   }
@@ -146,5 +159,11 @@ export class ComicsService {
     return this.http.get(`/api/download/${ comicId }/${ page }`, {
       responseType: 'blob'
     });
+  }
+
+  fixIssue (comic: Comic, error: ScannerIssue): Observable<Comic> {
+    return this.http.put(`/api/queue/fix/${ error.type }`, comic).pipe(
+      map(this.addId)
+    );
   }
 }

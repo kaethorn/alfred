@@ -17,17 +17,12 @@ Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
 
 <module name = "Checker">
   <property name="charset" value="UTF-8"/>
-
   <property name="severity" value="error"/>
-
   <property name="fileExtensions" value="java, properties, xml"/>
-    <!-- Excludes all 'module-info.java' files              -->
-    <!-- See https://checkstyle.org/config_filefilters.html -->
+
   <module name="BeforeExecutionExclusionFileFilter">
     <property name="fileNamePattern" value="module\-info\.java$"/>
   </module>
-  <!-- Checks for whitespace                               -->
-  <!-- See http://checkstyle.sf.net/config_whitespace.html -->
   <module name="FileTabCharacter">
     <property name="eachLine" value="true"/>
   </module>
@@ -37,6 +32,7 @@ Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
   </module>
 
   <module name="TreeWalker">
+    <module name="DeclarationOrder"/>
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
       <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
@@ -105,13 +101,11 @@ Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
       <property name="option" value="EOL"/>
     </module>
     <module name="SeparatorWrap">
-      <!-- ELLIPSIS is EOL until https://github.com/google/styleguide/issues/258 -->
       <property name="id" value="SeparatorWrapEllipsis"/>
       <property name="tokens" value="ELLIPSIS"/>
       <property name="option" value="EOL"/>
     </module>
     <module name="SeparatorWrap">
-      <!-- ARRAY_DECLARATOR is EOL until https://github.com/google/styleguide/issues/259 -->
       <property name="id" value="SeparatorWrapArrayDeclarator"/>
       <property name="tokens" value="ARRAY_DECLARATOR"/>
       <property name="option" value="EOL"/>
@@ -268,8 +262,6 @@ Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
       <property name="exceptionVariableName" value="expected"/>
     </module>
     <module name="CommentsIndentation"/>
-
-      <!-- No trailing whitespace -->
     <module name="Regexp">
       <property name="format" value="[ \t]+$"/>
       <property name="illegalPattern" value="true"/>

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { StatsServiceMocks as statsService } from '../../../testing/stats.service.mocks';
 import { ComicsServiceMocks as comicsService } from '../../../testing/comics.service.mocks';
@@ -15,7 +16,8 @@ describe('ScannerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        SettingsPageModule
+        SettingsPageModule,
+        RouterTestingModule,
       ],
       providers: [{
         provide: StatsService, useValue: statsService

@@ -1,9 +1,8 @@
 package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.progress.ProgressHelper;
-
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -24,15 +23,24 @@ import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.A
 import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.Filter.filter;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
+@RequiredArgsConstructor
 public class ComicQueryRepositoryImpl implements ComicQueryRepository {
 
-  @Autowired
-  private MongoTemplate mongoTemplate;
+  private final MongoTemplate mongoTemplate;
 
   @Override
   public List<Comic> findAllWithErrors() {
     return this.mongoTemplate.aggregate(Aggregation.newAggregation(
         match(where("errors").exists(true)),
+
+        sort(Sort.Direction.ASC, "path")
+        ), Comic.class, Comic.class).getMappedResults();
+  }
+
+  @Override
+  public List<Comic> findAllWithoutErrors() {
+    return this.mongoTemplate.aggregate(Aggregation.newAggregation(
+        match(where("errors").exists(false)),
 
         sort(Sort.Direction.ASC, "path")
         ), Comic.class, Comic.class).getMappedResults();

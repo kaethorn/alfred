@@ -34,7 +34,7 @@ export class BookmarksPage {
     this.comicStorageService.getBookmarks().then((comics: Comic[]) => {
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
-        this.thumbnails.set(comic.id, this.comicStorageService.getThumbnail(comic.id));
+        this.thumbnails.set(comic.id, this.comicStorageService.getFrontCoverThumbnail(comic.id));
         this.updateStoredState(comic.id);
       });
     });

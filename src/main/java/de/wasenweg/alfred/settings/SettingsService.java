@@ -1,28 +1,27 @@
 package de.wasenweg.alfred.settings;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SettingsService {
 
   private final ArrayList<Setting> defaults = new ArrayList<Setting>();
-
   private final SettingRepository settingRepository;
   private final Environment environment;
 
-  @Autowired
-  public SettingsService(final SettingRepository settingRepository, final Environment environment) {
-    this.settingRepository = settingRepository;
-    this.environment = environment;
-
+  @PostConstruct
+  public void setup() {
     // Built in defaults:
     this.defaults.add(new Setting("comics.path", "Path", "/comics", "Path to your comic library"));
-    this.defaults.add(new Setting("comics.comicVineApiKey", "Comi Vine API key", "", "Comic Vine API key from https://comicvine.gamespot.com/api/"));
+    this.defaults.add(new Setting("comics.comicVine.ApiKey", "Comi Vine API key", "", "Comic Vine API key from https://comicvine.gamespot.com/api/"));
     this.defaults.add(new Setting("auth.users", "Users", "", "Users authorized to access this server"));
     this.defaults.add(new Setting("auth.client.id", "Google client ID", "", "Google client ID to use for this server"));
 
@@ -47,11 +46,11 @@ public class SettingsService {
     });
   }
 
-  private Optional<String> getEnvironmentValue(final String key) {
-    return Optional.ofNullable(this.environment.getProperty(key));
-  }
-
   public String get(final String key) {
     return this.settingRepository.findByKey(key).get().getValue();
+  }
+
+  private Optional<String> getEnvironmentValue(final String key) {
+    return Optional.ofNullable(this.environment.getProperty(key));
   }
 }

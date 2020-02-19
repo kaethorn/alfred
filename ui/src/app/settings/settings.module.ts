@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SettingsPage } from './settings.page';
 import { ScannerComponent } from './scanner/scanner.component';
 import { QueueComponent } from './queue/queue.component';
+import { CoversComponent } from './covers/covers.component';
 
 @NgModule({
   imports: [
@@ -23,12 +24,16 @@ import { QueueComponent } from './queue/queue.component';
     }, {
       path: 'queue',
       component: QueueComponent
+    }, {
+      path: 'covers',
+      component: CoversComponent
     }])
   ],
   declarations: [
     SettingsPage,
     ScannerComponent,
-    QueueComponent
+    QueueComponent,
+    CoversComponent
   ]
 })
 export class SettingsPageModule {}

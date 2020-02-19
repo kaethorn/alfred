@@ -56,6 +56,11 @@ export class Page {
     return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
   }
 
+  static async expectToastMessage (message: string) {
+    expect(await Page.getToastMessage()).toEqual(message);
+    return Page.waitForToastMessageGone();
+  }
+
   static async waitForToastMessageGone (timeout = 6000) {
     return browser.wait(
       ExpectedConditions.not(

@@ -7,8 +7,8 @@ import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.settings.SettingsService;
 import de.wasenweg.alfred.thumbnails.ThumbnailService;
 import de.wasenweg.alfred.volumes.Volume;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.ProviderNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,31 +31,21 @@ import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.zip.ZipFile;
+
+import static java.lang.String.format;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ScannerService {
 
   private EmitterProcessor<ServerSentEvent<String>> emitter;
-
-  @Autowired
-  private ApiMetaDataService apiMetaDataService;
-
-  @Autowired
-  private FileMetaDataService fileMetaDataService;
-
-  @Autowired
-  private ObjectMapper objectMapper;
-
-  @Autowired
-  private ThumbnailService thumbnailService;
-
-  @Autowired
-  private ComicRepository comicRepository;
-
-  @Autowired
-  private SettingsService settingsService;
+  private final ApiMetaDataService apiMetaDataService;
+  private final FileMetaDataService fileMetaDataService;
+  private final ObjectMapper objectMapper;
+  private final ThumbnailService thumbnailService;
+  private final ComicRepository comicRepository;
+  private final SettingsService settingsService;
 
   private void sendEvent(final String data, final String name) {
     final String timestamp = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date());
@@ -95,7 +86,7 @@ public class ScannerService {
     this.reportIssue(
         ScannerIssue.builder()
           .message(exception.getLocalizedMessage())
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
   }
 
@@ -105,22 +96,21 @@ public class ScannerService {
         comic,
         ScannerIssue.builder()
           .message(exception.getLocalizedMessage())
-          .type(ScannerIssue.Type.ERROR)
+          .severity(ScannerIssue.Severity.ERROR)
           .build());
   }
 
-  private void reportIssue(final Comic comic, final Exception exception, final ScannerIssue.Type type) {
+  private void reportIssue(final Comic comic, final Exception exception, final ScannerIssue.Severity severity) {
     log.error(exception.getLocalizedMessage(), exception);
     this.reportIssue(
         comic,
         ScannerIssue.builder()
           .message(exception.getLocalizedMessage())
-          .type(type)
+          .severity(severity)
           .build());
   }
 
   private void reportIssue(final Comic comic, final ScannerIssue issue) {
-    issue.setPath(comic.getPath());
     final List<ScannerIssue> errors = Optional
         .ofNullable(comic.getErrors())
         .orElse(new ArrayList<ScannerIssue>());
@@ -137,40 +127,22 @@ public class ScannerService {
     }
   }
 
-  private void setThumbnail(final ZipFile file, final Comic comic) {
-    try {
-      this.thumbnailService.setComic(file, comic);
-    } catch (final NoImagesException exception) {
-      this.reportIssue(comic, exception);
-    } finally {
-      try {
-        file.close();
-      } catch (final IOException exception) {
-        this.reportIssue(comic, exception);
-      }
-    }
-  }
-
-  public void processComic(final Comic comic) {
+  public Comic processComic(final Comic comic) {
     comic.setErrors(null);
 
-    final ZipFile file;
     try {
-      file = this.fileMetaDataService.getZipFile(comic);
-    } catch (final IOException exception) {
-      this.reportIssue(comic, exception);
-      this.comicRepository.save(comic);
-      return;
-    }
-
-    try {
-      this.fileMetaDataService.read(file, comic).forEach(issue -> {
+      this.fileMetaDataService.read(comic).forEach(issue -> {
         this.reportIssue(comic, issue);
       });
+
+      this.comicRepository.save(comic);
+      this.thumbnailService.read(comic);
     } catch (final SAXException | IOException | ParserConfigurationException exception) {
-      this.reportIssue(comic, exception, ScannerIssue.Type.WARNING);
+      this.reportIssue(comic, exception, ScannerIssue.Severity.WARNING);
+    } catch (final NoImagesException | ProviderNotFoundException | InvalidFileException exception) {
+      this.reportIssue(comic, exception);
     } catch (final NoMetaDataException exception) {
-      log.info(String.format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
+      log.info(format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
       final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
       this.fileMetaDataService.write(comic);
       issues.forEach(issue -> {
@@ -180,11 +152,7 @@ public class ScannerService {
         this.fileMetaDataService.write(comic);
       }
     }
-
-    this.comicRepository.save(comic);
-    this.setThumbnail(file, comic);
-    // Save the comic again to store errors occurring while creating thumb nails:
-    this.comicRepository.save(comic);
+    return this.comicRepository.save(comic);
   }
 
   private void processComicByPath(final Path path) {
@@ -207,14 +175,16 @@ public class ScannerService {
    *
    * Mandatory fields are `publisher`, `series`, `volume` and `issue number`.
    *
-   * Process: 1. Ignore all files that do not end in `.cbz`. 2. Attempt to parse
-   * mandatory fields from meta data XML. Exit on success. 3. Ignore all files
-   * that do not match pattern containing mandatory fields, e.g.
-   * `{publisher}/{series} ({volume})/{series} ({volume}) {issue number} .*.cbz`.
-   * 4. Attempt to match & scrape meta data from Comic Vine API. 5. On match,
-   * write meta data XML and exit. Otherwise report error and ignore file.
+   * Process:
+   * 1. Ignore all files that do not end in `.cbz`.
+   * 2. Attempt to parse mandatory fields from meta data XML. Exit on success.
+   * 3. Ignore all files that do not match pattern containing mandatory fields, e.g.
+   *    `{publisher}/{series} ({volume})/{series} ({volume}) {issue number}.cbz`.
+   * 4. Attempt to match & scrape meta data from Comic Vine API.
+   * 5. On match, write meta data XML and exit. Otherwise report error and ignore file.
    */
   public Flux<ServerSentEvent<String>> scanComics() {
+    log.info("Triggered scan-progress.");
     this.emitter = EmitterProcessor.create();
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
     this.reportStart(comicsPath.toString());

@@ -69,7 +69,7 @@ describe('ComicsService', () => {
         expect(comics[1].path).toEqual('/batman 2.cbz');
       });
 
-      const req = httpMock.expectOne('api/comics/search/findAllByOrderBySeriesAscVolumeAscPositionAsc');
+      const req = httpMock.expectOne('api/comics/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc');
       expect(req.request.method).toBe('GET');
       req.flush(mockComics);
     });

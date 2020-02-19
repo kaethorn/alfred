@@ -53,11 +53,11 @@ docker run --dns 8.8.8.8 -p 5000:8080 --net=alfred-net --rm \
   -v <Path to where you want to receive log files>:/logs \
   -e SPRING_PROFILES_ACTIVE=prod \
   -e SPRING_DATA_MONGODB_URI=mongodb://mongo/alfred \
-  -e COMICS_COMIC_VINE_API_KEY=<Your Comic Vine API key> \
+  -e COMICS_COMICVINE_APIKEY=<Your Comic Vine API key> \
   -e LOGGING_FILE=/logs/alfred.log \
-  -e AUTH_CLIENT.ID=<Your Google Client ID, ends in .apps.googleusercontent.com> \
+  -e AUTH_CLIENT_ID=<Your Google Client ID, ends in .apps.googleusercontent.com> \
   -e AUTH_USERS=<List of allowed user IDs, e.g. email addresses> \
-  -e AUTH_JWT.SECRET=<Your own generated or custom JWT secret> \
+  -e AUTH_JWT_SECRET=<Your own generated or custom JWT secret> \
   --name alfred \
   de.wasenweg/alfred
 ```
@@ -145,7 +145,7 @@ Users are identified through their email addresses and the initial set of allowe
 
 Once the application authenticates the user, it issues its own JWT authentication token which requires a secret key. A default key is supplied but should be overridden whenever the application is run (it's not stored in the DB).
 
-### Comic Vine API key (`comics.comicVineApiKey`)
+### Comic Vine API key (`comics.comicVine.ApiKey`)
 
 Comic books not containing a meta data XML or an XML without enough attributes won't be usable. Missing meta data can be fetched from the [Comic Vine API](https://comicvine.gamespot.com/api/) for which you need an API key.
 

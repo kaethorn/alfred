@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Map;
 
-@Slf4j
 @Service
+@Slf4j
 @Profile({"prod"})
 public class JwtService implements IJwtService {
 
   public Boolean verifyToken(final String token, final String secret) {
-    log.info("Verifying token: {}", token);
+    log.debug("Verifying token: {}", token);
     Boolean verified = false;
 
     try {
@@ -33,7 +33,7 @@ public class JwtService implements IJwtService {
 
       final Claim claim = jwt.getClaim("API_ALLOWED");
       if (claim.isNull()) {
-        log.info("Token claim does not contain API_ALLOWED");
+        log.debug("Token claim does not contain API_ALLOWED");
         return false;
       }
       verified = claim.asBoolean();
@@ -52,7 +52,7 @@ public class JwtService implements IJwtService {
 
       SecurityContextHolder.getContext().setAuthentication(newAuth);
     } catch (final Exception e) {
-      log.info("Exception while verifying token: {}", e.getLocalizedMessage());
+      log.error("Exception while verifying token: {}", e.getLocalizedMessage());
       verified = false;
     }
 

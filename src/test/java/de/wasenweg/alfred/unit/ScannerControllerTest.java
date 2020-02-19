@@ -2,13 +2,9 @@ package de.wasenweg.alfred.unit;
 
 import de.wasenweg.alfred.scanner.ScannerController;
 import de.wasenweg.alfred.scanner.ScannerService;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -16,7 +12,11 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(MockitoExtension.class)
 public class ScannerControllerTest {
 
   private MockMvc mockMvc;
@@ -27,7 +27,7 @@ public class ScannerControllerTest {
   @InjectMocks
   private ScannerController controller;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mockMvc = MockMvcBuilders.standaloneSetup(this.controller)
         .build();

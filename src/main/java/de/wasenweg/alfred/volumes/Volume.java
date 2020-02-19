@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static java.lang.String.format;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class Volume {
 
   @Override
   public String toString() {
-    return String.format(
+    return format(
         "%s (Vol. %s) by %s",
         this.series, this.volume, this.publisher);
   }

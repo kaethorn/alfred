@@ -1,16 +1,16 @@
 package de.wasenweg.alfred.util;
 
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 public abstract class BaseController<T> {
 
@@ -23,8 +23,8 @@ public abstract class BaseController<T> {
     }
   }
 
-  protected Resources<Resource<T>> wrap(final List<T> items) {
-    return new Resources<Resource<T>>(
+  protected CollectionModel<EntityModel<T>> wrap(final List<T> items) {
+    return new CollectionModel<EntityModel<T>>(
         items.stream()
           .map(item -> {
             return this.wrap(item);
@@ -32,7 +32,7 @@ public abstract class BaseController<T> {
         linkTo(this.getClass()).withSelfRel());
   }
 
-  protected Resource<T> wrap(final Optional<T> item) {
+  protected EntityModel<T> wrap(final Optional<T> item) {
     if (item.isPresent()) {
       return this.wrap(item.get());
     } else {
@@ -40,13 +40,13 @@ public abstract class BaseController<T> {
     }
   }
 
-  protected Resource<T> wrap(final T item) {
+  protected EntityModel<T> wrap(final T item) {
     final Link link = linkTo(this.getClass()).slash(this.getItemId(item)).withSelfRel();
-    return new Resource<T>(item, link);
+    return new EntityModel<T>(item, link);
   }
 
-  protected Resource<T> wrapRoot(final T item) {
+  protected EntityModel<T> wrapRoot(final T item) {
     final Link link = linkTo(this.getClass()).withSelfRel();
-    return new Resource<T>(item, link);
+    return new EntityModel<T>(item, link);
   }
 }

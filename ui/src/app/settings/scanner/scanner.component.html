@@ -28,7 +28,7 @@
         Scan the library folder for new comic books.
         <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
           <ion-icon name="search"></ion-icon>
-          SCAN
+          Scan
         </ion-button>
       </ion-item>
       <ion-item *ngIf="issues.length">
@@ -37,6 +37,13 @@
         <ion-button slot="end" [routerLink]="['queue']">
           <ion-icon slot="start" name="list"></ion-icon>
           View 
+        </ion-button>
+      </ion-item>
+      <ion-item>
+        View front- and back covers.
+        <ion-button slot="end" [routerLink]="['covers']" color="primary">
+          <ion-icon name="search"></ion-icon>
+          Inspect
         </ion-button>
       </ion-item>
     </ion-list>
