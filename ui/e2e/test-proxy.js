@@ -1,5 +1,5 @@
 const express = require('express');
-const proxy = require('http-proxy-middleware');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 let server;
 const flags = {
@@ -37,7 +37,7 @@ module.exports = {
     };
 
     // Proxy requests to the web server
-    app.use('', proxy(proxyFilter, {
+    app.use('', createProxyMiddleware(proxyFilter, {
       target: 'http://localhost:8080',
       onProxyReq: (proxyReq, req) => {
         if ('' in req.headers) {
