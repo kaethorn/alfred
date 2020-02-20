@@ -53,7 +53,7 @@ describe('SettingsService', () => {
   describe('#list', () => {
 
     it('returns all settings', () => {
-      service.list().subscribe((settings) => {
+      service.list().subscribe(settings => {
         expect(settings.length).toBe(2);
         expect(settings[0].id).toEqual('1');
         expect(settings[1].id).toEqual('2');
@@ -67,7 +67,7 @@ describe('SettingsService', () => {
   describe('#get', () => {
 
     it('return a settings entry by key', () => {
-      service.get('a').subscribe((setting) => {
+      service.get('a').subscribe(setting => {
         expect(setting.id).toEqual('1');
       });
       const req = httpMock.expectOne('api/settings/search/findByKey?key=a');
@@ -79,7 +79,7 @@ describe('SettingsService', () => {
   describe('#update', () => {
 
     it('changes a settings entry', () => {
-      service.update(mockSettingA).subscribe((setting) => {
+      service.update(mockSettingA).subscribe(setting => {
         expect(setting.id).toEqual('1');
       });
       const req = httpMock.expectOne('api/settings/1');

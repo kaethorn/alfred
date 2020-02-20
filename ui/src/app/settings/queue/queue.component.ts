@@ -7,23 +7,23 @@ import { ComicsService } from '../../comics.service';
 @Component({
   selector: 'app-queue',
   templateUrl: './queue.component.html',
-  styleUrls: ['./queue.component.sass'],
+  styleUrls: ['./queue.component.sass']
 })
 export class QueueComponent {
 
-  comics: Array<Comic> = [];
-  issueSeverityToColor = { ERROR: 'danger', WARNING: 'warning', INFO: 'secondary' };
+  public comics: Array<Comic> = [];
+  public issueSeverityToColor = { ERROR: 'danger', WARNING: 'warning', INFO: 'secondary' };
 
-  constructor (
+  constructor(
     private comicsService: ComicsService,
-    private toastController: ToastController,
+    private toastController: ToastController
   ) { }
 
-  ionViewWillEnter () {
+  public ionViewWillEnter(): void {
     this.list();
   }
 
-  fix (comic: Comic, error: ScannerIssue) {
+  public fix(comic: Comic, error: ScannerIssue): void {
     this.comicsService.fixIssue(comic, error).subscribe(() => {
       this.list();
       this.showToast(`Flattened comic archive "${ comic.fileName }".`);
@@ -32,14 +32,14 @@ export class QueueComponent {
     });
   }
 
-  private list (): void {
+  private list(): void {
     this.comicsService.listComicsWithErrors()
       .subscribe((data: Comic[]) => {
         this.comics = data;
       });
   }
 
-  private async showToast (message: string, duration: number = 4000) {
+  private async showToast(message: string, duration = 4000): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration

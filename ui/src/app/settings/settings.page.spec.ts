@@ -20,7 +20,7 @@ describe('SettingsPage', () => {
     TestBed.configureTestingModule({
       imports: [
         SettingsPageModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       providers: [{
         provide: SettingsService, useValue: settingsService

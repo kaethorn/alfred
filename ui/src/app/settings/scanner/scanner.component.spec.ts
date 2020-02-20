@@ -17,7 +17,7 @@ describe('ScannerComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         SettingsPageModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       providers: [{
         provide: StatsService, useValue: statsService

@@ -7,13 +7,13 @@ import { User } from '../user';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.sass'],
+  styleUrls: ['./login.page.sass']
 })
 export class LoginPage {
 
-  message: string;
+  public message: string;
 
-  constructor (
+  constructor(
     private userService: UserService,
     private ngZone: NgZone,
     private router: Router,

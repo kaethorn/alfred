@@ -10,10 +10,10 @@ import { AsyncSubject } from 'rxjs';
 })
 export class ComicDatabaseService {
 
+  public ready: AsyncSubject<void> = new AsyncSubject<void>();
   private db: IndexedDb;
-  ready: AsyncSubject<void> = new AsyncSubject<void>();
 
-  constructor (
+  constructor(
     private comicService: ComicsService
   ) {
     this.db = new IndexedDb('Comics', 1, [{
@@ -37,16 +37,16 @@ export class ComicDatabaseService {
    * Caches the entire given comic book, including meta data and images.
    * @param comic The comic to cache.
    */
-  async store (comic: Comic): Promise<Event> {
+  public async store(comic: Comic): Promise<Event> {
     const isStored = await this.isStored(comic.id);
     if (!isStored) {
-      return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
-        return result.then(() => this.saveImage(comic.id, page));
-      }, Promise.resolve()).then(() => this.db.save('Comics', comic));
+      return Array.from(Array(comic.pageCount)).reduce((result, value, page) =>
+        result.then(() => this.saveImage(comic.id, page))
+      , Promise.resolve()).then(() => this.db.save('Comics', comic));
     }
   }
 
-  isStored (comicId: string): Promise<boolean> {
+  public isStored(comicId: string): Promise<boolean> {
     return this.db.hasKey('Comics', comicId);
   }
 
@@ -54,50 +54,50 @@ export class ComicDatabaseService {
    * Deletes the comic and any stored images.
    * @param comic The comic to delete.
    */
-  delete (comic: Comic): Promise<Event> {
-    return Array.from(Array(comic.pageCount)).reduce((result, value, page) => {
-      return result.then(() => this.db.delete('Images', `${ comic.id }/${ page }`));
-    }, Promise.resolve()).then(() => this.db.delete('Comics', comic.id));
+  public delete(comic: Comic): Promise<Event> {
+    return Array.from(Array(comic.pageCount)).reduce((result, value, page) =>
+      result.then(() => this.db.delete('Images', `${ comic.id }/${ page }`))
+    , Promise.resolve()).then(() => this.db.delete('Comics', comic.id));
   }
 
-  async deleteAll (): Promise<any> {
+  public async deleteAll(): Promise<void> {
     const comics = await this.getComics();
     for (const comic of comics) {
       await this.delete(comic);
     }
   }
 
-  getImageUrl (comicId: string, page: number): Promise<string> {
-    return this.db.get('Images', `${ comicId }/${ page }`).then((data: any) => {
-      return URL.createObjectURL(data);
-    });
+  public getImageUrl(comicId: string, page: number): Promise<string> {
+    return this.db.get('Images', `${ comicId }/${ page }`).then((data: any) =>
+      URL.createObjectURL(data)
+    );
   }
 
-  async getComic (comicId: string): Promise<Comic> {
+  public async getComic(comicId: string): Promise<Comic> {
     await this.ready.toPromise();
     return this.db.get('Comics', comicId);
   }
 
-  async getComics (): Promise<Comic[]> {
+  public async getComics(): Promise<Comic[]> {
     await this.ready.toPromise();
     return this.db.getAll('Comics');
   }
 
-  getComicsBy (key: string, value: any): Promise<Comic[]> {
+  public getComicsBy(key: string, value: any): Promise<Comic[]> {
     return this.db.getAllBy('Comics', key, value);
   }
 
-  save (comic: Comic): Promise<Event> {
+  public save(comic: Comic): Promise<Event> {
     return this.db.save('Comics', comic);
   }
 
-  private saveImage (comicId: string, page: number): Promise<Event> {
+  private saveImage(comicId: string, page: number): Promise<Event> {
     return new Promise((resolve, reject) => {
       this.comicService.getPage(comicId, page).subscribe((image: Blob) => {
         this.db.save('Images', image, `${ comicId }/${ page }`)
           .then(resolve)
           .catch(error => reject(error));
-      }, (error) => reject(error));
+      }, error => reject(error));
     });
   }
 }

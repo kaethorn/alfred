@@ -20,7 +20,7 @@ describe('Scanning', () => {
 
   it('display scan progress', async () => {
     expect(await SettingsPage.getScanProgress())
-      .toMatch(/Scanning\ file\ \d+\ of\ \d+\ at\ .*/);
+      .toMatch(/Scanning file \d+ of \d+ at .*/);
     expect(await SettingsPage.getScanErrors().isPresent()).toBe(false);
   });
 

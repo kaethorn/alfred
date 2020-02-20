@@ -11,12 +11,12 @@ import { Thumbnail } from './thumbnail';
 })
 export class ThumbnailsService {
 
-  constructor (
+  constructor(
     private sanitizer: DomSanitizer,
     private http: HttpClient
   ) {}
 
-  getFrontCover (comicId: string): Observable<Thumbnail> {
+  public getFrontCover(comicId: string): Observable<Thumbnail> {
     return this.http.get<Thumbnail>(`api/thumbnails/front-cover/${ comicId }`).pipe(
       map((thumbnail: any) => {
         thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.thumbnail }`);
@@ -25,7 +25,7 @@ export class ThumbnailsService {
     );
   }
 
-  getBackCover (comicId: string): Observable<Thumbnail> {
+  public getBackCover(comicId: string): Observable<Thumbnail> {
     return this.http.get<Thumbnail>(`api/thumbnails/back-cover/${ comicId }`).pipe(
       map((thumbnail: any) => {
         thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.thumbnail }`);

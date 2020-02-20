@@ -12,38 +12,38 @@ import { UserSettingsService } from '../user-settings.service';
 })
 export class SettingsPage {
 
-  settings: Setting[] = [];
-  updateError: any;
-  userSettings;
+  public settings: Setting[] = [];
+  public updateError: any;
+  public userSettings;
 
-  constructor (
+  constructor(
     private settingsService: SettingsService,
     private toastController: ToastController,
-    private userSettingsService: UserSettingsService,
+    private userSettingsService: UserSettingsService
   ) {
     this.userSettings = userSettingsService.get();
   }
 
-  ionViewWillEnter () {
+  public ionViewWillEnter(): void {
     this.list();
   }
 
-  onSubmit () {
+  public onSubmit(): void {
     for (const setting of this.settings) {
       this.settingsService.update(setting)
         .subscribe(
           () => this.showToast('Settings saved.'),
-          (error) => this
+          error => this
             .showToast(`Error saving settings (${ error.status }: ${ error.statusText }).`, 5000)
         );
     }
   }
 
-  saveUserSettings () {
+  public saveUserSettings(): void {
     this.userSettingsService.save();
   }
 
-  private async showToast (message: string, duration: number = 3000) {
+  private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration
@@ -51,7 +51,7 @@ export class SettingsPage {
     toast.present();
   }
 
-  private list () {
+  private list(): void {
     this.settingsService.list()
       .subscribe((data: Setting[]) => {
         this.settings = data;

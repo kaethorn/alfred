@@ -9,12 +9,12 @@ import { Comic } from '../comic';
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.sass'],
+  styleUrls: ['./edit.page.sass']
 })
 export class EditPage {
 
-  comic: Comic;
-  comicForm = this.formBuilder.group({
+  public comic: Comic;
+  public comicForm = this.formBuilder.group({
     series: ['', Validators.required],
     publisher: ['', Validators.required],
     volume: ['', Validators.required],
@@ -34,34 +34,23 @@ export class EditPage {
     manga: [''],
     characters: [''],
     teams: [''],
-    locations: [''],
+    locations: ['']
   });
-  scrapeInProgress = false;
-  editInProgress = false;
+  public scrapeInProgress = false;
+  public editInProgress = false;
 
-  constructor (
+  constructor(
     private route: ActivatedRoute,
     private comicsService: ComicsService,
     private formBuilder: FormBuilder,
-    private toastController: ToastController,
+    private toastController: ToastController
   ) { }
 
-  ionViewDidEnter () {
+  public ionViewDidEnter(): void {
     this.get(this.route.snapshot.params.id);
   }
 
-  private get (id: string) {
-    this.comicsService
-      .get(id)
-      .subscribe((data: Comic) => {
-        this.comic = data;
-        Object.keys(this.comicForm.value).forEach(key => {
-          this.comicForm.get(key).setValue(data[key]);
-        });
-      });
-  }
-
-  onSubmit () {
+  public onSubmit(): void {
     this.editInProgress = true;
     Object.keys(this.comicForm.value).forEach(key => {
       this.comic[key] = this.comicForm.value[key];
@@ -78,7 +67,7 @@ export class EditPage {
     );
   }
 
-  scrape () {
+  public scrape(): void {
     this.scrapeInProgress = true;
     this.comicsService.scrape(this.comic).subscribe(
       () => {
@@ -93,11 +82,22 @@ export class EditPage {
     );
   }
 
-  private async showToast (message: string, duration: number = 3000) {
+  private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration
     });
     toast.present();
+  }
+
+  private get(id: string): void {
+    this.comicsService
+      .get(id)
+      .subscribe((data: Comic) => {
+        this.comic = data;
+        Object.keys(this.comicForm.value).forEach(key => {
+          this.comicForm.get(key).setValue(data[key]);
+        });
+      });
   }
 }

@@ -103,7 +103,7 @@ describe('Reader Component', () => {
     });
   });
 
-  describe('completing an issue', async () => {
+  describe('completing an issue', () => {
 
     it('resumes reading and caches agagin', async () => {
       await BookmarksPage.getIssueCover(0).click();

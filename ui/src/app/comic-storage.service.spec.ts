@@ -28,7 +28,7 @@ describe('ComicStorageService', () => {
         provide: ComicDatabaseService, useValue: comicDatabaseService
       }, {
         provide: ThumbnailsService, useValue: {}
-      }],
+      }]
     });
     service = TestBed.inject(ComicStorageService);
   });
@@ -76,9 +76,9 @@ describe('ComicStorageService', () => {
   describe('#storeSurrounding', () => {
 
     beforeEach(() => {
-      spyOn(service, 'get').and.callFake((comicId: string) => {
-        return Promise.resolve(volume.find(comic => comic.id === comicId));
-      });
+      spyOn(service, 'get').and.callFake((comicId: string) =>
+        Promise.resolve(volume.find(comic => comic.id === comicId))
+      );
       comicDatabaseService.getComics.and.returnValue(Promise.resolve(
         volume.slice(1, 5)
       ));

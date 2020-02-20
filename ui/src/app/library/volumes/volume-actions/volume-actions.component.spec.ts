@@ -15,7 +15,7 @@ describe('VolumeActionsComponent', () => {
     navParams = new NavParams({ volume });
     TestBed.configureTestingModule({
       imports: [
-        LibraryPageModule,
+        LibraryPageModule
       ],
       providers: [{
         provide: NavParams, useValue: navParams

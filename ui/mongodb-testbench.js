@@ -51,11 +51,9 @@ const userId = '104414564769351832134';
 // const userId2 = '107859401383492803405';
 const mockUser = 'oauth2-mock-user-id';
 
-const progress = () => {
-  return Progress.find();
-};
-const findAllVolumes = () => {
-  return Comic.aggregate()
+const progress = () => Progress.find();
+const findAllVolumes = () =>
+  Comic.aggregate()
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
     .match({ publisher: 'DC Comics', series: 'Batgirl' })
     .sort({ position: 1 })
@@ -66,15 +64,13 @@ const findAllVolumes = () => {
       publisher   : { $last: '$publisher' },
       issueCount  : { $sum: 1 },
       read        : { $min: '$read' },
-      readCount   : { $sum: { $cond: [ '$read', 1, 0 ]}},
+      readCount   : { $sum: { $cond: [ '$read', 1, 0 ] } },
       firstComicId: { $first: '$_id' }
     })
     .sort({ volume: 1 });
-};
 
-
-const findAllLastReadPerVolume = () => {
-  return Comic.aggregate()
+const findAllLastReadPerVolume = () =>
+  Comic.aggregate()
     .sort({ position: 1 })
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
     .replaceRoot({
@@ -82,39 +78,38 @@ const findAllLastReadPerVolume = () => {
         { $arrayElemAt: [{ $filter: {
           input: '$progress',
           as   : 'item',
-          cond : { $eq: [ '$$item.userId', userId ]}
-        }}, 0 ]},
+          cond : { $eq: [ '$$item.userId', userId ] }
+        } }, 0 ] },
         '$$ROOT'
       ]
     })
     .project({ progress: 0, comicId: 0, userId: 0 })
     .group({
       _id       : { publisher: '$publisher', series: '$series', volume: '$volume' },
-      volumeRead: { $min: { $cond: [ '$read', true, false ]}},
+      volumeRead: { $min: { $cond: [ '$read', true, false ] } },
       readCount : { $sum: { $cond:
-        [{ $or: [ '$currentPage', '$read' ]}, 1, 0 ]
-      }},
+        [{ $or: [ '$currentPage', '$read' ] }, 1, 0 ]
+      } },
       comics: { $push: '$$ROOT' }
     })
-    .match({ $expr: { $eq: [ '$volumeRead', false ]}})
-    .match({ $expr: { $gt: [ '$readCount', 0 ]}})
+    .match({ $expr: { $eq: [ '$volumeRead', false ] } })
+    .match({ $expr: { $gt: [ '$readCount', 0 ] } })
     .project({
       comics: {
         $filter: {
           input: '$comics',
           as   : 'item',
-          cond : { $ne: [ '$$item.read', true ]}
+          cond : { $ne: [ '$$item.read', true ] }
         }
       }
     })
     // At this point, all we have volumes of comics that are unread.
-    .replaceRoot({ $arrayElemAt: [ '$comics', 0 ]})
+    .replaceRoot({ $arrayElemAt: [ '$comics', 0 ] })
     .sort({ lastRead: -1 });
-};
 
 // Publishers -> Series -> Volumes
-const publishers = () => {
-  return Comic.aggregate()
+const publishers = () =>
+  Comic.aggregate()
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
     .replaceRoot({
       $mergeObjects: [
@@ -122,8 +117,8 @@ const publishers = () => {
         { $arrayElemAt: [{ $filter: {
           input: '$progress',
           as   : 'item',
-          cond : { $eq: [ '$$item.userId', userId ]}
-        }}, 0 ]},
+          cond : { $eq: [ '$$item.userId', userId ] }
+        } }, 0 ] },
         { _id: '$$ROOT._id' }
       ]
     })
@@ -135,7 +130,7 @@ const publishers = () => {
       volume    : { $last: '$volume' },
       issueCount: { $sum: 1 },
       read      : { $min: '$read' },
-      readCount : { $sum: { $cond: [ '$read', 1, 0 ]}}
+      readCount : { $sum: { $cond: [ '$read', 1, 0 ] } }
     })
     .sort({ volume: 1 })
     .group({
@@ -147,19 +142,18 @@ const publishers = () => {
         issueCount: '$issueCount',
         readCount : '$readCount',
         read      : '$read'
-      }}
+      } }
     })
     .sort({ series: -1 })
     .group({
       _id      : { publisher: '$_id.publisher' },
       publisher: { $last: '$_id.publisher' },
-      series   : { $addToSet: { series: '$_id.series', volumes: '$volumes' }}
+      series   : { $addToSet: { series: '$_id.series', volumes: '$volumes' } }
     })
     .sort({ publisher: 1 });
-};
 
-const findLastReadForVolume = () => {
-  return Comic.aggregate()
+const findLastReadForVolume = () =>
+  Comic.aggregate()
     // should return #1 (all read)
     // .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
     // should return #2 (first read)
@@ -172,8 +166,8 @@ const findLastReadForVolume = () => {
         { $arrayElemAt: [{ $filter: {
           input: '$progress',
           as   : 'item',
-          cond : { $eq: [ '$$item.userId', mockUser ]}
-        }}, 0 ]},
+          cond : { $eq: [ '$$item.userId', mockUser ] }
+        } }, 0 ] },
         { _id: '$$ROOT._id' }
       ]
     })
@@ -182,10 +176,9 @@ const findLastReadForVolume = () => {
     .sort({ position: 1 })
     .sort({ read: 1 })
     .limit(1);
-};
 
-const findAllByPublisherAndSeriesAndVolumeOrderByPosition = () => {
-  return Comic.aggregate()
+const findAllByPublisherAndSeriesAndVolumeOrderByPosition = () =>
+  Comic.aggregate()
     .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
     .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
     .replaceRoot({
@@ -193,27 +186,25 @@ const findAllByPublisherAndSeriesAndVolumeOrderByPosition = () => {
         { $arrayElemAt: [{ $filter: {
           input: '$progress',
           as   : 'item',
-          cond : { $eq: [ '$$item.userId', userId ]}
-        }}, 0 ]},
+          cond : { $eq: [ '$$item.userId', userId ] }
+        } }, 0 ] },
         '$$ROOT'
       ]
     })
     .project({ progress: 0, comicId: 0, userId: 0 })
 
     .sort({ position: 1 });
-};
 
-const markAllAsReadUntil = () => {
-  return Comic.aggregate()
+const markAllAsReadUntil = () =>
+  Comic.aggregate()
     .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
-    .match({ position: { $lte: '0002.0' }});
-};
+    .match({ position: { $lte: '0002.0' } });
 
 const db = mongoose.connection;
 db.on('error', error => {
   logError(`connection error: ${ error }`);
 });
-db.once('open', function () {
+db.once('open', () => {
 
   let method;
 

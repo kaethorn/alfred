@@ -9,17 +9,17 @@ import { User } from './user';
 })
 export class UserService {
 
-  user: BehaviorSubject<User | string> = new BehaviorSubject<User | string>(null);
+  public user: BehaviorSubject<User | string> = new BehaviorSubject<User | string>(null);
   private auth2: gapi.auth2.GoogleAuth;
 
-  constructor (
+  constructor(
     private ngZone: NgZone,
     private http: HttpClient
   ) {
     this.verifyCurrentUser();
   }
 
-  verifyCurrentUser () {
+  public verifyCurrentUser(): void {
     const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
     if (!currentUser.token) {
       this.user.next('You\'ve been logged out.');
@@ -34,11 +34,11 @@ export class UserService {
     });
   }
 
-  setupGoogleSignIn () {
+  public setupGoogleSignIn(): void {
     if (typeof gapi === 'object') {
-      gapi.load('auth2', () => {
+      window.gapi.load('auth2', () => {
         this.ngZone.run(() => {
-          this.auth2 = gapi.auth2.init({
+          this.auth2 = window.gapi.auth2.init({
             client_id: '401455891931-28afa7q3453j1fsdfnlen5tf46oqeadr.apps.googleusercontent.com'
           });
           this.auth2.attachClickHandler('signin-button', {}, (googleUser: gapi.auth2.GoogleUser) => {
@@ -73,7 +73,7 @@ export class UserService {
     }
   }
 
-  logout () {
+  public logout(): void {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
   }

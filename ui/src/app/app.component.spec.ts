@@ -32,14 +32,14 @@ describe('AppComponent', () => {
         { provide: Platform, useValue: platformSpy },
         { provide: UserService, useValue: userService }
       ],
-      imports: [ RouterTestingModule.withRoutes([])],
+      imports: [ RouterTestingModule.withRoutes([])]
     });
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create the app', async () => {
+  it('should create the app', () => {
     expect(component).toBeTruthy();
   });
 
@@ -50,7 +50,7 @@ describe('AppComponent', () => {
     expect(splashScreenSpy.hide).toHaveBeenCalled();
   });
 
-  it('should have menu labels', async () => {
+  it('should have menu labels', () => {
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-label');
     expect(menuItems.length).toEqual(4);
@@ -60,7 +60,7 @@ describe('AppComponent', () => {
     expect(menuItems[3].textContent).toContain('Settings');
   });
 
-  it('should have URLs', async () => {
+  it('should have URLs', () => {
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-item');
     expect(menuItems.length).toEqual(4);

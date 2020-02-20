@@ -16,7 +16,7 @@ describe('ReaderPage', () => {
   let router;
   let comicStorageService;
 
-  const clickRightSide = async () => {
+  const clickRightSide = async (): Promise<void> => {
     fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
         clientX      : 700,
@@ -25,7 +25,7 @@ describe('ReaderPage', () => {
     await fixture.whenStable();
     fixture.detectChanges();
   };
-  const clickLeftSide = async () => {
+  const clickLeftSide = async (): Promise<void> => {
     fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
         clientX      : 100,
@@ -34,7 +34,7 @@ describe('ReaderPage', () => {
     await fixture.whenStable();
     fixture.detectChanges();
   };
-  const clickCenter = async () => {
+  const clickCenter = async (): Promise<void> => {
     fixture.debugElement.query(By.css('.pages-layer'))
       .triggerEventHandler('click', {
         clientX      : 500,
@@ -131,7 +131,7 @@ describe('ReaderPage', () => {
 
       it('loads only the cover', () => {
         expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
-          .toEqual('translateX(-000vw)');
+          .toEqual('translateX(0vw)');
       });
 
       describe('to the next page', () => {
@@ -182,7 +182,7 @@ describe('ReaderPage', () => {
 
       it('loads only the cover', () => {
         expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
-          .toEqual('translateX(-000vw)');
+          .toEqual('translateX(0vw)');
       });
 
       describe('to the next page', () => {
@@ -203,7 +203,7 @@ describe('ReaderPage', () => {
         it('navigating back displays only the cover', async () => {
           await clickLeftSide();
           expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
-            .toEqual('translateX(-000vw)');
+            .toEqual('translateX(0vw)');
         });
       });
 

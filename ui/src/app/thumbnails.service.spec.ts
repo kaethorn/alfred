@@ -9,7 +9,7 @@ describe('ThumbnailsService', () => {
   let service: ThumbnailsService;
   let httpMock: HttpTestingController;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ]
     });

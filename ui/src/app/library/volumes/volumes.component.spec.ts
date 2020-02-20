@@ -17,7 +17,7 @@ describe('VolumesComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         LibraryPageModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       providers: [{
         provide: VolumesService, useValue: volumesService

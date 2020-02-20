@@ -11,33 +11,25 @@ import { Thumbnail } from 'src/app/thumbnail';
 @Component({
   selector: 'app-covers',
   templateUrl: './covers.component.html',
-  styleUrls: ['./covers.component.sass'],
+  styleUrls: ['./covers.component.sass']
 })
 export class CoversComponent {
 
-  comics: Array<Comic> = [];
-  frontCoverThumbnails = new Map<string, Observable<Thumbnail>>();
-  backCoverThumbnails = new Map<string, Observable<Thumbnail>>();
+  public comics: Array<Comic> = [];
+  public frontCoverThumbnails = new Map<string, Observable<Thumbnail>>();
+  public backCoverThumbnails = new Map<string, Observable<Thumbnail>>();
 
-  constructor (
+  constructor(
     private comicsService: ComicsService,
     private thumbnailsService: ThumbnailsService,
-    private toastController: ToastController,
+    private toastController: ToastController
   ) { }
 
-  ionViewWillEnter () {
+  public ionViewWillEnter(): void {
     this.list();
   }
 
-  private list (): void {
-    this.comicsService.listComicsWithoutErrors()
-      .subscribe((data: Comic[]) => {
-        this.comics = data;
-        this.comics.forEach((comic: Comic) => this.updateThumbnails(comic));
-      });
-  }
-
-  deleteFrontCover (comic: Comic) {
+  public deleteFrontCover(comic: Comic): void {
     this.frontCoverThumbnails.get(comic.id).subscribe(thumbail => {
       this.comicsService.deletePage(comic, thumbail.path).subscribe(() => {
         this.updateThumbnails(comic);
@@ -48,7 +40,7 @@ export class CoversComponent {
     });
   }
 
-  deleteBackCover (comic: Comic) {
+  public deleteBackCover(comic: Comic): void {
     this.backCoverThumbnails.get(comic.id).subscribe(thumbail => {
       this.comicsService.deletePage(comic, thumbail.path).subscribe(() => {
         this.updateThumbnails(comic);
@@ -59,16 +51,24 @@ export class CoversComponent {
     });
   }
 
-  private updateThumbnails (comic: Comic) {
+  private updateThumbnails(comic: Comic): void {
     this.frontCoverThumbnails.set(comic.id, this.thumbnailsService.getFrontCover(comic.id));
     this.backCoverThumbnails.set(comic.id, this.thumbnailsService.getBackCover(comic.id));
   }
 
-  private async showToast (message: string, duration: number = 4000) {
+  private async showToast(message: string, duration = 4000): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration
     });
     toast.present();
+  }
+
+  private list(): void {
+    this.comicsService.listComicsWithoutErrors()
+      .subscribe((data: Comic[]) => {
+        this.comics = data;
+        this.comics.forEach((comic: Comic) => this.updateThumbnails(comic));
+      });
   }
 }

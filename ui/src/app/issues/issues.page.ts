@@ -19,15 +19,15 @@ import { Comic } from '../comic';
 })
 export class IssuesPage {
 
+  public currentRoute: string;
+  public thumbnails = new Map<string, Observable<SafeUrl>>();
+  public comics: Array<Comic> = [];
+  public stored: StoredState = {};
   private publisher: string;
   private series: string;
   private volume: string;
-  currentRoute: string;
-  thumbnails = new Map<string, Observable<SafeUrl>>();
-  comics: Array<Comic> = [];
-  stored: StoredState = {};
 
-  constructor (
+  constructor(
     private comicDatabaseService: ComicDatabaseService,
     private route: ActivatedRoute,
     private comicsService: ComicsService,
@@ -35,10 +35,10 @@ export class IssuesPage {
     private thumbnailsService: ThumbnailsService,
     private popoverController: PopoverController,
     private toastController: ToastController,
-    private comicStorageService: ComicStorageService,
+    private comicStorageService: ComicStorageService
   ) { }
 
-  ionViewDidEnter () {
+  public ionViewDidEnter(): void {
     this.publisher = this.route.snapshot.params.publisher;
     this.series = this.route.snapshot.params.series;
     this.volume = this.route.snapshot.params.volume;
@@ -47,28 +47,28 @@ export class IssuesPage {
     this.list();
   }
 
-  markAsRead (comic: Comic): void {
-    this.comicsService.markAsRead(comic).subscribe((resultComic) => {
+  public markAsRead(comic: Comic): void {
+    this.comicsService.markAsRead(comic).subscribe(resultComic => {
       this.replaceComic(resultComic);
       this.storeSurrounding(comic.nextId);
     });
   }
 
-  markAsUnread (comic: Comic): void {
-    this.comicsService.markAsUnread(comic).subscribe((resultComic) => {
+  public markAsUnread(comic: Comic): void {
+    this.comicsService.markAsUnread(comic).subscribe(resultComic => {
       this.replaceComic(resultComic);
       this.storeSurrounding(comic.previousId);
     });
   }
 
-  markAsReadUntil (comic: Comic): void {
+  public markAsReadUntil(comic: Comic): void {
     this.volumesService.markAllAsReadUntil(comic).subscribe(() => {
       this.list();
       this.storeSurrounding(comic.nextId);
     });
   }
 
-  async openMenu (event: any, comic: Comic) {
+  public async openMenu(event: any, comic: Comic): Promise<void> {
     const popover = await this.popoverController.create({
       component: IssueActionsComponent,
       componentProps: { comic },
@@ -83,7 +83,7 @@ export class IssuesPage {
     await popover.present();
   }
 
-  private list (): void {
+  private list(): void {
     this.comicsService.listByVolume(this.publisher, this.series, this.volume)
       .subscribe((data: Comic[]) => {
         this.comics = data;
@@ -95,16 +95,16 @@ export class IssuesPage {
       });
   }
 
-  private async updateStoredState (comicId: string) {
+  private async updateStoredState(comicId: string): Promise<void> {
     this.stored[comicId] = await this.comicDatabaseService.isStored(comicId);
   }
 
-  private replaceComic (comic: Comic): void {
+  private replaceComic(comic: Comic): void {
     this.comicStorageService.saveIfStored(comic);
     this.comics[this.comics.findIndex(c => c.id === comic.id)] = comic;
   }
 
-  private async showToast (message: string, duration: number = 3000) {
+  private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration
@@ -112,11 +112,11 @@ export class IssuesPage {
     toast.present();
   }
 
-  private storeSurrounding (comicId: string) {
+  private storeSurrounding(comicId: string): void {
     if (!comicId) {
       return;
     }
-    this.comicStorageService.storeSurrounding(comicId).then((storedComicIds) => {
+    this.comicStorageService.storeSurrounding(comicId).then(storedComicIds => {
       this.showToast('Volume cached.');
       this.stored = storedComicIds;
     });

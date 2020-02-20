@@ -22,14 +22,14 @@ exports.config = {
   jasmineNodeOpts         : {
     showColors            : true,
     defaultTimeoutInterval: 30000,
-    print                 : function () {}
+    print() {}
   },
-  async onPrepare () {
+  onPrepare: async () => {
     await testProxy.start();
 
     // Fake log in
     await browser.get('/');
-    await browser.executeScript(function () {
+    await browser.executeScript(() => {
       const mockUser = {
         email  : 'b.wayne@waynecorp.com',
         name   : 'B.Wayne',
@@ -42,20 +42,18 @@ exports.config = {
 
     // Wait for service worker to be active.
     await browser.wait(async () => {
-      const serviceWorkerStatus = await browser.executeScript(function () {
-        return navigator.serviceWorker.controller ?
-          navigator.serviceWorker.controller.state : '';
-      });
+      const serviceWorkerStatus = await browser.executeScript(() =>
+        navigator.serviceWorker.controller ?
+          navigator.serviceWorker.controller.state : ''
+      );
       return serviceWorkerStatus === 'activated';
     });
 
     require('ts-node').register({
       project: require('path').join(__dirname, './tsconfig.e2e.json')
     });
-    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true }}));
+    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
   },
 
-  async onCleanUp () {
-    await testProxy.stop();
-  }
+  onCleanUp: () => testProxy.stop()
 };

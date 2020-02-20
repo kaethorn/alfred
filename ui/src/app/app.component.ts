@@ -16,23 +16,22 @@ import { UserSettingsService } from './user-settings.service';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  appPages = [
+  public appPages = [
     { title: 'Bookmarks', url: '/bookmarks', icon: 'bookmarks' },
     { title: 'Library', url: '/library/publishers', icon: 'book' },
-    { title: 'Settings', url: '/settings', icon: 'settings' },
+    { title: 'Settings', url: '/settings', icon: 'settings' }
   ];
-  hideMenu = false;
+  public hideMenu = false;
+  public user: User;
   private fullScreenUrls = [ '/read' ];
 
-  user: User;
-
-  constructor (
+  constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private userService: UserService,
     private router: Router,
-    private userSettingsService: UserSettingsService,
+    private userSettingsService: UserSettingsService
   ) {
     this.userSettingsService.load();
     this.initializeApp();
@@ -47,15 +46,15 @@ export class AppComponent {
     });
   }
 
-  private initializeApp () {
+  public logout(): void {
+    this.userService.logout();
+    window.location.reload();
+  }
+
+  private initializeApp(): void {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
-  }
-
-  logout () {
-    this.userService.logout();
-    window.location.reload();
   }
 }

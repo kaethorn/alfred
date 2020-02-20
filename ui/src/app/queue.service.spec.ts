@@ -19,14 +19,14 @@ describe('QueueService', () => {
     TestBed.configureTestingModule({
       providers: [{
         provide: ComicsService, useValue: comicsService
-      }],
+      }]
     });
     dbService = TestBed.inject(ComicDatabaseService);
     await dbService.ready.toPromise();
     service = TestBed.inject(QueueService);
   });
 
-  afterEach(async (done) => {
+  afterEach(async done => {
     updateProgressSpy.calls.reset();
     TestBed.resetTestingModule();
     await dbService.deleteAll();
@@ -46,7 +46,7 @@ describe('QueueService', () => {
 
     describe('without items in the queue', () => {
 
-      it('completes', (done) => {
+      it('completes', done => {
         service.process().subscribe(() => {
           expect(true).toBe(true);
         }, () => {
@@ -61,7 +61,7 @@ describe('QueueService', () => {
 
     describe('with items', () => {
 
-      beforeEach(async (done) => {
+      beforeEach(async done => {
         await service.add({ id: 'one' } as Comic);
         await service.add({ id: 'two' } as Comic);
         done();
@@ -73,7 +73,7 @@ describe('QueueService', () => {
           updateProgressSpy.and.returnValue( throwError(comic) );
         });
 
-        it('does not complete', (done) => {
+        it('does not complete', done => {
           service.process().subscribe(() => {
           }, async () => {
             expect(updateProgressSpy.calls.count()).toBe(1);
@@ -85,7 +85,7 @@ describe('QueueService', () => {
 
       describe('on success', () => {
 
-        it('completes', (done) => {
+        it('completes', done => {
           service.process().subscribe(() => {
           }, () => {
           }, async () => {
@@ -111,7 +111,7 @@ describe('QueueService', () => {
           });
         });
 
-        it('does not complete', (done) => {
+        it('does not complete', done => {
           service.process().subscribe(() => {
           }, async () => {
             expect(updateProgressSpy.calls.count()).toBe(2);

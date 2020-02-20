@@ -6,10 +6,10 @@ const flags = {
   offline: false
 };
 
-const parse = (req) => {
-  return new Promise((resolve, reject) => {
+const parse = req =>
+  new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', (chunk) => {
+    req.on('data', chunk => {
       body += chunk;
     });
     req.on('end', () => {
@@ -17,7 +17,6 @@ const parse = (req) => {
     });
     req.on('error', reject);
   });
-};
 
 module.exports = {
 
@@ -32,9 +31,7 @@ module.exports = {
     });
 
     // Proxy only if the offline flag is not set
-    const proxyFilter = () => {
-      return !flags.offline;
-    };
+    const proxyFilter = () => !flags.offline;
 
     // Proxy requests to the web server
     app.use('', createProxyMiddleware(proxyFilter, {
@@ -48,13 +45,12 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       server = app.listen(8090, '0.0.0.0', () => resolve())
-        .on('error', (error) => reject(error));
+        .on('error', error => reject(error));
     });
   },
 
-  stop: () => {
-    return new Promise(resolve => {
+  stop: () =>
+    new Promise(resolve => {
       server.close(() => resolve());
-    });
-  }
+    })
 };

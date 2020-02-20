@@ -42,7 +42,7 @@ describe('ComicsService', () => {
           }
         }
       }]
-    },
+    }
   };
 
   beforeEach(() => {

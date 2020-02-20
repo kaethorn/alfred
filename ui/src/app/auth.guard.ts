@@ -10,13 +10,13 @@ import { User } from './user';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor (
+  constructor(
     private userService: UserService,
     private router: Router
   ) { }
 
-  canActivate (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    return new Promise<boolean>((resolve, reject) => {
+  public canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    return new Promise<boolean>(resolve => {
       this.userService.user.subscribe((user: User | string) => {
         if (typeof user === 'string') {
           this.router.navigate(['/login'], { queryParams: { target: state.url } });
