@@ -1,6 +1,6 @@
-import { SettingsPage } from './settings.po';
 import { LibraryPage } from './library.po';
 import { MongoDBTools } from './mongodb.tools';
+import { SettingsPage } from './settings.po';
 
 describe('Scanning', () => {
 

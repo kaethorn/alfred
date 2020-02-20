@@ -1,4 +1,5 @@
 import { browser, by, element, ExpectedConditions, promise, ElementFinder, ElementArrayFinder } from 'protractor';
+
 import { Page } from './page.po';
 
 export class SettingsPage {

@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
+import { Router, RouterEvent } from '@angular/router';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-
-import { UserService } from './user.service';
-import { User } from './user';
-import { Router, RouterEvent } from '@angular/router';
+import { Platform } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
+
+import { User } from './user';
 import { UserSettingsService } from './user-settings.service';
+import { UserService } from './user.service';
 
 @Component({
   selector: 'app-root',

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
-import { VolumesService } from '../../volumes.service';
-import { Series } from '../../series';
 import { Publisher } from '../../publisher';
+import { Series } from '../../series';
+import { VolumesService } from '../../volumes.service';
 
 @Component({
   selector: 'app-publishers',

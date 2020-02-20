@@ -1,7 +1,7 @@
 import { LibraryPage } from './library.po';
-import { SettingsPage } from './settings.po';
 import { MongoDBTools } from './mongodb.tools';
 import { Page } from './page.po';
+import { SettingsPage } from './settings.po';
 
 describe('LibraryComponent', () => {
 

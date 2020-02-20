@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-
 import { Observable } from 'rxjs';
 
 import { Comic } from '../../comic';
 import { ComicsService } from '../../comics.service';
-import { ThumbnailsService } from 'src/app/thumbnails.service';
-import { Thumbnail } from 'src/app/thumbnail';
+import { Thumbnail } from '../../thumbnail';
+import { ThumbnailsService } from '../../thumbnails.service';
 
 @Component({
   selector: 'app-covers',

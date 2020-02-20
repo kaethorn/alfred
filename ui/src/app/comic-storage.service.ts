@@ -1,6 +1,5 @@
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Injectable } from '@angular/core';
-
+import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { from } from 'rxjs';
 import { groupBy, mergeMap, filter, toArray, map } from 'rxjs/operators';
 

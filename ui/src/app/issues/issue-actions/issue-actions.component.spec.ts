@@ -3,9 +3,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NavParams } from '@ionic/angular';
 
 import { comic1 as comic } from '../../../testing/comic.fixtures';
+import { IssuesPageModule } from '../issues.module';
 
 import { IssueActionsComponent } from './issue-actions.component';
-import { IssuesPageModule } from '../issues.module';
 
 describe('IssueActionsComponent', () => {
   let component: IssueActionsComponent;

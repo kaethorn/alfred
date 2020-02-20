@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { Comic } from './comic';
 import { Publisher } from './publisher';
 import { Series } from './series';
 import { Volume } from './volume';
-import { Comic } from './comic';
 
 @Injectable({
   providedIn: 'root'

@@ -1,10 +1,9 @@
-import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
+import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 
-import { UserService } from './user.service';
-
 import { AuthGuard } from './auth.guard';
+import { UserService } from './user.service';
 
 describe('AuthGuard', () => {
 

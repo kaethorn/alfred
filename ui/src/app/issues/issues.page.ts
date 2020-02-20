@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 import { PopoverController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { IssueActionsComponent } from './issue-actions/issue-actions.component';
-import { ComicsService } from '../comics.service';
-import { VolumesService } from '../volumes.service';
-import { ComicDatabaseService } from '../comic-database.service';
-import { ThumbnailsService } from '../thumbnails.service';
-import { ComicStorageService, StoredState } from '../comic-storage.service';
 import { Comic } from '../comic';
+import { ComicDatabaseService } from '../comic-database.service';
+import { ComicStorageService, StoredState } from '../comic-storage.service';
+import { ComicsService } from '../comics.service';
+import { ThumbnailsService } from '../thumbnails.service';
+import { VolumesService } from '../volumes.service';
+
+import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 
 @Component({
   selector: 'app-issues',

@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-
 import { throwError, of } from 'rxjs';
 
-import { ComicsService } from './comics.service';
-import { ComicStorageService } from './comic-storage.service';
-import { ComicsServiceMocks as comicsService } from '../testing/comics.service.mocks';
 import { volume, volumesInProgress } from '../testing/comic.fixtures';
+import { ComicsServiceMocks as comicsService } from '../testing/comics.service.mocks';
+
 import { ComicDatabaseService } from './comic-database.service';
+import { ComicStorageService } from './comic-storage.service';
+import { ComicsService } from './comics.service';
 import { ThumbnailsService } from './thumbnails.service';
 
 describe('ComicStorageService', () => {

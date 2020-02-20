@@ -1,10 +1,10 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 
+import { Comic, ScannerIssue } from '../../comic';
+import { ComicDatabaseService } from '../../comic-database.service';
 import { ComicsService } from '../../comics.service';
-import { StatsService } from '../../stats.service';
 import { Stats } from '../../stats';
-import { Comic, ScannerIssue } from 'src/app/comic';
-import { ComicDatabaseService } from 'src/app/comic-database.service';
+import { StatsService } from '../../stats.service';
 
 @Component({
   selector: 'app-scanner',

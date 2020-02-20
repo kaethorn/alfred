@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { SafeUrl } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 
-import { StoredState, ComicStorageService } from '../../comic-storage.service';
-import { VolumesService } from '../../volumes.service';
-import { ComicsService } from '../../comics.service';
-import { ComicDatabaseService } from 'src/app/comic-database.service';
-import { Volume } from '../../volume';
 import { Comic } from '../../comic';
+import { ComicDatabaseService } from '../../comic-database.service';
+import { StoredState, ComicStorageService } from '../../comic-storage.service';
+import { ComicsService } from '../../comics.service';
+import { Volume } from '../../volume';
+import { VolumesService } from '../../volumes.service';
+
 import { VolumeActionsComponent } from './volume-actions/volume-actions.component';
 
 @Component({

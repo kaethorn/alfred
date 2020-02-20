@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
-import { SettingsService } from '../settings.service';
 import { Setting } from '../setting';
+import { SettingsService } from '../settings.service';
 import { UserSettingsService } from '../user-settings.service';
 
 @Component({

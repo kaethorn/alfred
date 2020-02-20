@@ -1,15 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Platform } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Platform } from '@ionic/angular';
 
-import { UserServiceMocks as userService } from './../testing/user.service.mocks';
+import { UserServiceMocks as userService } from '../testing/user.service.mocks';
 
-import { UserService } from './user.service';
 import { AppComponent } from './app.component';
+import { UserService } from './user.service';
 
 describe('AppComponent', () => {
 

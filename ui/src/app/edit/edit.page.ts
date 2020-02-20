@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 
-import { ComicsService } from '../comics.service';
 import { Comic } from '../comic';
+import { ComicsService } from '../comics.service';
 
 @Component({
   selector: 'app-edit',

@@ -1,10 +1,10 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
-import { NavigatorService, NavigationInstruction, AdjacentComic, PageSource } from '../navigator.service';
 import { Comic } from '../comic';
 import { ComicStorageService } from '../comic-storage.service';
+import { NavigatorService, NavigationInstruction, AdjacentComic, PageSource } from '../navigator.service';
 
 interface IOpenOptions {
   showToast?: boolean;

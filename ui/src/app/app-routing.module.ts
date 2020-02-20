@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from './auth.guard';
-import { LibraryPageModule } from './library/library.module';
-import { IssuesPageModule } from './issues/issues.module';
-import { ReaderPageModule } from './reader/reader.module';
 import { BookmarksPageModule } from './bookmarks/bookmarks.module';
-import { SettingsPageModule } from './settings/settings.module';
-import { LoginPageModule } from './login/login.module';
 import { EditPageModule } from './edit/edit.module';
+import { IssuesPageModule } from './issues/issues.module';
+import { LibraryPageModule } from './library/library.module';
+import { LoginPageModule } from './login/login.module';
+import { ReaderPageModule } from './reader/reader.module';
+import { SettingsPageModule } from './settings/settings.module';
 
 const routes: Routes = [{
   path: '',

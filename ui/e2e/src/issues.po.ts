@@ -1,4 +1,5 @@
 import { by, element, browser, promise, ElementArrayFinder, ElementFinder } from 'protractor';
+
 import { Page } from './page.po';
 
 export class IssuesPage {

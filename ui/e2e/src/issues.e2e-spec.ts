@@ -1,8 +1,9 @@
+import { browser } from 'protractor';
+
 import { IssuesPage } from './issues.po';
-import { SettingsPage } from './settings.po';
 import { LibraryPage } from './library.po';
 import { MongoDBTools } from './mongodb.tools';
-import { browser } from 'protractor';
+import { SettingsPage } from './settings.po';
 
 describe('IssuesComponent', () => {
 

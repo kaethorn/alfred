@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { comic1 as comic } from '../../testing/comic.fixtures';
-
 import { ComicStorageService } from '../comic-storage.service';
-import { ReaderPage } from './reader.page';
+
 import { ReaderPageModule } from './reader.module';
+import { ReaderPage } from './reader.page';
 
 describe('ReaderPage', () => {
 

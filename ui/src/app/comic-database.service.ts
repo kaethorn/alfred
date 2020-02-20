@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
+import { AsyncSubject } from 'rxjs';
 
 import { Comic } from './comic';
 import { ComicsService } from './comics.service';
 import { IndexedDb } from './indexed-db';
-import { AsyncSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

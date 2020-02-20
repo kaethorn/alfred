@@ -1,8 +1,8 @@
 import { of } from 'rxjs';
 
-import { volume1 as volume } from './volume.fixtures';
-import { series1 as series } from './series.fixtures';
 import { publisher1 as publisher } from './publisher.fixtures';
+import { series1 as series } from './series.fixtures';
+import { volume1 as volume } from './volume.fixtures';
 
 const volumesService = jasmine.createSpyObj('VolumesService', [
   'listVolumesByPublisher',

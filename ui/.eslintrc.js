@@ -119,6 +119,16 @@ module.exports = {
         "id-blacklist": "off",
         "id-match": "off",
         "import/no-deprecated": "warn",
+        "import/no-duplicates": "error",
+        "import/order": [
+            "error",
+            {
+                "newlines-between": "always",
+                "alphabetize": {
+                    "order": "asc"
+                }
+            }
+        ],
         "jsdoc/no-types": "error",
         "max-len": [
             "error",
