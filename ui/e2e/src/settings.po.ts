@@ -4,7 +4,7 @@ import { Page } from './page.po';
 
 export class SettingsPage {
 
-  public static async navigateTo(): promise.Promise<void> {
+  public static async navigateTo(): Promise<void> {
     await browser.get('/settings');
     return Page.waitForElement(this.getComicsPathInput());
   }

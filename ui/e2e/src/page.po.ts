@@ -28,7 +28,7 @@ export class Page {
       ), timeout);
   }
 
-  public static async waitForText(target: ElementFinder, text: string): promise.Promise<void> {
+  public static async waitForText(target: ElementFinder, text: string): Promise<void> {
     await this.waitForElement(target);
     return browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2500);
   }

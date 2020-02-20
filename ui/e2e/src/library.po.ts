@@ -29,17 +29,17 @@ export class LibraryPage {
     return element.all(by.css(this.selectPublisherSeries));
   }
 
-  public static async clickPublisher(publisher: string): promise.Promise<void> {
+  public static async clickPublisher(publisher: string): Promise<void> {
     await this.waitForPublishers();
     return element(by.cssContainingText(this.selectPublisher, publisher)).click();
   }
 
-  public static async clickSeries(series: string): promise.Promise<void> {
+  public static async clickSeries(series: string): Promise<void> {
     await this.waitForSeries();
     return element(by.cssContainingText(this.selectSeries, series)).click();
   }
 
-  public static async clickVolumeListButton(volume: string): promise.Promise<void> {
+  public static async clickVolumeListButton(volume: string): Promise<void> {
     await this.waitForVolumes();
     return element(by.cssContainingText(this.selectVolumes, volume))
       .element(by.cssContainingText('ion-button', 'List')).click();
