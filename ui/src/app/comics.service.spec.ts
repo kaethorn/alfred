@@ -49,8 +49,8 @@ describe('ComicsService', () => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ]
     });
-    service = TestBed.get(ComicsService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(ComicsService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

@@ -13,8 +13,8 @@ describe('ThumbnailsService', () => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ]
     });
-    service = TestBed.get(ThumbnailsService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(ThumbnailsService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

@@ -41,8 +41,8 @@ describe('SettingsService', () => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ]
     });
-    service = TestBed.get(SettingsService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(SettingsService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

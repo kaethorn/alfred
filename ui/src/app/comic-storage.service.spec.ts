@@ -30,7 +30,7 @@ describe('ComicStorageService', () => {
         provide: ThumbnailsService, useValue: {}
       }],
     });
-    service = TestBed.get(ComicStorageService);
+    service = TestBed.inject(ComicStorageService);
   });
 
   afterEach(() => {

@@ -25,7 +25,7 @@ describe('BookmarksPage', () => {
       }]
     });
 
-    const dbService = TestBed.get(ComicDatabaseService);
+    const dbService = TestBed.inject(ComicDatabaseService);
     await dbService.ready.toPromise();
 
     fixture = TestBed.createComponent(BookmarksPage);

@@ -10,7 +10,7 @@ describe('NavigatorService', () => {
     NavigatorService.offset = 1;
     delete NavigatorService.sideBySide;
     delete NavigatorService.pageCount;
-    service = TestBed.get(NavigatorService);
+    service = TestBed.inject(NavigatorService);
   });
 
   afterEach(() => {

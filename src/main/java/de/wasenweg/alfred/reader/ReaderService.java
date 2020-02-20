@@ -54,7 +54,7 @@ public class ReaderService {
     final Optional<Comic> comicQuery = this.comicRepository.findById(id);
     final Comic comic = comicQuery.orElseThrow(ResourceNotFoundException::new);
 
-    log.debug(format("Reading page %s (page count %s) of %s, files: [%s]", page, comic.getPageCount(), comic.toString(),
+    log.debug(format("Reading page %s (page count %s) of %s, files: [%s]", page, comic.getPageCount(), comic.getFiles(),
         String.join(",", comic.getFiles())));
 
     if (markAsRead) {

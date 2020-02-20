@@ -21,9 +21,9 @@ describe('QueueService', () => {
         provide: ComicsService, useValue: comicsService
       }],
     });
-    dbService = TestBed.get(ComicDatabaseService);
+    dbService = TestBed.inject(ComicDatabaseService);
     await dbService.ready.toPromise();
-    service = TestBed.get(QueueService);
+    service = TestBed.inject(QueueService);
   });
 
   afterEach(async (done) => {
