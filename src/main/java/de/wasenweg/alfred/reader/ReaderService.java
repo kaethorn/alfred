@@ -65,19 +65,19 @@ public class ReaderService {
       final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null);
       final Path path = ZipReaderUtil.getImages(fs).get(page);
       final String fileName = path.toString();
-      final InputStream fileStream = Files.newInputStream(path);
       final long fileSize = FileChannel.open(path).size();
       final String fileType = URLConnection.guessContentTypeFromName(fileName);
       log.debug(format("Extracting page %s of type %s with size %s.", fileName, fileType, fileSize));
 
       final StreamingResponseBody responseBody = outputStream -> {
-        int numberOfBytesToWrite;
-        final byte[] data = new byte[1024];
-        while ((numberOfBytesToWrite = fileStream.read(data, 0, data.length)) != -1) {
-          outputStream.write(data, 0, numberOfBytesToWrite);
+        try (final InputStream fileStream = Files.newInputStream(path)) {
+          int numberOfBytesToWrite;
+          final byte[] data = new byte[1024];
+          while ((numberOfBytesToWrite = fileStream.read(data, 0, data.length)) != -1) {
+            outputStream.write(data, 0, numberOfBytesToWrite);
+          }
+          fs.close();
         }
-        fileStream.close();
-        fs.close();
       };
 
       final MediaType mediaType = MediaType.parseMediaType(fileType);
@@ -100,21 +100,19 @@ public class ReaderService {
     final Optional<Comic> comicQuery = this.comicRepository.findById(id);
     final Comic comic = comicQuery.orElseThrow(ResourceNotFoundException::new);
     final File file = new File(comic.getPath());
-    final InputStream inputStream;
-    try {
-      inputStream = new FileInputStream(file);
-    } catch (final FileNotFoundException exception) {
-      throw new ResourceNotFoundException();
-    }
 
     final StreamingResponseBody responseBody = outputStream -> {
-      int numberOfBytesToWrite;
-      final byte[] data = new byte[1024];
-      while ((numberOfBytesToWrite = inputStream.read(data, 0, data.length)) != -1) {
-        outputStream.write(data, 0, numberOfBytesToWrite);
-      }
+      try (final InputStream inputStream = new FileInputStream(file)) {
+        int numberOfBytesToWrite;
+        final byte[] data = new byte[1024];
+        while ((numberOfBytesToWrite = inputStream.read(data, 0, data.length)) != -1) {
+          outputStream.write(data, 0, numberOfBytesToWrite);
+        }
 
-      inputStream.close();
+        inputStream.close();
+      } catch (final FileNotFoundException exception) {
+        throw new ResourceNotFoundException();
+      }
     };
 
     return ResponseEntity

@@ -167,13 +167,12 @@ public class Comic {
     if (number.endsWith("a")) {
       convertableNumber = convertableNumber.replace("a", ".5");
     }
-    BigDecimal position = new BigDecimal(0);
     try {
-      position = new BigDecimal(convertableNumber);
+      final BigDecimal position = new BigDecimal(convertableNumber);
+      return new DecimalFormat("0000.0").format(position);
     } catch (final Exception exception) {
       throw new InvalidIssueNumberException(number);
     }
-    return new DecimalFormat("0000.0").format(position);
   }
 
   @Override

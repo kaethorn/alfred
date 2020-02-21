@@ -24,7 +24,7 @@ import java.util.ArrayList;
 @Profile({"dev", "test"})
 public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private class DevJwtFilter implements Filter {
+  private static class DevJwtFilter implements Filter {
 
     @Override
     public void doFilter(

@@ -159,11 +159,12 @@ public class ScannerService {
     this.reportProgress(path.toString());
 
     final String comicPath = path.toAbsolutePath().toString();
-
+    final Path fileName = path.getFileName();
     final Comic comic = this.comicRepository.findByPath(comicPath)
-        .orElse(new Comic());
+        .orElse(Comic.builder().build());
+
     comic.setPath(comicPath);
-    comic.setFileName(path.getFileName().toString());
+    comic.setFileName(fileName == null ? "null" : fileName.toString());
     this.processComic(comic);
   }
 
