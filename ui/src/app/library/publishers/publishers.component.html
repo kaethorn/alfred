@@ -39,14 +39,14 @@
     <ion-list *ngFor="let publisher of publishers">
       <ion-item class="publisher">
         <ion-button fill="clear" size="small" color="primary"
-          [routerLink]="['/library/publishers/' + publisher.publisher + '/series']">
-          {{ publisher.publisher }}
+          [routerLink]="['/library/publishers/' + publisher.name + '/series']">
+          {{ publisher.name }}
         </ion-button>
       </ion-item>
       <ion-item *ngFor="let serie of publisher.series" class="serie">
         <ion-button fill="solid" color="secondary"
-          [routerLink]="['/library/publishers/' + serie.publisher + '/series/' + serie.series + '/volumes']">
-          {{ serie.series }}
+          [routerLink]="['/library/publishers/' + serie.publisher + '/series/' + serie.name + '/volumes']">
+          {{ serie.name }}
         </ion-button>
       </ion-item>
     </ion-list>

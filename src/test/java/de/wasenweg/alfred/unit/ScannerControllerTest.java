@@ -19,13 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MockitoExtension.class)
 public class ScannerControllerTest {
 
-  private MockMvc mockMvc;
+  private transient MockMvc mockMvc;
 
   @Mock
-  private ScannerService service;
+  private transient ScannerService service;
 
   @InjectMocks
-  private ScannerController controller;
+  private transient ScannerController controller;
 
   @BeforeEach
   public void setUp() {

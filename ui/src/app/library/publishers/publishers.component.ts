@@ -23,10 +23,10 @@ export class PublishersComponent {
   public filter(value: string): void {
     this.publishers = this.publishersData
       .reduce((result: Publisher[], publisher: Publisher): Publisher[] => {
-        const series = publisher.series.filter((serie: Series) => serie.series.match(value));
+        const series = publisher.series.filter((serie: Series) => serie.name.match(value));
         if (series.length) {
           result.push({
-            publisher: publisher.publisher,
+            name: publisher.name,
             seriesCount: publisher.seriesCount,
             series
           });

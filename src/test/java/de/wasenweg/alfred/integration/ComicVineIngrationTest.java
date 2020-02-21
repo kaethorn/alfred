@@ -94,8 +94,8 @@ public class ComicVineIngrationTest {
     assertThat(comic.getNumber()).isEqualTo("701");
     assertThat(comic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
     assertThat(comic.getSummary().length()).isEqualTo(391);
-    assertThat(comic.getYear()).isEqualTo((short) 2010);
-    assertThat(comic.getMonth()).isEqualTo((short) 9);
+    assertThat(comic.getYear()).isEqualTo(2010);
+    assertThat(comic.getMonth()).isEqualTo(9);
     assertThat(comic.getCharacters())
       .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
     assertThat(comic.getTeams())

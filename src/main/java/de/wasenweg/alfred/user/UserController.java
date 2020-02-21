@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Optional;
 
 @RestController
@@ -35,7 +37,7 @@ public class UserController {
         return new ResponseEntity<User>(maybeUser.get(), HttpStatus.OK);
       }
       return new ResponseEntity<Error>(new Error("User not allowed."), HttpStatus.FORBIDDEN);
-    } catch (final Exception exception) {
+    } catch (final GeneralSecurityException | IOException exception) {
       return new ResponseEntity<Error>(new Error(exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
     }
   }

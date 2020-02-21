@@ -1,6 +1,6 @@
 package de.wasenweg.alfred.scanner;
 
-public class InvalidFileException extends RuntimeException {
+public class InvalidFileException extends Exception {
 
   private static final long serialVersionUID = -1310341819120533363L;
 

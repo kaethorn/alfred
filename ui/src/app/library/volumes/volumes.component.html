@@ -33,7 +33,7 @@
 
   <ion-card *ngFor="let volume of volumes" class="volume">
     <ion-card-header>
-      <ion-card-title>Vol. {{ volume.volume }}</ion-card-title>
+      <ion-card-title>Vol. {{ volume.name }}</ion-card-title>
       <ion-card-subtitle>{{ volume.readCount }} of {{ volume.issueCount }} issues read</ion-card-subtitle>
     </ion-card-header>
 
@@ -50,7 +50,7 @@
     </a>
     <ion-item>
       <ion-button slot="start" fill="clear"
-        [routerLink]="['/issues', volume.publisher, volume.series, volume.volume]">
+        [routerLink]="['/issues', volume.publisher, volume.series, volume.name]">
         <ion-icon name="list"></ion-icon>
         List
       </ion-button>

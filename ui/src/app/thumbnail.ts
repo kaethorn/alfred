@@ -9,7 +9,7 @@ export interface Thumbnail {
   id: string;
   comicId: string;
   type: ThumbnailType;
-  thumbnail: string;
+  image: string;
   path: string;
   url?: SafeUrl;
 }

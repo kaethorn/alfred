@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ZipReaderUtil {
+public final class ZipReaderUtility {
+
+  private ZipReaderUtility() {
+    throw new java.lang.UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 
   /**
    * Returns a sorted list of entries in the given zip file.
@@ -35,7 +39,7 @@ public class ZipReaderUtil {
    * @return List of image zip entries.
    */
   public static List<Path> getImages(final FileSystem fs) {
-    return getEntries(fs).stream().filter(ZipReaderUtil::isImage).collect(Collectors.toList());
+    return getEntries(fs).stream().filter(ZipReaderUtility::isImage).collect(Collectors.toList());
   }
 
   public static Boolean isImage(final Path path) {

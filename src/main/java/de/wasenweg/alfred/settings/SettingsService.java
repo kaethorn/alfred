@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class SettingsService {
 
-  private final ArrayList<Setting> defaults = new ArrayList<Setting>();
+  private final List<Setting> defaults = new ArrayList<Setting>();
   private final SettingRepository settingRepository;
   private final Environment environment;
 
@@ -37,8 +38,8 @@ public class SettingsService {
       if (!hasSetting.isPresent()) {
         this.settingRepository.save(settingDefault);
       } else {
-        final Setting setting = hasSetting.get();
         if (environmentValue.isPresent()) {
+          final Setting setting = hasSetting.get();
           setting.setValue(environmentValue.get());
           this.settingRepository.save(setting);
         }

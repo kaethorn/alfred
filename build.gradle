@@ -29,6 +29,21 @@ spotbugs {
   effort = 'max'
 }
 
+pmd {
+  consoleOutput = true
+  toolVersion = '6.21.0'
+}
+
+tasks.pmdMain {
+  ruleSets = []
+  ruleSetConfig = resources.text.fromFile("config/pmd/pmd-main.xml")
+}
+
+tasks.pmdTest {
+  ruleSets = []
+  ruleSetConfig = resources.text.fromFile("config/pmd/pmd-test.xml")
+}
+
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
   reports.xml.enabled = false
   reports.html.enabled = true

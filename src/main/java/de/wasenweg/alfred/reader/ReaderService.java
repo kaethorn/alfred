@@ -4,26 +4,26 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
-import de.wasenweg.alfred.util.ZipReaderUtil;
+import de.wasenweg.alfred.util.ZipReaderUtility;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -48,7 +48,7 @@ public class ReaderService {
    * @param userId     The current user's ID.
    * @return The extracted page.
    */
-  public ResponseEntity<StreamingResponseBody> read(final String id, final Short page, final boolean markAsRead,
+  public ResponseEntity<StreamingResponseBody> read(final String id, final Integer page, final boolean markAsRead,
       final String userId) {
 
     final Optional<Comic> comicQuery = this.comicRepository.findById(id);
@@ -62,33 +62,31 @@ public class ReaderService {
     }
 
     try {
-      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null);
-      final Path path = ZipReaderUtil.getImages(fs).get(page);
+      // Instantiate FileSystem here without try-with-resource as it's being
+      // closed manually in the streaming response body handler.
+      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null); // NOPMD
+      final Path path = ZipReaderUtility.getImages(fs).get(page);
       final String fileName = path.toString();
       final long fileSize = FileChannel.open(path).size();
       final String fileType = URLConnection.guessContentTypeFromName(fileName);
       log.debug(format("Extracting page %s of type %s with size %s.", fileName, fileType, fileSize));
-
-      final StreamingResponseBody responseBody = outputStream -> {
-        try (final InputStream fileStream = Files.newInputStream(path)) {
-          int numberOfBytesToWrite;
-          final byte[] data = new byte[1024];
-          while ((numberOfBytesToWrite = fileStream.read(data, 0, data.length)) != -1) {
-            outputStream.write(data, 0, numberOfBytesToWrite);
-          }
-          fs.close();
-        }
-      };
 
       final MediaType mediaType = MediaType.parseMediaType(fileType);
       return ResponseEntity.ok()
           .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + fileName)
           .contentLength(fileSize)
           .contentType(mediaType)
-          .body(responseBody);
-    } catch (final Exception exception) {
+          .body(outputStream -> {
+            try (final InputStream fileStream = Files.newInputStream(path)) {
+              fileStream.transferTo(outputStream);
+            } finally {
+              fs.close();
+            }
+          });
+
+    } catch (final IOException | SecurityException | InvalidMediaTypeException exception) {
       log.error(exception.getLocalizedMessage());
-      throw new ResourceNotFoundException(exception.getLocalizedMessage());
+      throw new ResourceNotFoundException(exception.getLocalizedMessage(), exception);
     }
   }
 
@@ -96,33 +94,23 @@ public class ReaderService {
    * Downloads the CBZ archive designated by the given comic book ID.
    */
   public ResponseEntity<StreamingResponseBody> download(final String id) {
-
     final Optional<Comic> comicQuery = this.comicRepository.findById(id);
     final Comic comic = comicQuery.orElseThrow(ResourceNotFoundException::new);
-    final File file = new File(comic.getPath());
-
-    final StreamingResponseBody responseBody = outputStream -> {
-      try (final InputStream inputStream = new FileInputStream(file)) {
-        int numberOfBytesToWrite;
-        final byte[] data = new byte[1024];
-        while ((numberOfBytesToWrite = inputStream.read(data, 0, data.length)) != -1) {
-          outputStream.write(data, 0, numberOfBytesToWrite);
-        }
-
-        inputStream.close();
-      } catch (final FileNotFoundException exception) {
-        throw new ResourceNotFoundException();
-      }
-    };
 
     return ResponseEntity
         .ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName())
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + comic.getFileName())
         .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .body(responseBody);
+        .body(outputStream -> {
+          try (final InputStream inputStream = Files.newInputStream(Paths.get(comic.getPath()))) {
+            inputStream.transferTo(outputStream);
+          } catch (final NoSuchFileException exception) {
+            throw new ResourceNotFoundException(format("Error while downloading %s", comic.toString()), exception);
+          }
+        });
   }
 
-  private void setReadState(final Comic comic, final Short page, final String userId) {
+  private void setReadState(final Comic comic, final Integer page, final String userId) {
     final ObjectId comicId = new ObjectId(comic.getId());
     final Progress progress = this.progressRepository
         .findByUserIdAndComicId(userId, comicId)

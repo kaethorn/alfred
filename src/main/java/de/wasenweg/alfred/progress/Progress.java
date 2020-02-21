@@ -30,12 +30,11 @@ public class Progress {
   @NonNull
   private ObjectId comicId;
 
-  @Builder.Default
-  private boolean read = false;
+  private boolean read;
 
   @NonNull
   @Builder.Default
-  private Short currentPage = 0;
+  private Integer currentPage = 0;
 
   private Date lastRead;
 }

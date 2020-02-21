@@ -49,7 +49,6 @@ public class UserService {
     final ApacheHttpTransport transport = new ApacheHttpTransport();
     final JacksonFactory jsonFactory = new JacksonFactory();
     final String clientId = this.settingsService.get("auth.client.id");
-    final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","));
 
     final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
         .setAudience(Collections.singletonList(clientId))
@@ -58,27 +57,25 @@ public class UserService {
     final GoogleIdToken idToken = verifier.verify(token);
     if (idToken != null) {
       final Payload payload = idToken.getPayload();
-      final String userId = payload.getSubject();
       final String email = payload.getEmail();
-      final String name = (String) payload.get("name");
-      final String pictureUrl = (String) payload.get("picture");
       final List<String> claims = new ArrayList<String>();
       claims.add("ANONYMOUS");
 
-      if (users.contains(email)) {
+      if (Arrays.asList(this.settingsService.get("auth.users").split(",")).contains(email)) {
         claims.add("API_ALLOWED");
       } else {
         log.debug(format("User %s is not present in the white list. Rejecting.", email));
         return Optional.ofNullable(null);
       }
 
+      final String userId = payload.getSubject();
       final String apiToken = this.tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
 
       return Optional.of(User.builder()
           .id(userId)
           .email(email)
-          .name(name)
-          .picture(pictureUrl)
+          .name((String) payload.get("name"))
+          .picture((String) payload.get("picture"))
           .token(apiToken)
           .build());
     } else {

@@ -11,7 +11,7 @@ public class Series {
 
   private String id;
 
-  private String series;
+  private String name;
   private String publisher;
-  private Short volumesCount;
+  private Integer volumesCount;
 }

@@ -16,14 +16,18 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.Parameter.param;
 
-public class MockServer {
+public final class MockServer {
 
-  private static ClientAndServer mockServer;
+  private static ClientAndServer server;
+
+  private MockServer() {
+    throw new java.lang.UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 
   public static void startServer() throws IOException {
-    mockServer = startClientAndServer(1080);
+    server = startClientAndServer(1080);
 
-    mockServer.when(
+    server.when(
         request()
           .withMethod("GET")
           .withPath("/search/")
@@ -40,7 +44,7 @@ public class MockServer {
           .withBody(TestHelper.parseJson("search-batman.json").toString())
     );
 
-    mockServer.when(
+    server.when(
         request()
           .withMethod("GET")
           .withPath("/issues/")
@@ -51,7 +55,7 @@ public class MockServer {
         callback().withCallbackClass("de.wasenweg.alfred.mockserver.MockServer$BatmanIssuesCallback")
     );
 
-    mockServer.when(
+    server.when(
         request()
           .withMethod("GET")
           .withPath("/issue/4000-224555/")
@@ -66,7 +70,7 @@ public class MockServer {
   }
 
   public static void stop() {
-    mockServer.stop();
+    server.stop();
   }
 
   public static class BatmanIssuesCallback implements ExpectationResponseCallback {

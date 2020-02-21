@@ -3,7 +3,7 @@ package de.wasenweg.alfred.thumbnails;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.NoImagesException;
 import de.wasenweg.alfred.thumbnails.Thumbnail.ThumbnailType;
-import de.wasenweg.alfred.util.ZipReaderUtil;
+import de.wasenweg.alfred.util.ZipReaderUtility;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -39,13 +39,13 @@ public class ThumbnailService {
   @Transactional
   public void read(final Comic comic) throws NoImagesException, IOException {
     try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
-      final List<Path> sortedEntries = ZipReaderUtil.getImages(fs);
+      final List<Path> sortedEntries = ZipReaderUtility.getImages(fs);
 
-      if (sortedEntries.size() > 0) {
+      if (!sortedEntries.isEmpty()) {
         this.saveThumbnail(comic, sortedEntries.get(0), ThumbnailType.FRONT_COVER);
         this.saveThumbnail(comic, sortedEntries.get(sortedEntries.size() - 1), ThumbnailType.BACK_COVER);
       }
-    } catch (final Exception exception) {
+    } catch (final IOException exception) {
       throw new NoThumbnailsException(exception);
     }
   }
@@ -62,9 +62,9 @@ public class ThumbnailService {
             .path(file.toString())
             .build());
 
-    final InputStream thumbnailStream = Files.newInputStream(file);
-    thumbnail.setThumbnail(ThumbnailUtils.get(thumbnailStream).toByteArray());
-    this.thumbnailRepository.save(thumbnail);
-    thumbnailStream.close();
+    try (final InputStream thumbnailStream = Files.newInputStream(file)) {
+      thumbnail.setImage(ThumbnailUtility.get(thumbnailStream).toByteArray());
+      this.thumbnailRepository.save(thumbnail);
+    }
   }
 }

@@ -38,5 +38,5 @@ public class Thumbnail {
 
   private String path;
 
-  private byte[] thumbnail;
+  private byte[] image;
 }

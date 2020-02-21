@@ -26,7 +26,7 @@ public class PublisherController {
   public CollectionModel<EntityModel<Publisher>> findAllPublishers(final Principal principal) {
     return new CollectionModel<EntityModel<Publisher>>(
         this.publisherService.findAllPublishers(principal.getName()).stream().map(publisher -> {
-          return new EntityModel<Publisher>(publisher, this.getSeriesLink(publisher.getPublisher()));
+          return new EntityModel<Publisher>(publisher, this.getSeriesLink(publisher.getName()));
         }).collect(Collectors.toList()),
         linkTo(PublisherController.class).withSelfRel());
   }
@@ -37,7 +37,7 @@ public class PublisherController {
       @PathVariable final String publisher) {
     return new CollectionModel<EntityModel<Series>>(
         this.publisherService.findAllSeriesByPublisher(principal.getName(), publisher).stream().map(serie -> {
-          return new EntityModel<Series>(serie, this.getVolumeLink(serie.getPublisher(), serie.getSeries()));
+          return new EntityModel<Series>(serie, this.getVolumeLink(serie.getPublisher(), serie.getName()));
         }).collect(Collectors.toList()),
         this.getSeriesLink(publisher));
   }

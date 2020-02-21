@@ -27,7 +27,7 @@ export class SeriesComponent {
 
   public filter(value: string): void {
     this.series = this.seriesData
-      .filter(series => series.series.match(value));
+      .filter(series => series.name.match(value));
   }
 
   private list(publisher: string): void {

@@ -1,7 +1,7 @@
 package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
-import de.wasenweg.alfred.util.ZipReaderUtil;
+import de.wasenweg.alfred.util.ZipReaderUtility;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -42,7 +42,7 @@ import static java.lang.String.format;
 @Service
 public class FileMetaDataService {
 
-  private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
+  private final transient List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
 
   private DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
     final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -69,18 +69,18 @@ public class FileMetaDataService {
     }
   }
 
-  private Short readShortElement(final Document document, final String elementName) {
+  private Integer readIntegerElement(final Document document, final String elementName) {
     final String value = this.readStringElement(document, elementName);
     try {
-      return Short.parseShort(value);
-    } catch (final Exception exception) {
+      return Integer.parseInt(value);
+    } catch (final NumberFormatException exception) {
       final ScannerIssue parsingEvent = ScannerIssue.builder()
           .message("Couldn't read " + elementName + " value of '" + value + "'. Falling back to '0'")
           .severity(ScannerIssue.Severity.WARNING)
           .build();
       log.warn(parsingEvent.getMessage());
       this.scannerIssues.add(parsingEvent);
-      return (short)0;
+      return 0;
     }
   }
 
@@ -93,11 +93,11 @@ public class FileMetaDataService {
           .message(exception.getMessage())
           .severity(ScannerIssue.Severity.WARNING)
           .build());
-      return new DecimalFormat("0000.0").format(new BigDecimal(0));
+      return new DecimalFormat("0000.0").format(BigDecimal.ZERO);
     }
   }
 
-  private String readShortValue(final Short value) {
+  private String readIntegerValue(final Integer value) {
     if (value == null) {
       return null;
     }
@@ -107,13 +107,7 @@ public class FileMetaDataService {
   private String marshal(final Comic comic)
       throws SAXException, IOException, TransformerException, ParserConfigurationException {
 
-    Document document = null;
-    try {
-      document = this.getDocument(comic);
-    } catch (final Exception exception) {
-      document = this.getDocumentBuilder().newDocument();
-      document.appendChild(document.createElement("ComicInfo"));
-    }
+    final Document document = this.getOrCreateDocument(comic);
 
     this.writeStringElement(document, "Title", comic.getTitle());
     this.writeStringElement(document, "Series", comic.getSeries());
@@ -122,8 +116,8 @@ public class FileMetaDataService {
     this.writeStringElement(document, "Volume", comic.getVolume());
     this.writeStringElement(document, "Summary", comic.getSummary());
     this.writeStringElement(document, "Notes", comic.getNotes());
-    this.writeStringElement(document, "Year", this.readShortValue(comic.getYear()));
-    this.writeStringElement(document, "Month", this.readShortValue(comic.getMonth()));
+    this.writeStringElement(document, "Year", this.readIntegerValue(comic.getYear()));
+    this.writeStringElement(document, "Month", this.readIntegerValue(comic.getMonth()));
     this.writeStringElement(document, "Writer", comic.getWriter());
     this.writeStringElement(document, "Penciller", comic.getPenciller());
     this.writeStringElement(document, "Inker", comic.getInker());
@@ -144,8 +138,7 @@ public class FileMetaDataService {
   }
 
   private void parseComicInfoXml(final Comic comic)
-      throws SAXException, IOException, ParserConfigurationException,
-      ProviderNotFoundException, NoMetaDataException {
+      throws SAXException, IOException, ParserConfigurationException, NoMetaDataException {
 
     final Document document = this.getDocument(comic);
 
@@ -158,8 +151,8 @@ public class FileMetaDataService {
     comic.setVolume(this.readStringElement(document, "Volume"));
     comic.setSummary(this.readStringElement(document, "Summary"));
     comic.setNotes(this.readStringElement(document, "Notes"));
-    comic.setYear(this.readShortElement(document, "Year"));
-    comic.setMonth(this.readShortElement(document, "Month"));
+    comic.setYear(this.readIntegerElement(document, "Year"));
+    comic.setMonth(this.readIntegerElement(document, "Month"));
     comic.setWriter(this.readStringElement(document, "Writer"));
     comic.setPenciller(this.readStringElement(document, "Penciller"));
     comic.setInker(this.readStringElement(document, "Inker"));
@@ -175,22 +168,31 @@ public class FileMetaDataService {
   }
 
   private Document getDocument(final Comic comic)
-      throws IOException, SAXException, ParserConfigurationException,
-      ProviderNotFoundException, NoMetaDataException {
+      throws IOException, SAXException, ParserConfigurationException, NoMetaDataException {
 
     try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
-      final InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"));
-      final Document document = this.getDocumentBuilder().parse(xmlStream);
-      xmlStream.close();
-      return document;
+      try (final InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"))) {
+        final Document document = this.getDocumentBuilder().parse(xmlStream);
+        return document;
+      }
     } catch (final NoSuchFileException exception) {
-      throw new NoMetaDataException();
+      throw new NoMetaDataException(exception);
+    }
+  }
+
+  private Document getOrCreateDocument(final Comic comic) throws ParserConfigurationException {
+    try {
+      return this.getDocument(comic);
+    } catch (final ProviderNotFoundException | IOException | SAXException | ParserConfigurationException | NoMetaDataException exception) {
+      final Document document = this.getDocumentBuilder().newDocument();
+      document.appendChild(document.createElement("ComicInfo"));
+      return document;
     }
   }
 
   public List<ScannerIssue> read(final Comic comic)
-      throws SAXException, IOException, NoMetaDataException, ParserConfigurationException,
-      NoImagesException, ProviderNotFoundException, InvalidFileException {
+      throws SAXException, IOException, NoMetaDataException,
+      ParserConfigurationException, NoImagesException, InvalidFileException {
 
     this.scannerIssues.clear();
     this.parseComicInfoXml(comic);
@@ -207,12 +209,19 @@ public class FileMetaDataService {
    * @param comic The comic entity
    */
   public void parseFiles(final Comic comic) throws IOException, NoImagesException, InvalidFileException {
-    short pageCount = 0;
     try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
-      final List<Path> files = ZipReaderUtil.getEntries(fs);
-      pageCount = (short) files.stream()
-          .filter(file -> Files.isRegularFile(file) && file.toString().matches(".*(png|jpg)$"))
-          .count();
+      final List<Path> files = ZipReaderUtility.getEntries(fs);
+      comic.setPageCount(0);
+      try {
+        comic.setPageCount((int) files.stream()
+            .filter(file -> Files.isRegularFile(file) && file.toString().matches(".*(png|jpg)$"))
+            .count());
+      } catch (final IllegalArgumentException exception) {
+        throw new InvalidFileException(exception);
+      }
+      if (comic.getPageCount() <= 0) {
+        throw new NoImagesException();
+      }
 
       if (files.stream().anyMatch(Files::isDirectory)) {
         final ScannerIssue parsingEvent = ScannerIssue.builder()
@@ -224,19 +233,10 @@ public class FileMetaDataService {
         this.scannerIssues.add(parsingEvent);
       }
 
-      try {
-        comic.setFiles(files.stream()
-            .map(entry -> entry.toString())
-            .sorted()
-            .collect(Collectors.toList()));
-      } catch (final Exception exception) {
-        throw new InvalidFileException(exception);
-      }
-    }
-
-    comic.setPageCount(pageCount);
-    if (pageCount < 1) {
-      throw new NoImagesException();
+      comic.setFiles(files.stream()
+          .map(entry -> entry.toString())
+          .sorted()
+          .collect(Collectors.toList()));
     }
   }
 
@@ -246,11 +246,10 @@ public class FileMetaDataService {
       if (Files.exists(source)) {
         Files.delete(source);
       }
-      final Writer writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
-      writer.write(this.marshal(comic));
-      writer.close();
-      fs.close();
-      log.info(format("Finished writing ComicInfo.xml to %s", comic.getPath()));
+      try (final Writer writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
+        writer.write(this.marshal(comic));
+        log.info(format("Finished writing ComicInfo.xml to %s", comic.getPath()));
+      }
     } catch (final IOException | SAXException | TransformerException | ParserConfigurationException exception) {
       log.error(format("Failed to write ComicInfo.xml to %s", comic.getPath()));
     }

@@ -4,7 +4,9 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.jmx.access.InvalidInvocationException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +14,14 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-public abstract class BaseController<T> {
+public class BaseController<T> {
 
   private String getItemId(final T item) {
     try {
       final Method getId = item.getClass().getDeclaredMethod("getId");
       return (String) getId.invoke(item);
-    } catch (final Exception exception) {
+    } catch (final NoSuchMethodException | SecurityException | IllegalAccessException
+        | InvalidInvocationException | IllegalArgumentException | InvocationTargetException exception) {
       return "";
     }
   }

@@ -44,14 +44,14 @@ export class VolumesComponent {
 
   public resumeVolume(volume: Volume): void {
     if (volume.read) {
-      this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.volume)
+      this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.name)
         .subscribe((comic: Comic) => {
           this.router.navigate(['/read', comic.id], {
             queryParams: { page: comic.currentPage, parent: `/library/publishers/${ comic.publisher }/series/${ comic.series }/volumes` }
           });
         });
     } else {
-      this.comicsService.getLastUnreadByVolume(volume.publisher, volume.series, volume.volume)
+      this.comicsService.getLastUnreadByVolume(volume.publisher, volume.series, volume.name)
         .subscribe((comic: Comic) => {
           this.router.navigate(['/read', comic.id], {
             queryParams: { page: comic.currentPage, parent: `/library/publishers/${ comic.publisher }/series/${ comic.series }/volumes` }
@@ -75,7 +75,7 @@ export class VolumesComponent {
 
   public filter(value: string): void {
     this.volumes = this.volumesData
-      .filter(volume => volume.volume.match(value));
+      .filter(volume => volume.name.match(value));
   }
 
   private async updateStoredState(comicId: string): Promise<void> {

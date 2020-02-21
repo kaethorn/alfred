@@ -3,6 +3,8 @@ package de.wasenweg.alfred.integration;
 import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
+import de.wasenweg.alfred.fixtures.ComicFixtures;
+import de.wasenweg.alfred.fixtures.ProgressFixtures;
 import de.wasenweg.alfred.mockserver.MockServer;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.scanner.ScannerIssue;
@@ -324,8 +326,8 @@ public class ComicsIntegrationTest {
     comic.setSeries("Batman");
     comic.setVolume("1940");
     comic.setNumber("701");
-    comic.setYear(Short.parseShort("2010"));
-    comic.setMonth(Short.parseShort("10"));
+    comic.setYear(2010);
+    comic.setMonth(10);
     comic.setErrors(Arrays.asList(
         ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
 
@@ -379,14 +381,14 @@ public class ComicsIntegrationTest {
         .publisher("DC Comics")
         .series("Batman")
         .volume("1940")
-        .year(Short.parseShort("1986"))
-        .month(Short.parseShort("12"))
+        .year(1986)
+        .month(12)
         .build();
 
     this.comicRepository.save(comic);
 
     comic.setNumber("502");
-    comic.setYear(Short.parseShort("1993"));
+    comic.setYear(1993);
 
     // Returns the comic with new values
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")

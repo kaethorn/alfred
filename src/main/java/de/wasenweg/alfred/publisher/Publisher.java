@@ -13,7 +13,7 @@ public class Publisher {
 
   private String id;
 
-  private String publisher;
+  private String name;
   private List<Series> series;
-  private Short seriesCount;
+  private Integer seriesCount;
 }

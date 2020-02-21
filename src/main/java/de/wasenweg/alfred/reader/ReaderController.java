@@ -25,7 +25,7 @@ public class ReaderController {
   public ResponseEntity<StreamingResponseBody> readFromBeginning(
       @PathVariable("id") final String id,
       final Principal principal) {
-    return this.readerService.read(id, (short) 0, true, principal.getName());
+    return this.readerService.read(id, 0, true, principal.getName());
   }
 
   @Transactional
@@ -33,7 +33,7 @@ public class ReaderController {
   @ResponseBody
   public ResponseEntity<StreamingResponseBody> readPage(
       @PathVariable("id") final String id,
-      @PathVariable("page") final Short page,
+      @PathVariable("page") final Integer page,
       final Principal principal) {
     return this.readerService.read(id, page, true, principal.getName());
   }
@@ -43,7 +43,7 @@ public class ReaderController {
   @ResponseBody
   public ResponseEntity<StreamingResponseBody> downloadPage(
       @PathVariable("id") final String id,
-      @PathVariable("page") final Short page,
+      @PathVariable("page") final Integer page,
       final Principal principal) {
     return this.readerService.read(id, page, false, principal.getName());
   }

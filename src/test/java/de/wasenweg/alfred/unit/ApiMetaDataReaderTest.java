@@ -22,10 +22,10 @@ import static org.mockito.Mockito.when;
 public class ApiMetaDataReaderTest {
 
   @InjectMocks
-  private ApiMetaDataService apiMetaDataService;
+  private transient ApiMetaDataService apiMetaDataService;
 
   @Mock
-  private ComicVineService comicVineService;
+  private transient ComicVineService comicVineService;
 
   @Test
   public void findVolume() throws Exception {
@@ -88,8 +88,8 @@ public class ApiMetaDataReaderTest {
     this.apiMetaDataService.applyIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/", comic);
     assertThat(comic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
     assertThat(comic.getSummary().length()).isEqualTo(391);
-    assertThat(comic.getYear()).isEqualTo((short) 2010);
-    assertThat(comic.getMonth()).isEqualTo((short) 9);
+    assertThat(comic.getYear()).isEqualTo(2010);
+    assertThat(comic.getMonth()).isEqualTo(9);
     assertThat(comic.getCharacters())
       .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
     assertThat(comic.getTeams())
