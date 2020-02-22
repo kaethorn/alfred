@@ -5,7 +5,7 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.fixtures.ComicFixtures;
 import de.wasenweg.alfred.fixtures.ProgressFixtures;
-import de.wasenweg.alfred.mockserver.MockServer;
+import de.wasenweg.alfred.mockserver.MockServerUtils;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import lombok.RequiredArgsConstructor;
@@ -59,12 +59,12 @@ public class ComicsIntegrationTest {
 
   @BeforeAll
   public static void startServer() throws IOException {
-    MockServer.startServer();
+    MockServerUtils.startServer();
   }
 
   @AfterAll
   public static void stopServer() {
-    MockServer.stop();
+    MockServerUtils.stop();
   }
 
   @BeforeEach
@@ -496,7 +496,7 @@ public class ComicsIntegrationTest {
   @DirtiesContext
   public void scrapeWithError() throws Exception {
     // Given
-    MockServer.stop();
+    MockServerUtils.stop();
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
     final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
     final Comic comic = Comic.builder()

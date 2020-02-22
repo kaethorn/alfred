@@ -93,7 +93,7 @@ public class ComicService {
     final Optional<Comic> maybeComic = this.comicRepository.findById(comicId);
     if (maybeComic.isPresent()) {
       final Comic comic = maybeComic.get();
-      try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+      try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
         final Path source = fs.getPath(filePath);
         if (Files.exists(source)) {
           Files.delete(source);
@@ -103,7 +103,6 @@ public class ComicService {
         this.fileMetaDataService.parseFiles(comic);
         this.comicRepository.save(comic);
         log.info(format("Deleted file %s in comic %s", filePath, comic.getPath()));
-        return Optional.of(comic);
       } catch (final NoImagesException | InvalidFileException exception) {
         log.warn(format("Error while deleting page %s of %s: ", filePath, comic.toString()), exception);
       } catch (final IOException exception) {

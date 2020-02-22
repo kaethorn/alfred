@@ -1,7 +1,7 @@
 package de.wasenweg.alfred.publisher;
 
 import de.wasenweg.alfred.comics.Comic;
-import de.wasenweg.alfred.progress.ProgressUtility;
+import de.wasenweg.alfred.progress.ProgressUtil;
 import de.wasenweg.alfred.volumes.Volume;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -33,7 +33,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
   @Override
   public List<Publisher> findAllPublishers(final String userId) {
-    return this.mongoTemplate.aggregate(ProgressUtility.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
         match(where(ERRORS).exists(false)),
         group(PUBLISHER, SERIES, VOLUME)
         .last(PUBLISHER).as(PUBLISHER)
@@ -53,7 +53,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
   @Override
   public List<Series> findAllSeries(final String userId, final String publisher) {
-    return this.mongoTemplate.aggregate(ProgressUtility.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
         match(where(PUBLISHER).is(publisher).and(ERRORS).exists(false)),
         group(SERIES, VOLUME)
         .last(PUBLISHER).as(PUBLISHER),
@@ -68,7 +68,7 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
 
   @Override
   public List<Volume> findAllVolumes(final String userId, final String publisher, final String series) {
-    return this.mongoTemplate.aggregate(ProgressUtility.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
         match(where(PUBLISHER).is(publisher).and(SERIES).is(series).and(ERRORS).exists(false)),
         sort(Sort.Direction.ASC, "position"),
         group(VOLUME)

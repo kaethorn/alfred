@@ -4,7 +4,7 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
-import de.wasenweg.alfred.util.ZipReaderUtility;
+import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -65,7 +65,7 @@ public class ReaderService {
       // Instantiate FileSystem here without try-with-resource as it's being
       // closed manually in the streaming response body handler.
       final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null); // NOPMD
-      final Path path = ZipReaderUtility.getImages(fs).get(page);
+      final Path path = ZipReaderUtil.getImages(fs).get(page);
       final String fileName = path.toString();
       final long fileSize = FileChannel.open(path).size();
       final String fileType = URLConnection.guessContentTypeFromName(fileName);
@@ -77,7 +77,7 @@ public class ReaderService {
           .contentLength(fileSize)
           .contentType(mediaType)
           .body(outputStream -> {
-            try (final InputStream fileStream = Files.newInputStream(path)) {
+            try (InputStream fileStream = Files.newInputStream(path)) {
               fileStream.transferTo(outputStream);
             } finally {
               fs.close();
@@ -102,7 +102,7 @@ public class ReaderService {
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + comic.getFileName())
         .contentType(MediaType.APPLICATION_OCTET_STREAM)
         .body(outputStream -> {
-          try (final InputStream inputStream = Files.newInputStream(Paths.get(comic.getPath()))) {
+          try (InputStream inputStream = Files.newInputStream(Paths.get(comic.getPath()))) {
             inputStream.transferTo(outputStream);
           } catch (final NoSuchFileException exception) {
             throw new ResourceNotFoundException(format("Error while downloading %s", comic.toString()), exception);

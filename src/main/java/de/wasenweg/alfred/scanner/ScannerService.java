@@ -49,7 +49,7 @@ public class ScannerService {
   private final SettingsService settingsService;
 
   private void sendEvent(final String data, final String name) {
-    final String timestamp = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)).format(new Date());
+    final String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date());
     this.emitter.onNext(ServerSentEvent.builder(data).id(timestamp).event(name).build());
   }
 

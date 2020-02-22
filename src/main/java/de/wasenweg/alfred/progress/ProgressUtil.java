@@ -16,12 +16,12 @@ import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.A
 import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.Filter.filter;
 import static org.springframework.data.mongodb.core.aggregation.ObjectOperators.MergeObjects.merge;
 
-public final class ProgressUtility {
+public final class ProgressUtil {
 
   private static final String PROGRESS = "progress";
 
-  private ProgressUtility() {
-    throw new java.lang.UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  private ProgressUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   // Merge progress flags for the current user

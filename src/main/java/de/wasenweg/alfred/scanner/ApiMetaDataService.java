@@ -30,7 +30,7 @@ public class ApiMetaDataService {
 
   private final ComicVineService comicVineService;
 
-  private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
+  private List<ScannerIssue> scannerIssues = new ArrayList<>();
 
   /**
    * Scrapes and saves information for the given comic.

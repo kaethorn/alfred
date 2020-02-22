@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class ZipReaderUtility {
+public final class ZipReaderUtil {
 
-  private ZipReaderUtility() {
-    throw new java.lang.UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  private ZipReaderUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   /**
@@ -39,7 +39,7 @@ public final class ZipReaderUtility {
    * @return List of image zip entries.
    */
   public static List<Path> getImages(final FileSystem fs) {
-    return getEntries(fs).stream().filter(ZipReaderUtility::isImage).collect(Collectors.toList());
+    return getEntries(fs).stream().filter(ZipReaderUtil::isImage).collect(Collectors.toList());
   }
 
   public static Boolean isImage(final Path path) {

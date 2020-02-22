@@ -1,7 +1,7 @@
 package de.wasenweg.alfred.scanner;
 
 import de.wasenweg.alfred.comics.Comic;
-import de.wasenweg.alfred.util.ZipReaderUtility;
+import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -42,7 +42,7 @@ import static java.lang.String.format;
 @Service
 public class FileMetaDataService {
 
-  private final transient List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
+  private final transient List<ScannerIssue> scannerIssues = new ArrayList<>();
 
   private DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
     final DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -170,10 +170,9 @@ public class FileMetaDataService {
   private Document getDocument(final Comic comic)
       throws IOException, SAXException, ParserConfigurationException, NoMetaDataException {
 
-    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
-      try (final InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"))) {
-        final Document document = this.getDocumentBuilder().parse(xmlStream);
-        return document;
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+      try (InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"))) {
+        return this.getDocumentBuilder().parse(xmlStream);
       }
     } catch (final NoSuchFileException exception) {
       throw new NoMetaDataException(exception);
@@ -209,8 +208,8 @@ public class FileMetaDataService {
    * @param comic The comic entity
    */
   public void parseFiles(final Comic comic) throws IOException, NoImagesException, InvalidFileException {
-    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
-      final List<Path> files = ZipReaderUtility.getEntries(fs);
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+      final List<Path> files = ZipReaderUtil.getEntries(fs);
       comic.setPageCount(0);
       try {
         comic.setPageCount((int) files.stream()
@@ -241,12 +240,12 @@ public class FileMetaDataService {
   }
 
   public void write(final Comic comic) {
-    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
       final Path source = fs.getPath("/ComicInfo.xml");
       if (Files.exists(source)) {
         Files.delete(source);
       }
-      try (final Writer writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
+      try (Writer writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
         writer.write(this.marshal(comic));
         log.info(format("Finished writing ComicInfo.xml to %s", comic.getPath()));
       }

@@ -3,7 +3,7 @@ package de.wasenweg.alfred.queue;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicQueryRepositoryImpl;
 import de.wasenweg.alfred.scanner.ScannerService;
-import de.wasenweg.alfred.util.ZipReaderUtility;
+import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,8 +38,8 @@ public class QueueService {
   }
 
   public Comic flatten(final Comic comic) throws IOException {
-    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
-      final List<Path> files = ZipReaderUtility.getEntries(fs);
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+      final List<Path> files = ZipReaderUtil.getEntries(fs);
       files.stream()
           .filter(Files::isDirectory)
           .flatMap(directory -> {

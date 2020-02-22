@@ -148,7 +148,7 @@ public class Comic {
   }
 
   public List<String> findMissingAttributes() {
-    final List<String> missingAttributes = new ArrayList<String>();
+    final List<String> missingAttributes = new ArrayList<>();
     if (this.getPublisher() == null) {
       missingAttributes.add("publisher");
     }

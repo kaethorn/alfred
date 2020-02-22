@@ -109,7 +109,7 @@ public class ComicVineService {
     final HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     headers.add("user-agent", "curl/7.52.1");
-    final HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+    final HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
     final ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.GET, entity, String.class);
     try {
       return this.mapper.readTree(response.getBody());

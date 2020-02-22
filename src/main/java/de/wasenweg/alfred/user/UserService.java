@@ -55,10 +55,12 @@ public class UserService {
         .build();
 
     final GoogleIdToken idToken = verifier.verify(token);
-    if (idToken != null) {
+    if (idToken == null) {
+      log.info(format("Invalid ID token: %s.", token));
+    } else {
       final Payload payload = idToken.getPayload();
       final String email = payload.getEmail();
-      final List<String> claims = new ArrayList<String>();
+      final List<String> claims = new ArrayList<>();
       claims.add("ANONYMOUS");
 
       if (Arrays.asList(this.settingsService.get("auth.users").split(",")).contains(email)) {
@@ -78,8 +80,6 @@ public class UserService {
           .picture((String) payload.get("picture"))
           .token(apiToken)
           .build());
-    } else {
-      log.info(format("Invalid ID token: %s.", token));
     }
 
     throw new GeneralSecurityException();

@@ -44,7 +44,7 @@ public class JwtService implements IJwtService {
 
       final String subject = jwt.getSubject();
 
-      final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+      final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
       roles.keySet().forEach(role -> {
         authorities.add(new SimpleGrantedAuthority(role));
       });

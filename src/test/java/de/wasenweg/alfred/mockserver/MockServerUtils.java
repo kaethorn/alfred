@@ -16,12 +16,12 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.Parameter.param;
 
-public final class MockServer {
+public final class MockServerUtils {
 
   private static ClientAndServer server;
 
-  private MockServer() {
-    throw new java.lang.UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  private MockServerUtils() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   public static void startServer() throws IOException {

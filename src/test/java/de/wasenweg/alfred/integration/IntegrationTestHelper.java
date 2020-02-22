@@ -48,7 +48,7 @@ public class IntegrationTestHelper {
   }
 
   public Boolean zipContainsFile(final String zipPath, final String filePath) {
-    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
       return Files.exists(fs.getPath(filePath)) ? true : false;
     } catch (final IOException | SecurityException exception) {
       log.error("Failed to check zip file.", exception);
@@ -57,11 +57,10 @@ public class IntegrationTestHelper {
   }
 
   public Document parseComicInfo(final String zipPath) {
-    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
       final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      try (final InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"))) {
-        final Document document = docBuilder.parse(xmlStream);
-        return document;
+      try (InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"))) {
+        return docBuilder.parse(xmlStream);
       }
     } catch (final IOException | InvalidPathException | ParserConfigurationException | SAXException exception) {
       log.error("Failed to parse meta data.", exception);

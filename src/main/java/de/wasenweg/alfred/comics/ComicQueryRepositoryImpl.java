@@ -1,6 +1,6 @@
 package de.wasenweg.alfred.comics;
 
-import de.wasenweg.alfred.progress.ProgressUtility;
+import de.wasenweg.alfred.progress.ProgressUtil;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
@@ -62,7 +62,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
   public Optional<Comic> findById(
       final String userId,
       final String comicId) {
-    return Optional.ofNullable(this.mongoTemplate.aggregate(ProgressUtility.aggregateWithProgress(userId,
+    return Optional.ofNullable(this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
         match(where("_id").is(new ObjectId(comicId))),
         limit(1)
         ), Comic.class, Comic.class).getUniqueMappedResult());
@@ -71,7 +71,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
   // Lists issues for volumes that are in progress, aka bookmarks.
   @Override
   public List<Comic> findAllLastReadPerVolume(final String userId) {
-    return this.mongoTemplate.aggregate(ProgressUtility.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
         // Collect volumes with aggregated read stats and a list of issues
         sort(Sort.Direction.ASC, POSITION),
         group(PUBLISHER, SERIES, VOLUME)
@@ -120,7 +120,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
       final String publisher,
       final String series,
       final String volume) {
-    return Optional.ofNullable(this.mongoTemplate.aggregate(ProgressUtility.aggregateWithProgress(userId,
+    return Optional.ofNullable(this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
         match(where(PUBLISHER).is(publisher).and(SERIES).is(series).and(VOLUME).is(volume)),
 
         // If all comics are read, return the first, otherwise the first unread
@@ -137,7 +137,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
       final String publisher,
       final String series,
       final String volume) {
-    return this.mongoTemplate.aggregate(ProgressUtility.aggregateWithProgress(userId,
+    return this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
         match(where(PUBLISHER).is(publisher).and(SERIES).is(series).and(VOLUME).is(volume)),
 
         sort(Sort.Direction.ASC, POSITION)
