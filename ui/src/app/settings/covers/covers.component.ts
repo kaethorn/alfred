@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { Comic } from '../../comic';
@@ -21,7 +21,8 @@ export class CoversComponent {
   constructor(
     private comicsService: ComicsService,
     private thumbnailsService: ThumbnailsService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) { }
 
   public ionViewWillEnter(): void {
@@ -63,11 +64,21 @@ export class CoversComponent {
     toast.present();
   }
 
-  private list(): void {
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingController.create({
+      message: 'Loading covers...'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  private async list(): Promise<void> {
+    const loading = await this.presentLoading();
     this.comicsService.listComicsWithoutErrors()
       .subscribe((data: Comic[]) => {
+        loading.dismiss();
         this.comics = data;
         this.comics.forEach((comic: Comic) => this.updateThumbnails(comic));
-      });
+      }, () => loading.dismiss());
   }
 }

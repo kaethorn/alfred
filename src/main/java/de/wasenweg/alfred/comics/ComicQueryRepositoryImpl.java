@@ -120,7 +120,6 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
       final String publisher,
       final String series,
       final String volume) {
-
     return Optional.ofNullable(this.mongoTemplate.aggregate(ProgressUtility.aggregateWithProgress(userId,
         match(where(PUBLISHER).is(publisher).and(SERIES).is(series).and(VOLUME).is(volume)),
 
