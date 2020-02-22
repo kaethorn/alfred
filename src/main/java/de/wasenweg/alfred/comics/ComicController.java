@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -65,11 +66,11 @@ public class ComicController extends BaseController<Comic> {
     this.comicService.deleteComics();
   }
 
-  @DeleteMapping("/{comicId}/page/{filePath}")
+  @DeleteMapping("/{comicId}/page")
   public EntityModel<Comic> deletePage(
       @PathVariable("comicId") final String comicId,
-      @PathVariable("filePath") final String filePath) {
-    return this.wrap(this.comicService.deletePage(comicId, filePath));
+      @RequestParam("path") final String path) {
+    return this.wrap(this.comicService.deletePage(comicId, path));
   }
 
   @GetMapping("/bundle")

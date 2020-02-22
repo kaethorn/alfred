@@ -135,7 +135,9 @@ export class ComicsService {
   }
 
   public deletePage(comic: Comic, path: string): Observable<Comic> {
-    return this.http.delete<Comic>(`api/comics/${ comic.id }/page/${ encodeURIComponent(path) }`).pipe(
+    return this.http.delete<Comic>(`api/comics/${ comic.id }/page`, {
+      params: new HttpParams().set('path', path)
+    }).pipe(
       map(this.addId)
     );
   }
