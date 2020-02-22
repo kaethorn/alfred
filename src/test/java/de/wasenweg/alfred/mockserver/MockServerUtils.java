@@ -51,7 +51,7 @@ public final class MockServerUtils {
               param("filter", "volume:796")
           )
     ).respond(
-        callback().withCallbackClass("de.wasenweg.alfred.mockserver.MockServer$BatmanIssuesCallback")
+        callback().withCallbackClass("de.wasenweg.alfred.mockserver.MockServerUtils$BatmanIssuesCallback")
     );
 
     server.when(
