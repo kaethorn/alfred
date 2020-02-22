@@ -1,7 +1,6 @@
 package de.wasenweg.alfred.unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.ApiMetaDataService;
 import de.wasenweg.alfred.scanner.ComicVineService;

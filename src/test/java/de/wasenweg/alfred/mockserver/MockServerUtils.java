@@ -1,7 +1,6 @@
 package de.wasenweg.alfred.mockserver;
 
 import de.wasenweg.alfred.unit.TestHelper;
-
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.mock.action.ExpectationResponseCallback;
 import org.mockserver.model.HttpRequest;

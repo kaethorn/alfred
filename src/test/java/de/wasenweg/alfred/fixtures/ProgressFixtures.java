@@ -2,7 +2,6 @@ package de.wasenweg.alfred.fixtures;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.progress.Progress;
-
 import org.bson.types.ObjectId;
 
 import java.util.GregorianCalendar;
