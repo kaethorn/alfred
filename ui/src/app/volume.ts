@@ -1,5 +1,5 @@
 export interface Volume {
-  volume: string;
+  name: string;
   series: string;
   publisher: string;
   issueCount: number;

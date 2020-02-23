@@ -3,6 +3,8 @@ package de.wasenweg.alfred.comics;
 import de.wasenweg.alfred.progress.ProgressService;
 import de.wasenweg.alfred.scanner.ApiMetaDataService;
 import de.wasenweg.alfred.scanner.FileMetaDataService;
+import de.wasenweg.alfred.scanner.InvalidFileException;
+import de.wasenweg.alfred.scanner.NoImagesException;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import de.wasenweg.alfred.scanner.ScannerService;
 import de.wasenweg.alfred.thumbnails.ThumbnailRepository;
@@ -57,33 +59,21 @@ public class ComicService {
     return comic;
   }
 
-  public Comic scrape(final Comic comic) throws ResourceNotFoundException {
+  /**
+   * Fetch meta data from ComicVine and persist it to the file and DB.
+   *
+   * @param comic The comic to scrape.
+   * @return The given comic
+   * @throws ResourceNotFoundException When an error occurred the ComicVine API request.
+   */
+  public Comic scrape(final Comic comic) {
     final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
-    if (issues.size() > 0) {
+    if (!issues.isEmpty()) {
       throw new ResourceNotFoundException("Error while querying ComicVine.");
     }
     this.comicRepository.save(comic);
     this.fileMetaDataService.write(comic);
     return comic;
-  }
-
-  public List<Comic> findAllLastReadPerVolume(final String userId) {
-    return this.queryRepository.findAllLastReadPerVolume(userId);
-  }
-
-  public List<Comic> findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc() {
-    return this.comicRepository.findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc();
-  }
-
-  public Optional<Comic> findLastReadForVolume(
-      final String userId, final String publisher, final String series, final String volume) {
-    return this.queryRepository.findLastReadForVolume(userId, publisher, series, volume);
-  }
-
-  public List<Comic> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
-      final String userId, final String publisher, final String series, final String volume) {
-    return this.queryRepository.findAllByPublisherAndSeriesAndVolumeOrderByPosition(
-        userId, publisher, series, volume);
   }
 
   public Optional<Comic> markAsRead(final Comic comic, final String userId) {
@@ -103,8 +93,7 @@ public class ComicService {
     final Optional<Comic> maybeComic = this.comicRepository.findById(comicId);
     if (maybeComic.isPresent()) {
       final Comic comic = maybeComic.get();
-      final Path path = Paths.get(comic.getPath());
-      try (final FileSystem fs = FileSystems.newFileSystem(path, null)) {
+      try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
         final Path source = fs.getPath(filePath);
         if (Files.exists(source)) {
           Files.delete(source);
@@ -114,9 +103,10 @@ public class ComicService {
         this.fileMetaDataService.parseFiles(comic);
         this.comicRepository.save(comic);
         log.info(format("Deleted file %s in comic %s", filePath, comic.getPath()));
-        return Optional.of(comic);
+      } catch (final NoImagesException | InvalidFileException exception) {
+        log.warn(format("Error while deleting page %s of %s: ", filePath, comic.toString()), exception);
       } catch (final IOException exception) {
-        exception.printStackTrace();
+        log.error(format("Error while deleting page %s of %s: ", filePath, comic.toString()), exception);
       }
     }
     return maybeComic;

@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
-import { ThumbnailsServiceMocks as thumbnailsService } from '../../../testing/thumbnails.service.mocks';
-
-import { VolumesService } from '../../volumes.service';
-import { ThumbnailsService } from '../../thumbnails.service';
-import { VolumesComponent } from './volumes.component';
-import { LibraryPageModule } from '../library.module';
 import { RouterTestingModule } from '@angular/router/testing';
+
+import { ThumbnailsServiceMocks as thumbnailsService } from '../../../testing/thumbnails.service.mocks';
+import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
+import { ThumbnailsService } from '../../thumbnails.service';
+import { VolumesService } from '../../volumes.service';
+import { LibraryPageModule } from '../library.module';
+
+import { VolumesComponent } from './volumes.component';
 
 describe('VolumesComponent', () => {
   let component: VolumesComponent;
@@ -17,7 +17,7 @@ describe('VolumesComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         LibraryPageModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       providers: [{
         provide: VolumesService, useValue: volumesService

@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
-
 import { VolumesService } from '../../volumes.service';
-import { SeriesComponent } from './series.component';
 import { LibraryPageModule } from '../library.module';
+
+import { SeriesComponent } from './series.component';
 
 describe('SeriesComponent', () => {
   let component: SeriesComponent;

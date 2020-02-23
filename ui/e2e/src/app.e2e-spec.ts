@@ -1,6 +1,7 @@
+import { browser } from 'protractor';
+
 import { AppPage } from './app.po';
 import { MongoDBTools } from './mongodb.tools';
-import { browser } from 'protractor';
 
 describe('AppComponent', () => {
 

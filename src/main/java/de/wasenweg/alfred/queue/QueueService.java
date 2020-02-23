@@ -38,7 +38,7 @@ public class QueueService {
   }
 
   public Comic flatten(final Comic comic) throws IOException {
-    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
       final List<Path> files = ZipReaderUtil.getEntries(fs);
       files.stream()
           .filter(Files::isDirectory)
@@ -57,7 +57,7 @@ public class QueueService {
               log.debug(format("Moving %s to %s.", source, target));
               Files.move(source, target);
             } catch (final IOException exception) {
-              exception.printStackTrace();
+              log.error(format("Error while flattening %s", comic.toString()), exception);
             }
           });
 

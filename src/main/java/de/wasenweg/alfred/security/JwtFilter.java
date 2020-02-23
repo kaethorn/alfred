@@ -1,5 +1,6 @@
 package de.wasenweg.alfred.security;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
@@ -14,18 +15,13 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JwtFilter implements Filter {
 
   private static final String HEADER_PREFIX = "Bearer ";
 
-  private String secret;
-
-  private IJwtService jwtService;
-
-  public JwtFilter(final String secret, final IJwtService jwtService) {
-    this.secret = secret;
-    this.jwtService = jwtService;
-  }
+  private final String secret;
+  private final IJwtService jwtService;
 
   @Override
   public void doFilter(
@@ -34,7 +30,6 @@ public class JwtFilter implements Filter {
       final FilterChain chain) throws IOException, ServletException {
 
     final HttpServletRequest request = (HttpServletRequest) req;
-    final HttpServletResponse response = (HttpServletResponse) res;
 
     log.debug("Running filter on URL: {}", request.getRequestURL().toString());
 
@@ -43,6 +38,7 @@ public class JwtFilter implements Filter {
     if (!token.isPresent() || !token.get().startsWith(HEADER_PREFIX)) {
       log.debug("No token found in header.");
       res.reset();
+      final HttpServletResponse response = (HttpServletResponse) res;
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
@@ -53,6 +49,7 @@ public class JwtFilter implements Filter {
     } else {
       log.debug("Token is invalid.");
       res.reset();
+      final HttpServletResponse response = (HttpServletResponse) res;
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
   }

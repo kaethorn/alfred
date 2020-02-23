@@ -1,5 +1,5 @@
 export interface Series {
+  name: string;
   publisher: string;
-  series: string;
   volumesCount: number;
 }

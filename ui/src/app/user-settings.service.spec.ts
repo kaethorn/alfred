@@ -9,7 +9,7 @@ describe('UserSettingsService', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
     });
-    service = TestBed.get(UserSettingsService);
+    service = TestBed.inject(UserSettingsService);
   });
 
   afterEach(() => {

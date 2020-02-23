@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,24 +11,24 @@ import { Thumbnail } from './thumbnail';
 })
 export class ThumbnailsService {
 
-  constructor (
+  constructor(
     private sanitizer: DomSanitizer,
     private http: HttpClient
   ) {}
 
-  getFrontCover (comicId: string): Observable<Thumbnail> {
+  public getFrontCover(comicId: string): Observable<Thumbnail> {
     return this.http.get<Thumbnail>(`api/thumbnails/front-cover/${ comicId }`).pipe(
       map((thumbnail: any) => {
-        thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.thumbnail }`);
+        thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.image }`);
         return thumbnail;
       })
     );
   }
 
-  getBackCover (comicId: string): Observable<Thumbnail> {
+  public getBackCover(comicId: string): Observable<Thumbnail> {
     return this.http.get<Thumbnail>(`api/thumbnails/back-cover/${ comicId }`).pipe(
       map((thumbnail: any) => {
-        thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.thumbnail }`);
+        thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.image }`);
         return thumbnail;
       })
     );

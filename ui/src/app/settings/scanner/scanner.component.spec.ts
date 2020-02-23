@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { StatsServiceMocks as statsService } from '../../../testing/stats.service.mocks';
 import { ComicsServiceMocks as comicsService } from '../../../testing/comics.service.mocks';
-import { StatsService } from '../../stats.service';
+import { StatsServiceMocks as statsService } from '../../../testing/stats.service.mocks';
 import { ComicsService } from '../../comics.service';
+import { StatsService } from '../../stats.service';
+import { SettingsPageModule } from '../settings.module';
 
 import { ScannerComponent } from './scanner.component';
-import { SettingsPageModule } from '../settings.module';
 
 describe('ScannerComponent', () => {
   let component: ScannerComponent;
@@ -17,7 +17,7 @@ describe('ScannerComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         SettingsPageModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       providers: [{
         provide: StatsService, useValue: statsService

@@ -1,6 +1,5 @@
-import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { Injectable } from '@angular/core';
-
+import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { from } from 'rxjs';
 import { groupBy, mergeMap, filter, toArray, map } from 'rxjs/operators';
 
@@ -19,12 +18,12 @@ export interface StoredState {
 })
 export class ComicStorageService {
 
-  constructor (
+  constructor(
     private sanitizer: DomSanitizer,
     private thumbnailsService: ThumbnailsService,
     private comicDatabaseService: ComicDatabaseService,
     private comicsService: ComicsService,
-    private queueService: QueueService,
+    private queueService: QueueService
   ) { }
 
   /**
@@ -33,13 +32,13 @@ export class ComicStorageService {
    * @param cache Whether to cache the comic if not already done so.
    * @returns A promise returning the comic.
    */
-  get (comicId: string): Promise<Comic> {
+  public get(comicId: string): Promise<Comic> {
     return new Promise((resolve, reject) => {
       this.comicDatabaseService.getComic(comicId)
-        .then((comic) => resolve(comic))
+        .then(comic => resolve(comic))
         .catch(() => {
           this.comicsService.get(comicId).subscribe(
-            (apiComic) => resolve(apiComic),
+            apiComic => resolve(apiComic),
             () => reject());
         });
     });
@@ -51,7 +50,7 @@ export class ComicStorageService {
    * @param page Page number
    * @returns A Promise that resolved when finished.
    */
-  async saveProgress (comic: Comic): Promise<any> {
+  public async saveProgress(comic: Comic): Promise<Event> {
     comic.lastRead = new Date();
     if (comic.pageCount - 1 <= comic.currentPage) {
       comic.read = true;
@@ -68,7 +67,7 @@ export class ComicStorageService {
    * @param page Page number
    * @returns The URL to the image.
    */
-  async getPageUrl (comicId: string, page: number): Promise<string> {
+  public async getPageUrl(comicId: string, page: number): Promise<string> {
     if (await this.comicDatabaseService.isStored(comicId)) {
       return this.comicDatabaseService.getImageUrl(comicId, page);
     } else {
@@ -76,7 +75,7 @@ export class ComicStorageService {
     }
   }
 
-  async saveIfStored (comic: Comic): Promise<void> {
+  public async saveIfStored(comic: Comic): Promise<void> {
     if (await this.comicDatabaseService.isStored(comic.id)) {
       await this.comicDatabaseService.save(comic);
     }
@@ -85,7 +84,7 @@ export class ComicStorageService {
   /**
    * Retrieves bookmarks either from API or from indexedDB.
    */
-  getBookmarks (): Promise<Comic[]> {
+  public getBookmarks(): Promise<Comic[]> {
     return new Promise((resolve, reject) => {
       this.comicsService.listLastReadByVolume().subscribe((comics: Comic[]) => {
         this.queueService.process().subscribe(
@@ -95,7 +94,7 @@ export class ComicStorageService {
             this.comicsService.listLastReadByVolume().subscribe((updatedComics: Comic[]) => {
               resolve(updatedComics);
             });
-        });
+          });
       }, () => {
         this.comicDatabaseService.getComics().then((comics: Comic[]) => {
           from(comics).pipe(
@@ -107,7 +106,7 @@ export class ComicStorageService {
             )),
             map(group => group[0]),
             toArray()
-          ).subscribe((c) => {
+          ).subscribe(c => {
             resolve(c);
           }, reject);
         }, () => reject());
@@ -119,7 +118,7 @@ export class ComicStorageService {
    * Caches the previous, the current and the three next comic books.
    * @param comicId The reference comic ID.
    */
-  async storeSurrounding (comicId: string): Promise<StoredState> {
+  public async storeSurrounding(comicId: string): Promise<StoredState> {
     const cachedIds: StoredState = {};
     const comic = await this.get(comicId);
 
@@ -149,12 +148,12 @@ export class ComicStorageService {
     // Traverse indexedDb's Comic collection for comic books outside
     // that range and delete them.
     const cachedComics = await this.comicDatabaseService.getComics();
-    const comicsToDelete = cachedComics.filter((cachedComic) => {
+    const comicsToDelete = cachedComics.filter(cachedComic =>
       // Filter out comics from other volumes:
-      return this.matchesVolume(comic, cachedComic) &&
+      this.matchesVolume(comic, cachedComic) &&
         // Filter out comics that are not cached
-        !(cachedComic.id in cachedIds);
-    });
+        !(cachedComic.id in cachedIds)
+    );
     for (const comicToDelete of comicsToDelete) {
       await this.comicDatabaseService.delete(comicToDelete);
     }
@@ -165,20 +164,18 @@ export class ComicStorageService {
    * Deletes all stored comics in the given comic's volume.
    * @param comic Reference comic.
    */
-  async deleteVolume (referenceComic: Comic): Promise<void> {
+  public async deleteVolume(referenceComic: Comic): Promise<void> {
     const comics = await this.comicDatabaseService.getComics();
-    const volume: Comic[] = comics.filter((comic) => {
-      return this.matchesVolume(referenceComic, comic);
-    });
+    const volume: Comic[] = comics.filter(comic => this.matchesVolume(referenceComic, comic));
     for (const comic of volume) {
       await this.comicDatabaseService.delete(comic);
     }
   }
 
-  getFrontCoverThumbnail (comicId: string): Promise<SafeUrl> {
+  public getFrontCoverThumbnail(comicId: string): Promise<SafeUrl> {
     return new Promise((resolve, reject) => {
       this.comicDatabaseService.getImageUrl(comicId, 0)
-        .then((thumbnail) => {
+        .then(thumbnail => {
           resolve(this.sanitizer.bypassSecurityTrustResourceUrl(thumbnail));
         }).catch(() => {
           this.thumbnailsService.getFrontCover(comicId)
@@ -188,11 +185,11 @@ export class ComicStorageService {
     });
   }
 
-  async getBackCoverThumbnail (comicId: string): Promise<SafeUrl> {
+  public async getBackCoverThumbnail(comicId: string): Promise<SafeUrl> {
     const comic = await this.get(comicId);
     return new Promise((resolve, reject) => {
       this.comicDatabaseService.getImageUrl(comicId, comic.pageCount - 1)
-        .then((thumbnail) => {
+        .then(thumbnail => {
           resolve(this.sanitizer.bypassSecurityTrustResourceUrl(thumbnail));
         }).catch(() => {
           this.thumbnailsService.getBackCover(comicId).subscribe(resolve, reject);
@@ -200,13 +197,13 @@ export class ComicStorageService {
     });
   }
 
-  private matchesVolume (comicA: Comic, comicB: Comic): boolean {
+  private matchesVolume(comicA: Comic, comicB: Comic): boolean {
     return comicA.publisher === comicB.publisher &&
       comicA.series === comicB.series &&
       comicA.volume === comicB.volume;
   }
 
-  private saveComicProgress (comic: Comic) {
+  private saveComicProgress(comic: Comic): void {
     this.comicsService.updateProgress(comic).subscribe(
       () => this.queueService.process(),
       () => this.queueService.add(comic));

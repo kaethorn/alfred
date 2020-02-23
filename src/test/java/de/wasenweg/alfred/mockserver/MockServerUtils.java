@@ -1,7 +1,6 @@
 package de.wasenweg.alfred.mockserver;
 
 import de.wasenweg.alfred.unit.TestHelper;
-
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.mock.action.ExpectationResponseCallback;
 import org.mockserver.model.HttpRequest;
@@ -16,14 +15,18 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.Parameter.param;
 
-public class MockServer {
+public final class MockServerUtils {
 
-  private static ClientAndServer mockServer;
+  private static ClientAndServer server;
+
+  private MockServerUtils() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 
   public static void startServer() throws IOException {
-    mockServer = startClientAndServer(1080);
+    server = startClientAndServer(1080);
 
-    mockServer.when(
+    server.when(
         request()
           .withMethod("GET")
           .withPath("/search/")
@@ -40,7 +43,7 @@ public class MockServer {
           .withBody(TestHelper.parseJson("search-batman.json").toString())
     );
 
-    mockServer.when(
+    server.when(
         request()
           .withMethod("GET")
           .withPath("/issues/")
@@ -48,10 +51,10 @@ public class MockServer {
               param("filter", "volume:796")
           )
     ).respond(
-        callback().withCallbackClass("de.wasenweg.alfred.mockserver.MockServer$BatmanIssuesCallback")
+        callback().withCallbackClass("de.wasenweg.alfred.mockserver.MockServerUtils$BatmanIssuesCallback")
     );
 
-    mockServer.when(
+    server.when(
         request()
           .withMethod("GET")
           .withPath("/issue/4000-224555/")
@@ -66,7 +69,7 @@ public class MockServer {
   }
 
   public static void stop() {
-    mockServer.stop();
+    server.stop();
   }
 
   public static class BatmanIssuesCallback implements ExpectationResponseCallback {

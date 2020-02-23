@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<ruleset name="Custom Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>
+    Rules for test files.
+  </description>
+
+  <rule ref="category/java/errorprone.xml">
+    <exclude name="AvoidDuplicateLiterals"/>
+  </rule>
+
+  <rule ref="category/java/bestpractices.xml">
+    <exclude name="JUnitTestContainsTooManyAsserts"/>
+    <exclude name="JUnitTestsShouldIncludeAssert"/>
+    <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+  </rule>
+
+  <rule ref="category/java/multithreading.xml">
+  </rule>
+
+  <rule ref="category/java/performance.xml">
+  </rule>
+
+  <rule ref="category/java/security.xml">
+  </rule>
+
+  <rule ref="category/java/design.xml">
+    <exclude name="LawOfDemeter"/>
+    <exclude name="TooManyFields"/>
+    <exclude name="UseObjectForClearerAPI"/>
+    <exclude name="LoosePackageCoupling"/>
+    <exclude name="ExcessiveImports"/>
+    <exclude name="TooManyMethods"/>
+
+    <exclude name="SignatureDeclareThrowsException"/>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml">
+    <exclude name="LongVariable"/>
+    <exclude name="ShortVariable"/>
+    <exclude name="AtLeastOneConstructor"/>
+    <exclude name="TooManyStaticImports"/>
+    <exclude name="OnlyOneReturn"/>
+    <exclude name="ShortClassName"/>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+    <properties>
+      <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Fixtures?)" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/LinguisticNaming">
+    <properties>
+      <property name="ignoredAnnotations" value="org.junit.jupiter.api.Test" />
+    </properties>
+  </rule>
+
+</ruleset>

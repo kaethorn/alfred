@@ -2,11 +2,11 @@ import * as http from 'http';
 
 export class ProxySettings {
 
-  static set (flag) {
+  public static set(flag): Promise<any> {
     return this.post('/flags', flag);
   }
 
-  private static post (path, body = {}): Promise<any> {
+  private static post(path, body = {}): Promise<any> {
     const bodyString = JSON.stringify(body);
     return new Promise((resolve, reject) => {
       const req = http.request({
@@ -17,14 +17,14 @@ export class ProxySettings {
           'Content-Length': Buffer.byteLength(bodyString)
         },
         method: 'POST'
-      }, (res) => {
+      }, res => {
         try {
           if (res.statusCode > 399) {
             reject(res.statusCode);
           } else {
             res.setEncoding('utf8');
             let rawData = '';
-            res.on('data', (chunk) => {
+            res.on('data', chunk => {
               rawData += chunk;
             });
             res.on('end', () => {
@@ -38,7 +38,7 @@ export class ProxySettings {
         } catch (e) {
           reject(e.message);
         }
-      }).on('error', (e) => {
+      }).on('error', e => {
         reject(e.message);
       });
       req.end(bodyString);

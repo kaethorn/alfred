@@ -2,12 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
 import { ThumbnailsServiceMocks as thumbnailsService } from '../../testing/thumbnails.service.mocks';
-
+import { ComicDatabaseService } from '../comic-database.service';
 import { ComicsService } from '../comics.service';
 import { ThumbnailsService } from '../thumbnails.service';
-import { BookmarksPage } from './bookmarks.page';
+
 import { BookmarksPageModule } from './bookmarks.module';
-import { ComicDatabaseService } from '../comic-database.service';
+import { BookmarksPage } from './bookmarks.page';
 
 describe('BookmarksPage', () => {
   let component: BookmarksPage;
@@ -25,7 +25,7 @@ describe('BookmarksPage', () => {
       }]
     });
 
-    const dbService = TestBed.get(ComicDatabaseService);
+    const dbService = TestBed.inject(ComicDatabaseService);
     await dbService.ready.toPromise();
 
     fixture = TestBed.createComponent(BookmarksPage);

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -16,14 +17,20 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ApiMetaDataService {
 
+  private static final String NAME = "name";
+  private static final String RESULTS = "results";
+  private static final int ISSUE_THRESHOLD = 1;
+
   private final ComicVineService comicVineService;
 
-  private List<ScannerIssue> scannerIssues = new ArrayList<ScannerIssue>();
+  private List<ScannerIssue> scannerIssues = new ArrayList<>();
 
   /**
    * Scrapes and saves information for the given comic.
@@ -47,14 +54,14 @@ public class ApiMetaDataService {
             .message(exception.getMessage())
             .severity(ScannerIssue.Severity.WARNING)
             .build());
-        comic.setPosition(new DecimalFormat("0000.0").format(new BigDecimal(0)));
+        comic.setPosition(new DecimalFormat("0000.0").format(BigDecimal.ZERO));
       }
     }
 
     // If neither the XML nor the file path contain enough hints about which
     // comic book this is, we inform the user.
     final List<String> missingAttributes = comic.findMissingAttributes();
-    if (missingAttributes.size() > 0) {
+    if (!missingAttributes.isEmpty()) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Missing meta data: " + String.join(", ", missingAttributes))
           .severity(ScannerIssue.Severity.ERROR)
@@ -65,8 +72,8 @@ public class ApiMetaDataService {
     // a query to the Comic Vine API.
     try {
       this.query(comic);
-    } catch (final Exception exception) {
-      log.error("Error while fetching information for " + comic.getPath(), exception);
+    } catch (final IndexOutOfBoundsException | RestClientException exception) {
+      log.error(format("Error while fetching information for %s.", comic.getPath()), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Error during Comic Vine API meta data retrieval")
           .severity(ScannerIssue.Severity.ERROR)
@@ -80,26 +87,26 @@ public class ApiMetaDataService {
       final String publisher, final String series, final String volume, final JsonNode results) {
     final Stream<JsonNode> volumes = IntStream.range(0, results.size()).mapToObj(results::get);
     return volumes.filter(v -> {
-      return publisher.equals(v.get("publisher").get("name").asText())
-          && series.equals(v.get("name").asText())
+      return publisher.equals(v.get("publisher").get(NAME).asText())
+          && series.equals(v.get(NAME).asText())
           && volume.equals(v.get("start_year").asText());
     }).collect(Collectors.toList());
   }
 
   private String findIssueDetailsUrl(final Comic comic, final List<JsonNode> issues) {
     final List<JsonNode> filteredIssues = issues.stream()
-        .filter(issue -> {
-          return issue.get("issue_number").asText().equals(comic.getNumber());
-        })
+        .filter(issue -> issue.get("issue_number").asText().equals(comic.getNumber()))
         .collect(Collectors.toList());
 
-    if (filteredIssues.size() == 0) {
+    if (filteredIssues.isEmpty()) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("No matching issue found")
           .severity(ScannerIssue.Severity.ERROR)
           .build());
+      return "";
     }
-    if (filteredIssues.size() > 1) {
+
+    if (filteredIssues.size() > ISSUE_THRESHOLD) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("No unique issue found")
           .severity(ScannerIssue.Severity.ERROR)
@@ -113,25 +120,25 @@ public class ApiMetaDataService {
   public String findVolumeId(final String publisher, final String series, final String volume) {
     int page = 0;
     JsonNode response = this.comicVineService.findVolumesBySeries(series, page);
-    List<JsonNode> results = this.filterVolumeSearchResults(publisher, series, volume, response.get("results"));
+    List<JsonNode> results = this.filterVolumeSearchResults(publisher, series, volume, response.get(RESULTS));
 
     final int totalCount = response.get("number_of_total_results").asInt();
     final int limit = response.get("limit").asInt();
     final int lastPage = totalCount / limit;
-    while (results.size() == 0 && page < lastPage) {
+    while (results.isEmpty() && page < lastPage) {
       page++;
       response = this.comicVineService.findVolumesBySeries(series, page);
-      results = this.filterVolumeSearchResults(publisher, series, volume, response.get("results"));
+      results = this.filterVolumeSearchResults(publisher, series, volume, response.get(RESULTS));
     }
 
-    if (results.size() > 0) {
-      return results.get(0).get("id").asText();
-    } else {
+    if (results.isEmpty()) {
       this.scannerIssues.add(ScannerIssue.builder()
           .message("No result in volume search")
           .severity(ScannerIssue.Severity.ERROR)
           .build());
       return "";
+    } else {
+      return results.get(0).get("id").asText();
     }
   }
 
@@ -139,7 +146,7 @@ public class ApiMetaDataService {
   public List<JsonNode> findVolumeIssues(final String volumeId) {
     int page = 0;
     final JsonNode response = this.comicVineService.findIssuesInVolume(volumeId, page);
-    JsonNode results = response.get("results");
+    JsonNode results = response.get(RESULTS);
     final List<JsonNode> issues = IntStream.range(0, results.size()).mapToObj(results::get)
         .collect(Collectors.toList());
 
@@ -148,7 +155,7 @@ public class ApiMetaDataService {
     final int lastPage = totalCount / limit;
     while (page < lastPage) {
       page++;
-      results = this.comicVineService.findIssuesInVolume(volumeId, page).get("results");
+      results = this.comicVineService.findIssuesInVolume(volumeId, page).get(RESULTS);
       issues.addAll(IntStream.range(0, results.size()).mapToObj(results::get)
           .collect(Collectors.toList()));
     }
@@ -164,7 +171,7 @@ public class ApiMetaDataService {
 
   private String getEntities(final JsonNode entities) {
     return IntStream.range(0, entities.size()).mapToObj(entities::get)
-        .map(character -> character.get("name").asText())
+        .map(character -> character.get(NAME).asText())
         .collect(Collectors.joining(", "));
   }
 
@@ -201,7 +208,7 @@ public class ApiMetaDataService {
         .collect(Collectors.groupingBy(
             person -> person.get("role").asText(),
             Collectors.mapping(
-                person -> person.get("name").asText(),
+                person -> person.get(NAME).asText(),
                 Collectors.joining(", "))));
   }
 
@@ -213,12 +220,12 @@ public class ApiMetaDataService {
   }
 
   public void applyIssueDetails(final String url, final Comic comic) {
-    final JsonNode response = this.comicVineService.getIssueDetails(url).get("results");
-    comic.setTitle(this.getNodeText(response, "name"));
+    final JsonNode response = this.comicVineService.getIssueDetails(url).get(RESULTS);
+    comic.setTitle(this.getNodeText(response, NAME));
     comic.setSummary(this.getNodeText(response, "description"));
     final String[] coverDate = response.get("cover_date").asText().split("-");
-    comic.setYear(Short.valueOf(coverDate[0]));
-    comic.setMonth(Short.valueOf(coverDate[1]));
+    comic.setYear(Integer.valueOf(coverDate[0]));
+    comic.setMonth(Integer.valueOf(coverDate[1]));
     comic.setCharacters(this.getCharacters(response));
     comic.setTeams(this.getTeams(response));
     comic.setLocations(this.getLocations(response));

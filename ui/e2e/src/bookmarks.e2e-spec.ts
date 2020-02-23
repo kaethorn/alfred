@@ -1,8 +1,8 @@
 import { BookmarksPage } from './bookmarks.po';
-import { LibraryPage } from './library.po';
-import { SettingsPage } from './settings.po';
 import { IssuesPage } from './issues.po';
+import { LibraryPage } from './library.po';
 import { MongoDBTools } from './mongodb.tools';
+import { SettingsPage } from './settings.po';
 
 describe('BookmarksComponent', () => {
 

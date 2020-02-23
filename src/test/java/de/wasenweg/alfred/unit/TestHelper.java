@@ -6,7 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 
-public class TestHelper {
+public final class TestHelper {
+
+  private TestHelper() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 
   public static JsonNode parseJson(final String path) throws IOException {
     return new ObjectMapper().readTree(new File("src/test/resources/" + path));

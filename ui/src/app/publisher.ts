@@ -1,7 +1,7 @@
 import { Series } from './series';
 
 export interface Publisher {
-  publisher: string;
+  name: string;
   seriesCount: number;
   series?: Series[];
 }

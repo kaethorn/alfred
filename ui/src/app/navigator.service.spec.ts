@@ -5,12 +5,12 @@ import { NavigatorService, AdjacentComic } from './navigator.service';
 describe('NavigatorService', () => {
   let service: NavigatorService;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     NavigatorService.page = 0;
     NavigatorService.offset = 1;
     delete NavigatorService.sideBySide;
     delete NavigatorService.pageCount;
-    service = TestBed.get(NavigatorService);
+    service = TestBed.inject(NavigatorService);
   });
 
   afterEach(() => {

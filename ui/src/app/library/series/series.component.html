@@ -40,8 +40,8 @@
     </ion-item>
     <ion-item *ngFor="let serie of series" class="serie">
       <ion-button fill="solid" color="secondary"
-        [routerLink]="['/library/publishers/' + serie.publisher + '/series/' + serie.series + '/volumes']">
-        {{ serie.series }}
+        [routerLink]="['/library/publishers/' + serie.publisher + '/series/' + serie.name + '/volumes']">
+        {{ serie.name }}
       </ion-button>
     </ion-item>
   </ion-list>

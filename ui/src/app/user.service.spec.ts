@@ -1,5 +1,5 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { User } from './user';
 import { UserService } from './user.service';
@@ -13,8 +13,8 @@ describe('UserService', () => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ]
     });
-    service = TestBed.get(UserService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(UserService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
@@ -48,7 +48,7 @@ describe('UserService', () => {
         expect(req.request.method).toBe('GET');
         req.flush('', { status: 401, statusText: 'Unauthorized' });
 
-        service.user.subscribe((user) => {
+        service.user.subscribe(user => {
           expect(user).toEqual('You\'ve been logged out.');
         });
       });
@@ -63,7 +63,7 @@ describe('UserService', () => {
       it('rejects missing users', () => {
         service.verifyCurrentUser();
 
-        service.user.subscribe((user) => {
+        service.user.subscribe(user => {
           expect(user).toEqual('You\'ve been logged out.');
         });
       });
@@ -109,7 +109,7 @@ describe('UserService', () => {
         (window as any).gapi = {
           load: jasmine.createSpy().and.callFake((api, callback) => callback()),
           auth2: {
-            init: () => auth2
+            init: (): any => auth2
           }
         };
         service.setupGoogleSignIn();

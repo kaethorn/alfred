@@ -16,21 +16,27 @@ import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.A
 import static org.springframework.data.mongodb.core.aggregation.ArrayOperators.Filter.filter;
 import static org.springframework.data.mongodb.core.aggregation.ObjectOperators.MergeObjects.merge;
 
-public class ProgressHelper {
+public final class ProgressUtil {
+
+  private static final String PROGRESS = "progress";
+
+  private ProgressUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 
   // Merge progress flags for the current user
   public static List<AggregationOperation> mergeProgress(final String userId) {
     return Stream.of(
-        lookup("progress", "_id", "comicId", "progress"),
+        lookup(PROGRESS, "_id", "comicId", PROGRESS),
         replaceRoot().withValueOf(
             merge(Aggregation.ROOT)
             .mergeWithValuesOf(
                 arrayOf(
-                    filter("progress").as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
+                    filter(PROGRESS).as("item").by(ComparisonOperators.Eq.valueOf("item.userId").equalToValue(userId))
                     ).elementAt(0))
             // Restore comic _id previously overwritten with progress _id.
             .mergeWith(new BasicDBObject("_id", Aggregation.ROOT + "._id"))),
-        project().andExclude("progress", "comicId", "userId")
+        project().andExclude(PROGRESS, "comicId", "userId")
     ).collect(Collectors.toList());
   }
 

@@ -84,12 +84,13 @@ public class CoverIntegrationTest {
   public void deletesFirstPage() throws Exception {
     // Given
     Comic comic = this.comicRepository.findAll().get(0);
-    assertEquals(comic.getPageCount(), (short) 3);
+    assertEquals(comic.getPageCount(), 3);
     assertIterableEquals(
         comic.getFiles(), Arrays.asList("/1.png", "/2.png", "/3.png", "/ComicInfo.xml"));
 
     // When
-    this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/comics/" + comic.getId() + "/page/1.png"))
+    this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/comics/" + comic.getId() + "/page")
+        .param("path", "/1.png"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.files.length()").value("3"))
@@ -99,7 +100,7 @@ public class CoverIntegrationTest {
 
     // Then
     comic = this.comicRepository.findAll().get(0);
-    assertEquals(comic.getPageCount(), (short) 2);
+    assertEquals(comic.getPageCount(), 2);
     assertIterableEquals(
         comic.getFiles(), Arrays.asList("/2.png", "/3.png", "/ComicInfo.xml"));
   }
@@ -109,12 +110,13 @@ public class CoverIntegrationTest {
   public void deletesLastPage() throws Exception {
     // Given
     Comic comic = this.comicRepository.findAll().get(0);
-    assertEquals(comic.getPageCount(), (short) 3);
+    assertEquals(comic.getPageCount(), 3);
     assertIterableEquals(
         comic.getFiles(), Arrays.asList("/1.png", "/2.png", "/3.png", "/ComicInfo.xml"));
 
     // When
-    this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/comics/" + comic.getId() + "/page/3.png"))
+    this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/comics/" + comic.getId() + "/page")
+        .param("path", "/3.png"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.files.length()").value("3"))
@@ -124,7 +126,7 @@ public class CoverIntegrationTest {
 
     // Then
     comic = this.comicRepository.findAll().get(0);
-    assertEquals(comic.getPageCount(), (short) 2);
+    assertEquals(comic.getPageCount(), 2);
     assertIterableEquals(
         comic.getFiles(), Arrays.asList("/1.png", "/2.png", "/ComicInfo.xml"));
   }

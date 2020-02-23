@@ -1,5 +1,7 @@
 package de.wasenweg.alfred.thumbnails;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.imageio.ImageIO;
 
 import java.awt.Dimension;
@@ -8,26 +10,28 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ThumbnailUtils {
+@Slf4j
+public final class ThumbnailUtil {
 
   private static final int BOUND_WIDTH = 200;
   private static final int BOUND_HEIGHT = 300;
 
-  private static Dimension calculateTargetDimension(final int srcWidth, final int srcHeight) {
-    int dstWidth = srcWidth;
-    int dstHeight = srcHeight;
+  private ThumbnailUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
+
+  public static Dimension calculateTargetDimension(final int srcWidth, final int srcHeight) {
+    final Dimension dimension = new Dimension(srcWidth, srcHeight);
 
     if (srcWidth > BOUND_WIDTH) {
-      dstWidth = BOUND_WIDTH;
-      dstHeight = (dstWidth * srcHeight) / srcWidth;
+      dimension.setSize(BOUND_WIDTH, (BOUND_WIDTH * srcHeight) / srcWidth);
     }
 
-    if (dstHeight > BOUND_HEIGHT) {
-      dstHeight = BOUND_HEIGHT;
-      dstWidth = (dstHeight * srcWidth) / srcHeight;
+    if (dimension.getHeight() > BOUND_HEIGHT) {
+      dimension.setSize((BOUND_HEIGHT * srcWidth) / srcHeight, BOUND_HEIGHT);
     }
 
-    return new Dimension(dstWidth, dstHeight);
+    return dimension;
   }
 
   public static ByteArrayOutputStream get(final InputStream input) {
@@ -42,8 +46,8 @@ public class ThumbnailUtils {
           srcImage, 0, 0, dimension.width, dimension.height, null);
       ImageIO.write(dstImage, "jpg", out);
 
-    } catch (final IOException e) {
-      e.printStackTrace();
+    } catch (final IOException exception) {
+      log.error("Failed to generate thumbnail.", exception);
     }
     return out;
   }

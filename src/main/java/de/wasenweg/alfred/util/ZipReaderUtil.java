@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ZipReaderUtil {
+public final class ZipReaderUtil {
+
+  private ZipReaderUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 
   /**
    * Returns a sorted list of entries in the given zip file.

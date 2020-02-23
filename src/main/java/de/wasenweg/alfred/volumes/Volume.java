@@ -13,11 +13,11 @@ public class Volume {
 
   private String id;
 
-  private String volume;
+  private String name;
   private String series;
   private String publisher;
-  private Short issueCount;
-  private Short readCount;
+  private Integer issueCount;
+  private Integer readCount;
   private boolean read;
   private String firstComicId;
 
@@ -25,6 +25,6 @@ public class Volume {
   public String toString() {
     return format(
         "%s (Vol. %s) by %s",
-        this.series, this.volume, this.publisher);
+        this.series, this.name, this.publisher);
   }
 }

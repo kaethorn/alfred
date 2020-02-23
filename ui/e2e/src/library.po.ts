@@ -1,4 +1,5 @@
-import { browser, by, element } from 'protractor';
+import { browser, by, element, ElementFinder, promise, ElementArrayFinder } from 'protractor';
+
 import { Page } from './page.po';
 
 export class LibraryPage {
@@ -8,84 +9,82 @@ export class LibraryPage {
   private static selectSeries = 'app-series ion-item.serie ion-button';
   private static selectVolumes = 'app-volumes ion-card.volume';
 
-  static navigateTo () {
+  public static navigateTo(): promise.Promise<void> {
     return browser.get('/library/publishers');
   }
 
-  static getAllPublishers () {
+  public static getAllPublishers(): ElementArrayFinder {
     return element.all(by.css(this.selectPublisher));
   }
 
-  static getAllSeries () {
+  public static getAllSeries(): ElementArrayFinder {
     return element.all(by.css(this.selectSeries));
   }
 
-  static getAllVolumes () {
+  public static getAllVolumes(): ElementArrayFinder {
     return element.all(by.css(this.selectVolumes));
   }
 
-  static getAllPublisherSeries () {
+  public static getAllPublisherSeries(): ElementArrayFinder {
     return element.all(by.css(this.selectPublisherSeries));
   }
 
-  static async clickPublisher (publisher: string) {
+  public static async clickPublisher(publisher: string): Promise<void> {
     await this.waitForPublishers();
     return element(by.cssContainingText(this.selectPublisher, publisher)).click();
   }
 
-  static async clickSeries (series: string) {
+  public static async clickSeries(series: string): Promise<void> {
     await this.waitForSeries();
     return element(by.cssContainingText(this.selectSeries, series)).click();
   }
 
-  static async clickVolumeListButton (volume: string) {
+  public static async clickVolumeListButton(volume: string): Promise<void> {
     await this.waitForVolumes();
     return element(by.cssContainingText(this.selectVolumes, volume))
       .element(by.cssContainingText('ion-button', 'List')).click();
   }
 
-  static getVolumeTitles () {
+  public static getVolumeTitles(): ElementArrayFinder {
     return element.all(by.css(`${ this.selectVolumes } ion-card-title`));
   }
 
-  static getVolumeSubtitles () {
+  public static getVolumeSubtitles(): ElementArrayFinder {
     return element.all(by.css(`${ this.selectVolumes } ion-card-subtitle`));
   }
 
-  static getVolumeStats () {
+  public static getVolumeStats(): promise.Promise<string> {
     return this.getVolumeSubtitles().getText();
   }
 
-  static async expectVolumeStats (stats: string[]) {
+  public static async expectVolumeStats(stats: string[]): Promise<void> {
     for (let index = 0; index < stats.length; index++) {
       await Page.waitForText(this.getVolumeSubtitles().get(index), stats[index]);
     }
     expect(await this.getVolumeStats()).toEqual(stats);
   }
 
-  static getUnreadVolumes () {
-    return this.getAllVolumes().filter((e, index) => {
-      return e.element(by.css('ion-badge.read-badge')).isPresent().then(present => !present);
-    });
+  public static getUnreadVolumes(): ElementArrayFinder {
+    return this.getAllVolumes().filter(e => e.element(by.css('ion-badge.read-badge')).isPresent().then(present => !present));
   }
 
-  static get markVolumeAsReadButton () {
+  public static get markVolumeAsReadButton(): ElementFinder {
     return element(by.cssContainingText('ion-button', 'Mark volume as read'));
   }
 
-  static async clickVolumeMenuItem (volume: string, item: string) {
+  public static async clickVolumeMenuItem(volume: string, item: string): Promise<void> {
     await Page.clickActionItem(element(by.cssContainingText(this.selectVolumes, volume)), item);
   }
 
-  static waitForPublishers () {
+  public static waitForPublishers(): promise.Promise<void> {
     return Page.waitForElement(this.getAllPublishers().first());
   }
 
-  static waitForSeries () {
+  public static waitForSeries(): promise.Promise<void> {
     return Page.waitForElement(this.getAllSeries().first());
   }
 
-  static waitForVolumes () {
+  public static waitForVolumes(): promise.Promise<void> {
     return Page.waitForElement(this.getAllVolumes().first());
   }
 }

@@ -38,14 +38,14 @@ public class ThumbnailService {
    */
   @Transactional
   public void read(final Comic comic) throws NoImagesException, IOException {
-    try (final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
       final List<Path> sortedEntries = ZipReaderUtil.getImages(fs);
 
-      if (sortedEntries.size() > 0) {
+      if (!sortedEntries.isEmpty()) {
         this.saveThumbnail(comic, sortedEntries.get(0), ThumbnailType.FRONT_COVER);
         this.saveThumbnail(comic, sortedEntries.get(sortedEntries.size() - 1), ThumbnailType.BACK_COVER);
       }
-    } catch (final Exception exception) {
+    } catch (final IOException exception) {
       throw new NoThumbnailsException(exception);
     }
   }
@@ -62,9 +62,9 @@ public class ThumbnailService {
             .path(file.toString())
             .build());
 
-    final InputStream thumbnailStream = Files.newInputStream(file);
-    thumbnail.setThumbnail(ThumbnailUtils.get(thumbnailStream).toByteArray());
-    this.thumbnailRepository.save(thumbnail);
-    thumbnailStream.close();
+    try (InputStream thumbnailStream = Files.newInputStream(file)) {
+      thumbnail.setImage(ThumbnailUtil.get(thumbnailStream).toByteArray());
+      this.thumbnailRepository.save(thumbnail);
+    }
   }
 }

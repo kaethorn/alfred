@@ -16,7 +16,7 @@ export class MongoDBTools {
   });
 
   // Prepare DB and fixtures for E2E tests.
-  static async prepare (): Promise<any> {
+  public static async prepare(): Promise<any> {
     await this.connect;
     await mongoose.connection.db.dropDatabase();
     const collection = await mongoose.connection.db.createCollection('setting');

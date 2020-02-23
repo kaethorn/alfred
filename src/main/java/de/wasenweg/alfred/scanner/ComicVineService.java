@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.RateLimiter;
 import de.wasenweg.alfred.settings.SettingsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -20,11 +21,12 @@ import javax.annotation.PostConstruct;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ComicVineService {
 
@@ -49,7 +51,7 @@ public class ComicVineService {
   // Get details about a specific issue
   public JsonNode getIssueDetails(final String detailsUrl) {
     final String path = detailsUrl.split("/api/")[1];
-    final Map<String, String> requestParams = new HashMap<>();
+    final Map<String, String> requestParams = new ConcurrentHashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
     requestParams.put("field_list",
@@ -69,7 +71,7 @@ public class ComicVineService {
     // side. As a workaround, using the first term actually improves result numbers.
     final String query = series.split(" ")[0];
 
-    final Map<String, String> requestParams = new HashMap<>();
+    final Map<String, String> requestParams = new ConcurrentHashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
     requestParams.put("resources", "volume");
@@ -86,7 +88,7 @@ public class ComicVineService {
 
   // Get basic details about all issues in a volume
   public JsonNode findIssuesInVolume(final String volumeId, final int page) {
-    final Map<String, String> requestParams = new HashMap<>();
+    final Map<String, String> requestParams = new ConcurrentHashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
     requestParams.put("filter", "volume:" + volumeId);
@@ -107,14 +109,13 @@ public class ComicVineService {
     final HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     headers.add("user-agent", "curl/7.52.1");
-    final HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+    final HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
     final ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.GET, entity, String.class);
-    JsonNode root = null;
     try {
-      root = this.mapper.readTree(response.getBody());
+      return this.mapper.readTree(response.getBody());
     } catch (final IOException exception) {
-      exception.printStackTrace();
+      log.error("Error parsing response", exception);
+      return null;
     }
-    return root;
   }
 }

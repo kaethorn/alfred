@@ -24,7 +24,7 @@ import java.util.ArrayList;
 @Profile({"dev", "test"})
 public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private class DevJwtFilter implements Filter {
+  private static class DevJwtFilter implements Filter {
 
     @Override
     public void doFilter(
@@ -32,7 +32,7 @@ public class DevSecurityConfig extends WebSecurityConfigurerAdapter {
         final ServletResponse res,
         final FilterChain chain) throws IOException, ServletException {
 
-      final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+      final ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
       authorities.add(new SimpleGrantedAuthority("iss"));
       authorities.add(new SimpleGrantedAuthority("sub"));
       authorities.add(new SimpleGrantedAuthority("API_ALLOWED"));

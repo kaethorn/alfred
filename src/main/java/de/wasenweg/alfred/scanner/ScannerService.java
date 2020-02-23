@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.settings.SettingsService;
+import de.wasenweg.alfred.thumbnails.NoThumbnailsException;
 import de.wasenweg.alfred.thumbnails.ThumbnailService;
 import de.wasenweg.alfred.volumes.Volume;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -48,7 +49,7 @@ public class ScannerService {
   private final SettingsService settingsService;
 
   private void sendEvent(final String data, final String name) {
-    final String timestamp = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).format(new Date());
+    final String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date());
     this.emitter.onNext(ServerSentEvent.builder(data).id(timestamp).event(name).build());
   }
 
@@ -123,7 +124,7 @@ public class ScannerService {
     try {
       this.sendEvent(this.objectMapper.writeValueAsString(issue), "scan-issue");
     } catch (final JsonProcessingException exception) {
-      exception.printStackTrace();
+      log.error("Error while transmitting scanning issue.", exception);
     }
   }
 
@@ -139,7 +140,7 @@ public class ScannerService {
       this.thumbnailService.read(comic);
     } catch (final SAXException | IOException | ParserConfigurationException exception) {
       this.reportIssue(comic, exception, ScannerIssue.Severity.WARNING);
-    } catch (final NoImagesException | ProviderNotFoundException | InvalidFileException exception) {
+    } catch (final NoImagesException | NoThumbnailsException | ProviderNotFoundException | InvalidFileException exception) {
       this.reportIssue(comic, exception);
     } catch (final NoMetaDataException exception) {
       log.info(format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
@@ -148,7 +149,7 @@ public class ScannerService {
       issues.forEach(issue -> {
         this.reportIssue(comic, issue);
       });
-      if (issues.size() == 0) {
+      if (issues.isEmpty()) {
         this.fileMetaDataService.write(comic);
       }
     }
@@ -159,11 +160,12 @@ public class ScannerService {
     this.reportProgress(path.toString());
 
     final String comicPath = path.toAbsolutePath().toString();
-
+    final Path fileName = path.getFileName();
     final Comic comic = this.comicRepository.findByPath(comicPath)
         .orElse(new Comic());
+
     comic.setPath(comicPath);
-    comic.setFileName(path.getFileName().toString());
+    comic.setFileName(fileName == null ? "null" : fileName.toString());
     this.processComic(comic);
   }
 
@@ -213,15 +215,20 @@ public class ScannerService {
     return this.emitter.log();
   }
 
+  // Purge comics from the DB that don't have a corresponding file.
   private void cleanOrphans(final List<Path> comicFiles) {
     this.reportCleanUp();
 
-    // Purge comics from the DB that don't have a corresponding file.
-    final List<String> comicFilePaths = comicFiles.stream().map(path -> path.toAbsolutePath().toString())
+    final List<String> comicFilePaths = comicFiles.stream()
+        .map(path -> path.toAbsolutePath().toString())
         .collect(Collectors.toList());
-    final List<Comic> toDelete = this.comicRepository.findAll().stream()
-        .filter(comic -> !comicFilePaths.contains(comic.getPath())).collect(Collectors.toList());
-    this.comicRepository.deleteAll(toDelete);
+
+    if (!comicFilePaths.isEmpty()) {
+      final List<Comic> toDelete = this.comicRepository.findAll().stream()
+          .filter(comic -> !comicFilePaths.contains(comic.getPath()))
+          .collect(Collectors.toList());
+      this.comicRepository.deleteAll(toDelete);
+    }
   }
 
   /**
@@ -234,35 +241,32 @@ public class ScannerService {
     this.reportAssociation();
 
     // Get all comics, grouped by volume.
-    final Map<Volume, List<Comic>> volumes = this.comicRepository
+    this.comicRepository
         .findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc().stream().collect(Collectors.groupingBy(comic -> {
           final Volume volume = new Volume();
           volume.setPublisher(comic.getPublisher());
           volume.setSeries(comic.getSeries());
-          volume.setVolume(comic.getVolume());
+          volume.setName(comic.getVolume());
           return volume;
-        }));
-
-    // Traverse each volume
-    volumes.forEach((volume, comics) -> {
-      log.debug("Associating {} comics for {}.", comics.size(), volume.toString());
-      // Traverse each comic in the volume
-      IntStream.range(0, comics.size()).forEach(index -> {
-        final Comic comic = comics.get(index);
-        log.trace("Associating comic {}.", comic.getPosition());
-        if (index > 0) {
-          final Comic previousComic = comics.get(index - 1);
-          comic.setPreviousId(previousComic.getId());
-          log.trace("Associating comic {} with previous comic {}", comic.getPosition(),
-              previousComic.getPosition());
-        }
-        if (index < (comics.size() - 1)) {
-          final Comic nextComic = comics.get(index + 1);
-          comic.setNextId(nextComic.getId());
-          log.trace("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
-        }
-        this.comicRepository.save(comic);
-      });
-    });
+        })).forEach((volume, comics) -> {
+          log.debug("Associating {} comics for {}.", comics.size(), volume.toString());
+          // Traverse each comic in the volume
+          IntStream.range(0, comics.size()).forEach(index -> {
+            final Comic comic = comics.get(index);
+            log.trace("Associating comic {}.", comic.getPosition());
+            if (index > 0) {
+              final Comic previousComic = comics.get(index - 1);
+              comic.setPreviousId(previousComic.getId());
+              log.trace("Associating comic {} with previous comic {}", comic.getPosition(),
+                  previousComic.getPosition());
+            }
+            if (index < (comics.size() - 1)) {
+              final Comic nextComic = comics.get(index + 1);
+              comic.setNextId(nextComic.getId());
+              log.trace("Associating comic {} with next comic {}", comic.getPosition(), nextComic.getPosition());
+            }
+            this.comicRepository.save(comic);
+          });
+        });
   }
 }

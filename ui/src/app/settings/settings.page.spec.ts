@@ -1,16 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { SettingsServiceMocks as settingsService } from '../../testing/settings.service.mocks';
 import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
+import { SettingsServiceMocks as settingsService } from '../../testing/settings.service.mocks';
 import { StatsServiceMocks as statsService } from '../../testing/stats.service.mocks';
-
+import { ComicsService } from '../comics.service';
 import { SettingsService } from '../settings.service';
 import { StatsService } from '../stats.service';
-import { ComicsService } from '../comics.service';
 
-import { SettingsPage } from './settings.page';
 import { SettingsPageModule } from './settings.module';
+import { SettingsPage } from './settings.page';
 
 describe('SettingsPage', () => {
   let component: SettingsPage;
@@ -20,7 +19,7 @@ describe('SettingsPage', () => {
     TestBed.configureTestingModule({
       imports: [
         SettingsPageModule,
-        RouterTestingModule,
+        RouterTestingModule
       ],
       providers: [{
         provide: SettingsService, useValue: settingsService

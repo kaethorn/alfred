@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -29,11 +29,12 @@ import static java.lang.String.format;
 @Document
 public class Comic {
 
-  private static final String publisherDirPattern = "^.*?(?<publisher>[^/]+)/";
-  private static final String seriesDirPattern = "(?<series1>[^/]+) \\((?<volume1>\\d{4})\\)/";
-  private static final String fileNamePattern = "(?<series2>[^/]+) (?<number>[\\d\\.a½/]+) \\((?<volume2>\\d{4})\\)( [^/]+)?\\.cbz$";
+  private static final List<String> HALF_ISSUE_NUMBERS = Arrays.asList("½", "1/2");
+  private static final String PUBLISHER_DIR_PATTERN = "^.*?(?<publisher>[^/]+)/";
+  private static final String SERIES_DIR_PATTERN = "(?<series1>[^/]+) \\((?<volume1>\\d{4})\\)/";
+  private static final String FILE_NAME_PATTERN = "(?<series2>[^/]+) (?<number>[\\d\\.a½/]+) \\((?<volume2>\\d{4})\\)( [^/]+)?\\.cbz$";
   private static Pattern pattern = Pattern
-        .compile(publisherDirPattern + seriesDirPattern + fileNamePattern);
+        .compile(PUBLISHER_DIR_PATTERN + SERIES_DIR_PATTERN + FILE_NAME_PATTERN);
 
   @Id
   private String id;
@@ -62,9 +63,9 @@ public class Comic {
   @Indexed
   private String position;
 
-  private Short year;
+  private Integer year;
 
-  private Short month;
+  private Integer month;
 
   private String title;
 
@@ -96,29 +97,32 @@ public class Comic {
 
   private String locations;
 
-  private Short pageCount;
+  private Integer pageCount;
   private String nextId;
   private String previousId;
 
-  @Builder.Default
-  private boolean read = false;
+  private boolean read;
 
   private List<ScannerIssue> errors;
   private List<String> files;
 
   @Builder.Default
-  private Short currentPage = (short) 0;
+  private Integer currentPage = 0;
 
   private Date lastRead;
 
   public Comic() {
     this.read = false;
-    this.currentPage = (short) 0;
+    this.currentPage = 0;
   }
 
   public void setNumber(final String number) {
     this.number = number;
-    this.position = Comic.mapPosition(number);
+    try {
+      this.position = Comic.mapPosition(number);
+    } catch (final InvalidIssueNumberException exception) {
+      this.position = new DecimalFormat("0000.0").format(BigDecimal.ZERO);
+    }
   }
 
   public Boolean isValid() {
@@ -143,7 +147,7 @@ public class Comic {
   }
 
   public List<String> findMissingAttributes() {
-    final List<String> missingAttributes = new ArrayList<String>();
+    final List<String> missingAttributes = new ArrayList<>();
     if (this.getPublisher() == null) {
       missingAttributes.add("publisher");
     }
@@ -161,19 +165,17 @@ public class Comic {
 
   public static String mapPosition(final String number) throws InvalidIssueNumberException {
     String convertableNumber = number;
-    if ("½".equals(number) || "1/2".equals(number)) {
+    if (HALF_ISSUE_NUMBERS.contains(convertableNumber)) {
       convertableNumber = "0.5";
-    }
-    if (number.endsWith("a")) {
+    } else if (convertableNumber.endsWith("a")) {
       convertableNumber = convertableNumber.replace("a", ".5");
     }
-    BigDecimal position = new BigDecimal(0);
     try {
-      position = new BigDecimal(convertableNumber);
-    } catch (final Exception exception) {
-      throw new InvalidIssueNumberException(number);
+      final BigDecimal position = new BigDecimal(convertableNumber);
+      return new DecimalFormat("0000.0").format(position);
+    } catch (final NumberFormatException | ArithmeticException exception) {
+      throw new InvalidIssueNumberException(number, exception);
     }
-    return new DecimalFormat("0000.0").format(position);
   }
 
   @Override

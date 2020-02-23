@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class SettingsService {
 
-  private final ArrayList<Setting> defaults = new ArrayList<Setting>();
+  private final List<Setting> defaults = new ArrayList<>();
   private final SettingRepository settingRepository;
   private final Environment environment;
 
@@ -33,15 +34,15 @@ public class SettingsService {
       }
 
       // Defaults are ignored if values for the given key already exist
-      final Optional<Setting> hasSetting = this.settingRepository.findByKey(settingDefault.getKey());
-      if (!hasSetting.isPresent()) {
-        this.settingRepository.save(settingDefault);
-      } else {
-        final Setting setting = hasSetting.get();
+      final Optional<Setting> maybeSetting = this.settingRepository.findByKey(settingDefault.getKey());
+      if (maybeSetting.isPresent()) {
         if (environmentValue.isPresent()) {
+          final Setting setting = maybeSetting.get();
           setting.setValue(environmentValue.get());
           this.settingRepository.save(setting);
         }
+      } else {
+        this.settingRepository.save(settingDefault);
       }
     });
   }

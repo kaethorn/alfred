@@ -32,8 +32,7 @@ public class ScannerIssue {
   private Severity severity;
   private Type type;
 
-  @Builder.Default
-  private boolean fixable = false;
+  private boolean fixable;
 
   @Builder.Default
   private Date date = new Date();

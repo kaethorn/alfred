@@ -35,7 +35,7 @@ public class ProgressService {
     comic.setRead(read);
     comic.setCurrentPage(null);
     if (read) {
-      comic.setCurrentPage((short) 0);
+      comic.setCurrentPage(0);
       comic.setLastRead(new Date());
     }
 
@@ -52,7 +52,7 @@ public class ProgressService {
     this.mongoTemplate.find(Query.query(Criteria
         .where("publisher").is(volume.getPublisher())
         .and("series").is(volume.getSeries())
-        .and("volume").is(volume.getVolume())), Comic.class)
+        .and("volume").is(volume.getName())), Comic.class)
       .stream().forEach(affectedComic -> this.updateComic(userId, affectedComic, read));
   }
 

@@ -2,6 +2,8 @@ package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.comics.ComicRepository;
+import de.wasenweg.alfred.fixtures.ComicFixtures;
+import de.wasenweg.alfred.fixtures.ProgressFixtures;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;

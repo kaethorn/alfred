@@ -21,25 +21,14 @@ export interface PageSource {
   providedIn: 'root'
 })
 export class NavigatorService {
-  static page = 0;
-  static offset = 1;
-  static sideBySide: boolean;
-  static pageCount: number;
+  public static page = 0;
+  public static offset = 1;
+  public static sideBySide: boolean;
+  public static pageCount: number;
 
-  constructor () {}
+  constructor() {}
 
-  private partition (): PageSource[][] {
-    const setCount = Math.round(NavigatorService.sideBySide ?
-      ((NavigatorService.pageCount ? NavigatorService.pageCount : -1) + 1) / 2 : NavigatorService.pageCount);
-
-    return Array.from(Array(setCount).keys())
-      .map(set => NavigatorService.sideBySide ?
-        set === 0 ? [set] : (2 * set < NavigatorService.pageCount) ? [2 * set - 1, 2 * set] : [2 * set - 1] :
-        [set])
-      .map(set => set.map(index => ({ page: index, loaded: false })));
-  }
-
-  set (pageCount: number, currentPage: number, sideBySide: boolean): PageSource[][] {
+  public set(pageCount: number, currentPage: number, sideBySide: boolean): PageSource[][] {
     NavigatorService.page = currentPage;
     NavigatorService.pageCount = pageCount;
     NavigatorService.sideBySide = sideBySide;
@@ -49,7 +38,7 @@ export class NavigatorService {
   /**
    * Returns navigation instructions.
    */
-  go (offset: number = 0): NavigationInstruction {
+  public go(offset = 0): NavigationInstruction {
     let direction: AdjacentComic = AdjacentComic.same;
     NavigatorService.offset = offset;
 
@@ -84,8 +73,19 @@ export class NavigatorService {
     };
   }
 
-  getSet (): number {
+  public getSet(): number {
     return NavigatorService.sideBySide ?
       Math.round(NavigatorService.page / 2) : NavigatorService.page;
+  }
+
+  private partition(): PageSource[][] {
+    const setCount = Math.round(NavigatorService.sideBySide ?
+      ((NavigatorService.pageCount ? NavigatorService.pageCount : -1) + 1) / 2 : NavigatorService.pageCount);
+
+    return Array.from(Array(setCount).keys())
+      .map(set => NavigatorService.sideBySide ?
+        set === 0 ? [set] : (2 * set < NavigatorService.pageCount) ? [2 * set - 1, 2 * set] : [2 * set - 1] :
+        [set])
+      .map(set => set.map(index => ({ page: index, loaded: false })));
   }
 }

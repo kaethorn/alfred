@@ -1,65 +1,66 @@
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { browser, by, element, ExpectedConditions, promise, ElementFinder, ElementArrayFinder } from 'protractor';
+
 import { Page } from './page.po';
 
 export class SettingsPage {
 
-  static async navigateTo () {
+  public static async navigateTo(): Promise<void> {
     await browser.get('/settings');
     return Page.waitForElement(this.getComicsPathInput());
   }
 
-  static getComicsPathInput () {
+  public static getComicsPathInput(): ElementFinder {
     return element(by.css('input[Placeholder="Path"]'));
   }
 
-  static getSaveButton () {
+  public static getSaveButton(): ElementFinder {
     return element(by.cssContainingText('app-settings ion-button', 'Save'));
   }
 
-  private static get progress () {
+  private static get progress(): ElementFinder {
     return element(by.css('app-scanner .progress'));
   }
 
-  static waitForScanStart () {
+  public static waitForScanStart(): promise.Promise<void> {
     return browser.wait(ExpectedConditions.presenceOf(this.progress), 1000);
   }
 
-  static waitForScanEnd () {
+  public static waitForScanEnd(): promise.Promise<void> {
     return browser.wait(ExpectedConditions.textToBePresentInElement(this.getStats().first(), '305'), 20000);
   }
 
-  static getScanButton () {
+  public static getScanButton(): ElementFinder {
     return element(by.cssContainingText('app-scanner ion-button', 'Scan'));
   }
 
-  static getClearButton () {
+  public static getClearButton(): ElementFinder {
     return element(by.cssContainingText('app-scanner ion-button', 'Clear'));
   }
 
-  static getScanProgress () {
+  public static getScanProgress(): promise.Promise<string> {
     return this.progress.getText();
   }
 
-  static getScanErrors () {
+  public static getScanErrors(): ElementFinder {
     return element(by.css('app-scanner .errors'));
   }
 
-  static getStats () {
+  public static getStats(): ElementArrayFinder {
     return element.all(by.css('app-scanner ion-list.stats ion-item'));
   }
 
-  static getStatsText () {
+  public static getStatsText(): promise.Promise<string> {
     return this.getStats().getText();
   }
 
-  static async scan () {
+  public static async scan(): Promise<void> {
     await this.navigateTo();
     expect(await this.getScanButton().isPresent()).toBe(true);
 
     // Clear IndexedDB
-    const canClear: boolean = await this.getClearButton().getAttribute('disabled').then(attr => {
-      return attr !== 'true';
-    });
+    const canClear: boolean = await this.getClearButton().getAttribute('disabled').then(attr =>
+      attr !== 'true'
+    );
     if (canClear) {
       await this.getClearButton().click();
     }
@@ -68,7 +69,7 @@ export class SettingsPage {
     await this.getScanButton().click();
     await this.waitForScanStart();
     expect(await this.getScanProgress())
-      .toMatch(/Scanning\ file\ \d+\ of\ \d+\ at\ .*/);
+      .toMatch(/Scanning file \d+ of \d+ at .*/);
     await this.waitForScanEnd();
     expect(await this.getScanErrors().isPresent()).toBe(false);
   }

@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavParams } from '@ionic/angular';
 
 import { volume1 as volume } from '../../../../testing/volume.fixtures';
+import { LibraryPageModule } from '../../library.module';
 
 import { VolumeActionsComponent } from './volume-actions.component';
-import { LibraryPageModule } from '../../library.module';
 
 describe('VolumeActionsComponent', () => {
   let component: VolumeActionsComponent;
@@ -15,7 +15,7 @@ describe('VolumeActionsComponent', () => {
     navParams = new NavParams({ volume });
     TestBed.configureTestingModule({
       imports: [
-        LibraryPageModule,
+        LibraryPageModule
       ],
       providers: [{
         provide: NavParams, useValue: navParams

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Import(EmbeddedMongoAutoConfiguration.class)
-@Profile(value = "test")
+@Profile("test")
 public class EmbedMongo {
 
 }

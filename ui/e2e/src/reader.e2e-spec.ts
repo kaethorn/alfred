@@ -1,13 +1,14 @@
-import { BookmarksPage } from './bookmarks.po';
-import { LibraryPage } from './library.po';
-import { SettingsPage } from './settings.po';
-import { IssuesPage } from './issues.po';
-import { MongoDBTools } from './mongodb.tools';
-import { ProxySettings } from './proxy-settings';
-import { AppPage } from './app.po';
-import { ReaderPage } from './reader.po';
 import { browser } from 'protractor';
+
+import { AppPage } from './app.po';
+import { BookmarksPage } from './bookmarks.po';
+import { IssuesPage } from './issues.po';
+import { LibraryPage } from './library.po';
+import { MongoDBTools } from './mongodb.tools';
 import { Page } from './page.po';
+import { ProxySettings } from './proxy-settings';
+import { ReaderPage } from './reader.po';
+import { SettingsPage } from './settings.po';
 
 describe('Reader Component', () => {
 
@@ -103,7 +104,7 @@ describe('Reader Component', () => {
     });
   });
 
-  describe('completing an issue', async () => {
+  describe('completing an issue', () => {
 
     it('resumes reading and caches agagin', async () => {
       await BookmarksPage.getIssueCover(0).click();

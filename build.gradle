@@ -1,6 +1,8 @@
 plugins {
   id 'java'
   id 'checkstyle'
+  id 'pmd'
+  id 'com.github.spotbugs' version '3.0.0'
   id 'io.freefair.lombok' version '4.1.6'
   id 'org.springframework.boot' version '2.2.4.RELEASE'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
@@ -23,8 +25,32 @@ checkstyle {
   toolVersion '8.26'
 }
 
+spotbugs {
+  effort = 'max'
+}
+
+pmd {
+  consoleOutput = true
+  toolVersion = '6.21.0'
+}
+
+tasks.pmdMain {
+  ruleSets = []
+  ruleSetConfig = resources.text.fromFile("config/pmd/pmd-main.xml")
+}
+
+tasks.pmdTest {
+  ruleSets = []
+  ruleSetConfig = resources.text.fromFile("config/pmd/pmd-test.xml")
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+  reports.xml.enabled = false
+  reports.html.enabled = true
+}
+
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 task unpack(type: Copy) {

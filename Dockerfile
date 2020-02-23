@@ -1,4 +1,4 @@
-FROM gradle:5.5-jdk11 as builder
+FROM gradle:6.1.1-jdk11 as builder
 WORKDIR /workspace/app
 COPY settings.gradle build.gradle ./
 RUN gradle dependencies > /dev/null

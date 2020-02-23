@@ -1,33 +1,34 @@
-import { by, element, protractor, browser } from 'protractor';
+import { by, element, protractor, browser, promise, ElementFinder, ElementArrayFinder } from 'protractor';
+
 import { Page } from './page.po';
 
 export class ReaderPage {
 
-  static async openOverlay (offset = 0) {
+  public static async openOverlay(offset = 0): Promise<void> {
     await Page.waitForElement(element.all(by.css('app-reader img')).get(offset));
     await element.all(by.css('app-reader img')).get(offset).click();
-    await Page.waitForElement(element.all(by.css('app-reader .bottom ion-button')).first());
+    return Page.waitForElement(element.all(by.css('app-reader .bottom ion-button')).first());
   }
 
-  static getNavigationButtons () {
+  public static getNavigationButtons(): ElementArrayFinder {
     return element.all(by.css('app-reader .bottom ion-button'));
   }
 
-  static getOverlayNextButton () {
+  public static getOverlayNextButton(): ElementFinder {
     return this.getNavigationButtons().get(2);
   }
 
-  static getOverlayPreviousButton () {
+  public static getOverlayPreviousButton(): ElementFinder {
     return this.getNavigationButtons().get(1);
   }
 
-  static exit () {
+  public static exit(): promise.Promise<void> {
     return browser.actions().mouseMove(element.all(by.css('app-reader img')).last())
       .sendKeys(protractor.Key.ESCAPE)
       .perform();
   }
 
-  static async getPageNumberFromUrl (): Promise<number> {
+  public static async getPageNumberFromUrl(): Promise<number> {
     const url = await browser.getCurrentUrl();
     const pageParts = url.match(/page=(\d+)/);
     if (pageParts && pageParts.length > 1) {
@@ -36,7 +37,7 @@ export class ReaderPage {
     return -1;
   }
 
-  static async getIssueIdFromUrl (): Promise<string> {
+  public static async getIssueIdFromUrl(): Promise<string> {
     const url = await browser.getCurrentUrl();
     const parts = url.match(/read\/(.+)\?/);
     if (parts && parts.length > 1) {

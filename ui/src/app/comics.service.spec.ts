@@ -1,5 +1,5 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { ComicsService } from './comics.service';
 
@@ -42,15 +42,15 @@ describe('ComicsService', () => {
           }
         }
       }]
-    },
+    }
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ]
     });
-    service = TestBed.get(ComicsService);
-    httpMock = TestBed.get(HttpTestingController);
+    service = TestBed.inject(ComicsService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

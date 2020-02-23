@@ -1,19 +1,19 @@
 import { Component, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { UserService } from '../user.service';
 import { User } from '../user';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.sass'],
+  styleUrls: ['./login.page.sass']
 })
 export class LoginPage {
 
-  message: string;
+  public message: string;
 
-  constructor (
+  constructor(
     private userService: UserService,
     private ngZone: NgZone,
     private router: Router,
