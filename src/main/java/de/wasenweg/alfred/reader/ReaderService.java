@@ -99,7 +99,7 @@ public class ReaderService {
 
     return ResponseEntity
         .ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + comic.getFileName())
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + comic.getFileName())
         .contentType(MediaType.APPLICATION_OCTET_STREAM)
         .body(outputStream -> {
           try (InputStream inputStream = Files.newInputStream(Paths.get(comic.getPath()))) {
