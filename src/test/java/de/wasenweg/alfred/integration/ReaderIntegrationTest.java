@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 @EnableAutoConfiguration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
@@ -78,7 +79,6 @@ public class ReaderIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void read() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
@@ -93,7 +93,6 @@ public class ReaderIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void download() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);

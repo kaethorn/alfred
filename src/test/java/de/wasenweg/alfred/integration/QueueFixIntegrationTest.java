@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class })
+@DirtiesContext
 @EnableAutoConfiguration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
@@ -60,7 +61,6 @@ public class QueueFixIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void flatten() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/not_flat", this.testBed);

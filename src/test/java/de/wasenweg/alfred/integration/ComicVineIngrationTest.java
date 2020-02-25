@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 @EnableAutoConfiguration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
@@ -63,8 +64,7 @@ public class ComicVineIngrationTest {
   }
 
   @Test
-  @DirtiesContext
-  public void associatesComics() throws Exception {
+  public void scrapesMetaData() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
 

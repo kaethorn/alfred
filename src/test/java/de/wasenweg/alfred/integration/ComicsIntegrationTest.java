@@ -42,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class })
+@DirtiesContext
 @EnableAutoConfiguration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
@@ -306,7 +307,6 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void updateIncompleteComic() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
@@ -369,7 +369,6 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void updateComic() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
@@ -428,7 +427,6 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void scrape() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
@@ -493,7 +491,6 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void scrapeWithError() throws Exception {
     // Given
     MockServerUtils.stop();

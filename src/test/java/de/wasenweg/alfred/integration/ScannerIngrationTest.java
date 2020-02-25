@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 @EnableAutoConfiguration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
@@ -49,7 +50,6 @@ public class ScannerIngrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void emittsScanProgressEvents() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);

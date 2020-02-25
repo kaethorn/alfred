@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class })
+@DirtiesContext
 @EnableAutoConfiguration
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
@@ -65,7 +66,6 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void getInvalidReturnsInvalid() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
@@ -81,7 +81,6 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void getInvalidOmitsvalid() throws Exception {
     // Given / When / Then
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue"))
@@ -91,7 +90,6 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void getValidReturnsValid() throws Exception {
     // Given / When / Then
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue/valid"))
@@ -101,7 +99,6 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void getValidOmitsInvalid() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
