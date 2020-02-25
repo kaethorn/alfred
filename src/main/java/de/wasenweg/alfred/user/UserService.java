@@ -3,8 +3,6 @@ package de.wasenweg.alfred.user;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.apache.v2.ApacheHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import de.wasenweg.alfred.security.IJwtService;
 import de.wasenweg.alfred.security.JwtCreator;
 import de.wasenweg.alfred.settings.SettingsService;
@@ -34,6 +32,7 @@ public class UserService {
   private final JwtCreator tokenCreator;
   private final IJwtService jwtService;
   private final SettingsService settingsService;
+  private final GoogleIdTokenVerifier.Builder verifierBuilder;
 
   public Optional<User> verify(final String token) {
     if (this.jwtService.verifyToken(token, this.jwtSecret)) {
@@ -45,12 +44,9 @@ public class UserService {
   }
 
   public Optional<User> signIn(final String token) throws GeneralSecurityException, IOException {
-
-    final ApacheHttpTransport transport = new ApacheHttpTransport();
-    final JacksonFactory jsonFactory = new JacksonFactory();
     final String clientId = this.settingsService.get("auth.client.id");
 
-    final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+    final GoogleIdTokenVerifier verifier = this.verifierBuilder
         .setAudience(Collections.singletonList(clientId))
         .build();
 
@@ -72,16 +68,25 @@ public class UserService {
 
       final String userId = payload.getSubject();
       final String apiToken = this.tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
+      final String name = this.getKey(payload, "name");
+      final String picture = this.getKey(payload, "picture");
 
       return Optional.of(User.builder()
           .id(userId)
           .email(email)
-          .name((String) payload.get("name"))
-          .picture((String) payload.get("picture"))
+          .name(name)
+          .picture(picture)
           .token(apiToken)
           .build());
     }
 
     throw new GeneralSecurityException();
+  }
+
+  private String getKey(final Payload payload, final String key) {
+    if (payload.containsKey("picture")) {
+      return (String) payload.get("picture");
+    }
+    return "";
   }
 }
