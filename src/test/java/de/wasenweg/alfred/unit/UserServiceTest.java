@@ -4,7 +4,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import de.wasenweg.alfred.security.JwtCreator;
-import de.wasenweg.alfred.security.JwtService;
 import de.wasenweg.alfred.settings.SettingsService;
 import de.wasenweg.alfred.user.User;
 import de.wasenweg.alfred.user.UserService;
@@ -27,31 +26,28 @@ import static org.mockito.Mockito.when;
 public class UserServiceTest {
 
   @Mock
-  private SettingsService settingsService;
+  private transient SettingsService settingsService;
 
   @Mock
-  private JwtService jwtService;
+  private transient JwtCreator jwtCreator;
 
   @Mock
-  private JwtCreator jwtCreator;
+  private transient GoogleIdTokenVerifier.Builder mockVerifierBuilder;
 
   @Mock
-  private GoogleIdTokenVerifier.Builder mockVerifierBuilder;
+  private transient GoogleIdTokenVerifier mockVerifier;
 
   @Mock
-  private GoogleIdTokenVerifier mockVerifier;
+  private transient GoogleIdToken mockIdToken;
 
   @Mock
-  private GoogleIdToken mockIdToken;
-
-  @Mock
-  private Payload mockPayload;
+  private transient Payload mockPayload;
 
   @InjectMocks
-  private UserService userService;
+  private transient UserService userService;
 
   @BeforeEach
-  void setUp() throws GeneralSecurityException, IOException {
+  public void setUp() throws GeneralSecurityException, IOException {
     when(this.settingsService.get("auth.client.id")).thenReturn("fake-client-id-123");
     when(this.mockVerifier.verify("mock-123")).thenReturn(this.mockIdToken);
     when(this.mockVerifierBuilder.build()).thenReturn(this.mockVerifier);
@@ -63,6 +59,7 @@ public class UserServiceTest {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
     when(this.mockPayload.getEmail()).thenReturn("foo@bar.com");
     when(this.mockIdToken.getPayload()).thenReturn(this.mockPayload);
+    when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-api-token");
 
     final User user = this.userService.signIn("mock-123").get();
     assertThat(user.getEmail()).isEqualTo("foo@bar.com");

@@ -84,8 +84,8 @@ public class UserService {
   }
 
   private String getKey(final Payload payload, final String key) {
-    if (payload.containsKey("picture")) {
-      return (String) payload.get("picture");
+    if (payload.containsKey(key)) {
+      return (String) payload.get(key);
     }
     return "";
   }
