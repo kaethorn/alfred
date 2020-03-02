@@ -97,11 +97,11 @@ public class ComicVineIngrationTest {
     assertThat(comic.getYear()).isEqualTo(2010);
     assertThat(comic.getMonth()).isEqualTo(9);
     assertThat(comic.getCharacters())
-      .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
+        .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
     assertThat(comic.getTeams())
-      .isEqualTo("Superman/Batman");
+        .isEqualTo("Superman/Batman");
     assertThat(comic.getLocations())
-      .isEqualTo("Batcave, Gotham City, Wayne Manor");
+        .isEqualTo("Batcave, Gotham City, Wayne Manor");
     assertThat(comic.getWriter()).isEqualTo("Grant Morrison");
     assertThat(comic.getPenciller()).isNull();
     assertThat(comic.getInker()).isNull();
@@ -123,7 +123,7 @@ public class ComicVineIngrationTest {
     assertThat(TestUtil.getText(document, "Year")).isEqualTo("2010");
     assertThat(TestUtil.getText(document, "Month")).isEqualTo("9");
     assertThat(TestUtil.getText(document, "Characters"))
-      .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
+        .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
     assertThat(TestUtil.getText(document, "Teams")).isEqualTo("Superman/Batman");
     assertThat(TestUtil.getText(document, "Locations")).isEqualTo("Batcave, Gotham City, Wayne Manor");
     assertThat(TestUtil.getText(document, "Writer")).isEqualTo("Grant Morrison");

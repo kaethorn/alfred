@@ -62,6 +62,6 @@ public class ProgressService {
         .and("series").is(comic.getSeries())
         .and("volume").is(comic.getVolume())
         .and("position").lte(comic.getPosition())), Comic.class)
-      .forEach(affectedComic -> this.updateComic(userId, affectedComic, true));
+        .forEach(affectedComic -> this.updateComic(userId, affectedComic, true));
   }
 }

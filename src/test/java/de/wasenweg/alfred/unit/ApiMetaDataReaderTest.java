@@ -86,7 +86,7 @@ public class ApiMetaDataReaderTest {
   @Test
   public void getIssueDetails() throws Exception {
     when(this.comicVineService.getIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/"))
-      .thenReturn(TestHelper.parseJson("batman-701.json"));
+        .thenReturn(TestHelper.parseJson("batman-701.json"));
 
     final Comic comic = new Comic();
     comic.setSeries("Batman");
@@ -100,11 +100,11 @@ public class ApiMetaDataReaderTest {
     assertThat(comic.getYear()).isEqualTo(2010);
     assertThat(comic.getMonth()).isEqualTo(9);
     assertThat(comic.getCharacters())
-      .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
+        .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
     assertThat(comic.getTeams())
-      .isEqualTo("Superman/Batman");
+        .isEqualTo("Superman/Batman");
     assertThat(comic.getLocations())
-      .isEqualTo("Batcave, Gotham City, Wayne Manor");
+        .isEqualTo("Batcave, Gotham City, Wayne Manor");
     assertThat(comic.getWriter()).isEqualTo("Grant Morrison");
     assertThat(comic.getPenciller()).isNull();
     assertThat(comic.getInker()).isNull();
