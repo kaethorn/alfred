@@ -1,6 +1,7 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +81,7 @@ public class QueueFixIntegrationTest {
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/queue/fix/NOT_FLAT")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))

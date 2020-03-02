@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +27,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = ApiMetaDataService.class)
 public class ApiMetaDataReaderTest {
 
   @Spy
@@ -198,7 +196,7 @@ public class ApiMetaDataReaderTest {
         .thenReturn(this.createJsonObject(
           Map.of("number_of_total_results", 0, "limit", 10, "results", new ObjectMapper().createArrayNode())));
     assertThat(this.apiMetaDataService.findVolumeId("DC Comics", "Batman", "1940"))
-      .isEqualTo("");
+        .isEqualTo("");
   }
 
   @Test
@@ -207,7 +205,7 @@ public class ApiMetaDataReaderTest {
         .thenReturn(this.createJsonObject(
           Map.of("number_of_total_results", 0, "limit", 10, "results", new ObjectMapper().createArrayNode())));
     assertThat(this.apiMetaDataService.findVolumeIssues("123").size())
-      .isEqualTo(0);
+        .isEqualTo(0);
   }
 
   @Test

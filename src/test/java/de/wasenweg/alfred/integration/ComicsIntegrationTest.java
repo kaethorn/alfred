@@ -1,11 +1,12 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.fixtures.ComicFixtures;
 import de.wasenweg.alfred.fixtures.ProgressFixtures;
-import de.wasenweg.alfred.mockserver.MockServerUtils;
+import de.wasenweg.alfred.mockserver.MockServerUtil;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import lombok.RequiredArgsConstructor;
@@ -60,12 +61,12 @@ public class ComicsIntegrationTest {
 
   @BeforeAll
   public static void startServer() throws IOException {
-    MockServerUtils.startServer();
+    MockServerUtil.startServer();
   }
 
   @AfterAll
   public static void stopServer() {
-    MockServerUtils.stop();
+    MockServerUtil.stop();
   }
 
   @BeforeEach
@@ -335,7 +336,7 @@ public class ComicsIntegrationTest {
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
@@ -359,13 +360,13 @@ public class ComicsIntegrationTest {
     assertThat(persistedComic.getTitle()).isEqualTo("");
 
     // Writes the XML to the file
-    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
-    final Document document = this.helper.parseComicInfo(comicPath);
-    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
-    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
-    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
-    assertThat(this.helper.getText(document, "Number")).isEqualTo("701");
-    assertThat(this.helper.getText(document, "Title")).isEqualTo("");
+    assertThat(TestUtil.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = TestUtil.parseComicInfo(comicPath);
+    assertThat(TestUtil.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(TestUtil.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(TestUtil.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(TestUtil.getText(document, "Number")).isEqualTo("701");
+    assertThat(TestUtil.getText(document, "Title")).isEqualTo("");
   }
 
   @Test
@@ -393,7 +394,7 @@ public class ComicsIntegrationTest {
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
@@ -417,13 +418,13 @@ public class ComicsIntegrationTest {
     assertThat(persistedComic.getErrors()).isNull();
 
     // Writes the XML to the file
-    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
-    final Document document = this.helper.parseComicInfo(comicPath);
-    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
-    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
-    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
-    assertThat(this.helper.getText(document, "Number")).isEqualTo("502");
-    assertThat(this.helper.getText(document, "Title")).isEqualTo("");
+    assertThat(TestUtil.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = TestUtil.parseComicInfo(comicPath);
+    assertThat(TestUtil.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(TestUtil.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(TestUtil.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(TestUtil.getText(document, "Number")).isEqualTo("502");
+    assertThat(TestUtil.getText(document, "Title")).isEqualTo("");
   }
 
   @Test
@@ -456,7 +457,7 @@ public class ComicsIntegrationTest {
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
@@ -481,19 +482,19 @@ public class ComicsIntegrationTest {
     assertThat(persistedComic.getErrors()).isEqualTo(Arrays.asList(error));
 
     // Writes the XML to the file
-    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
-    final Document document = this.helper.parseComicInfo(comicPath);
-    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
-    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
-    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
-    assertThat(this.helper.getText(document, "Number")).isEqualTo("701");
-    assertThat(this.helper.getText(document, "Title")).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
+    assertThat(TestUtil.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = TestUtil.parseComicInfo(comicPath);
+    assertThat(TestUtil.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(TestUtil.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(TestUtil.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(TestUtil.getText(document, "Number")).isEqualTo("701");
+    assertThat(TestUtil.getText(document, "Title")).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
   }
 
   @Test
   public void scrapeWithError() throws Exception {
     // Given
-    MockServerUtils.stop();
+    MockServerUtil.stop();
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
     final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
     final Comic comic = Comic.builder()
@@ -517,7 +518,7 @@ public class ComicsIntegrationTest {
     this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andExpect(status().is(404));
   }
 }

@@ -1,6 +1,7 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
@@ -54,7 +55,7 @@ public class ScannerAssociationIngrationTest {
     this.helper.setComicsPath("src/test/resources/fixtures/full", this.testBed);
 
     // When
-    StepVerifier.create(this.helper.triggerScan(this.port))
+    StepVerifier.create(TestUtil.triggerScan(this.port))
         .expectNext("start")
         .expectNext("305")
         .expectNextCount(305)
