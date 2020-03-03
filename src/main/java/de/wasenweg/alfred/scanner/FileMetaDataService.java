@@ -24,6 +24,7 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -249,7 +250,8 @@ public class FileMetaDataService {
         writer.write(this.marshal(comic));
         log.info(format("Finished writing ComicInfo.xml to %s", comic.getPath()));
       }
-    } catch (final IOException | SAXException | TransformerException | ParserConfigurationException exception) {
+    } catch (final FileSystemNotFoundException | IOException | SAXException
+        | TransformerException | ParserConfigurationException exception) {
       log.error(format("Failed to write ComicInfo.xml to %s", comic.getPath()));
     }
   }
