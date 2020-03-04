@@ -160,12 +160,15 @@ public class ScannerService {
     this.reportProgress(path.toString());
 
     final String comicPath = path.toAbsolutePath().toString();
-    final Path fileName = path.getFileName();
     final Comic comic = this.comicRepository.findByPath(comicPath)
         .orElse(new Comic());
 
     comic.setPath(comicPath);
-    comic.setFileName(fileName == null ? "null" : fileName.toString());
+    comic.setFileName(
+        Optional
+            .ofNullable(path.getFileName())
+            .orElse(Paths.get("null"))
+            .toString());
     this.processComic(comic);
   }
 
@@ -200,7 +203,9 @@ public class ScannerService {
         comicFiles.forEach(path -> this.processComicByPath(path));
         log.info("Parsed {} comics.", comicFiles.size());
 
+        this.reportCleanUp();
         this.cleanOrphans(comicFiles);
+        this.reportAssociation();
         this.associateVolumes();
 
         log.info("Done scanning.");
@@ -216,9 +221,7 @@ public class ScannerService {
   }
 
   // Purge comics from the DB that don't have a corresponding file.
-  private void cleanOrphans(final List<Path> comicFiles) {
-    this.reportCleanUp();
-
+  public void cleanOrphans(final List<Path> comicFiles) {
     final List<String> comicFilePaths = comicFiles.stream()
         .map(path -> path.toAbsolutePath().toString())
         .collect(Collectors.toList());
@@ -238,8 +241,6 @@ public class ScannerService {
    * the previous and next comic within the current volume.
    */
   public void associateVolumes() {
-    this.reportAssociation();
-
     // Get all comics, grouped by volume.
     this.comicRepository
         .findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc().stream().collect(Collectors.groupingBy(comic -> {

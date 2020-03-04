@@ -73,7 +73,7 @@ public class CoverIntegrationTest {
         .expectNext("association")
         .expectNext("done")
         .thenCancel()
-        .verify(Duration.ofSeconds(2L));
+        .verify(Duration.ofSeconds(6L));
   }
 
   @AfterEach
