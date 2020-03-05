@@ -30,22 +30,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ComicVineService {
 
+
   @Value("${comics.comicVine.baseUrl:https://comicvine.gamespot.com/api/}")
   private String baseUrl;
 
   private final SettingsService settingsService;
   private final Environment environment;
 
+  private final ObjectMapper mapper = new ObjectMapper();
+  // Throttle to 200 requests per hour
+  private final RateLimiter throttle = RateLimiter.create(200.0 / 3600.0);
+  private final RestTemplate restTemplate = new RestTemplate();
+
   private String apiKey;
-  private ObjectMapper mapper;
-  private RateLimiter throttle;
 
   @PostConstruct
   public void setup() {
-    this.mapper = new ObjectMapper();
     this.apiKey = this.settingsService.get("comics.comicVine.ApiKey");
-    // Throttle to 200 requests per hour
-    this.throttle = RateLimiter.create(200.0 / 3600.0);
   }
 
   // Get details about a specific issue
@@ -110,7 +111,7 @@ public class ComicVineService {
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     headers.add("user-agent", "curl/7.52.1");
     final HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-    final ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.GET, entity, String.class);
+    final ResponseEntity<String> response = this.restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     try {
       return this.mapper.readTree(response.getBody());
     } catch (final IOException exception) {
