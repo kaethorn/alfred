@@ -40,7 +40,7 @@
           class="synced-badge" color="secondary">
           &#9921;
         </ion-badge>
-        <img [attr.src]="thumbnails.get(comic.id) | async">
+        <img [attr.src]="(thumbnails.get(comic.id) | async)?.url">
         <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
       </a>
       <ion-item>
