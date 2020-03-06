@@ -1,7 +1,7 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
-import de.wasenweg.alfred.EmbedMongo;
+import de.wasenweg.alfred.EnableEmbeddedMongo;
 import de.wasenweg.alfred.stats.Stats;
 import de.wasenweg.alfred.stats.StatsService;
 import de.wasenweg.alfred.unit.TestHelper;
@@ -26,9 +26,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(
-    classes = { AlfredApplication.class, EmbedMongo.class },
+    classes = { AlfredApplication.class },
     properties = { "auth.jwt.secret=secret" }
 )
+@EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles({"prod"})
 public class SecurityConfigIntegrationTest {
