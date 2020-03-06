@@ -32,19 +32,18 @@ public class ProgressService {
         .where("comicId").is(new ObjectId(comic.getId()))
         .and("userId").is(userId));
 
-    comic.setRead(read);
-    comic.setCurrentPage(null);
-    if (read) {
-      comic.setCurrentPage(0);
-      comic.setLastRead(new Date());
-    }
-
     final Update update = new Update();
-    update.set("read", comic.isRead());
-    update.set("currentPage", comic.getCurrentPage());
-    update.set("lastRead", comic.getLastRead());
+    update.set("read", read);
+    update.set("currentPage", read ? Integer.valueOf(0) : comic.getCurrentPage());
+    update.set("lastRead", new Date());
 
     this.mongoTemplate.upsert(query, update, Progress.class);
+
+    // Read state is saved in the progress schema
+    comic.setRead(false);
+    comic.setCurrentPage(0);
+    comic.setLastRead(null);
+
     return comic;
   }
 
@@ -62,6 +61,6 @@ public class ProgressService {
         .and("series").is(comic.getSeries())
         .and("volume").is(comic.getVolume())
         .and("position").lte(comic.getPosition())), Comic.class)
-      .forEach(affectedComic -> this.updateComic(userId, affectedComic, true));
+        .forEach(affectedComic -> this.updateComic(userId, affectedComic, true));
   }
 }

@@ -1,6 +1,6 @@
 package de.wasenweg.alfred.integration;
 
-import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.EnableEmbeddedMongo;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.scanner.ScannerIssue;
@@ -8,45 +8,34 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { AlfredApplication.class })
-@EnableAutoConfiguration
+@SpringBootTest
+@AutoConfigureMockMvc
+@DirtiesContext
+@EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class QueueIntegrationTest {
 
+  private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
-  private final WebApplicationContext context;
-
-  private MockMvc mockMvc;
 
   @BeforeEach
   public void setUp() {
-    this.mockMvc = MockMvcBuilders
-        .webAppContextSetup(this.context)
-        .apply(springSecurity())
-        .build();
-
     final Comic comic = Comic.builder()
         .path("/none.cbz")
         .fileName("Batman 701 (1940).cbz")
@@ -65,7 +54,6 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void getInvalidReturnsInvalid() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
@@ -81,7 +69,6 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void getInvalidOmitsvalid() throws Exception {
     // Given / When / Then
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue"))
@@ -91,7 +78,6 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void getValidReturnsValid() throws Exception {
     // Given / When / Then
     this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue/valid"))
@@ -101,7 +87,6 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void getValidOmitsInvalid() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);

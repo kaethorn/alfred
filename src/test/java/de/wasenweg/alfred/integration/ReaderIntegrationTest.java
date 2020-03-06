@@ -16,7 +16,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -28,13 +29,10 @@ import reactor.test.StepVerifier;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -44,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class CoverIntegrationTest {
+public class ReaderIntegrationTest {
 
   @TempDir
   public File testBed;
@@ -84,52 +82,30 @@ public class CoverIntegrationTest {
   }
 
   @Test
-  public void deletesFirstPage() throws Exception {
+  public void read() throws Exception {
     // Given
-    Comic comic = this.comicRepository.findAll().get(0);
-    assertEquals(comic.getPageCount(), 3);
-    assertIterableEquals(
-        comic.getFiles(), Arrays.asList("/1.png", "/2.png", "/3.png", "/ComicInfo.xml"));
+    final Comic comic = this.comicRepository.findAll().get(0);
 
-    // When
-    this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/comics/" + comic.getId() + "/page")
-        .param("path", "/1.png"))
+    // When / Then
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/read/" + comic.getId()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
-        .andExpect(jsonPath("$.files.length()").value("3"))
-        .andExpect(jsonPath("$.files[0]").value("/2.png"))
-        .andExpect(jsonPath("$.files[1]").value("/3.png"))
-        .andExpect(jsonPath("$.files[2]").value("/ComicInfo.xml"));
-
-    // Then
-    comic = this.comicRepository.findAll().get(0);
-    assertEquals(comic.getPageCount(), 2);
-    assertIterableEquals(
-        comic.getFiles(), Arrays.asList("/2.png", "/3.png", "/ComicInfo.xml"));
+        .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
+        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=/1.png"))
+        .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 90))
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE));
   }
 
   @Test
-  public void deletesLastPage() throws Exception {
+  public void download() throws Exception {
     // Given
-    Comic comic = this.comicRepository.findAll().get(0);
-    assertEquals(comic.getPageCount(), 3);
-    assertIterableEquals(
-        comic.getFiles(), Arrays.asList("/1.png", "/2.png", "/3.png", "/ComicInfo.xml"));
+    final Comic comic = this.comicRepository.findAll().get(0);
 
-    // When
-    this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/comics/" + comic.getId() + "/page")
-        .param("path", "/3.png"))
+    // When / Then
+    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/download/" + comic.getId()))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
-        .andExpect(jsonPath("$.files.length()").value("3"))
-        .andExpect(jsonPath("$.files[0]").value("/1.png"))
-        .andExpect(jsonPath("$.files[1]").value("/2.png"))
-        .andExpect(jsonPath("$.files[2]").value("/ComicInfo.xml"));
-
-    // Then
-    comic = this.comicRepository.findAll().get(0);
-    assertEquals(comic.getPageCount(), 2);
-    assertIterableEquals(
-        comic.getFiles(), Arrays.asList("/1.png", "/2.png", "/ComicInfo.xml"));
+        .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
+        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=Batman 402 (1940).cbz"))
+        .andExpect(header().doesNotExist(HttpHeaders.CONTENT_LENGTH))
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE));
   }
 }

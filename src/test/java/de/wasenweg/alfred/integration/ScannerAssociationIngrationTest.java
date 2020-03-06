@@ -1,6 +1,8 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.EnableEmbeddedMongo;
+import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
@@ -26,7 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 @EnableAutoConfiguration
+@EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class ScannerAssociationIngrationTest {
@@ -48,13 +52,12 @@ public class ScannerAssociationIngrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void associatesComics() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/full", this.testBed);
 
     // When
-    StepVerifier.create(this.helper.triggerScan(this.port))
+    StepVerifier.create(TestUtil.triggerScan(this.port))
         .expectNext("start")
         .expectNext("305")
         .expectNextCount(305)

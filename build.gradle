@@ -2,6 +2,7 @@ plugins {
   id 'java'
   id 'checkstyle'
   id 'pmd'
+  id 'jacoco'
   id 'com.github.spotbugs' version '3.0.0'
   id 'io.freefair.lombok' version '4.1.6'
   id 'org.springframework.boot' version '2.2.4.RELEASE'
@@ -22,7 +23,7 @@ repositories {
 }
 
 checkstyle {
-  toolVersion '8.26'
+  toolVersion '8.30'
 }
 
 spotbugs {

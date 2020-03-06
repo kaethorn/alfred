@@ -1,48 +1,47 @@
 package de.wasenweg.alfred.integration;
 
-import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.EnableEmbeddedMongo;
+import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.fixtures.ComicFixtures;
 import de.wasenweg.alfred.fixtures.ProgressFixtures;
-import de.wasenweg.alfred.mockserver.MockServerUtils;
+import de.wasenweg.alfred.mockserver.MockServerUtil;
+import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { AlfredApplication.class })
-@EnableAutoConfiguration
+@SpringBootTest
+@AutoConfigureMockMvc
+@DirtiesContext
+@EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class ComicsIntegrationTest {
@@ -50,29 +49,19 @@ public class ComicsIntegrationTest {
   @TempDir
   public File testBed;
 
+  private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
   private final ProgressRepository progressRepository;
-  private final WebApplicationContext context;
   private final IntegrationTestHelper helper;
-
-  private MockMvc mockMvc;
 
   @BeforeAll
   public static void startServer() throws IOException {
-    MockServerUtils.startServer();
+    MockServerUtil.startServer();
   }
 
   @AfterAll
   public static void stopServer() {
-    MockServerUtils.stop();
-  }
-
-  @BeforeEach
-  public void setUp() {
-    this.mockMvc = MockMvcBuilders
-        .webAppContextSetup(this.context)
-        .apply(springSecurity())
-        .build();
+    MockServerUtil.stop();
   }
 
   @AfterEach
@@ -87,12 +76,45 @@ public class ComicsIntegrationTest {
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics"))
+    this.mockMvc.perform(get("/api/comics"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(2))
         .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V1_1.getTitle()))
         .andExpect(jsonPath("$._embedded.comics[1].title").value(ComicFixtures.COMIC_V1_2.getTitle()));
+  }
+
+  @Test
+  public void findById() throws Exception {
+    final Comic comic = this.comicRepository.save(ComicFixtures.COMIC_V1_1);
+    this.mockMvc.perform(get("/api/comics/" + comic.getId()))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$.path").value(ComicFixtures.COMIC_V1_1.getPath()));
+  }
+
+  @Test
+  public void updateProgress() throws Exception {
+    final Comic comic = this.comicRepository.save(Comic.builder()
+        .path("/701.cbz")
+        .fileName("Batman 701 (1940).cbz")
+        .number("")
+        .publisher("")
+        .series("")
+        .volume("")
+        .build());
+    comic.setCurrentPage(7);
+
+    this.mockMvc.perform(put("/api/comics/progress")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.comicToJson(comic)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$.currentPage").value(7));
+
+    final List<Progress> progress = this.progressRepository.findAll();
+    assertThat(progress.size()).isEqualTo(1);
   }
 
   @Test
@@ -104,7 +126,7 @@ public class ComicsIntegrationTest {
 
     this.progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -122,7 +144,7 @@ public class ComicsIntegrationTest {
 
     this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -138,7 +160,7 @@ public class ComicsIntegrationTest {
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -158,7 +180,7 @@ public class ComicsIntegrationTest {
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_3)));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -179,7 +201,7 @@ public class ComicsIntegrationTest {
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_2),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_3)));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findLastReadForVolume")
+    this.mockMvc.perform(get("/api/comics/search/findLastReadForVolume")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries())
         .param("volume", ComicFixtures.COMIC_V1_1.getVolume()))
@@ -211,7 +233,7 @@ public class ComicsIntegrationTest {
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2)));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(2))
@@ -229,7 +251,7 @@ public class ComicsIntegrationTest {
 
     this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
@@ -249,7 +271,7 @@ public class ComicsIntegrationTest {
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_3, 3)));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());
@@ -263,7 +285,7 @@ public class ComicsIntegrationTest {
         ComicFixtures.COMIC_V3_2,
         ComicFixtures.COMIC_V3_3));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());
@@ -281,7 +303,7 @@ public class ComicsIntegrationTest {
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_1, 1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2, 2)));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
@@ -298,7 +320,7 @@ public class ComicsIntegrationTest {
 
     this.progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V3_2));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/comics/search/findAllLastReadPerVolume"))
+    this.mockMvc.perform(get("/api/comics/search/findAllLastReadPerVolume"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1))
@@ -306,7 +328,6 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void updateIncompleteComic() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
@@ -332,10 +353,10 @@ public class ComicsIntegrationTest {
         ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
 
     // Returns the comic with new values and without errors
-    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
+    this.mockMvc.perform(put("/api/comics")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
@@ -359,17 +380,16 @@ public class ComicsIntegrationTest {
     assertThat(persistedComic.getTitle()).isEqualTo("");
 
     // Writes the XML to the file
-    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
-    final Document document = this.helper.parseComicInfo(comicPath);
-    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
-    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
-    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
-    assertThat(this.helper.getText(document, "Number")).isEqualTo("701");
-    assertThat(this.helper.getText(document, "Title")).isEqualTo("");
+    assertThat(TestUtil.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = TestUtil.parseComicInfo(comicPath);
+    assertThat(TestUtil.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(TestUtil.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(TestUtil.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(TestUtil.getText(document, "Number")).isEqualTo("701");
+    assertThat(TestUtil.getText(document, "Title")).isEqualTo("");
   }
 
   @Test
-  @DirtiesContext
   public void updateComic() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
@@ -391,10 +411,10 @@ public class ComicsIntegrationTest {
     comic.setYear(1993);
 
     // Returns the comic with new values
-    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics")
+    this.mockMvc.perform(put("/api/comics")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
@@ -418,17 +438,16 @@ public class ComicsIntegrationTest {
     assertThat(persistedComic.getErrors()).isNull();
 
     // Writes the XML to the file
-    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
-    final Document document = this.helper.parseComicInfo(comicPath);
-    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
-    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
-    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
-    assertThat(this.helper.getText(document, "Number")).isEqualTo("502");
-    assertThat(this.helper.getText(document, "Title")).isEqualTo("");
+    assertThat(TestUtil.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = TestUtil.parseComicInfo(comicPath);
+    assertThat(TestUtil.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(TestUtil.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(TestUtil.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(TestUtil.getText(document, "Number")).isEqualTo("502");
+    assertThat(TestUtil.getText(document, "Title")).isEqualTo("");
   }
 
   @Test
-  @DirtiesContext
   public void scrape() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
@@ -455,10 +474,10 @@ public class ComicsIntegrationTest {
     comic.setErrors(Arrays.asList(error));
 
     // Returns the comic with scraped values but keeps errors
-    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
+    this.mockMvc.perform(put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.series").value("Batman"))
@@ -483,20 +502,19 @@ public class ComicsIntegrationTest {
     assertThat(persistedComic.getErrors()).isEqualTo(Arrays.asList(error));
 
     // Writes the XML to the file
-    assertThat(this.helper.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
-    final Document document = this.helper.parseComicInfo(comicPath);
-    assertThat(this.helper.getText(document, "Series")).isEqualTo("Batman");
-    assertThat(this.helper.getText(document, "Publisher")).isEqualTo("DC Comics");
-    assertThat(this.helper.getText(document, "Volume")).isEqualTo("1940");
-    assertThat(this.helper.getText(document, "Number")).isEqualTo("701");
-    assertThat(this.helper.getText(document, "Title")).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
+    assertThat(TestUtil.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
+    final Document document = TestUtil.parseComicInfo(comicPath);
+    assertThat(TestUtil.getText(document, "Series")).isEqualTo("Batman");
+    assertThat(TestUtil.getText(document, "Publisher")).isEqualTo("DC Comics");
+    assertThat(TestUtil.getText(document, "Volume")).isEqualTo("1940");
+    assertThat(TestUtil.getText(document, "Number")).isEqualTo("701");
+    assertThat(TestUtil.getText(document, "Title")).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
   }
 
   @Test
-  @DirtiesContext
   public void scrapeWithError() throws Exception {
     // Given
-    MockServerUtils.stop();
+    MockServerUtil.stop();
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
     final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
     final Comic comic = Comic.builder()
@@ -517,10 +535,10 @@ public class ComicsIntegrationTest {
     comic.setErrors(Arrays.asList(
         ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
 
-    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/comics/scrape")
+    this.mockMvc.perform(put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(this.helper.comicToJson(comic)))
+        .content(TestUtil.comicToJson(comic)))
         .andExpect(status().is(404));
   }
 }

@@ -15,11 +15,11 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.Parameter.param;
 
-public final class MockServerUtils {
+public final class MockServerUtil {
 
   private static ClientAndServer server;
 
-  private MockServerUtils() {
+  private MockServerUtil() {
     throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
@@ -51,7 +51,7 @@ public final class MockServerUtils {
               param("filter", "volume:796")
           )
     ).respond(
-        callback().withCallbackClass("de.wasenweg.alfred.mockserver.MockServerUtils$BatmanIssuesCallback")
+        callback().withCallbackClass("de.wasenweg.alfred.mockserver.MockServerUtil$BatmanIssuesCallback")
     );
 
     server.when(

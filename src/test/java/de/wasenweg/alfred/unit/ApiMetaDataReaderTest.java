@@ -1,25 +1,35 @@
 package de.wasenweg.alfred.unit;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.ApiMetaDataService;
 import de.wasenweg.alfred.scanner.ComicVineService;
+import de.wasenweg.alfred.scanner.ScannerIssue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes = ApiMetaDataService.class)
 public class ApiMetaDataReaderTest {
 
+  @Spy
   @InjectMocks
   private transient ApiMetaDataService apiMetaDataService;
 
@@ -76,7 +86,7 @@ public class ApiMetaDataReaderTest {
   @Test
   public void getIssueDetails() throws Exception {
     when(this.comicVineService.getIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/"))
-      .thenReturn(TestHelper.parseJson("batman-701.json"));
+        .thenReturn(TestHelper.parseJson("batman-701.json"));
 
     final Comic comic = new Comic();
     comic.setSeries("Batman");
@@ -90,11 +100,11 @@ public class ApiMetaDataReaderTest {
     assertThat(comic.getYear()).isEqualTo(2010);
     assertThat(comic.getMonth()).isEqualTo(9);
     assertThat(comic.getCharacters())
-      .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
+        .isEqualTo("Alfred Pennyworth, Batman, Doctor Hurt, Ellie, Jezebel Jet, Martha Wayne, Superman, Thomas Wayne");
     assertThat(comic.getTeams())
-      .isEqualTo("Superman/Batman");
+        .isEqualTo("Superman/Batman");
     assertThat(comic.getLocations())
-      .isEqualTo("Batcave, Gotham City, Wayne Manor");
+        .isEqualTo("Batcave, Gotham City, Wayne Manor");
     assertThat(comic.getWriter()).isEqualTo("Grant Morrison");
     assertThat(comic.getPenciller()).isNull();
     assertThat(comic.getInker()).isNull();
@@ -103,5 +113,131 @@ public class ApiMetaDataReaderTest {
     assertThat(comic.getCoverArtist()).isEqualTo("Tony Daniel");
     assertThat(comic.getEditor()).isEqualTo("Dan DiDio, Janelle Asselin (Siegel), Mike Marts");
     assertThat(comic.getWeb()).isEqualTo("https://comicvine.gamespot.com/batman-701-rip-the-missing-chapter-part-1-the-hole/4000-224555/");
+  }
+
+  @Test
+  public void parseWithInvalidIssueNumber() throws Exception {
+    doReturn("").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
+    final Comic comic = new Comic();
+    comic.setPath("/c/DC Comics/Batman (1940)/Batman 1/3 (1940).cbz");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+
+    assertThat(scannerIssues.size()).isEqualTo(1);
+    assertThat(scannerIssues.get(0).getMessage()).isEqualTo("Couldn't read number '1/3'. Falling back to '0'.");
+    assertThat(comic.getPosition()).isEqualTo("0000.0");
+  }
+
+  @Test
+  public void parseWithMissingAttributes() throws Exception {
+    doReturn("").when(this.apiMetaDataService).findVolumeId(null, null, null);
+    final Comic comic = new Comic();
+    comic.setPath("/c/Batman 3 (1940).cbz");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+
+    assertThat(scannerIssues.size()).isEqualTo(1);
+    assertThat(scannerIssues.get(0).getMessage()).isEqualTo("Missing meta data: publisher, series, volume, number");
+  }
+
+  @Test
+  public void parseWithoutVolumeIssues() throws Exception {
+    doReturn("456").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
+    doReturn(new ArrayList<>()).when(this.apiMetaDataService).findVolumeIssues("456");
+    final Comic comic = new Comic();
+    comic.setSeries("Batman");
+    comic.setPublisher("DC Comics");
+    comic.setVolume("1940");
+    comic.setNumber("701");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+    assertThat(scannerIssues.size()).isEqualTo(0);
+  }
+
+  @Test
+  public void findIssueDetailsUrlWithoutMatches() throws Exception {
+    doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
+    final List<JsonNode> issues = Arrays.asList(
+        this.createJsonObject(Map.of("issue_number", "1")),
+        this.createJsonObject(Map.of("issue_number", "2")),
+        this.createJsonObject(Map.of("issue_number", "3")));
+    doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
+    doNothing().when(this.apiMetaDataService).applyIssueDetails(any(), any());
+    final Comic comic = new Comic();
+    comic.setPath("/c/DC Comics/Batman (1940)/Batman 4 (1940).cbz");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+
+    assertThat(scannerIssues.size()).isEqualTo(1);
+    assertThat(scannerIssues.get(0).getMessage()).isEqualTo("No matching issue found");
+  }
+
+  @Test
+  public void findIssueDetailsUrlWithMoreThanOneMatch() throws Exception {
+    doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
+    final List<JsonNode> issues = Arrays.asList(
+        this.createJsonObject(Map.of("issue_number", "4", "api_detail_url", "http://result")),
+        this.createJsonObject(Map.of("issue_number", "3")),
+        this.createJsonObject(Map.of("issue_number", "4")));
+    doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
+    doNothing().when(this.apiMetaDataService).applyIssueDetails(any(), any());
+    final Comic comic = new Comic();
+    comic.setPath("/c/DC Comics/Batman (1940)/Batman 4 (1940).cbz");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+
+    assertThat(scannerIssues.size()).isEqualTo(1);
+    assertThat(scannerIssues.get(0).getMessage()).isEqualTo("No unique issue found");
+  }
+
+  @Test
+  public void findVolumeIdWithoutResults() throws Exception {
+    when(this.comicVineService.findVolumesBySeries("Batman", 0))
+        .thenReturn(this.createJsonObject(
+          Map.of("number_of_total_results", 0, "limit", 10, "results", new ObjectMapper().createArrayNode())));
+    assertThat(this.apiMetaDataService.findVolumeId("DC Comics", "Batman", "1940"))
+        .isEqualTo("");
+  }
+
+  @Test
+  public void findVolumeIssuesWithoutResults() throws Exception {
+    when(this.comicVineService.findIssuesInVolume("123", 0))
+        .thenReturn(this.createJsonObject(
+          Map.of("number_of_total_results", 0, "limit", 10, "results", new ObjectMapper().createArrayNode())));
+    assertThat(this.apiMetaDataService.findVolumeIssues("123").size())
+        .isEqualTo(0);
+  }
+
+  @Test
+  public void applyIssueDetailsWithoutDetails() throws Exception {
+    final Comic comic = new Comic();
+    when(this.comicVineService.getIssueDetails("http://issue.url"))
+        .thenReturn(this.createJsonObject(Map.of("results",
+          this.createJsonObject(Map.of(
+            "cover_date", "2010-09-01",
+            "person_credits", new ObjectMapper().createArrayNode(),
+            "site_detail_url", "")))));
+    this.apiMetaDataService.applyIssueDetails("http://issue.url", comic);
+    assertThat(comic.getCharacters()).isEqualTo("");
+  }
+
+  /**
+   * Creates an object compatible with JSON returned from the API.
+   *
+   * @param pairs Map of values
+   * @return The JSON object.
+   */
+  private <T> JsonNode createJsonObject(final Map<String, T> pairs) {
+    final JsonNode rootNode = new ObjectMapper().createObjectNode();
+    for (final Entry<String, T> pair: pairs.entrySet()) {
+      if (pair.getValue() instanceof String) {
+        ((ObjectNode) rootNode).put(pair.getKey(), (String) pair.getValue());
+      } else if (pair.getValue() instanceof Integer) {
+        ((ObjectNode) rootNode).put(pair.getKey(), (Integer) pair.getValue());
+      } else if (pair.getValue() instanceof JsonNode) {
+        ((ObjectNode) rootNode).set(pair.getKey(), (JsonNode) pair.getValue());
+      }
+    }
+    return rootNode;
   }
 }

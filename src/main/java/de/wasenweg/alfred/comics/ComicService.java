@@ -54,9 +54,9 @@ public class ComicService {
     return comic;
   }
 
-  public Comic updateProgress(final Comic comic) {
-    this.comicRepository.save(comic);
-    return comic;
+  public Comic updateProgress(final Comic comic, final String userId) {
+    this.progressService.updateComic(userId, comic, comic.isRead());
+    return this.findById(userId, comic.getId()).get();
   }
 
   /**
@@ -77,11 +77,13 @@ public class ComicService {
   }
 
   public Optional<Comic> markAsRead(final Comic comic, final String userId) {
-    return Optional.ofNullable(this.progressService.updateComic(userId, comic, true));
+    this.progressService.updateComic(userId, comic, true);
+    return this.findById(userId, comic.getId());
   }
 
   public Optional<Comic> markAsUnread(final Comic comic, final String userId) {
-    return Optional.ofNullable(this.progressService.updateComic(userId, comic, false));
+    this.progressService.updateComic(userId, comic, false);
+    return this.findById(userId, comic.getId());
   }
 
   public void deleteComics() {

@@ -172,7 +172,7 @@ Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
       <message key="ws.preceded"
         value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
       <message key="ws.illegalFollow"
-        value="GenericWhitespace ''{0}'' should followed by whitespace."/>
+        value="GenericWhitespace ''{0}'' should be followed by whitespace."/>
       <message key="ws.notPreceded"
         value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
     </module>

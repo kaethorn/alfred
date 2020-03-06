@@ -1,6 +1,8 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.EnableEmbeddedMongo;
+import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
@@ -27,7 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 @EnableAutoConfiguration
+@EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class ScannerIngrationTest {
@@ -49,13 +53,12 @@ public class ScannerIngrationTest {
   }
 
   @Test
-  @DirtiesContext
   public void emittsScanProgressEvents() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
 
     // When
-    StepVerifier.create(this.helper.triggerScan(this.port))
+    StepVerifier.create(TestUtil.triggerScan(this.port))
         .expectNext("start")
         .expectNext("1")
         .expectNext(this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz")
@@ -63,7 +66,7 @@ public class ScannerIngrationTest {
         .expectNext("association")
         .expectNext("done")
         .thenCancel()
-        .verify(Duration.ofSeconds(2L));
+        .verify(Duration.ofSeconds(6L));
 
     // Then
     final List<Comic> comics = this.comicRepository.findAll();

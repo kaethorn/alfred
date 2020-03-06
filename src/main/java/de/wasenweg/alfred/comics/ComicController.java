@@ -42,8 +42,8 @@ public class ComicController extends BaseController<Comic> {
   }
 
   @PutMapping("/progress")
-  public EntityModel<Comic> updateProgress(@Valid @RequestBody final Comic comic) {
-    return this.wrap(this.comicService.updateProgress(comic));
+  public EntityModel<Comic> updateProgress(@Valid @RequestBody final Comic comic, final Principal principal) {
+    return this.wrap(this.comicService.updateProgress(comic, principal.getName()));
   }
 
   @PutMapping("/scrape")
