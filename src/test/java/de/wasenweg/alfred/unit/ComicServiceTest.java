@@ -85,8 +85,8 @@ public class ComicServiceTest {
   @Test
   public void markAsRead() throws Exception {
     final Comic comic = new Comic();
-    when(this.progressService.updateComic("foo@bar.com", comic, true))
-        .thenReturn(comic);
+    when(this.progressService.updateComic("foo@bar.com", comic, true)).thenReturn(comic);
+    doReturn(Optional.of(comic)).when(this.comicService).findById(eq("foo@bar.com"), any());
 
     assertThat(this.comicService.markAsRead(comic, "foo@bar.com").get()).isEqualTo(comic);
     verify(this.progressService).updateComic("foo@bar.com", comic, true);
@@ -95,8 +95,8 @@ public class ComicServiceTest {
   @Test
   public void markAsUnread() throws Exception {
     final Comic comic = new Comic();
-    when(this.progressService.updateComic("foo@bar.com", comic, false))
-        .thenReturn(comic);
+    when(this.progressService.updateComic("foo@bar.com", comic, false)).thenReturn(comic);
+    doReturn(Optional.of(comic)).when(this.comicService).findById(eq("foo@bar.com"), any());
 
     assertThat(this.comicService.markAsUnread(comic, "foo@bar.com").get()).isEqualTo(comic);
     verify(this.progressService).updateComic("foo@bar.com", comic, false);
