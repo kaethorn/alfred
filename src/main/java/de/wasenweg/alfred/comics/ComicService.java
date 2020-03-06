@@ -77,11 +77,13 @@ public class ComicService {
   }
 
   public Optional<Comic> markAsRead(final Comic comic, final String userId) {
-    return Optional.ofNullable(this.progressService.updateComic(userId, comic, true));
+    this.progressService.updateComic(userId, comic, true);
+    return this.findById(userId, comic.getId());
   }
 
   public Optional<Comic> markAsUnread(final Comic comic, final String userId) {
-    return Optional.ofNullable(this.progressService.updateComic(userId, comic, false));
+    this.progressService.updateComic(userId, comic, false);
+    return this.findById(userId, comic.getId());
   }
 
   public void deleteComics() {
