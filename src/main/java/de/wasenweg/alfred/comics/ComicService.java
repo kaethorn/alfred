@@ -54,9 +54,9 @@ public class ComicService {
     return comic;
   }
 
-  public Comic updateProgress(final Comic comic) {
-    this.comicRepository.save(comic);
-    return comic;
+  public Comic updateProgress(final Comic comic, final String userId) {
+    this.progressService.updateComic(userId, comic, comic.isRead());
+    return this.findById(userId, comic.getId()).get();
   }
 
   /**

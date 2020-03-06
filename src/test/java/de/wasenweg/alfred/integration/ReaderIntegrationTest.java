@@ -1,6 +1,7 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.EnableEmbeddedMongo;
 import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext
 @EnableAutoConfiguration
+@EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class ReaderIntegrationTest {

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
@@ -23,6 +24,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,6 +58,7 @@ public class ComicServiceTest {
   @Mock
   private transient ProgressService progressService;
 
+  @Spy
   @InjectMocks
   private transient ComicService comicService;
 
@@ -71,10 +75,11 @@ public class ComicServiceTest {
   @Test
   public void updateProgress() throws Exception {
     final Comic comic = new Comic();
-    when(this.comicRepository.save(any())).thenReturn(comic);
+    when(this.progressService.updateComic("foo@bar.com", comic, false)).thenReturn(comic);
+    doReturn(Optional.of(comic)).when(this.comicService).findById(eq("foo@bar.com"), any());
 
-    assertThat(this.comicService.updateProgress(comic)).isEqualTo(comic);
-    verify(this.comicRepository).save(comic);
+    assertThat(this.comicService.updateProgress(comic, "foo@bar.com")).isEqualTo(comic);
+    verify(this.progressService).updateComic("foo@bar.com", comic, false);
   }
 
   @Test

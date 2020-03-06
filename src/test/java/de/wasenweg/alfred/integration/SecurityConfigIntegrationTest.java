@@ -2,8 +2,6 @@ package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.EnableEmbeddedMongo;
-import de.wasenweg.alfred.stats.Stats;
-import de.wasenweg.alfred.stats.StatsService;
 import de.wasenweg.alfred.unit.TestHelper;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,16 +34,12 @@ public class SecurityConfigIntegrationTest {
 
   private MockMvc mockMvc;
 
-  @MockBean
-  private transient StatsService statsService;
-
   @BeforeEach
   public void setUp() {
     this.mockMvc = MockMvcBuilders
         .webAppContextSetup(this.context)
         .apply(springSecurity())
         .build();
-    when(this.statsService.getStats()).thenReturn(Stats.builder().build());
   }
 
   @Test
