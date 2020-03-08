@@ -115,6 +115,7 @@ public class ComicsIntegrationTest {
 
     final List<Progress> progress = this.progressRepository.findAll();
     assertThat(progress.size()).isEqualTo(1);
+    assertThat(this.comicRepository.findById(comic.getId()).get().getCurrentPage()).isEqualTo(0);
   }
 
   @Test

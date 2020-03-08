@@ -76,7 +76,10 @@ public class PublisherQueryRepositoryImpl implements PublisherQueryRepository {
           .last(SERIES).as(SERIES)
           .last(PUBLISHER).as(PUBLISHER)
           .count().as("issueCount")
-          .min("read").as("read")
+          .min(ConditionalOperators
+              .when(where("read").is(true))
+              .then(true).otherwise(false))
+              .as("read")
           .sum(ConditionalOperators
               .when(where("read").is(true))
               .then(1).otherwise(0))
