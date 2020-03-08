@@ -176,6 +176,12 @@ public class Comic {
     }
   }
 
+  public void purgeProgress() {
+    this.setRead(false);
+    this.setCurrentPage(0);
+    this.setLastRead(null);
+  }
+
   @Override
   public String toString() {
     return format(

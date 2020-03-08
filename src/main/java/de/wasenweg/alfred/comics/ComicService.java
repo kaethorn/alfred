@@ -48,6 +48,7 @@ public class ComicService {
   }
 
   public Comic update(final Comic comic) {
+    comic.purgeProgress();
     this.comicRepository.save(comic);
     this.fileMetaDataService.write(comic);
     this.scannerService.processComic(comic);
