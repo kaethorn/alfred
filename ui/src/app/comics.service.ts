@@ -143,7 +143,7 @@ export class ComicsService {
   }
 
   public bundleVolumes(): Observable<any> {
-    return this.http.get('api/comics/bundle');
+    return this.http.put('api/comics/bundle', {});
   }
 
   public getPage(comicId: string, page: number): Observable<Blob> {
