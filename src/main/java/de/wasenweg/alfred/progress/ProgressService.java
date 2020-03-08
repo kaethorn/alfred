@@ -3,6 +3,7 @@ package de.wasenweg.alfred.progress;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.volumes.Volume;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -28,7 +29,7 @@ public class ProgressService {
 
   public Comic updateComic(final String userId, final Comic comic, final Boolean read) {
     final Query query = Query.query(Criteria
-        .where("comicId").is(comic.getId())
+        .where("comicId").is(new ObjectId(comic.getId()))
         .and("userId").is(userId));
 
     final Update update = new Update();

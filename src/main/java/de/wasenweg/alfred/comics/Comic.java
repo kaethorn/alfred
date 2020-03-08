@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -105,12 +104,9 @@ public class Comic {
   private List<ScannerIssue> errors;
   private List<String> files;
 
-  @Transient
   @Builder.Default
   private Integer currentPage = 0;
-  @Transient
   private boolean read;
-  @Transient
   private Date lastRead;
 
   public Comic() {
