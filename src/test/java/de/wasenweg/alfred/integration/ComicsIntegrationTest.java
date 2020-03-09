@@ -29,6 +29,7 @@ import org.w3c.dom.Document;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -121,7 +122,7 @@ public class ComicsIntegrationTest {
 
     final List<Progress> progress = this.progressRepository.findAll();
     assertThat(progress.size()).isEqualTo(1);
-    assertThat(progress.get(0).getComicId().toString()).isEqualTo(comic.getId().toString());
+    assertThat(progress.get(0).getComicId().toString()).isEqualTo(comic.getId());
     assertThat(progress.get(0).getCurrentPage()).isEqualTo(7);
     assertThat(this.comicRepository.findById(comic.getId()).get().getCurrentPage()).isEqualTo(0);
   }
@@ -251,7 +252,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findBookmarksFirstStarted() throws Exception {
+  public void findBookmarksFirstrunnerStarted() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         // Partly read volume at first issue
         ComicFixtures.COMIC_V1_1, // started
@@ -482,7 +483,7 @@ public class ComicsIntegrationTest {
     comic.setSeries("Batman");
     comic.setVolume("1940");
     comic.setNumber("701");
-    comic.setErrors(Arrays.asList(error));
+    comic.setErrors(Collections.singletonList(error));
 
     // Returns the comic with scraped values but keeps errors
     this.mockMvc.perform(put("/api/comics/scrape")
@@ -510,7 +511,7 @@ public class ComicsIntegrationTest {
     assertThat(persistedComic.getNumber()).isEqualTo("701");
     assertThat(persistedComic.getPosition()).isEqualTo("0701.0");
     assertThat(persistedComic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
-    assertThat(persistedComic.getErrors()).isEqualTo(Arrays.asList(error));
+    assertThat(persistedComic.getErrors()).isEqualTo(Collections.singletonList(error));
 
     // Writes the XML to the file
     assertThat(TestUtil.zipContainsFile(comicPath, "ComicInfo.xml")).isTrue();
@@ -543,8 +544,8 @@ public class ComicsIntegrationTest {
     comic.setSeries("Batman");
     comic.setVolume("1940");
     comic.setNumber("701");
-    comic.setErrors(Arrays.asList(
-        ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
+    comic.setErrors(Collections.singletonList(
+            ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
 
     this.mockMvc.perform(put("/api/comics/scrape")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -629,5 +630,44 @@ public class ComicsIntegrationTest {
     assertThat(comic1.getNextId()).isEqualTo(comic2.getId());
     assertThat(comic2.getPreviousId()).isEqualTo(comic1.getId());
     assertThat(comic2.getNextId()).isEqualTo(null);
+  }
+
+  @Test
+  public void findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc() throws Exception {
+    this.comicRepository.saveAll(Arrays.asList(
+        ComicFixtures.COMIC_V3_2,
+        ComicFixtures.COMIC_V1_1,
+        ComicFixtures.COMIC_V3_1,
+        ComicFixtures.COMIC_V3_3));
+
+    this.mockMvc.perform(get("/api/comics/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$._embedded.comics.length()").value(4))
+        .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V1_1.getTitle()))
+        .andExpect(jsonPath("$._embedded.comics[1].title").value(ComicFixtures.COMIC_V3_1.getTitle()))
+        .andExpect(jsonPath("$._embedded.comics[2].title").value(ComicFixtures.COMIC_V3_2.getTitle()))
+        .andExpect(jsonPath("$._embedded.comics[3].title").value(ComicFixtures.COMIC_V3_3.getTitle()));
+  }
+
+  @Test
+  public void findAllByPublisherAndSeriesAndVolumeOrderByPosition() throws Exception {
+    this.comicRepository.saveAll(Arrays.asList(
+            ComicFixtures.COMIC_V1_1,
+            ComicFixtures.COMIC_V1_2,
+            ComicFixtures.COMIC_V2_1,
+            ComicFixtures.COMIC_V2_2,
+            ComicFixtures.COMIC_V3_2,
+            ComicFixtures.COMIC_V3_3));
+
+    this.mockMvc.perform(get("/api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition")
+            .param("publisher", ComicFixtures.COMIC_V2_1.getPublisher())
+            .param("series", ComicFixtures.COMIC_V2_1.getSeries())
+            .param("volume", ComicFixtures.COMIC_V2_1.getVolume()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+            .andExpect(jsonPath("$._embedded.comics.length()").value(2))
+            .andExpect(jsonPath("$._embedded.comics[0].title").value(ComicFixtures.COMIC_V2_1.getTitle()))
+            .andExpect(jsonPath("$._embedded.comics[1].title").value(ComicFixtures.COMIC_V2_2.getTitle()));
   }
 }

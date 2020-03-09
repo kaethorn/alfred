@@ -22,7 +22,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import reactor.test.StepVerifier;
@@ -31,6 +30,7 @@ import java.io.File;
 import java.time.Duration;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -87,7 +87,7 @@ public class ReaderIntegrationTest {
     final Comic comic = this.comicRepository.findAll().get(0);
 
     // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/read/" + comic.getId()))
+    this.mockMvc.perform(get("/api/read/" + comic.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
         .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=/1.png"))
@@ -101,7 +101,7 @@ public class ReaderIntegrationTest {
     final Comic comic = this.comicRepository.findAll().get(0);
 
     // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/download/" + comic.getId()))
+    this.mockMvc.perform(get("/api/download/" + comic.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE))
         .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=Batman 402 (1940).cbz"))

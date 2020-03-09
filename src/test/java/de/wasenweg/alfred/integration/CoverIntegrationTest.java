@@ -21,7 +21,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import reactor.test.StepVerifier;
@@ -33,6 +32,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -92,7 +92,7 @@ public class CoverIntegrationTest {
         comic.getFiles(), Arrays.asList("/1.png", "/2.png", "/3.png", "/ComicInfo.xml"));
 
     // When
-    this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/comics/" + comic.getId() + "/page")
+    this.mockMvc.perform(delete("/api/comics/" + comic.getId() + "/page")
         .param("path", "/1.png"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
@@ -117,7 +117,7 @@ public class CoverIntegrationTest {
         comic.getFiles(), Arrays.asList("/1.png", "/2.png", "/3.png", "/ComicInfo.xml"));
 
     // When
-    this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/comics/" + comic.getId() + "/page")
+    this.mockMvc.perform(delete("/api/comics/" + comic.getId() + "/page")
         .param("path", "/3.png"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))

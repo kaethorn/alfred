@@ -15,10 +15,10 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,7 +62,7 @@ public class QueueIntegrationTest {
     this.comicRepository.save(comic);
 
     // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue"))
+    this.mockMvc.perform(get("/api/queue"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1));
@@ -71,7 +71,7 @@ public class QueueIntegrationTest {
   @Test
   public void getInvalidOmitsvalid() throws Exception {
     // Given / When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue"))
+    this.mockMvc.perform(get("/api/queue"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());
@@ -80,7 +80,7 @@ public class QueueIntegrationTest {
   @Test
   public void getValidReturnsValid() throws Exception {
     // Given / When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue/valid"))
+    this.mockMvc.perform(get("/api/queue/valid"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1));
@@ -95,7 +95,7 @@ public class QueueIntegrationTest {
     this.comicRepository.save(comic);
 
     // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/queue/valid"))
+    this.mockMvc.perform(get("/api/queue/valid"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());

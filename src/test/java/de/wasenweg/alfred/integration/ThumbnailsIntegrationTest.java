@@ -21,7 +21,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import reactor.test.StepVerifier;
@@ -30,6 +29,7 @@ import java.io.File;
 import java.time.Duration;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -86,7 +86,7 @@ public class ThumbnailsIntegrationTest {
     final Comic comic = this.comicRepository.findAll().get(0);
 
     // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/thumbnails/front-cover/" + comic.getId()))
+    this.mockMvc.perform(get("/api/thumbnails/front-cover/" + comic.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._links.self.href").exists())
@@ -100,7 +100,7 @@ public class ThumbnailsIntegrationTest {
     final Comic comic = this.comicRepository.findAll().get(0);
 
     // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/thumbnails/back-cover/" + comic.getId()))
+    this.mockMvc.perform(get("/api/thumbnails/back-cover/" + comic.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._links.self.href").exists())

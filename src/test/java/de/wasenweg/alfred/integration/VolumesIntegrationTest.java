@@ -17,10 +17,10 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +59,7 @@ public class VolumesIntegrationTest {
 
   @Test
   public void findAllPublishers() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
+    this.mockMvc.perform(get("/api/publishers"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.publishers.length()").value(1))
@@ -72,8 +72,7 @@ public class VolumesIntegrationTest {
 
   @Test
   public void findAllSeries() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders
-        .get("/api/publishers/" + ComicFixtures.COMIC_V1_1.getPublisher() + "/series"))
+    this.mockMvc.perform(get("/api/publishers/" + ComicFixtures.COMIC_V1_1.getPublisher() + "/series"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.series.length()").value(1))
@@ -86,8 +85,7 @@ public class VolumesIntegrationTest {
 
   @Test
   public void findAllVolumes() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders
-        .get("/api/publishers/"
+    this.mockMvc.perform(get("/api/publishers/"
             + ComicFixtures.COMIC_V1_1.getPublisher() + "/series/"
             + ComicFixtures.COMIC_V1_1.getSeries() + "/volumes"))
         .andExpect(status().isOk())
@@ -136,7 +134,7 @@ public class VolumesIntegrationTest {
     pivotal.setPublisher("Publisher B");
     this.comicRepository.save(pivotal);
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
+    this.mockMvc.perform(get("/api/publishers"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.publishers.length()").value(2))
@@ -164,7 +162,7 @@ public class VolumesIntegrationTest {
         ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
     this.comicRepository.save(pivotal);
 
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/publishers"))
+    this.mockMvc.perform(get("/api/publishers"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.publishers.length()").value(1))

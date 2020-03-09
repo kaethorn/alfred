@@ -16,11 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.File;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,11 +61,10 @@ public class QueueFixIntegrationTest {
     comic = this.comicRepository.save(comic);
 
     // When / Then
-    this.mockMvc.perform(MockMvcRequestBuilders.put("/api/queue/fix/NOT_FLAT")
+    this.mockMvc.perform(put("/api/queue/fix/NOT_FLAT")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
         .content(TestUtil.comicToJson(comic)))
-        .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.number").value("402"))
