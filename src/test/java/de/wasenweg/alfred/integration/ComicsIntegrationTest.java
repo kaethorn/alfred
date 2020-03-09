@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -86,11 +87,16 @@ public class ComicsIntegrationTest {
 
   @Test
   public void findById() throws Exception {
+    // Given
     final Comic comic = this.comicRepository.save(ComicFixtures.COMIC_V1_1);
+    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
+
+    // When / Then
     this.mockMvc.perform(get("/api/comics/" + comic.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
-        .andExpect(jsonPath("$.path").value(ComicFixtures.COMIC_V1_1.getPath()));
+        .andExpect(jsonPath("$.path").value(ComicFixtures.COMIC_V1_1.getPath()))
+        .andExpect(jsonPath("$.currentPage").value(4));
   }
 
   @Test
@@ -352,10 +358,11 @@ public class ComicsIntegrationTest {
     comic.setNumber("701");
     comic.setYear(2010);
     comic.setMonth(10);
+    comic.setCurrentPage(5);
     comic.setErrors(Arrays.asList(
         ScannerIssue.builder().severity(ScannerIssue.Severity.ERROR).message("Mock Error").build()));
 
-    // Returns the comic with new values and without errors
+    // Returns the comic with new values and without errors or progress information
     this.mockMvc.perform(put("/api/comics")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
@@ -370,6 +377,7 @@ public class ComicsIntegrationTest {
         .andExpect(jsonPath("$.year").value("2010"))
         .andExpect(jsonPath("$.month").value("10"))
         .andExpect(jsonPath("$.title").value(""))
+        .andExpect(jsonPath("$.currentPage").value(0))
         .andExpect(jsonPath("$.errors").doesNotExist());
 
     // Stores the information
@@ -543,5 +551,83 @@ public class ComicsIntegrationTest {
         .accept(MediaTypes.HAL_JSON_VALUE)
         .content(TestUtil.comicToJson(comic)))
         .andExpect(status().is(404));
+  }
+
+  @Test
+  public void markAsRead() throws Exception {
+    // Given
+    final Comic comic = this.comicRepository.save(ComicFixtures.COMIC_V1_1);
+
+    // When / Then
+    this.mockMvc.perform(put("/api/comics/markAsRead")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.comicToJson(comic)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$.path").value("/a1.cbz"))
+        .andExpect(jsonPath("$.read").value(true));
+
+    final Comic persistedComic = this.comicRepository.findById(comic.getId()).get();
+    assertThat(persistedComic.isRead()).isEqualTo(false);
+  }
+
+  @Test
+  public void markAsUnread() throws Exception {
+    // Given
+    final Comic comic = this.comicRepository.save(ComicFixtures.COMIC_V1_1);
+    this.progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1));
+
+    // When / Then
+    this.mockMvc.perform(put("/api/comics/markAsUnread")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.comicToJson(comic)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$.path").value("/a1.cbz"))
+        .andExpect(jsonPath("$.read").value(false));
+
+    final Comic persistedComic = this.comicRepository.findById(comic.getId()).get();
+    assertThat(persistedComic.isRead()).isEqualTo(false);
+  }
+
+  @Test
+  public void deleteComics() throws Exception {
+    // Given
+    this.comicRepository.saveAll(Arrays.asList(
+        ComicFixtures.COMIC_V1_1,
+        ComicFixtures.COMIC_V1_2));
+    assertThat(this.comicRepository.findAll().size()).isEqualTo(2);
+
+    // When / Then
+    this.mockMvc.perform(delete("/api/comics")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(status().isOk());
+
+    assertThat(this.comicRepository.findAll().size()).isEqualTo(0);
+  }
+
+  @Test
+  public void bundle() throws Exception {
+    // Given
+    this.comicRepository.saveAll(Arrays.asList(
+        ComicFixtures.COMIC_V1_1,
+        ComicFixtures.COMIC_V1_2));
+
+    // When
+    this.mockMvc.perform(put("/api/comics/bundle")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(status().isOk());
+
+    // Then
+    final Comic comic1 = this.comicRepository.findByPath("/a1.cbz").get();
+    final Comic comic2 = this.comicRepository.findByPath("/a2.cbz").get();
+    assertThat(comic1.getPreviousId()).isEqualTo(null);
+    assertThat(comic1.getNextId()).isEqualTo(comic2.getId());
+    assertThat(comic2.getPreviousId()).isEqualTo(comic1.getId());
+    assertThat(comic2.getNextId()).isEqualTo(null);
   }
 }
