@@ -1,6 +1,5 @@
 package de.wasenweg.alfred.integration;
 
-import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.EnableEmbeddedMongo;
 import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
@@ -9,35 +8,29 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import reactor.test.StepVerifier;
 
 import java.io.File;
 import java.time.Duration;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @DirtiesContext
-@EnableAutoConfiguration
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
@@ -49,19 +42,12 @@ public class ThumbnailsIntegrationTest {
   @LocalServerPort
   private int port;
 
+  private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
-  private final WebApplicationContext context;
   private final IntegrationTestHelper helper;
-
-  private MockMvc mockMvc;
 
   @BeforeEach
   public void setUp() {
-    this.mockMvc = MockMvcBuilders
-        .webAppContextSetup(this.context)
-        .apply(springSecurity())
-        .build();
-
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
 
     StepVerifier.create(TestUtil.triggerScan(this.port))

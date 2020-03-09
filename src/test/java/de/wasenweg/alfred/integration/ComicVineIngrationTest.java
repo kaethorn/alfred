@@ -1,6 +1,5 @@
 package de.wasenweg.alfred.integration;
 
-import de.wasenweg.alfred.AlfredApplication;
 import de.wasenweg.alfred.EnableEmbeddedMongo;
 import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
@@ -12,16 +11,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.w3c.dom.Document;
 import reactor.test.StepVerifier;
 
@@ -31,10 +28,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @DirtiesContext
-@EnableAutoConfiguration
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
