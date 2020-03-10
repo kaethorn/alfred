@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 public final class ZipReaderUtil {
 
   private ZipReaderUtil() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   /**

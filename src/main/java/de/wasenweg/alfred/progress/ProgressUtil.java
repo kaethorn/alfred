@@ -21,7 +21,6 @@ public final class ProgressUtil {
   private static final String PROGRESS = "progress";
 
   private ProgressUtil() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   // Merge progress flags for the current user

@@ -31,7 +31,6 @@ import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 public final class TestUtil {
 
   private TestUtil() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   public static Flux<String> triggerScan(final int port) {

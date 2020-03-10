@@ -17,7 +17,6 @@ public final class ThumbnailUtil {
   private static final int BOUND_HEIGHT = 300;
 
   private ThumbnailUtil() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   public static Dimension calculateTargetDimension(final int srcWidth, final int srcHeight) {
