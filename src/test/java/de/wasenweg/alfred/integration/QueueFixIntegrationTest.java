@@ -64,7 +64,7 @@ public class QueueFixIntegrationTest {
     this.mockMvc.perform(put("/api/queue/fix/NOT_FLAT")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(TestUtil.comicToJson(comic)))
+        .content(TestUtil.toJson(comic)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.number").value("402"))

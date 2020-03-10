@@ -2,7 +2,6 @@ package de.wasenweg.alfred;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.wasenweg.alfred.comics.Comic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -82,9 +81,9 @@ public final class TestUtil {
     return document.getDocumentElement().getElementsByTagName(name).item(0).getTextContent();
   }
 
-  public static String comicToJson(final Comic comic) {
+  public static String toJson(final Object object) {
     try {
-      return new ObjectMapper().writeValueAsString(comic);
+      return new ObjectMapper().writeValueAsString(object);
     } catch (final JsonProcessingException exception) {
       log.error("Failed to convert to JSON.", exception);
       return "";

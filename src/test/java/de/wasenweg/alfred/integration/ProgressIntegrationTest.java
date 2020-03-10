@@ -48,8 +48,9 @@ public class ProgressIntegrationTest {
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2));
-    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
-    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_2));
+    this.progressRepository.saveAll(Arrays.asList(
+        ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1),
+        ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_2)));
 
     // When / Then
     this.mockMvc.perform(delete("/api/progress")
@@ -67,9 +68,10 @@ public class ProgressIntegrationTest {
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2,
         ComicFixtures.COMIC_V1_3));
-    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
-    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_2));
-    this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_3, "another-user"));
+    this.progressRepository.saveAll(Arrays.asList(
+        ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1),
+        ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_2),
+        ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_3, "another-user")));
 
     // When / Then
     this.mockMvc.perform(delete("/api/progress/me")

@@ -30,7 +30,7 @@ public class VolumeController {
   }
 
   @PutMapping("/markAllAsReadUntil")
-  public void markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
+  public void markAllAsReadUntil(@Valid @RequestBody final Comic comic, final Principal principal) {
     this.progressService.updateVolumeUntil(principal.getName(), comic);
   }
 }

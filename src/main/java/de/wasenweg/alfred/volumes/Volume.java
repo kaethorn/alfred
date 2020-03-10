@@ -1,12 +1,14 @@
 package de.wasenweg.alfred.volumes;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import static java.lang.String.format;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Volume {

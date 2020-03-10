@@ -1,9 +1,13 @@
 package de.wasenweg.alfred.integration;
 
 import de.wasenweg.alfred.EnableEmbeddedMongo;
+import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.fixtures.ComicFixtures;
+import de.wasenweg.alfred.fixtures.ProgressFixtures;
+import de.wasenweg.alfred.fixtures.VolumeFixtures;
+import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -171,5 +178,61 @@ public class VolumesIntegrationTest {
         .andExpect(jsonPath("$._embedded.publishers[0].seriesCount").value(1))
         .andExpect(jsonPath("$._embedded.publishers[0].series.length()").value(1))
         .andExpect(jsonPath("$._embedded.publishers[0].series[0].volumesCount").value(3));
+  }
+
+  @Test
+  public void markAsRead() throws Exception {
+    assertThat(this.progressRepository.findAll().size()).isEqualTo(0);
+
+    this.mockMvc.perform(put("/api/volumes/markAsRead")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.toJson(VolumeFixtures.VOLUME_1)))
+        .andExpect(status().isOk());
+
+    assertThat(this.progressRepository.findAll().size()).isEqualTo(3);
+    assertThat(this.progressRepository.findAll().get(0).getComicId().toString()).isEqualTo(ComicFixtures.COMIC_V1_1.getId());
+    assertThat(this.progressRepository.findAll().get(0).isRead()).isEqualTo(true);
+    assertThat(this.progressRepository.findAll().get(1).getComicId().toString()).isEqualTo(ComicFixtures.COMIC_V1_2.getId());
+    assertThat(this.progressRepository.findAll().get(1).isRead()).isEqualTo(true);
+    assertThat(this.progressRepository.findAll().get(2).getComicId().toString()).isEqualTo(ComicFixtures.COMIC_V1_3.getId());
+    assertThat(this.progressRepository.findAll().get(2).isRead()).isEqualTo(true);
+  }
+
+  @Test
+  public void markAsUnread() throws Exception {
+    this.progressRepository.saveAll(Arrays.asList(
+        ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1),
+        ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_2),
+        ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_3)));
+    assertThat(this.progressRepository.findAll().size()).isEqualTo(3);
+    assertThat(this.progressRepository.findAll().stream().map(Progress::isRead)).containsOnly(true);
+
+    this.mockMvc.perform(put("/api/volumes/markAsUnread")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.toJson(VolumeFixtures.VOLUME_1)))
+        .andExpect(status().isOk());
+
+    assertThat(this.progressRepository.findAll().size()).isEqualTo(3);
+    assertThat(this.progressRepository.findAll().stream().map(Progress::isRead)).containsOnly(false);
+    assertThat(this.progressRepository.findAll().stream().map(progress -> progress.getComicId().toString()))
+        .containsExactly(ComicFixtures.COMIC_V1_1.getId(), ComicFixtures.COMIC_V1_2.getId(), ComicFixtures.COMIC_V1_3.getId());
+  }
+
+  @Test
+  public void markAllAsReadUntil() throws Exception {
+    assertThat(this.progressRepository.findAll().size()).isEqualTo(0);
+
+    this.mockMvc.perform(put("/api/volumes/markAllAsReadUntil")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.toJson(ComicFixtures.COMIC_V1_2)))
+        .andExpect(status().isOk());
+
+    assertThat(this.progressRepository.findAll().size()).isEqualTo(2);
+    assertThat(this.progressRepository.findAll().stream().map(Progress::isRead)).containsOnly(true);
+    assertThat(this.progressRepository.findAll().stream().map(progress -> progress.getComicId().toString()))
+        .containsExactly(ComicFixtures.COMIC_V1_1.getId(), ComicFixtures.COMIC_V1_2.getId());
   }
 }
