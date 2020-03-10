@@ -80,7 +80,7 @@ public class UserService {
           .build());
     }
 
-    throw new GeneralSecurityException();
+    throw new GeneralSecurityException("Unable to verify user.");
   }
 
   private String getKey(final Payload payload, final String key) {

@@ -34,7 +34,6 @@ public class ProgressIntegrationTest {
   private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
   private final ProgressRepository progressRepository;
-  private final IntegrationTestHelper helper;
 
   @AfterEach
   public void tearDown() {

@@ -24,7 +24,7 @@ public class UserController {
   public ResponseEntity<?> verify(@PathVariable("token") final String token) {
     final Optional<User> maybeUser = this.userService.verify(token);
     if (maybeUser.isPresent()) {
-      return new ResponseEntity<User>(maybeUser.get(), HttpStatus.OK);
+      return new ResponseEntity<>(maybeUser.get(), HttpStatus.OK);
     }
     return new ResponseEntity<Error>(HttpStatus.UNAUTHORIZED);
   }
@@ -34,11 +34,11 @@ public class UserController {
     try {
       final Optional<User> maybeUser = this.userService.signIn(token);
       if (maybeUser.isPresent()) {
-        return new ResponseEntity<User>(maybeUser.get(), HttpStatus.OK);
+        return new ResponseEntity<>(maybeUser.get(), HttpStatus.OK);
       }
-      return new ResponseEntity<Error>(new Error("User not allowed."), HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>(new Error("User not allowed."), HttpStatus.FORBIDDEN);
     } catch (final GeneralSecurityException | IOException exception) {
-      return new ResponseEntity<Error>(new Error(exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>(new Error(exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
     }
   }
 }

@@ -9,7 +9,6 @@ import java.util.GregorianCalendar;
 public final class ProgressFixtures {
 
   private ProgressFixtures() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   public static Progress comicStarted(final Comic comic, final String userId) {

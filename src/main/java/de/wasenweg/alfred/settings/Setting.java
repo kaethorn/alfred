@@ -1,6 +1,7 @@
 package de.wasenweg.alfred.settings;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import static java.lang.String.format;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor

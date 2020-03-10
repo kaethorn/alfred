@@ -3,6 +3,7 @@ package de.wasenweg.alfred.unit;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import de.wasenweg.alfred.fixtures.SecurityFixtures;
 import de.wasenweg.alfred.security.JwtCreator;
 import de.wasenweg.alfred.settings.SettingsService;
 import de.wasenweg.alfred.user.User;
@@ -32,16 +33,16 @@ public class UserServiceTest {
   private transient JwtCreator jwtCreator;
 
   @Mock
-  private transient GoogleIdTokenVerifier.Builder mockVerifierBuilder;
+  private transient GoogleIdTokenVerifier.Builder googleIdTokenVerifierBuilder;
 
   @Mock
-  private transient GoogleIdTokenVerifier mockVerifier;
+  private transient GoogleIdTokenVerifier googleIdTokenVerifier;
 
   @Mock
-  private transient GoogleIdToken mockIdToken;
+  private transient GoogleIdToken googleIdToken;
 
   @Mock
-  private transient Payload mockPayload;
+  private transient Payload payload;
 
   @InjectMocks
   private transient UserService userService;
@@ -49,35 +50,38 @@ public class UserServiceTest {
   @BeforeEach
   public void setUp() throws GeneralSecurityException, IOException {
     when(this.settingsService.get("auth.client.id")).thenReturn("fake-client-id-123");
-    when(this.mockVerifier.verify("mock-123")).thenReturn(this.mockIdToken);
-    when(this.mockVerifierBuilder.build()).thenReturn(this.mockVerifier);
-    when(this.mockVerifierBuilder.setAudience(any())).thenReturn(this.mockVerifierBuilder);
+    when(this.googleIdTokenVerifier.verify("mock-123")).thenReturn(this.googleIdToken);
+    when(this.googleIdTokenVerifierBuilder.build()).thenReturn(this.googleIdTokenVerifier);
+    when(this.googleIdTokenVerifierBuilder.setAudience(any())).thenReturn(this.googleIdTokenVerifierBuilder);
   }
 
   @Test
   public void signInWithValidToken() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
-    when(this.mockPayload.getEmail()).thenReturn("foo@bar.com");
-    when(this.mockIdToken.getPayload()).thenReturn(this.mockPayload);
+    when(this.googleIdToken.getPayload()).thenReturn(SecurityFixtures.getMockPayload());
     when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-api-token");
 
+    assertThat(this.userService.signIn("mock-123").isPresent()).isTrue();
     final User user = this.userService.signIn("mock-123").get();
     assertThat(user.getEmail()).isEqualTo("foo@bar.com");
+    assertThat(user.getName()).isEqualTo("Foo Bar");
+    assertThat(user.getPicture()).isEqualTo("");
   }
 
   @Test
   public void signInWithoutValidToken() throws Exception {
-    when(this.mockVerifier.verify("mock-123")).thenReturn(null);
+    when(this.googleIdTokenVerifier.verify("mock-123")).thenReturn(null);
     assertThrows(GeneralSecurityException.class, () -> this.userService.signIn("mock-123"));
   }
 
   @Test
   public void signInWithoutValidUser() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
-    when(this.mockPayload.getEmail()).thenReturn("foo@bar.com");
-    when(this.mockIdToken.getPayload()).thenReturn(this.mockPayload);
+    when(this.payload.getEmail()).thenReturn("foo@bar.com");
+    when(this.googleIdToken.getPayload()).thenReturn(this.payload);
+    assertThat(this.userService.signIn("mock-123").isPresent()).isTrue();
 
-    when(this.mockPayload.getEmail()).thenReturn("invalid@user.com");
+    when(this.payload.getEmail()).thenReturn("invalid@user.com");
     assertThat(this.userService.signIn("mock-123").isPresent()).isFalse();
   }
 }
