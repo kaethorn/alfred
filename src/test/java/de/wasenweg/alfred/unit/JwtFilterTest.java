@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class JwtFilterTest {
 
   @Test
   public void withValidToken() throws Exception {
-    when(this.servletRequest.getHeader("Authorization")).thenReturn("Bearer valid-token");
+    when(this.servletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Bearer valid-token");
     when(this.jwtService.verifyToken("valid-token", "secret")).thenReturn(true);
     this.jwtFilter.doFilter(this.servletRequest, this.servletResponse, this.filterChain);
     verify(this.servletResponse, times(0)).reset();
@@ -51,7 +52,7 @@ public class JwtFilterTest {
 
   @Test
   public void withInvalidToken() throws Exception {
-    when(this.servletRequest.getHeader("Authorization")).thenReturn("Bearer invalid-token");
+    when(this.servletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Bearer invalid-token");
     when(this.jwtService.verifyToken("invalid-token", "secret")).thenReturn(false);
     this.jwtFilter.doFilter(this.servletRequest, this.servletResponse, this.filterChain);
     verify(this.servletResponse).reset();
@@ -67,7 +68,7 @@ public class JwtFilterTest {
 
   @Test
   public void withInvalidAuthorizationHeader() throws Exception {
-    when(this.servletRequest.getHeader("Authorization")).thenReturn("valid-token-without-bearer");
+    when(this.servletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("valid-token-without-bearer");
     this.jwtFilter.doFilter(this.servletRequest, this.servletResponse, this.filterChain);
     verify(this.servletResponse).reset();
     verify(this.servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
