@@ -13,12 +13,13 @@ jobs:
         java-version: 11
     - name: Install Chrome
       run: |
-        apt-get update && apt-get install -y --no-install-recommends gnupg apt-transport-https
-        curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
-        echo 'deb https://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
-        apt-get update && apt-get install -y --no-install-recommends google-chrome-stable fontconfig fonts-ipafont-gothic fonts-freefont-ttf
-        apt-get purge --auto-remove -y gnupg
-        rm -rf /var/lib/apt/lists/*
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends gnupg apt-transport-https
+        sudo curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+        sudo echo 'deb https://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
+        sudo apt-get update && apt-get install -y --no-install-recommends google-chrome-stable fontconfig fonts-ipafont-gothic fonts-freefont-ttf
+        sudo apt-get purge --auto-remove -y gnupg
+        sudo rm -rf /var/lib/apt/lists/*
     - name: Build, lint and unit test
       run: ./gradlew -q build jacocoTestReport
     - name: Upload coverage to Codecov
@@ -35,6 +36,10 @@ jobs:
         echo -n "Waiting for boot to complete "
         while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do echo -n "." && sleep 1; done
         echo " done!"
+      env:
+        DOCKER_MODE: 'true'
+        SPRING_PROFILES_ACTIVE: test
+        SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
     - name: Run end-to-end tests
       run: ./gradlew -q npm_run_e2eHeadless
 
