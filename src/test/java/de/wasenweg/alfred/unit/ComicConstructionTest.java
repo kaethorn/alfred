@@ -11,7 +11,7 @@ public class ComicConstructionTest {
   public void constructWithNew() throws Exception {
     final Comic comic = new Comic();
     assertThat(comic.getCurrentPage()).isEqualTo(0);
-    assertThat(comic.isRead()).isEqualTo(false);
+    assertThat(comic.isRead()).isFalse();
   }
 
   @Test
@@ -29,7 +29,7 @@ public class ComicConstructionTest {
         .publisher("")
         .build();
     assertThat(comic.getCurrentPage()).isEqualTo(0);
-    assertThat(comic.isRead()).isEqualTo(false);
+    assertThat(comic.isRead()).isFalse();
   }
 
   @Test

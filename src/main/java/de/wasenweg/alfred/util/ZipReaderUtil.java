@@ -1,6 +1,7 @@
 package de.wasenweg.alfred.util;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +27,7 @@ public final class ZipReaderUtil {
           .sorted()
           .filter(entry -> !entry.equals(rootDirectory))
           .collect(Collectors.toList());
-    } catch (final IOException exception) {
+    } catch (final UncheckedIOException | IOException exception) {
       return new ArrayList<>();
     }
   }

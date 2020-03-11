@@ -192,11 +192,11 @@ public class VolumesIntegrationTest {
 
     assertThat(this.progressRepository.findAll().size()).isEqualTo(3);
     assertThat(this.progressRepository.findAll().get(0).getComicId().toString()).isEqualTo(ComicFixtures.COMIC_V1_1.getId());
-    assertThat(this.progressRepository.findAll().get(0).isRead()).isEqualTo(true);
+    assertThat(this.progressRepository.findAll().get(0).isRead()).isTrue();
     assertThat(this.progressRepository.findAll().get(1).getComicId().toString()).isEqualTo(ComicFixtures.COMIC_V1_2.getId());
-    assertThat(this.progressRepository.findAll().get(1).isRead()).isEqualTo(true);
+    assertThat(this.progressRepository.findAll().get(1).isRead()).isTrue();
     assertThat(this.progressRepository.findAll().get(2).getComicId().toString()).isEqualTo(ComicFixtures.COMIC_V1_3.getId());
-    assertThat(this.progressRepository.findAll().get(2).isRead()).isEqualTo(true);
+    assertThat(this.progressRepository.findAll().get(2).isRead()).isTrue();
   }
 
   @Test

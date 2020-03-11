@@ -570,7 +570,7 @@ public class ComicsIntegrationTest {
         .andExpect(jsonPath("$.read").value(true));
 
     final Comic persistedComic = this.comicRepository.findById(comic.getId()).get();
-    assertThat(persistedComic.isRead()).isEqualTo(false);
+    assertThat(persistedComic.isRead()).isFalse();
   }
 
   @Test
@@ -590,7 +590,7 @@ public class ComicsIntegrationTest {
         .andExpect(jsonPath("$.read").value(false));
 
     final Comic persistedComic = this.comicRepository.findById(comic.getId()).get();
-    assertThat(persistedComic.isRead()).isEqualTo(false);
+    assertThat(persistedComic.isRead()).isFalse();
   }
 
   @Test

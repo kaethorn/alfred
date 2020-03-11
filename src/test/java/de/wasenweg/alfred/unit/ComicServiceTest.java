@@ -121,7 +121,7 @@ public class ComicServiceTest {
   public void deletePageWithoutAComic() throws Exception {
     when(this.comicRepository.findById("5")).thenReturn(Optional.ofNullable(null));
 
-    assertThat(this.comicService.deletePage("5", "/2.png").isPresent()).isEqualTo(false);
+    assertThat(this.comicService.deletePage("5", "/2.png").isPresent()).isFalse();
   }
 
   @Test
