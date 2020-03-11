@@ -15,9 +15,10 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends gnupg apt-transport-https
-        sudo curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+        curl -sSL https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
         sudo echo 'deb https://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
-        sudo apt-get update && apt-get install -y --no-install-recommends google-chrome-stable fontconfig fonts-ipafont-gothic fonts-freefont-ttf
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends google-chrome-stable fontconfig fonts-ipafont-gothic fonts-freefont-ttf
         sudo apt-get purge --auto-remove -y gnupg
         sudo rm -rf /var/lib/apt/lists/*
     - name: Build, lint and unit test
