@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import static java.lang.String.format;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Document
