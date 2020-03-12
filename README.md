@@ -191,6 +191,12 @@ To enable streaming in lighttpd, use the `server.stream-response-body` option.
 
 ## Development
 
+To run the entire test suite, install Docker and run:
+
+```sh
+docker-compose -f .docker-compose.test.yml up --build --abort-on-container-exit
+```
+
 ### End-to-end tests
 
 #### Preparation

@@ -10,6 +10,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& apt-get purge --auto-remove -y gnupg \
 	&& rm -rf /var/lib/apt/lists/*
 
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_12.x  | bash -
+RUN apt-get install -y --no-install-recommends nodejs
+
 # Build, unit test & lint
 WORKDIR /workspace/app
 COPY settings.gradle build.gradle ./
