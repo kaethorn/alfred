@@ -26,18 +26,25 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends google-chrome-stable fontconfig fonts-ipafont-gothic fonts-freefont-ttf
 
-    - name: Build, lint and unit test
-      run: ./gradlew --build-cache -q build jacocoTestReport
-
-    - name: Upload frontend coverage to Codecov
-      run: |
-        npm install codecov
-        ./node_modules/.bin/codecov --token=eb122bec-04ed-41b9-ac86-74c3276a7d05 --file=ui/coverage/coverage-final.json
+    - name: Check backend
+      run: ./gradlew --build-cache -q check jacocoTestReport -x :ui:jar
 
     - name: Upload backend coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
         file: ./build/reports/jacoco/test/jacocoTestReport.xml
+
+    - name: Check frontend
+      working-directory: ui
+      run: |
+        npm ci --loglevel error
+        npm run lint
+        npm run testHeadless
+
+    - name: Upload frontend coverage to Codecov
+      run: |
+        npm install codecov
+        ./node_modules/.bin/codecov --token=eb122bec-04ed-41b9-ac86-74c3276a7d05 --file=ui/coverage/coverage-final.json
 
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.1.0
@@ -56,5 +63,6 @@ jobs:
         SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
 
     - name: Run end-to-end tests
-      run: ./gradlew --build-cache -q npm_run_e2eHeadless
+      working-directory: ui
+      run: npm run e2eHeadless
 

@@ -1,12 +1,10 @@
 plugins {
   id 'java'
-  id 'com.github.node-gradle.node' version '2.2.0'
+  id 'com.github.node-gradle.node' version '2.2.3'
 }
 
 node {
-  version = '12.14.1'
-  npmVersion = '6.13.4'
-  download = true
+  download = false
   npmInstallCommand = 'ci'
 }
 
@@ -19,8 +17,4 @@ jar.dependsOn 'npm_run_buildProd'
 jar {
   from 'www' into 'static'
 }
-
-test.dependsOn 'npm_run_testHeadless'
-
-check.dependsOn 'npm_run_lint'
 
