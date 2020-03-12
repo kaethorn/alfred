@@ -2,6 +2,7 @@ package de.wasenweg.alfred.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -33,7 +34,7 @@ public class JwtFilter implements Filter {
 
     log.debug("Running filter on URL: {}", request.getRequestURL().toString());
 
-    final Optional<String> token = Optional.ofNullable(request.getHeader("Authorization"));
+    final Optional<String> token = Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION));
 
     if (!token.isPresent() || !token.get().startsWith(HEADER_PREFIX)) {
       log.debug("No token found in header.");

@@ -73,7 +73,7 @@ public class ComicController extends BaseController<Comic> {
     return this.wrap(this.comicService.deletePage(comicId, path));
   }
 
-  @GetMapping("/bundle")
+  @PutMapping("/bundle")
   public void bundle() {
     this.comicService.bundle();
   }

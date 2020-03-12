@@ -38,12 +38,6 @@ public class ProgressService {
     update.set("lastRead", new Date());
 
     this.mongoTemplate.upsert(query, update, Progress.class);
-
-    // Read state is saved in the progress schema
-    comic.setRead(false);
-    comic.setCurrentPage(0);
-    comic.setLastRead(null);
-
     return comic;
   }
 

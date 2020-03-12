@@ -15,29 +15,25 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Profile({"prod"})
-public class SecurityConfig {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final IJwtService jwtService;
 
   @Value("${auth.jwt.secret:zY5MzUxODMyMTM0IiwiZW}")
   private String jwtSecret;
 
-  @Configuration
-  public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
+  @Override
+  public void configure(final WebSecurity web) {
+    web.ignoring()
+        .antMatchers("/api/user/**", "/api/scan-progress",
+          "/", "/index.html", "/manifest.json", "/*.js", "/*.css", "/assets/**", "/svg/**");
+  }
 
-    @Override
-    public void configure(final WebSecurity web) {
-      web.ignoring()
-          .antMatchers("/api/user/**", "/api/scan-progress",
-            "/", "/index.html", "/manifest.json", "/*.js", "/*.css", "/assets/**", "/svg/**");
-    }
-
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-      http
-        .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        .and().antMatcher("/api/**")
-        .addFilterAfter(new JwtFilter(SecurityConfig.this.jwtSecret, SecurityConfig.this.jwtService), BasicAuthenticationFilter.class);
-    }
+  @Override
+  protected void configure(final HttpSecurity http) throws Exception {
+    http
+      .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+      .and().antMatcher("/api/**")
+      .addFilterAfter(new JwtFilter(this.jwtSecret, this.jwtService), BasicAuthenticationFilter.class);
   }
 }

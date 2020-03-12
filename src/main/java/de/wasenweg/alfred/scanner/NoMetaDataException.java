@@ -7,8 +7,4 @@ public class NoMetaDataException extends Exception {
   public NoMetaDataException(final Throwable err) {
     super("No meta data file 'ComicInfo.xml' found.", err);
   }
-
-  public NoMetaDataException() {
-    super("No meta data file 'ComicInfo.xml' found.");
-  }
 }

@@ -75,7 +75,7 @@ public class FileMetaDataServiceTest {
     comic.setPath(comicPath);
     comic.setManga(true);
 
-    assertThat(comic.isManga()).isEqualTo(true);
+    assertThat(comic.isManga()).isTrue();
     this.fileMetaDataService.write(comic);
     final Document document = TestUtil.parseComicInfo(comicPath);
     assertThat(TestUtil.getText(document, "Manga")).isEqualTo("Yes");

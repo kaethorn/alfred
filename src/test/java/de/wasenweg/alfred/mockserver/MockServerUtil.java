@@ -20,7 +20,6 @@ public final class MockServerUtil {
   private static ClientAndServer server;
 
   private MockServerUtil() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   public static void startServer() throws IOException {

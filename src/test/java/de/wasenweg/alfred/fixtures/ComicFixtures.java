@@ -62,6 +62,5 @@ public final class ComicFixtures {
       .build();
 
   private ComicFixtures() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

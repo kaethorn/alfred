@@ -7,8 +7,4 @@ public class InvalidFileException extends Exception {
   public InvalidFileException(final Throwable err) {
     super("At least one file in the archive was unreadable.", err);
   }
-
-  public InvalidFileException() {
-    super("At least one file in the archive was unreadable.");
-  }
 }

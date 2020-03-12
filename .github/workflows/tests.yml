@@ -7,6 +7,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Build
-      run: docker-compose -f .docker-compose.test.yml up --abort-on-container-exit
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Install Chrome
+      run: |
+        curl -sSL https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        echo 'deb https://dl.google.com/linux/chrome/deb/ stable main' | sudo tee -a /etc/apt/sources.list.d/google-chrome.list
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends google-chrome-stable fontconfig fonts-ipafont-gothic fonts-freefont-ttf
+    - name: Build, lint and unit test
+      run: ./gradlew -q build jacocoTestReport
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./build/reports/jacoco/test/jacocoTestReport.xml
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.1.0
+      with:
+        mongodb-version: 3.6
+    - name: Start Alfred
+      run: |
+        ./gradlew bootRun &> /dev/null &
+        echo -n "Waiting for boot to complete "
+        while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do echo -n "." && sleep 1; done
+        echo " done!"
+      env:
+        SPRING_PROFILES_ACTIVE: test
+        COMICS_COMICVINE_APIKEY: foo
+        SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
+    - name: Run end-to-end tests
+      run: ./gradlew -q npm_run_e2eHeadless
 

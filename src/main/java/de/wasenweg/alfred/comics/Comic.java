@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import static java.lang.String.format;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Document
@@ -101,14 +101,12 @@ public class Comic {
   private String nextId;
   private String previousId;
 
-  private boolean read;
-
   private List<ScannerIssue> errors;
   private List<String> files;
 
   @Builder.Default
   private Integer currentPage = 0;
-
+  private boolean read;
   private Date lastRead;
 
   public Comic() {
@@ -176,6 +174,12 @@ public class Comic {
     } catch (final NumberFormatException | ArithmeticException exception) {
       throw new InvalidIssueNumberException(number, exception);
     }
+  }
+
+  public void purgeProgress() {
+    this.setRead(false);
+    this.setCurrentPage(0);
+    this.setLastRead(null);
   }
 
   @Override

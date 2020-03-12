@@ -46,7 +46,7 @@
         class="synced-badge" color="secondary">
         &#9921;
       </ion-badge>
-      <img [attr.src]="(thumbnails.get(volume.firstComicId) | async)?.url">
+      <img [attr.src]="thumbnails.get(volume.firstComicId) | async">
     </a>
     <ion-item>
       <ion-button slot="start" fill="clear"

@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 public final class TestHelper {
 
   private TestHelper() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 
   public static JsonNode parseJson(final String path) throws IOException {

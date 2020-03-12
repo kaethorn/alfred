@@ -16,10 +16,10 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,7 +60,7 @@ public class StatsIntegrationTest {
 
   @Test
   public void getStats() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/stats"))
+    this.mockMvc.perform(get("/api/stats"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._links.self.href").value("http://localhost/api/stats"))

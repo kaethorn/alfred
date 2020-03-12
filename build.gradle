@@ -35,6 +35,13 @@ pmd {
   toolVersion = '6.21.0'
 }
 
+jacocoTestReport {
+  reports {
+    xml.enabled true
+    html.enabled true
+  }
+}
+
 tasks.pmdMain {
   ruleSets = []
   ruleSetConfig = resources.text.fromFile("config/pmd/pmd-main.xml")
