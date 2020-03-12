@@ -9,12 +9,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Setup Java
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+
+    - name: Install Java
       uses: actions/setup-java@v1
       with:
         java-version: 11
 
-    - name: Setup Chrome
+    - name: Install Chrome
       run: |
         curl -sSL https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
         echo 'deb https://dl.google.com/linux/chrome/deb/ stable main' | sudo tee -a /etc/apt/sources.list.d/google-chrome.list
@@ -25,9 +30,6 @@ jobs:
       run: ./gradlew --build-cache -q build jacocoTestReport
 
     - name: Upload frontend coverage to Codecov
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
       run: |
         npm install codecov
         ./node_modules/.bin/codecov --token=eb122bec-04ed-41b9-ac86-74c3276a7d05 --file=ui/coverage/coverage-final.json
