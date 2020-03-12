@@ -34,9 +34,8 @@ jobs:
         while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do echo -n "." && sleep 1; done
         echo " done!"
       env:
-        DOCKER_MODE: 'true'
         SPRING_PROFILES_ACTIVE: test
-        COMICS_PATH: src/test/resources/fixtures/full
+        COMICS_COMICVINE_APIKEY: foo
         SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
     - name: Run end-to-end tests
       run: ./gradlew -q npm_run_e2eHeadless
