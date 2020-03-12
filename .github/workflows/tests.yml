@@ -36,6 +36,7 @@ jobs:
       env:
         DOCKER_MODE: 'true'
         SPRING_PROFILES_ACTIVE: test
+        COMICS_PATH: src/test/resources/fixtures/full
         SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
     - name: Run end-to-end tests
       run: ./gradlew -q npm_run_e2eHeadless
