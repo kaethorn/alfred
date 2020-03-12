@@ -20,7 +20,7 @@ COPY settings.gradle build.gradle ./
 COPY src src
 COPY ui ui
 COPY config config
-RUN gradle -q build jacocoTestReport
+RUN gradle build jacocoTestReport -x :ui:jar
 
 # Start the application and run tests
 CMD bash -c 'gradle bootRun &> /dev/null & \

@@ -26,14 +26,14 @@ A web based comic book reader and library manager.
 * Spring Boot 2 back end.
 * MongoDB.
 * Google Sign-In.
-* Ionic v4 PWA.
+* Ionic v5 / Angular 9 PWA.
 
 
 ## Requirements
 
-Building requires either **Java 11 SDK** or **Docker**.
+**Building** requires either **Java 11 SDK** or **Docker**.
 
-Running the application requires a **Java 11 JRE** or **Docker** and a Client ID for **Google Sign-In**.
+**Running** the application requires a **Java 11 JRE** or **Docker** and a Client ID for **Google Sign-In**.
 
 
 ## Usage
@@ -197,7 +197,32 @@ To run the entire test suite, install Docker and run:
 docker-compose -f .docker-compose.test.yml up --build --abort-on-container-exit
 ```
 
+This will:
+1. Install all dependencies
+   1. Install Java 11
+   1. Install Chrome
+   1. Install Node.js
+1. Build and test the backend
+   1. Run Checkstyle
+   1. Run PMD
+   1. Run Spotbugs
+   1. Run JUnit unit & integration tests
+1. Build and test the frontend
+   1. Run ESLint
+   1. Run Jasmine unit tests
+1. Run end-to-end tests
+   1. Build the both the front- and the backend into one Spring Boot application
+   1. Start a MongoDB instance
+   1. Run the Spring Boot application
+   1. Execute Protractor end-to-end tests
+
+These steps are also executed as part of the GitHub Actions workflow.
+
 ### End-to-end tests
+
+End-to-end tests run against a real application instance. The test runner will drop the specified MongoDB before each test scenario and fill it with configuration seed data.
+
+These steps illustrate how to manually run end-to-end tests.
 
 #### Preparation
 
