@@ -7,9 +7,10 @@ import { LibraryPageModule } from '../library.module';
 
 import { SeriesComponent } from './series.component';
 
+let component: SeriesComponent;
+let fixture: ComponentFixture<SeriesComponent>;
+
 describe('SeriesComponent', () => {
-  let component: SeriesComponent;
-  let fixture: ComponentFixture<SeriesComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -6,9 +6,10 @@ import { thumbnail1 } from '../testing/thumbnail.fixtures';
 
 import { ThumbnailsService } from './thumbnails.service';
 
+let service: ThumbnailsService;
+let httpMock: HttpTestingController;
+
 describe('ThumbnailsService', () => {
-  let service: ThumbnailsService;
-  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -29,7 +30,7 @@ describe('ThumbnailsService', () => {
       service.getFrontCover(comic.id).subscribe(thumbnail => {
         expect((thumbnail.url as any).changingThisBreaksApplicationSecurity).toContain('abcedf1234');
       });
-      const req = httpMock.expectOne(`api/thumbnails/front-cover/${comic.id}`);
+      const req = httpMock.expectOne(`api/thumbnails/front-cover/${ comic.id }`);
       expect(req.request.method).toBe('GET');
       req.flush(thumbnail1);
     });

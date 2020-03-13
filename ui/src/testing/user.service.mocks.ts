@@ -7,7 +7,7 @@ const userService = jasmine.createSpyObj('UserService', [
   'setupGoogleSignIn'
 ]);
 
-userService.logout.and.returnValue( of(null) );
+userService.logout.and.returnValue(of(null));
 userService.user = of(user);
 
 export { userService as UserServiceMocks };

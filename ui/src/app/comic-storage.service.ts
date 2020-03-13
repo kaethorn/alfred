@@ -99,7 +99,7 @@ export class ComicStorageService {
         this.comicDatabaseService.getComics().then((comics: Comic[]) => {
           from(comics).pipe(
             filter(comic => !comic.read),
-            groupBy(comic => `${comic.publisher}|${comic.series}|${comic.volume}`),
+            groupBy(comic => `${ comic.publisher }|${ comic.series }|${ comic.volume }`),
             mergeMap(group => group.pipe(
               toArray(),
               map(g => g.sort((a, b) => a.position > b.position ? 1 : -1))

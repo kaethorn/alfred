@@ -10,11 +10,11 @@ import { UserServiceMocks as userService } from '../testing/user.service.mocks';
 import { AppComponent } from './app.component';
 import { UserService } from './user.service';
 
-describe('AppComponent', () => {
+let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
+let component: AppComponent;
+let fixture: ComponentFixture<AppComponent>;
 
-  let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
-  let component: AppComponent;
-  let fixture: ComponentFixture<AppComponent>;
+describe('AppComponent', () => {
 
   beforeEach(() => {
     statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);

@@ -1,26 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastController } from '@ionic/angular';
-import { throwError, of } from 'rxjs';
+import { throwError } from 'rxjs';
 
-import { comic1 as comic } from '../../testing/comic.fixtures';
-import { ComicsServiceMocks as comicsService } from '../../testing/comics.service.mocks';
+import { ComicsServiceMocks } from '../../testing/comics.service.mocks';
+import { ToastControllerServiceMocks } from '../../testing/toast-controller.service.mocks';
 import { Comic } from '../comic';
 import { ComicsService } from '../comics.service';
 
 import { EditPageModule } from './edit.module';
 import { EditPage } from './edit.page';
 
+let component: EditPage;
+let fixture: ComponentFixture<EditPage>;
+let toastController: jasmine.SpyObj<ToastController>;
+let toastSpy: jasmine.SpyObj<HTMLIonToastElement>;
+let comicsService: jasmine.SpyObj<ComicsService>;
+
 describe('EditPage', () => {
-  let component: EditPage;
-  let fixture: ComponentFixture<EditPage>;
-  let toastSpy;
-  let toastController;
 
   beforeEach(() => {
-    toastSpy = jasmine.createSpyObj('HTMLIonToastElement', ['present']);
-    toastController = jasmine.createSpyObj('ToastController', ['create']);
-    toastController.create.and.returnValue(Promise.resolve(toastSpy));
+    toastController = ToastControllerServiceMocks.toastController;
+    toastSpy = ToastControllerServiceMocks.toastElementSpy;
+    comicsService = ComicsServiceMocks.comicsService;
 
     TestBed.configureTestingModule({
       imports: [
@@ -78,11 +80,6 @@ describe('EditPage', () => {
         comicsService.update.and.returnValue(throwError(''));
       });
 
-      afterEach(() => {
-        // FIXME mock services should provide methods returning fresh mocks
-        comicsService.update.and.returnValue(of(comic));
-      });
-
       it('shows a error toast', async () => {
         component.onSubmit();
 
@@ -126,11 +123,6 @@ describe('EditPage', () => {
 
       beforeEach(() => {
         comicsService.scrape.and.returnValue(throwError(''));
-      });
-
-      afterEach(() => {
-        // FIXME mock services should provide methods returning fresh mocks
-        comicsService.scrape.and.returnValue(of(comic));
       });
 
       it('shows a error toast', async () => {

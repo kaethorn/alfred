@@ -1,23 +1,30 @@
 import { of } from 'rxjs';
 
+import { ComicsService } from '../app/comics.service';
+
 import { comic1 as comic } from './comic.fixtures';
 
-const comicsService = jasmine.createSpyObj('ComicsService', [
-  'get',
-  'list',
-  'listComicsWithErrors',
-  'listByVolume',
-  'listLastReadByVolume',
-  'update',
-  'scrape'
-]);
+export class ComicsServiceMocks {
 
-comicsService.get.and.returnValue(of(comic));
-comicsService.list.and.returnValue(of([comic]));
-comicsService.listComicsWithErrors.and.returnValue(of([comic]));
-comicsService.listByVolume.and.returnValue(of([comic]));
-comicsService.listLastReadByVolume.and.returnValue(of([]));
-comicsService.update.and.returnValue(of(comic));
-comicsService.scrape.and.returnValue(of(comic));
+  public static get comicsService(): jasmine.SpyObj<ComicsService> {
+    const comicsService = jasmine.createSpyObj(ComicsService, [
+      'get',
+      'list',
+      'listComicsWithErrors',
+      'listByVolume',
+      'listLastReadByVolume',
+      'update',
+      'scrape'
+    ]);
 
-export { comicsService as ComicsServiceMocks };
+    comicsService.get.and.returnValue(of(comic));
+    comicsService.list.and.returnValue(of([comic]));
+    comicsService.listComicsWithErrors.and.returnValue(of([comic]));
+    comicsService.listByVolume.and.returnValue(of([comic]));
+    comicsService.listLastReadByVolume.and.returnValue(of([]));
+    comicsService.update.and.returnValue(of(comic));
+    comicsService.scrape.and.returnValue(of(comic));
+
+    return comicsService;
+  }
+}

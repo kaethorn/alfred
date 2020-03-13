@@ -8,11 +8,13 @@ import { ComicDatabaseService } from './comic-database.service';
 import { ComicsService } from './comics.service';
 import { QueueService } from './queue.service';
 
+let service: QueueService;
+let dbService: ComicDatabaseService;
+
+const comicsService = jasmine.createSpyObj('ComicsService', [ 'updateProgress' ]);
+const updateProgressSpy: jasmine.Spy = comicsService.updateProgress;
+
 describe('QueueService', () => {
-  let service: QueueService;
-  let dbService: ComicDatabaseService;
-  const comicsService = jasmine.createSpyObj('ComicsService', [ 'updateProgress' ]);
-  const updateProgressSpy: jasmine.Spy = comicsService.updateProgress;
 
   beforeEach(async () => {
     updateProgressSpy.and.returnValue(of(comic));
@@ -70,7 +72,7 @@ describe('QueueService', () => {
       describe('on error', () => {
 
         beforeEach(() => {
-          updateProgressSpy.and.returnValue( throwError(comic) );
+          updateProgressSpy.and.returnValue(throwError(comic));
         });
 
         it('does not complete', done => {

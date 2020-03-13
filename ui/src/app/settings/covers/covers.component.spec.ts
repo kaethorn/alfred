@@ -5,9 +5,10 @@ import { SettingsPageModule } from '../settings.module';
 
 import { CoversComponent } from './covers.component';
 
+let component: CoversComponent;
+let fixture: ComponentFixture<CoversComponent>;
+
 describe('CoversComponent', () => {
-  let component: CoversComponent;
-  let fixture: ComponentFixture<CoversComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

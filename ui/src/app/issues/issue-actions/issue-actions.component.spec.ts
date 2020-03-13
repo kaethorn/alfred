@@ -7,10 +7,11 @@ import { IssuesPageModule } from '../issues.module';
 
 import { IssueActionsComponent } from './issue-actions.component';
 
+let component: IssueActionsComponent;
+let fixture: ComponentFixture<IssueActionsComponent>;
+let navParams: NavParams;
+
 describe('IssueActionsComponent', () => {
-  let component: IssueActionsComponent;
-  let fixture: ComponentFixture<IssueActionsComponent>;
-  let navParams: NavParams;
 
   beforeEach(() => {
     navParams = new NavParams({ comic });

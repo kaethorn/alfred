@@ -6,10 +6,11 @@ import { LibraryPageModule } from '../../library.module';
 
 import { VolumeActionsComponent } from './volume-actions.component';
 
+let component: VolumeActionsComponent;
+let fixture: ComponentFixture<VolumeActionsComponent>;
+let navParams: NavParams;
+
 describe('VolumeActionsComponent', () => {
-  let component: VolumeActionsComponent;
-  let fixture: ComponentFixture<VolumeActionsComponent>;
-  let navParams: NavParams;
 
   beforeEach(() => {
     navParams = new NavParams({ volume });

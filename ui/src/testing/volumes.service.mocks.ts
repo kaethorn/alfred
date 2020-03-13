@@ -11,9 +11,9 @@ const volumesService = jasmine.createSpyObj('VolumesService', [
   'listPublishers'
 ]);
 
-volumesService.listVolumesByPublisher.and.returnValue( of([volume]) );
-volumesService.listVolumes.and.returnValue( of([volume]) );
-volumesService.listSeries.and.returnValue( of([series]) );
-volumesService.listPublishers.and.returnValue( of([publisher]) );
+volumesService.listVolumesByPublisher.and.returnValue(of([volume]));
+volumesService.listVolumes.and.returnValue(of([volume]));
+volumesService.listSeries.and.returnValue(of([series]));
+volumesService.listPublishers.and.returnValue(of([publisher]));
 
 export { volumesService as VolumesServiceMocks };

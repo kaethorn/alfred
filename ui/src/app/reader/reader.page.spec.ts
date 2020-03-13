@@ -3,55 +3,50 @@ import { By } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { comic1 as comic } from '../../testing/comic.fixtures';
+import { ComicStorageServiceMocks } from '../../testing/comic-storage.service.mocks';
 import { ComicStorageService } from '../comic-storage.service';
 
 import { ReaderPageModule } from './reader.module';
 import { ReaderPage } from './reader.page';
 
+let component: ReaderPage;
+let fixture: ComponentFixture<ReaderPage>;
+let router;
+let comicStorageService: jasmine.SpyObj<ComicStorageService>;
+
+const clickRightSide = async (): Promise<void> => {
+  fixture.debugElement.query(By.css('.pages-layer'))
+    .triggerEventHandler('click', {
+      clientX      : 700,
+      currentTarget: { offsetWidth: 800 }
+    });
+  await fixture.whenStable();
+  fixture.detectChanges();
+};
+const clickLeftSide = async (): Promise<void> => {
+  fixture.debugElement.query(By.css('.pages-layer'))
+    .triggerEventHandler('click', {
+      clientX      : 100,
+      currentTarget: { offsetWidth: 800 }
+    });
+  await fixture.whenStable();
+  fixture.detectChanges();
+};
+const clickCenter = async (): Promise<void> => {
+  fixture.debugElement.query(By.css('.pages-layer'))
+    .triggerEventHandler('click', {
+      clientX      : 500,
+      currentTarget: { offsetWidth: 800 }
+    });
+  await fixture.whenStable();
+  fixture.detectChanges();
+};
+
 describe('ReaderPage', () => {
-
-  let component: ReaderPage;
-  let fixture: ComponentFixture<ReaderPage>;
-  let router;
-  let comicStorageService;
-
-  const clickRightSide = async (): Promise<void> => {
-    fixture.debugElement.query(By.css('.pages-layer'))
-      .triggerEventHandler('click', {
-        clientX      : 700,
-        currentTarget: { offsetWidth: 800 }
-      });
-    await fixture.whenStable();
-    fixture.detectChanges();
-  };
-  const clickLeftSide = async (): Promise<void> => {
-    fixture.debugElement.query(By.css('.pages-layer'))
-      .triggerEventHandler('click', {
-        clientX      : 100,
-        currentTarget: { offsetWidth: 800 }
-      });
-    await fixture.whenStable();
-    fixture.detectChanges();
-  };
-  const clickCenter = async (): Promise<void> => {
-    fixture.debugElement.query(By.css('.pages-layer'))
-      .triggerEventHandler('click', {
-        clientX      : 500,
-        currentTarget: { offsetWidth: 800 }
-      });
-    await fixture.whenStable();
-    fixture.detectChanges();
-  };
 
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
-    comicStorageService = jasmine
-      .createSpyObj('ComicStorageService', ['get', 'saveProgress', 'getPageUrl', 'storeSurrounding']);
-    comicStorageService.get.and.returnValue(Promise.resolve(Object.assign({}, comic)));
-    comicStorageService.saveProgress.and.returnValue(Promise.resolve());
-    comicStorageService.getPageUrl.and.returnValue(Promise.resolve('/api/read/923/0'));
-    comicStorageService.storeSurrounding.and.returnValue(Promise.resolve({}));
+    comicStorageService = ComicStorageServiceMocks.comicStorageService;
 
     TestBed.configureTestingModule({
       imports: [

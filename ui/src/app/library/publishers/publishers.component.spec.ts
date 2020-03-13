@@ -7,9 +7,10 @@ import { LibraryPageModule } from '../library.module';
 
 import { PublishersComponent } from './publishers.component';
 
+let component: PublishersComponent;
+let fixture: ComponentFixture<PublishersComponent>;
+
 describe('PublishersComponent', () => {
-  let component: PublishersComponent;
-  let fixture: ComponentFixture<PublishersComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

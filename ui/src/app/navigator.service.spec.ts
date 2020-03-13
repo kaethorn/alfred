@@ -2,8 +2,9 @@ import { TestBed } from '@angular/core/testing';
 
 import { NavigatorService, AdjacentComic } from './navigator.service';
 
+let service: NavigatorService;
+
 describe('NavigatorService', () => {
-  let service: NavigatorService;
 
   beforeEach(() => {
     NavigatorService.page = 0;

@@ -7,9 +7,10 @@ import { UserService } from '../user.service';
 import { LoginPageModule } from './login.module';
 import { LoginPage } from './login.page';
 
+let component: LoginPage;
+let fixture: ComponentFixture<LoginPage>;
+
 describe('LoginPage', () => {
-  let component: LoginPage;
-  let fixture: ComponentFixture<LoginPage>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

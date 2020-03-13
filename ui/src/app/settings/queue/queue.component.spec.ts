@@ -5,9 +5,10 @@ import { SettingsPageModule } from '../settings.module';
 
 import { QueueComponent } from './queue.component';
 
+let component: QueueComponent;
+let fixture: ComponentFixture<QueueComponent>;
+
 describe('QueueComponent', () => {
-  let component: QueueComponent;
-  let fixture: ComponentFixture<QueueComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

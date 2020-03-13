@@ -1,19 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { ComicsServiceMocks as comicsService } from '../../../testing/comics.service.mocks';
-import { StatsServiceMocks as statsService } from '../../../testing/stats.service.mocks';
+import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
+import { StatsServiceMocks } from '../../../testing/stats.service.mocks';
 import { ComicsService } from '../../comics.service';
 import { StatsService } from '../../stats.service';
 import { SettingsPageModule } from '../settings.module';
 
 import { ScannerComponent } from './scanner.component';
 
+let component: ScannerComponent;
+let fixture: ComponentFixture<ScannerComponent>;
+let comicsService: jasmine.SpyObj<ComicsService>;
+let statsService: jasmine.SpyObj<StatsService>;
+
 describe('ScannerComponent', () => {
-  let component: ScannerComponent;
-  let fixture: ComponentFixture<ScannerComponent>;
 
   beforeEach(() => {
+    comicsService = ComicsServiceMocks.comicsService;
+    statsService = StatsServiceMocks.statsService;
+
     TestBed.configureTestingModule({
       imports: [
         SettingsPageModule,

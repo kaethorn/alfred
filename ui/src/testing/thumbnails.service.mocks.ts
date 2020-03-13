@@ -1,13 +1,20 @@
 import { of } from 'rxjs';
 
+import { ThumbnailsService } from '../app/thumbnails.service';
+
 import { thumbnail1 as thumbnail } from './thumbnail.fixtures';
 
-const thumbnailsService = jasmine.createSpyObj('ThumbnailsService', [
-  'getFrontCover',
-  'getBackCover'
-]);
+export class ThumbnailsServiceMocks {
 
-thumbnailsService.getFrontCover.and.returnValue( of(thumbnail) );
-thumbnailsService.getBackCover.and.returnValue( of(thumbnail) );
+  public static get thumbnailsService(): jasmine.SpyObj<ThumbnailsService> {
+    const thumbnailsService = jasmine.createSpyObj('ThumbnailsService', [
+      'getFrontCover',
+      'getBackCover'
+    ]);
 
-export { thumbnailsService as ThumbnailsServiceMocks };
+    thumbnailsService.getFrontCover.and.returnValue(of(thumbnail));
+    thumbnailsService.getBackCover.and.returnValue(of(thumbnail));
+
+    return thumbnailsService;
+  }
+}

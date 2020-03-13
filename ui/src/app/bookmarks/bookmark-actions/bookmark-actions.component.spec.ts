@@ -7,10 +7,11 @@ import { BookmarksPageModule } from '../bookmarks.module';
 
 import { BookmarkActionsComponent } from './bookmark-actions.component';
 
+let component: BookmarkActionsComponent;
+let fixture: ComponentFixture<BookmarkActionsComponent>;
+let navParams: NavParams;
+
 describe('BookmarkActionsComponent', () => {
-  let component: BookmarkActionsComponent;
-  let fixture: ComponentFixture<BookmarkActionsComponent>;
-  let navParams: NavParams;
 
   beforeEach(() => {
     navParams = new NavParams({ comic });

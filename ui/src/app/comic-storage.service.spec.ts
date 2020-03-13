@@ -2,17 +2,19 @@ import { TestBed } from '@angular/core/testing';
 import { throwError, of } from 'rxjs';
 
 import { volume, volumesInProgress } from '../testing/comic.fixtures';
-import { ComicsServiceMocks as comicsService } from '../testing/comics.service.mocks';
+import { ComicsServiceMocks } from '../testing/comics.service.mocks';
 
 import { ComicDatabaseService } from './comic-database.service';
 import { ComicStorageService } from './comic-storage.service';
 import { ComicsService } from './comics.service';
 import { ThumbnailsService } from './thumbnails.service';
 
+let service: ComicStorageService;
+const comicDatabaseService = jasmine
+  .createSpyObj('ComicDatabaseService', [ 'store', 'delete', 'getComics', 'ready', 'getComicsBy' ]);
+let comicsService: jasmine.SpyObj<ComicsService>;
+
 describe('ComicStorageService', () => {
-  let service: ComicStorageService;
-  const comicDatabaseService = jasmine
-    .createSpyObj('ComicDatabaseService', [ 'store', 'delete', 'getComics', 'ready', 'getComicsBy' ]);
 
   beforeEach(() => {
     comicDatabaseService.store.and.returnValue(Promise.resolve());
@@ -20,6 +22,7 @@ describe('ComicStorageService', () => {
     comicDatabaseService.getComicsBy.and.returnValue(Promise.resolve([]));
     comicDatabaseService.getComics.and.returnValue(Promise.resolve([]));
     comicDatabaseService.ready = of({ });
+    comicsService = ComicsServiceMocks.comicsService;
 
     TestBed.configureTestingModule({
       providers: [{

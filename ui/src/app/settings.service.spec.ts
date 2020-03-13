@@ -3,38 +3,40 @@ import { TestBed } from '@angular/core/testing';
 
 import { SettingsService } from './settings.service';
 
+let service: SettingsService;
+let httpMock: HttpTestingController;
+
+const mockSettingA = {
+  id: '1',
+  key: 'a',
+  name: 'Sample A',
+  value: 'foo',
+  comment: '',
+  _links: {
+    self: {
+      href: 'foo.bar/1'
+    }
+  }
+};
+const mockSettingB = {
+  id: '2',
+  key: 'b',
+  name: 'Sample B',
+  value: 'bar',
+  comment: '',
+  _links: {
+    self: {
+      href: 'foo.bar/2'
+    }
+  }
+};
+const mockSettings = {
+  _embedded: {
+    settings: [ mockSettingA, mockSettingB ]
+  }
+};
+
 describe('SettingsService', () => {
-  let service: SettingsService;
-  let httpMock: HttpTestingController;
-  const mockSettingA = {
-    id: '1',
-    key: 'a',
-    name: 'Sample A',
-    value: 'foo',
-    comment: '',
-    _links: {
-      self: {
-        href: 'foo.bar/1'
-      }
-    }
-  };
-  const mockSettingB = {
-    id: '2',
-    key: 'b',
-    name: 'Sample B',
-    value: 'bar',
-    comment: '',
-    _links: {
-      self: {
-        href: 'foo.bar/2'
-      }
-    }
-  };
-  const mockSettings = {
-    _embedded: {
-      settings: [ mockSettingA, mockSettingB ]
-    }
-  };
 
   beforeEach(() => {
     localStorage.clear();

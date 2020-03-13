@@ -4,9 +4,10 @@ import { TestBed } from '@angular/core/testing';
 import { User } from './user';
 import { UserService } from './user.service';
 
+let service: UserService;
+let httpMock: HttpTestingController;
+
 describe('UserService', () => {
-  let service: UserService;
-  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     localStorage.clear();
