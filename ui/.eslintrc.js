@@ -172,8 +172,10 @@ module.exports = {
                 "named": "never",
                 "asyncArrow": "always"
             }
-         ],
+        ],
+        "space-in-parens": "error",
         "spaced-comment": "error",
+        "template-curly-spacing": [ "error", "always" ]
     },
     "settings": {},
     "overrides": [

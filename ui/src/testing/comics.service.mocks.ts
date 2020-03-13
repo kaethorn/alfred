@@ -8,14 +8,16 @@ const comicsService = jasmine.createSpyObj('ComicsService', [
   'listComicsWithErrors',
   'listByVolume',
   'listLastReadByVolume',
-  'update'
+  'update',
+  'scrape'
 ]);
 
-comicsService.get.and.returnValue( of(comic) );
-comicsService.list.and.returnValue( of([comic]) );
-comicsService.listComicsWithErrors.and.returnValue( of([comic]) );
-comicsService.listByVolume.and.returnValue( of([comic]) );
-comicsService.listLastReadByVolume.and.returnValue( of([]) );
-comicsService.update.and.returnValue( of(comic) );
+comicsService.get.and.returnValue(of(comic));
+comicsService.list.and.returnValue(of([comic]));
+comicsService.listComicsWithErrors.and.returnValue(of([comic]));
+comicsService.listByVolume.and.returnValue(of([comic]));
+comicsService.listLastReadByVolume.and.returnValue(of([]));
+comicsService.update.and.returnValue(of(comic));
+comicsService.scrape.and.returnValue(of(comic));
 
 export { comicsService as ComicsServiceMocks };
