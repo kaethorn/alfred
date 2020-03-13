@@ -31,7 +31,7 @@ export class BookmarksPage {
     this.comicDatabaseService.ready.toPromise().then(() => this.list());
   }
 
-  public async openMenu(event: any, comic: Comic): Promise<void> {
+  public async openMenu(event: Event, comic: Comic): Promise<void> {
     const popover = await this.popoverController.create({
       component: BookmarkActionsComponent,
       componentProps: { comic },

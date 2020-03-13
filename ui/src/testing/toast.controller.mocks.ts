@@ -1,6 +1,6 @@
 import { ToastController } from '@ionic/angular';
 
-export class ToastControllerServiceMocks {
+export class ToastControllerMocks {
 
   private static toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 
@@ -13,8 +13,8 @@ export class ToastControllerServiceMocks {
 
   public static get toastController(): jasmine.SpyObj<ToastController> {
     delete this.toastElement;
-    const toastController = jasmine.createSpyObj('ToastController', ['create']);
-    toastController.create.and.returnValue(Promise.resolve(this.toastElementSpy));
-    return toastController;
+    return jasmine.createSpyObj('ToastController', {
+      create: Promise.resolve(this.toastElementSpy)
+    });
   }
 }

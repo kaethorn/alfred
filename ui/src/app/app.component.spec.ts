@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
 
-import { UserServiceMocks as userService } from '../testing/user.service.mocks';
+import { UserServiceMocks } from '../testing/user.service.mocks';
 
 import { AppComponent } from './app.component';
 import { UserService } from './user.service';
@@ -13,6 +13,7 @@ import { UserService } from './user.service';
 let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
 let component: AppComponent;
 let fixture: ComponentFixture<AppComponent>;
+let userService: jasmine.SpyObj<UserService>;
 
 describe('AppComponent', () => {
 
@@ -21,6 +22,7 @@ describe('AppComponent', () => {
     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     platformReadySpy = Promise.resolve();
     platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
+    userService = UserServiceMocks.userService;
 
     TestBed.configureTestingModule({
       declarations: [AppComponent],

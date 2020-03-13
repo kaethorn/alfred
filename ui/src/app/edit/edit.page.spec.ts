@@ -4,7 +4,7 @@ import { ToastController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
 import { ComicsServiceMocks } from '../../testing/comics.service.mocks';
-import { ToastControllerServiceMocks } from '../../testing/toast-controller.service.mocks';
+import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
 import { Comic } from '../comic';
 import { ComicsService } from '../comics.service';
 
@@ -14,14 +14,14 @@ import { EditPage } from './edit.page';
 let component: EditPage;
 let fixture: ComponentFixture<EditPage>;
 let toastController: jasmine.SpyObj<ToastController>;
-let toastSpy: jasmine.SpyObj<HTMLIonToastElement>;
+let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 
 describe('EditPage', () => {
 
   beforeEach(() => {
-    toastController = ToastControllerServiceMocks.toastController;
-    toastSpy = ToastControllerServiceMocks.toastElementSpy;
+    toastController = ToastControllerMocks.toastController;
+    toastElement = ToastControllerMocks.toastElementSpy;
     comicsService = ComicsServiceMocks.comicsService;
 
     TestBed.configureTestingModule({
@@ -69,8 +69,8 @@ describe('EditPage', () => {
           message: 'Comic saved.',
           duration: 3000
         });
-        await toastController.create();
-        expect(toastSpy.present).toHaveBeenCalled();
+        await toastController.create.calls.mostRecent().returnValue;
+        expect(toastElement.present).toHaveBeenCalled();
       });
     });
 
@@ -87,8 +87,8 @@ describe('EditPage', () => {
           message: 'Error saving comic.',
           duration: 4000
         });
-        await toastController.create();
-        expect(toastSpy.present).toHaveBeenCalled();
+        await toastController.create.calls.mostRecent().returnValue;
+        expect(toastElement.present).toHaveBeenCalled();
       });
     });
   });
@@ -114,8 +114,8 @@ describe('EditPage', () => {
           message: 'Comic scraped.',
           duration: 3000
         });
-        await toastController.create();
-        expect(toastSpy.present).toHaveBeenCalled();
+        await toastController.create.calls.mostRecent().returnValue;
+        expect(toastElement.present).toHaveBeenCalled();
       });
     });
 
@@ -132,8 +132,8 @@ describe('EditPage', () => {
           message: 'Error scraping comic.',
           duration: 4000
         });
-        await toastController.create();
-        expect(toastSpy.present).toHaveBeenCalled();
+        await toastController.create.calls.mostRecent().returnValue;
+        expect(toastElement.present).toHaveBeenCalled();
       });
     });
   });

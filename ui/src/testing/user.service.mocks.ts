@@ -1,13 +1,17 @@
 import { of } from 'rxjs';
 
+import { UserService } from '../app/user.service';
+
 import { user1 as user } from './user.fixtures';
 
-const userService = jasmine.createSpyObj('UserService', [
-  'logout',
-  'setupGoogleSignIn'
-]);
+export class UserServiceMocks {
 
-userService.logout.and.returnValue(of(null));
-userService.user = of(user);
-
-export { userService as UserServiceMocks };
+  public static get userService(): jasmine.SpyObj<UserService> {
+    const userService = jasmine.createSpyObj('UserService', {
+      logout: of(null),
+      setupGoogleSignIn: null
+    });
+    userService.user = of(user);
+    return userService;
+  }
+}

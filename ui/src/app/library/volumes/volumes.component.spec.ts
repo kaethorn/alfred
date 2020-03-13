@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ThumbnailsServiceMocks } from '../../../testing/thumbnails.service.mocks';
-import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
+import { VolumesServiceMocks } from '../../../testing/volumes.service.mocks';
 import { ThumbnailsService } from '../../thumbnails.service';
 import { VolumesService } from '../../volumes.service';
 import { LibraryPageModule } from '../library.module';
@@ -12,11 +12,13 @@ import { VolumesComponent } from './volumes.component';
 let component: VolumesComponent;
 let fixture: ComponentFixture<VolumesComponent>;
 let thumbnailsService: jasmine.SpyObj<ThumbnailsService>;
+let volumesService: jasmine.SpyObj<VolumesService>;
 
 describe('VolumesComponent', () => {
 
   beforeEach(() => {
     thumbnailsService = ThumbnailsServiceMocks.thumbnailsService;
+    volumesService = VolumesServiceMocks.volumesService;
 
     TestBed.configureTestingModule({
       imports: [
