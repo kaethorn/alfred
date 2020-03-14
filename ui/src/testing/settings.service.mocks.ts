@@ -8,7 +8,8 @@ export class SettingsServiceMocks {
 
   public static get settingsService(): jasmine.SpyObj<SettingsService> {
     return jasmine.createSpyObj('SettingsService', {
-      list: of([setting])
+      list: of([setting]),
+      update: of(setting)
     });
   }
 }
