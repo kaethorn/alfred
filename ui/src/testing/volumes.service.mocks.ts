@@ -13,7 +13,9 @@ export class VolumesServiceMocks {
       listVolumesByPublisher: of([volume]),
       listVolumes: of([volume]),
       listSeries: of([series]),
-      listPublishers: of([publisher])
+      listPublishers: of([publisher]),
+      markAsRead: of(null),
+      markAsUnread: of(null)
     });
   }
 }
