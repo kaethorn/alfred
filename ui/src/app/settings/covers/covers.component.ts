@@ -33,9 +33,9 @@ export class CoversComponent {
     this.frontCoverThumbnails.get(comic.id).subscribe(thumbail => {
       this.comicsService.deletePage(comic, thumbail.path).subscribe(() => {
         this.updateThumbnails(comic);
-        this.showToast('Front cover deleted.');
+        this.showToast(`Front cover of "${ comic.fileName }" deleted.`);
       }, () => {
-        this.showToast('Error whilte deleting front cover.');
+        this.showToast(`Error while deleting front cover of "${ comic.fileName }".`, 4000);
       });
     });
   }
@@ -46,7 +46,7 @@ export class CoversComponent {
         this.updateThumbnails(comic);
         this.showToast(`Back cover of "${ comic.fileName }" deleted.`);
       }, () => {
-        this.showToast(`Error while deleting back cover of "${ comic.fileName }".`);
+        this.showToast(`Error while deleting back cover of "${ comic.fileName }".`, 4000);
       });
     });
   }
@@ -56,7 +56,7 @@ export class CoversComponent {
     this.backCoverThumbnails.set(comic.id, this.thumbnailsService.getBackCover(comic.id));
   }
 
-  private async showToast(message: string, duration = 4000): Promise<void> {
+  private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration

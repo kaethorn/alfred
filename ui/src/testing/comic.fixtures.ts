@@ -8,6 +8,7 @@ comic1.title = 'There\'s Nothing So Savage as a Man Destroying Himself';
 comic1.series = 'Batman';
 comic1.volume = '1940';
 comic1.publisher = 'DC Comics';
+comic1.fileName = '401.cbz';
 
 export { comic1 };
 

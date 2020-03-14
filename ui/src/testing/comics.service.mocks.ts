@@ -14,7 +14,9 @@ export class ComicsServiceMocks {
       listByVolume: of([comic]),
       listLastReadByVolume: of([]),
       update: of(comic),
-      scrape: of(comic)
+      scrape: of(comic),
+      listComicsWithoutErrors: of([comic]),
+      deletePage: of(null)
     });
   }
 }
