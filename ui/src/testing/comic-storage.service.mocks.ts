@@ -9,7 +9,10 @@ export class ComicStorageServiceMocks {
       get: Promise.resolve(Object.assign({}, comic)),
       saveProgress: Promise.resolve(),
       getPageUrl: Promise.resolve('/api/read/923/0'),
-      storeSurrounding: Promise.resolve({})
+      storeSurrounding: Promise.resolve({}),
+      getBookmarks: Promise.resolve([comic]),
+      getFrontCoverThumbnail: Promise.resolve(''),
+      deleteVolume: Promise.resolve()
     });
   }
 }

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { MockComponent } from '../..//testing/mock.component';
 import { UserServiceMocks } from '../../testing/user.service.mocks';
 import { UserService } from '../user.service';
 
@@ -19,7 +20,9 @@ describe('LoginPage', () => {
     TestBed.configureTestingModule({
       imports: [
         LoginPageModule,
-        RouterTestingModule
+        RouterTestingModule.withRoutes([
+          { path: 'library', component: MockComponent }
+        ])
       ],
       providers: [{
         provide: UserService, useValue: userService

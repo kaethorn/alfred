@@ -48,9 +48,8 @@ export class BookmarksPage {
         this.updateStoredState(comic.id);
         this.showToast('Volume cached.');
         this.syncing = false;
-      }).catch(error => {
-        this.showToast('Error while syncing volume.');
-        console.error(error);
+      }).catch(() => {
+        this.showToast('Error while syncing volume.', 4000);
         this.syncing = false;
       });
   }

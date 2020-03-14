@@ -10,6 +10,7 @@ export class ComicDatabaseServiceMocks {
       delete: Promise.resolve(),
       getComics: Promise.resolve([]),
       ready: null,
+      isStored: Promise.resolve(true),
       getComicsBy: Promise.resolve([])
     });
     comicDatabaseService.ready = of({ });
