@@ -3,7 +3,7 @@ import { NavParams, PopoverController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
 import { PopoverControllerMocks } from '../../../../testing/popover.controller.mocks';
-import { volume1 as volume } from '../../../../testing/volume.fixtures';
+import { VolumeFixtures } from '../../../../testing/volume.fixtures';
 import { VolumesServiceMocks } from '../../../../testing/volumes.service.mocks';
 import { VolumesService } from '../../../volumes.service';
 import { LibraryPageModule } from '../../library.module';
@@ -22,7 +22,7 @@ describe('VolumeActionsComponent', () => {
     popoverController = PopoverControllerMocks.popoverController;
     volumesService = VolumesServiceMocks.volumesService;
 
-    navParams = new NavParams({ volume });
+    navParams = new NavParams({ volume: VolumeFixtures.volume });
     TestBed.configureTestingModule({
       imports: [
         LibraryPageModule
@@ -48,14 +48,14 @@ describe('VolumeActionsComponent', () => {
   describe('#markAsRead', () => {
 
     it('marks the volme as read', () => {
-      component.markAsRead(volume);
-      expect(volumesService.markAsRead).toHaveBeenCalledWith(volume);
+      component.markAsRead(VolumeFixtures.volume);
+      expect(volumesService.markAsRead).toHaveBeenCalledWith(VolumeFixtures.volume);
     });
 
     describe('on success', () => {
 
       it('closes the popover', async () => {
-        component.markAsRead(volume);
+        component.markAsRead(VolumeFixtures.volume);
         await volumesService.markAsRead.calls.mostRecent().returnValue.toPromise();
 
         expect(popoverController.dismiss).toHaveBeenCalled();
@@ -69,7 +69,7 @@ describe('VolumeActionsComponent', () => {
       });
 
       it('closes the popover', async () => {
-        component.markAsRead(volume);
+        component.markAsRead(VolumeFixtures.volume);
         await new Promise(resolve =>
           volumesService.markAsRead.calls.mostRecent().returnValue.toPromise().catch(resolve));
 
@@ -81,14 +81,14 @@ describe('VolumeActionsComponent', () => {
   describe('#markAsUnread', () => {
 
     it('marks the volme as unread', () => {
-      component.markAsUnread(volume);
-      expect(volumesService.markAsUnread).toHaveBeenCalledWith(volume);
+      component.markAsUnread(VolumeFixtures.volume);
+      expect(volumesService.markAsUnread).toHaveBeenCalledWith(VolumeFixtures.volume);
     });
 
     describe('on success', () => {
 
       it('closes the popover', async () => {
-        component.markAsUnread(volume);
+        component.markAsUnread(VolumeFixtures.volume);
         await volumesService.markAsUnread.calls.mostRecent().returnValue.toPromise();
 
         expect(popoverController.dismiss).toHaveBeenCalled();
@@ -102,7 +102,7 @@ describe('VolumeActionsComponent', () => {
       });
 
       it('closes the popover', async () => {
-        component.markAsUnread(volume);
+        component.markAsUnread(VolumeFixtures.volume);
         await new Promise(resolve =>
           volumesService.markAsUnread.calls.mostRecent().returnValue.toPromise().catch(resolve));
 

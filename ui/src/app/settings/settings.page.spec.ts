@@ -4,7 +4,7 @@ import { ToastController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
 import { ComicsServiceMocks } from '../../testing/comics.service.mocks';
-import { setting1 as setting } from '../../testing/setting.fixtures';
+import { SettingFixtures } from '../../testing/setting.fixtures';
 import { SettingsServiceMocks } from '../../testing/settings.service.mocks';
 import { StatsServiceMocks } from '../../testing/stats.service.mocks';
 import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
@@ -70,7 +70,7 @@ describe('SettingsPage', () => {
       component.onSubmit();
 
       expect(settingsService.update).toHaveBeenCalledTimes(1);
-      expect(settingsService.update).toHaveBeenCalledWith(setting);
+      expect(settingsService.update).toHaveBeenCalledWith(SettingFixtures.setting);
     });
 
     describe('on success', () => {

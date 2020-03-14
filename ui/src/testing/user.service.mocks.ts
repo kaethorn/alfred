@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 
 import { UserService } from '../app/user.service';
 
-import { user1 as user } from './user.fixtures';
+import { UserFixtures } from './user.fixtures';
 
 export class UserServiceMocks {
 
@@ -11,7 +11,7 @@ export class UserServiceMocks {
       logout: of(null),
       setupGoogleSignIn: null
     });
-    userService.user = of(user);
+    userService.user = of(UserFixtures.user);
     return userService;
   }
 }

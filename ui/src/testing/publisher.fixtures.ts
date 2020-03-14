@@ -1,8 +1,13 @@
 import { Publisher } from '../app/publisher';
 
-const publisher1: Publisher = {} as Publisher;
-publisher1.name = 'DC Comics';
-publisher1.seriesCount = 4;
-publisher1.series = [];
+export class PublisherFixtures {
 
-export { publisher1 };
+  public static get publisher(): Publisher {
+    const publisher: Publisher = {} as Publisher;
+    publisher.name = 'DC Comics';
+    publisher.seriesCount = 4;
+    publisher.series = [];
+
+    return publisher;
+  }
+}

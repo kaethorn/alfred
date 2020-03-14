@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NavParams } from '@ionic/angular';
 
-import { comic1 as comic } from '../../../testing/comic.fixtures';
+import { ComicFixtures } from '../../../testing/comic.fixtures';
 import { IssuesPageModule } from '../issues.module';
 
 import { IssueActionsComponent } from './issue-actions.component';
@@ -14,7 +14,7 @@ let navParams: NavParams;
 describe('IssueActionsComponent', () => {
 
   beforeEach(() => {
-    navParams = new NavParams({ comic });
+    navParams = new NavParams({ comic: ComicFixtures.comic });
     TestBed.configureTestingModule({
       imports: [
         IssuesPageModule,

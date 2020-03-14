@@ -1,9 +1,14 @@
 import { Thumbnail } from '../app/thumbnail';
 
-const thumbnail1: Thumbnail = {} as Thumbnail;
-thumbnail1.id = '142';
-thumbnail1.comicId = '923';
-thumbnail1.image = 'abcedf1234';
-thumbnail1.path = '/1.png';
+export class ThumbnailFixtures {
 
-export { thumbnail1 };
+  public static get thumbnail(): Thumbnail {
+    const thumbnail: Thumbnail = {} as Thumbnail;
+    thumbnail.id = '142';
+    thumbnail.comicId = '923';
+    thumbnail.image = 'abcedf1234';
+    thumbnail.path = '/1.png';
+
+    return thumbnail;
+  }
+}

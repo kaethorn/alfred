@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ToastController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
-import { comic1 as comic, scannerIssueFixable } from '../../../testing/comic.fixtures';
+import { ComicFixtures } from '../../../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
 import { ToastControllerMocks } from '../../../testing/toast.controller.mocks';
 import { ComicsService } from '../../comics.service';
@@ -48,15 +48,15 @@ describe('QueueComponent', () => {
   describe('#fix', () => {
 
     it('auto-fixes the comic', () => {
-      component.fix(comic, scannerIssueFixable);
+      component.fix(ComicFixtures.comic, ComicFixtures.scannerIssueFixable);
 
-      expect(comicsService.fixIssue).toHaveBeenCalledWith(comic, scannerIssueFixable);
+      expect(comicsService.fixIssue).toHaveBeenCalledWith(ComicFixtures.comic, ComicFixtures.scannerIssueFixable);
     });
 
     describe('on success', () => {
 
       it('shows a success toast', async () => {
-        component.fix(comic, scannerIssueFixable);
+        component.fix(ComicFixtures.comic, ComicFixtures.scannerIssueFixable);
 
         await comicsService.fixIssue.calls.mostRecent().returnValue.toPromise();
         expect(toastController.create).toHaveBeenCalledWith({
@@ -75,7 +75,7 @@ describe('QueueComponent', () => {
       });
 
       it('shows an erro toast', async () => {
-        component.fix(comic, scannerIssueFixable);
+        component.fix(ComicFixtures.comic, ComicFixtures.scannerIssueFixable);
 
         await new Promise(resolve =>
           comicsService.fixIssue.calls.mostRecent().returnValue.toPromise().catch(resolve));

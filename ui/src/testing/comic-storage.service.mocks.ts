@@ -1,18 +1,19 @@
 import { ComicStorageService } from '../app/comic-storage.service';
 
-import { comic1 as comic } from './comic.fixtures';
+import { ComicFixtures } from './comic.fixtures';
 
 export class ComicStorageServiceMocks {
 
   public static get comicStorageService(): jasmine.SpyObj<ComicStorageService> {
     return jasmine.createSpyObj('ComicStorageService', {
-      get: Promise.resolve(Object.assign({}, comic)),
+      get: Promise.resolve(Object.assign({}, ComicFixtures.comic)),
       saveProgress: Promise.resolve(),
       getPageUrl: Promise.resolve('/api/read/923/0'),
       storeSurrounding: Promise.resolve({}),
-      getBookmarks: Promise.resolve([comic]),
+      getBookmarks: Promise.resolve(ComicFixtures.volume),
       getFrontCoverThumbnail: Promise.resolve(''),
-      deleteVolume: Promise.resolve()
+      deleteVolume: Promise.resolve(),
+      saveIfStored: Promise.resolve()
     });
   }
 }

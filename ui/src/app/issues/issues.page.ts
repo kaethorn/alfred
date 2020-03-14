@@ -69,7 +69,7 @@ export class IssuesPage {
     });
   }
 
-  public async openMenu(event: any, comic: Comic): Promise<void> {
+  public async openMenu(event: Event, comic: Comic): Promise<void> {
     const popover = await this.popoverController.create({
       component: IssueActionsComponent,
       componentProps: { comic },
@@ -105,10 +105,10 @@ export class IssuesPage {
     this.comics[this.comics.findIndex(c => c.id === comic.id)] = comic;
   }
 
-  private async showToast(message: string, duration = 3000): Promise<void> {
+  private async showToast(message: string): Promise<void> {
     const toast = await this.toastController.create({
       message,
-      duration
+      duration: 3000
     });
     toast.present();
   }

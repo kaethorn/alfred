@@ -3,7 +3,7 @@ import { PopoverController, ToastController } from '@ionic/angular';
 
 import { ComicDatabaseServiceMocks } from '../../testing/comic-database.service.mocks';
 import { ComicStorageServiceMocks } from '../../testing/comic-storage.service.mocks';
-import { comic1 as comic } from '../../testing/comic.fixtures';
+import { ComicFixtures } from '../../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../../testing/comics.service.mocks';
 import { PopoverControllerMocks } from '../../testing/popover.controller.mocks';
 import { ThumbnailsServiceMocks } from '../../testing/thumbnails.service.mocks';
@@ -74,11 +74,11 @@ describe('BookmarksPage', () => {
   describe('#openMenu', () => {
 
     it('creates a popover', async () => {
-      component.openMenu(new Event(''), comic);
+      component.openMenu(new Event(''), ComicFixtures.comic);
 
       expect(popoverController.create).toHaveBeenCalled();
       expect(popoverController.create.calls.mostRecent().args[0].componentProps)
-        .toEqual({ comic });
+        .toEqual({ comic: ComicFixtures.comic });
       await popoverController.create.calls.mostRecent().returnValue;
       expect(popoverElement.present).toHaveBeenCalled();
     });
@@ -87,19 +87,19 @@ describe('BookmarksPage', () => {
   describe('#sync', () => {
 
     it('stores adjacent comics', () => {
-      component.sync(comic);
+      component.sync(ComicFixtures.comic);
 
-      expect(comicStorageService.storeSurrounding).toHaveBeenCalledWith(comic.id);
+      expect(comicStorageService.storeSurrounding).toHaveBeenCalledWith(ComicFixtures.comic.id);
     });
 
     describe('on success', () => {
 
       it('shows a success toast and updates comic status', async () => {
-        component.sync(comic);
+        component.sync(ComicFixtures.comic);
         expect(component.syncing).toBe(true);
 
         await comicStorageService.storeSurrounding.calls.mostRecent().returnValue;
-        expect(comicDatabaseService.isStored).toHaveBeenCalledWith(comic.id);
+        expect(comicDatabaseService.isStored).toHaveBeenCalledWith(ComicFixtures.comic.id);
         expect(component.syncing).toBe(false);
         expect(toastController.create).toHaveBeenCalledWith({
           message: 'Volume cached.',
@@ -117,7 +117,7 @@ describe('BookmarksPage', () => {
       });
 
       it('shows an error toast', async () => {
-        component.sync(comic);
+        component.sync(ComicFixtures.comic);
         expect(component.syncing).toBe(true);
 
         await new Promise(resolve => {
@@ -137,16 +137,16 @@ describe('BookmarksPage', () => {
   describe('#delete', () => {
 
     it('removes the entire volume from cache', () => {
-      component.delete(comic);
+      component.delete(ComicFixtures.comic);
 
-      expect(comicStorageService.deleteVolume).toHaveBeenCalledWith(comic);
+      expect(comicStorageService.deleteVolume).toHaveBeenCalledWith(ComicFixtures.comic);
     });
 
     it('updates comic status once removed from cache', async () => {
-      component.delete(comic);
+      component.delete(ComicFixtures.comic);
 
       await comicStorageService.deleteVolume.calls.mostRecent().returnValue;
-      expect(comicDatabaseService.isStored).toHaveBeenCalledWith(comic.id);
+      expect(comicDatabaseService.isStored).toHaveBeenCalledWith(ComicFixtures.comic.id);
     });
   });
 });

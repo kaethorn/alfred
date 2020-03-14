@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
-import { comic1 as comic } from '../../../testing/comic.fixtures';
+import { ComicFixtures } from '../../../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
 import { LoadingControllerMocks } from '../../../testing/loading.controller.mocks';
 import { ThumbnailsServiceMocks } from '../../../testing/thumbnails.service.mocks';
@@ -110,15 +110,15 @@ describe('CoversComponent', () => {
   describe('#deleteFrontCover', () => {
 
     it('deletes the front cover', () => {
-      component.deleteFrontCover(comic);
+      component.deleteFrontCover(ComicFixtures.volume[0]);
       expect(loadingElement.present).toHaveBeenCalled();
-      expect(comicsService.deletePage).toHaveBeenCalledWith(comic, '/1.png');
+      expect(comicsService.deletePage).toHaveBeenCalledWith(ComicFixtures.volume[0], '/1.png');
     });
 
     describe('on success', () => {
 
       it('shows a success toast', async () => {
-        component.deleteFrontCover(comic);
+        component.deleteFrontCover(ComicFixtures.volume[0]);
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
@@ -137,7 +137,7 @@ describe('CoversComponent', () => {
       });
 
       it('shows an error toast', async () => {
-        component.deleteFrontCover(comic);
+        component.deleteFrontCover(ComicFixtures.volume[0]);
         await new Promise(resolve =>
           comicsService.deletePage.calls.mostRecent().returnValue.toPromise().catch(resolve));
 
@@ -154,16 +154,16 @@ describe('CoversComponent', () => {
   describe('#deleteBackCover', () => {
 
     it('deletes the back cover', () => {
-      component.deleteBackCover(comic);
+      component.deleteBackCover(ComicFixtures.volume[0]);
 
       expect(loadingElement.present).toHaveBeenCalled();
-      expect(comicsService.deletePage).toHaveBeenCalledWith(comic, '/1.png');
+      expect(comicsService.deletePage).toHaveBeenCalledWith(ComicFixtures.volume[0], '/1.png');
     });
 
     describe('on success', () => {
 
       it('shows a success toast', async () => {
-        component.deleteBackCover(comic);
+        component.deleteBackCover(ComicFixtures.volume[0]);
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
@@ -182,7 +182,7 @@ describe('CoversComponent', () => {
       });
 
       it('shows an error toast', async () => {
-        component.deleteBackCover(comic);
+        component.deleteBackCover(ComicFixtures.volume[0]);
         await new Promise(resolve =>
           comicsService.deletePage.calls.mostRecent().returnValue.toPromise().catch(resolve));
 

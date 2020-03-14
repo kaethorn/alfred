@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NavParams } from '@ionic/angular';
 
-import { comic1 as comic } from '../../../testing/comic.fixtures';
+import { ComicFixtures } from '../../../testing/comic.fixtures';
 import { BookmarksPageModule } from '../bookmarks.module';
 
 import { BookmarkActionsComponent } from './bookmark-actions.component';
@@ -14,7 +14,7 @@ let navParams: NavParams;
 describe('BookmarkActionsComponent', () => {
 
   beforeEach(() => {
-    navParams = new NavParams({ comic });
+    navParams = new NavParams({ comic: ComicFixtures.comic });
     TestBed.configureTestingModule({
       imports: [
         BookmarksPageModule,

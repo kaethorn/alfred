@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { throwError } from 'rxjs';
 
 import { ComicDatabaseServiceMocks } from '../testing/comic-database.service.mocks';
-import { volume, volumesInProgress } from '../testing/comic.fixtures';
+import { ComicFixtures } from '../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../testing/comics.service.mocks';
 
 import { ComicDatabaseService } from './comic-database.service';
@@ -47,7 +47,7 @@ describe('ComicStorageService', () => {
       describe('with synced comics', () => {
 
         beforeEach(() => {
-          comicDatabaseService.getComics.and.returnValue(Promise.resolve(volumesInProgress));
+          comicDatabaseService.getComics.and.returnValue(Promise.resolve(ComicFixtures.volumesInProgress));
         });
 
         it('filters offline comics', async () => {
@@ -76,10 +76,10 @@ describe('ComicStorageService', () => {
 
     beforeEach(() => {
       spyOn(service, 'get').and.callFake((comicId: string) =>
-        Promise.resolve(volume.find(comic => comic.id === comicId))
+        Promise.resolve(ComicFixtures.volume.find(comic => comic.id === comicId))
       );
       comicDatabaseService.getComics.and.returnValue(Promise.resolve(
-        volume.slice(1, 5)
+        ComicFixtures.volume.slice(1, 5)
       ));
     });
 
@@ -104,24 +104,24 @@ describe('ComicStorageService', () => {
       // 6. cached
       // 7. uncached
 
-      await service.storeSurrounding(volume[3].id);
-      expect(comicDatabaseService.store).not.toHaveBeenCalledWith(volume[0]);
-      expect(comicDatabaseService.store).not.toHaveBeenCalledWith(volume[1]);
-      expect(comicDatabaseService.store).toHaveBeenCalledWith(volume[2]);
-      expect(comicDatabaseService.store).toHaveBeenCalledWith(volume[3]);
-      expect(comicDatabaseService.store).toHaveBeenCalledWith(volume[4]);
-      expect(comicDatabaseService.store).toHaveBeenCalledWith(volume[5]);
-      expect(comicDatabaseService.store).toHaveBeenCalledWith(volume[6]);
-      expect(comicDatabaseService.store).not.toHaveBeenCalledWith(volume[7]);
+      await service.storeSurrounding(ComicFixtures.volume[3].id);
+      expect(comicDatabaseService.store).not.toHaveBeenCalledWith(ComicFixtures.volume[0]);
+      expect(comicDatabaseService.store).not.toHaveBeenCalledWith(ComicFixtures.volume[1]);
+      expect(comicDatabaseService.store).toHaveBeenCalledWith(ComicFixtures.volume[2]);
+      expect(comicDatabaseService.store).toHaveBeenCalledWith(ComicFixtures.volume[3]);
+      expect(comicDatabaseService.store).toHaveBeenCalledWith(ComicFixtures.volume[4]);
+      expect(comicDatabaseService.store).toHaveBeenCalledWith(ComicFixtures.volume[5]);
+      expect(comicDatabaseService.store).toHaveBeenCalledWith(ComicFixtures.volume[6]);
+      expect(comicDatabaseService.store).not.toHaveBeenCalledWith(ComicFixtures.volume[7]);
 
-      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(volume[0]);
-      expect(comicDatabaseService.delete).toHaveBeenCalledWith(volume[1]);
-      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(volume[2]);
-      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(volume[3]);
-      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(volume[4]);
-      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(volume[5]);
-      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(volume[6]);
-      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(volume[7]);
+      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(ComicFixtures.volume[0]);
+      expect(comicDatabaseService.delete).toHaveBeenCalledWith(ComicFixtures.volume[1]);
+      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(ComicFixtures.volume[2]);
+      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(ComicFixtures.volume[3]);
+      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(ComicFixtures.volume[4]);
+      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(ComicFixtures.volume[5]);
+      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(ComicFixtures.volume[6]);
+      expect(comicDatabaseService.delete).not.toHaveBeenCalledWith(ComicFixtures.volume[7]);
 
       // TODO test edge cases (start or beginning of volume)
     });

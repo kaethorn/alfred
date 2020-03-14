@@ -1,8 +1,13 @@
 import { Series } from '../app/series';
 
-const series1: Series = {} as Series;
-series1.name = 'Batgirl';
-series1.publisher = 'DC Comics';
-series1.volumesCount = 7;
+export class SeriesFixtures {
 
-export { series1 };
+  public static get series(): Series {
+    const series: Series = {} as Series;
+    series.name = 'Batgirl';
+    series.publisher = 'DC Comics';
+    series.volumesCount = 7;
+
+    return series;
+  }
+}

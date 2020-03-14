@@ -2,22 +2,28 @@ import { of } from 'rxjs';
 
 import { ComicsService } from '../app/comics.service';
 
-import { comic1 as comic } from './comic.fixtures';
+import { ComicFixtures } from './comic.fixtures';
 
 export class ComicsServiceMocks {
 
   public static get comicsService(): jasmine.SpyObj<ComicsService> {
-    return jasmine.createSpyObj(ComicsService, {
-      get: of(comic),
-      list: of([comic]),
-      listComicsWithErrors: of([comic]),
-      listByVolume: of([comic]),
-      listLastReadByVolume: of([]),
-      update: of(comic),
-      scrape: of(comic),
-      listComicsWithoutErrors: of([comic]),
+    const comicsService: jasmine.SpyObj<ComicsService> = jasmine.createSpyObj(ComicsService, {
+      get: of(ComicFixtures.comic),
+      list: of(ComicFixtures.volume),
+      listComicsWithErrors: of(ComicFixtures.volume),
+      listByVolume: of(ComicFixtures.volume),
+      listLastReadByVolume: of(ComicFixtures.volume),
+      update: of(ComicFixtures.comic),
+      scrape: of(ComicFixtures.comic),
+      listComicsWithoutErrors: of(ComicFixtures.volume),
       deletePage: of(null),
-      fixIssue: of(null)
+      fixIssue: of(null),
+      markAsRead: of(ComicFixtures.comic),
+      markAsUnread: of(ComicFixtures.comic)
     });
+    comicsService.markAsRead.and.callFake(c => of(Object.assign({}, c, { read: true })));
+    comicsService.markAsUnread.and.callFake(c => of(Object.assign({}, c, { read: false })));
+
+    return comicsService;
   }
 }

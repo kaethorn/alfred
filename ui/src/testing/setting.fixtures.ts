@@ -1,10 +1,15 @@
 import { Setting } from '../app/setting';
 
-const setting1: Setting = {} as Setting;
-setting1.id = '9';
-setting1.key = 'comics.path';
-setting1.name = 'Path';
-setting1.value = '/all/comics';
-setting1.comment = 'Path to your comic library';
+export class SettingFixtures {
 
-export { setting1 };
+  public static get setting(): Setting {
+    const setting: Setting = {} as Setting;
+    setting.id = '9';
+    setting.key = 'comics.path';
+    setting.name = 'Path';
+    setting.value = '/all/comics';
+    setting.comment = 'Path to your comic library';
+
+    return setting;
+  }
+}

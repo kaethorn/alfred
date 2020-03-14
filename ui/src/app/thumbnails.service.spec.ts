@@ -1,8 +1,8 @@
 import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { comic1 as comic } from '../testing/comic.fixtures';
-import { thumbnail1 } from '../testing/thumbnail.fixtures';
+import { ComicFixtures } from '../testing/comic.fixtures';
+import { ThumbnailFixtures } from '../testing/thumbnail.fixtures';
 
 import { ThumbnailsService } from './thumbnails.service';
 
@@ -27,12 +27,12 @@ describe('ThumbnailsService', () => {
   describe('#get', () => {
 
     it('returns a sanitized URL', () => {
-      service.getFrontCover(comic.id).subscribe(thumbnail => {
+      service.getFrontCover(ComicFixtures.comic.id).subscribe(thumbnail => {
         expect((thumbnail.url as any).changingThisBreaksApplicationSecurity).toContain('abcedf1234');
       });
-      const req = httpMock.expectOne(`api/thumbnails/front-cover/${ comic.id }`);
+      const req = httpMock.expectOne(`api/thumbnails/front-cover/${ ComicFixtures.comic.id }`);
       expect(req.request.method).toBe('GET');
-      req.flush(thumbnail1);
+      req.flush(ThumbnailFixtures.thumbnail);
     });
   });
 });
