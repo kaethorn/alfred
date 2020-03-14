@@ -1,4 +1,4 @@
-import { Comic } from '../app/comic';
+import { Comic, ScannerIssue, ScannerIssueType, ScannerIssueSeverity } from '../app/comic';
 
 const comic1: Comic = {} as Comic;
 comic1.pageCount = 5;
@@ -48,3 +48,13 @@ volumeInProgress2[0].read = true;
 const volumesInProgress: Comic[] = volumeInProgress1.concat(volumeInProgress2);
 
 export { volumesInProgress };
+
+const scannerIssueFixable: ScannerIssue = {
+  date: new Date(),
+  type: ScannerIssueType.NOT_FLAT,
+  message: 'Found directory entries in the archive.',
+  fixable: true,
+  severity: ScannerIssueSeverity.WARNING
+};
+
+export { scannerIssueFixable };

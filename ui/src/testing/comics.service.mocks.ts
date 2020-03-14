@@ -16,7 +16,8 @@ export class ComicsServiceMocks {
       update: of(comic),
       scrape: of(comic),
       listComicsWithoutErrors: of([comic]),
-      deletePage: of(null)
+      deletePage: of(null),
+      fixIssue: of(null)
     });
   }
 }
