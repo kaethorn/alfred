@@ -19,7 +19,11 @@ export class ComicsServiceMocks {
       deletePage: of(null),
       fixIssue: of(null),
       markAsRead: of(ComicFixtures.comic),
-      markAsUnread: of(ComicFixtures.comic)
+      markAsUnread: of(ComicFixtures.comic),
+      deleteComics: of(null),
+      deleteProgress: of(null),
+      deleteProgressForCurrentUser: of(null),
+      bundleVolumes: of(null)
     });
     comicsService.markAsRead.and.callFake(c => of(Object.assign({}, c, { read: true })));
     comicsService.markAsUnread.and.callFake(c => of(Object.assign({}, c, { read: false })));

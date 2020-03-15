@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { ComicDatabaseServiceMocks } from '../../../testing/comic-database.service.mocks';
+import { ComicFixtures } from '../../../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
 import { StatsServiceMocks } from '../../../testing/stats.service.mocks';
+import { ComicDatabaseService } from '../../comic-database.service';
 import { ComicsService } from '../../comics.service';
 import { StatsService } from '../../stats.service';
 import { SettingsPageModule } from '../settings.module';
@@ -13,12 +16,14 @@ let component: ScannerComponent;
 let fixture: ComponentFixture<ScannerComponent>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 let statsService: jasmine.SpyObj<StatsService>;
+let comicDatabaseService: jasmine.SpyObj<ComicDatabaseService>;
 
 describe('ScannerComponent', () => {
 
   beforeEach(() => {
     comicsService = ComicsServiceMocks.comicsService;
     statsService = StatsServiceMocks.statsService;
+    comicDatabaseService = ComicDatabaseServiceMocks.comicDatabaseService;
 
     TestBed.configureTestingModule({
       imports: [
@@ -29,6 +34,8 @@ describe('ScannerComponent', () => {
         provide: StatsService, useValue: statsService
       }, {
         provide: ComicsService, useValue: comicsService
+      }, {
+        provide: ComicDatabaseService, useValue: comicDatabaseService
       }]
     });
     fixture = TestBed.createComponent(ScannerComponent);
@@ -42,40 +49,188 @@ describe('ScannerComponent', () => {
 
   describe('#scan', () => {
 
-    let addEventListenerSpy;
-
     beforeEach(() => {
-      addEventListenerSpy = spyOn(EventSource.prototype, 'addEventListener');
       spyOn(EventSource.prototype, 'close');
+      spyOn(component.scanned, 'emit');
       component.scan();
     });
 
-    it('adds event listeners', () => {
-      expect(EventSource.prototype.addEventListener)
-        .toHaveBeenCalledWith('total', jasmine.any(Function));
-      expect(EventSource.prototype.addEventListener)
-        .toHaveBeenCalledWith('current-file', jasmine.any(Function));
-      expect(EventSource.prototype.addEventListener)
-        .toHaveBeenCalledWith('scan-issue', jasmine.any(Function));
-      expect(EventSource.prototype.addEventListener)
-        .toHaveBeenCalledWith('done', jasmine.any(Function));
-    });
-
-    describe('when complete', () => {
+    describe('on the `start` event', () => {
 
       beforeEach(() => {
-        const doneCallback = addEventListenerSpy.calls.mostRecent().args[1];
-        spyOn(component.scanned, 'emit');
-        doneCallback();
+        component.scanProgress.dispatchEvent(new MessageEvent('start'));
       });
 
-      it('emits the `scanned` event', () => {
+      it('reports counting files', () => {
+        expect(component.indeterminate).toEqual('Counting files');
+      });
+    });
+
+    describe('on the `total` event', () => {
+
+      beforeEach(() => {
+        component.scanProgress.dispatchEvent(new MessageEvent('total', { data: 59 }));
+      });
+
+      it('updates the amount of files to scan', () => {
+        expect(component.indeterminate).toBeNull();
+        expect(component.total).toBe(59);
+      });
+    });
+
+    describe('on the `current-file` event', () => {
+
+      beforeEach(() => {
+        component.scanProgress.dispatchEvent(new MessageEvent('current-file', {
+          data: '5.cbz'
+        }));
+      });
+
+      it('updates the current file and file counter', () => {
+        expect(component.file).toEqual('5.cbz');
+        expect(component.counter).toBe(1);
+      });
+    });
+
+    describe('on the `cleanUp` event', () => {
+
+      beforeEach(() => {
+        component.scanProgress.dispatchEvent(new MessageEvent('cleanUp'));
+      });
+
+      it('resets counters and reports cleaning up', () => {
+        expect(component.counter).toBe(0);
+        expect(component.total).toBe(0);
+        expect(component.indeterminate).toEqual('Cleaning up');
+      });
+    });
+
+    describe('on the `association` event', () => {
+
+      beforeEach(() => {
+        component.scanProgress.dispatchEvent(new MessageEvent('association'));
+      });
+
+      it('reports associating files', () => {
+        expect(component.indeterminate).toEqual('Bundling volumes');
+      });
+    });
+
+    describe('on the `scan-issue` event', () => {
+
+      it('receives a scanning issue', () => {
+        component.scanProgress.dispatchEvent(new MessageEvent('scan-issue', {
+          data: JSON.stringify(ComicFixtures.scannerIssueFixable)
+        }));
+        expect(EventSource.prototype.close).not.toHaveBeenCalled();
+        expect(component.issues.length).toBe(1);
+        expect(component.issues[0].message).toEqual(ComicFixtures.scannerIssueFixable.message);
+      });
+
+      it('closes the source when no data was received', () => {
+        component.scanProgress.dispatchEvent(new MessageEvent('scan-issue'));
+        expect(EventSource.prototype.close).toHaveBeenCalled();
+        expect(component.issues.length).toBe(0);
+      });
+    });
+
+    describe('on the `done` event', () => {
+
+      beforeEach(() => {
+        component.scanProgress.dispatchEvent(new MessageEvent('done'));
+      });
+
+      it('wraps up the scan', () => {
+        expect(component.indeterminate).toBeNull();
         expect(component.scanned.emit).toHaveBeenCalledWith(true);
-      });
-
-      it('closes the event source', () => {
+        expect(statsService.get).toHaveBeenCalledWith();
+        expect(comicsService.listComicsWithErrors).toHaveBeenCalledWith();
         expect(EventSource.prototype.close).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('#deleteComics', () => {
+
+    it('deletes all comics', () => {
+      component.deleteComics();
+      expect(comicsService.deleteComics).toHaveBeenCalledWith();
+    });
+
+    describe('on success', () => {
+
+      it('updates status and comics with errors', async () => {
+        component.deleteComics();
+        await comicsService.deleteComics.calls.mostRecent().returnValue.toPromise();
+
+        expect(statsService.get).toHaveBeenCalledWith();
+        expect(comicsService.listComicsWithErrors).toHaveBeenCalledWith();
+      });
+    });
+  });
+
+  describe('#deleteProgress', () => {
+
+    it('deletes all progress', () => {
+      component.deleteProgress();
+      expect(comicsService.deleteProgress).toHaveBeenCalledWith();
+    });
+
+    describe('on success', () => {
+
+      it('updates status and comics with errors', async () => {
+        component.deleteProgress();
+        await comicsService.deleteProgress.calls.mostRecent().returnValue.toPromise();
+
+        expect(statsService.get).toHaveBeenCalledWith();
+        expect(comicsService.listComicsWithErrors).toHaveBeenCalledWith();
+      });
+    });
+  });
+
+  describe('#deleteProgressForCurrentUser', () => {
+
+    it('deletes all progress for the current user', () => {
+      component.deleteProgressForCurrentUser();
+      expect(comicsService.deleteProgressForCurrentUser).toHaveBeenCalledWith();
+    });
+
+    describe('on success', () => {
+
+      it('updates status and comics with errors', async () => {
+        component.deleteProgressForCurrentUser();
+        await comicsService.deleteProgressForCurrentUser.calls.mostRecent().returnValue.toPromise();
+
+        expect(statsService.get).toHaveBeenCalledWith();
+        expect(comicsService.listComicsWithErrors).toHaveBeenCalledWith();
+      });
+    });
+  });
+
+  describe('#bundleVolumes', () => {
+
+    it('associates comics', () => {
+      component.bundleVolumes();
+      expect(comicsService.bundleVolumes).toHaveBeenCalled();
+    });
+  });
+
+  describe('#deleteCachedComics', () => {
+
+    beforeEach(() => {
+      component.cachedComicsCount = 5;
+    });
+
+    it('deletes comics cached in the browser and updates the count', async () => {
+      component.deleteCachedComics();
+
+      expect(comicDatabaseService.deleteAll).toHaveBeenCalled();
+      await comicDatabaseService.deleteAll.calls.mostRecent().returnValue;
+
+      expect(comicDatabaseService.getComics).toHaveBeenCalled();
+      await comicDatabaseService.getComics.calls.mostRecent().returnValue;
+
+      expect(component.cachedComicsCount).toBe(0);
     });
   });
 });

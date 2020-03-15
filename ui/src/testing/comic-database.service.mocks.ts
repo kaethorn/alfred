@@ -11,7 +11,8 @@ export class ComicDatabaseServiceMocks {
       getComics: Promise.resolve([]),
       ready: null,
       isStored: Promise.resolve(true),
-      getComicsBy: Promise.resolve([])
+      getComicsBy: Promise.resolve([]),
+      deleteAll: Promise.resolve()
     });
     comicDatabaseService.ready = of({ });
 
