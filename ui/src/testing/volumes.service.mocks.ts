@@ -13,7 +13,7 @@ export class VolumesServiceMocks {
       listVolumesByPublisher: of([VolumeFixtures.volume]),
       listVolumes: of([VolumeFixtures.volume]),
       listSeries: of([SeriesFixtures.series]),
-      listPublishers: of([PublisherFixtures.publisher]),
+      listPublishers: of(PublisherFixtures.publishers),
       markAsRead: of(null),
       markAsUnread: of(null),
       markAllAsReadUntil: of(null)

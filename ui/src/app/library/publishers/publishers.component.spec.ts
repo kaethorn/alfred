@@ -33,4 +33,15 @@ describe('PublishersComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('#filter', () => {
+
+    it('filters the publishers by series', () => {
+      expect(component.publishers.length).toBe(5);
+      component.filter('Fath');
+      expect(component.publishers.length).toBe(1);
+      component.filter('W');
+      expect(component.publishers.length).toBe(3);
+    });
+  });
 });
