@@ -6,7 +6,7 @@ import { AuthGuard } from './auth.guard';
 import { UserService } from './user.service';
 
 const userService = { user: of({}) };
-const router = jasmine.createSpyObj('MockRouter', ['navigate']);
+const router: jasmine.SpyObj<Router> = jasmine.createSpyObj('Router', ['navigate']);
 
 let authGuard: AuthGuard;
 

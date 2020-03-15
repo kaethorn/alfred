@@ -59,7 +59,7 @@ export class ComicFixtures {
 
   public static get scannerIssueFixable(): ScannerIssue {
     return {
-      date: new Date(),
+      date: new Date('2020-03-10T21:24:00'),
       type: ScannerIssueType.NOT_FLAT,
       message: 'Found directory entries in the archive.',
       fixable: true,

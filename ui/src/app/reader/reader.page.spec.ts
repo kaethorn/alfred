@@ -11,7 +11,7 @@ import { ReaderPage } from './reader.page';
 
 let component: ReaderPage;
 let fixture: ComponentFixture<ReaderPage>;
-let router;
+let router: jasmine.SpyObj<Router>;
 let comicStorageService: jasmine.SpyObj<ComicStorageService>;
 
 const clickRightSide = async (): Promise<void> => {
