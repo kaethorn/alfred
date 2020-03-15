@@ -14,4 +14,13 @@ export class VolumeFixtures {
 
     return volume;
   }
+
+  public static get volumes(): Volume[] {
+    return [
+      this.volume,
+      Object.assign(this.volume, { name: '2003' }),
+      Object.assign(this.volume, { name: '2008' }),
+      Object.assign(this.volume, { name: '2009' })
+    ];
+  }
 }
