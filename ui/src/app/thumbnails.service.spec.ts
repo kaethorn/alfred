@@ -30,7 +30,7 @@ describe('ThumbnailsService', () => {
       service.getFrontCover(ComicFixtures.comic.id).subscribe(thumbnail => {
         expect((thumbnail.url as any).changingThisBreaksApplicationSecurity).toContain('abcedf1234');
       });
-      const req = httpMock.expectOne(`api/thumbnails/front-cover/${ ComicFixtures.comic.id }`);
+      const req = httpMock.expectOne(`/api/thumbnails/front-cover/${ ComicFixtures.comic.id }`);
       expect(req.request.method).toBe('GET');
       req.flush(ThumbnailFixtures.thumbnail);
     });

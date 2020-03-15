@@ -60,7 +60,7 @@ describe('SettingsService', () => {
         expect(settings[0].id).toEqual('1');
         expect(settings[1].id).toEqual('2');
       });
-      const req = httpMock.expectOne('api/settings');
+      const req = httpMock.expectOne('/api/settings');
       expect(req.request.method).toBe('GET');
       req.flush(mockSettings);
     });
@@ -72,7 +72,7 @@ describe('SettingsService', () => {
       service.get('a').subscribe(setting => {
         expect(setting.id).toEqual('1');
       });
-      const req = httpMock.expectOne('api/settings/search/findByKey?key=a');
+      const req = httpMock.expectOne('/api/settings/search/findByKey?key=a');
       expect(req.request.method).toBe('GET');
       req.flush(mockSettingA);
     });
@@ -84,7 +84,7 @@ describe('SettingsService', () => {
       service.update(mockSettingA).subscribe(setting => {
         expect(setting.id).toEqual('1');
       });
-      const req = httpMock.expectOne('api/settings/1');
+      const req = httpMock.expectOne('/api/settings/1');
       expect(req.request.method).toBe('PUT');
       req.flush(mockSettingA);
     });

@@ -17,7 +17,7 @@ export class ThumbnailsService {
   ) {}
 
   public getFrontCover(comicId: string): Observable<Thumbnail> {
-    return this.http.get<Thumbnail>(`api/thumbnails/front-cover/${ comicId }`).pipe(
+    return this.http.get<Thumbnail>(`/api/thumbnails/front-cover/${ comicId }`).pipe(
       map((thumbnail: any) => {
         thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.image }`);
         return thumbnail;
@@ -26,7 +26,7 @@ export class ThumbnailsService {
   }
 
   public getBackCover(comicId: string): Observable<Thumbnail> {
-    return this.http.get<Thumbnail>(`api/thumbnails/back-cover/${ comicId }`).pipe(
+    return this.http.get<Thumbnail>(`/api/thumbnails/back-cover/${ comicId }`).pipe(
       map((thumbnail: any) => {
         thumbnail.url = this.sanitizer.bypassSecurityTrustUrl(`data:image/jpeg;base64,${ thumbnail.image }`);
         return thumbnail;

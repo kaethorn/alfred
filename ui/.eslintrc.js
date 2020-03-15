@@ -164,6 +164,7 @@ module.exports = {
         "no-var": "error",
         "object-shorthand": "error",
         "prefer-const": "error",
+        "quote-props": [ "error", "as-needed" ],
         "radix": "error",
         "space-before-function-paren": [
             "error",

@@ -15,7 +15,7 @@ export class StatsService {
   ) { }
 
   public get(): Observable<Stats> {
-    return this.http.get<Stats>('api/stats').pipe(
+    return this.http.get<Stats>('/api/stats').pipe(
       map((stats: any) => ({
         issues: stats.issues,
         publishers: stats.publishers,

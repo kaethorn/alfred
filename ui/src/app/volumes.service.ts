@@ -23,12 +23,6 @@ export class VolumesService {
     );
   }
 
-  public listPublishersWithSeries(): Observable<Publisher[]> {
-    return this.http.get('/api/publishers/series').pipe(
-      this.consumeHateoas('publishers')
-    );
-  }
-
   public listSeries(publisher: string): Observable<Series[]> {
     return this.http.get(`/api/publishers/${ publisher }/series`).pipe(
       this.consumeHateoas('series')
@@ -41,16 +35,16 @@ export class VolumesService {
     );
   }
 
-  public markAsRead(volume: Volume): Observable<Volume> {
-    return this.http.put<Volume>('/api/volumes/markAsRead', volume);
+  public markAsRead(volume: Volume): Observable<void> {
+    return this.http.put<void>('/api/volumes/markAsRead', volume);
   }
 
-  public markAsUnread(volume: Volume): Observable<Volume> {
-    return this.http.put<Volume>('/api/volumes/markAsUnread', volume);
+  public markAsUnread(volume: Volume): Observable<void> {
+    return this.http.put<void>('/api/volumes/markAsUnread', volume);
   }
 
-  public markAllAsReadUntil(comic: Comic): Observable<any> {
-    return this.http.put('api/volumes/markAllAsReadUntil', comic);
+  public markAllAsReadUntil(comic: Comic): Observable<void> {
+    return this.http.put<void>('/api/volumes/markAllAsReadUntil', comic);
   }
 
   private consumeHateoas(namespace: string): any {
