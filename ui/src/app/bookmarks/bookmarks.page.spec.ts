@@ -113,7 +113,7 @@ describe('BookmarksPage', () => {
     describe('on error', () => {
 
       beforeEach(() => {
-        comicStorageService.storeSurrounding.and.returnValue(Promise.reject());
+        comicStorageService.storeSurrounding.and.rejectWith(null);
       });
 
       it('shows an error toast', async () => {

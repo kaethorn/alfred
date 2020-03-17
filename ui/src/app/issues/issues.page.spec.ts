@@ -225,11 +225,11 @@ describe('IssuesPage', () => {
     describe('with a chosen issue', () => {
 
       beforeEach(() => {
-        popoverElement.onDidDismiss.and.returnValue(Promise.resolve({
+        popoverElement.onDidDismiss.and.resolveTo({
           data: {
             markAsReadUntil: ComicFixtures.volume[5]
           }
-        }));
+        });
       });
 
       it('marks as read until the chosen issue', async () => {

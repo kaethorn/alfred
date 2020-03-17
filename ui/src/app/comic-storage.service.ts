@@ -56,7 +56,7 @@ export class ComicStorageService {
       comic.read = true;
     }
 
-    await this.saveComicProgress(comic);
+    this.saveComicProgress(comic);
     if (await this.comicDatabaseService.isStored(comic.id)) {
       return this.comicDatabaseService.save(comic);
     }
@@ -91,6 +91,9 @@ export class ComicStorageService {
           () => {},
           () => resolve(comics),
           () => {
+            // Now that all queue items have been processed, the state on
+            // the server is up to date and might differ from the previous
+            // request. So we have to query the server once more.
             this.comicsService.listLastReadByVolume().subscribe((updatedComics: Comic[]) => {
               resolve(updatedComics);
             });
@@ -192,7 +195,9 @@ export class ComicStorageService {
         .then(thumbnail => {
           resolve(this.sanitizer.bypassSecurityTrustResourceUrl(thumbnail));
         }).catch(() => {
-          this.thumbnailsService.getBackCover(comicId).subscribe(resolve, reject);
+          this.thumbnailsService.getBackCover(comicId)
+            .pipe(map(thumbnail => thumbnail.url))
+            .subscribe(resolve, reject);
         });
     });
   }

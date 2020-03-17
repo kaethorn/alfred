@@ -21,8 +21,8 @@ export class QueueService {
   /**
    * Save each comic in the queue, removing it if successful.
    *
-   * Returns a promise that either resolves when all items are
-   * processed successfully or rejects on the first error.
+   * Returns an Observable that completes when all items are
+   * processed successfully or fails on the first error.
    */
   public process(): Observable<Comic> {
     return from(this.load()).pipe(
