@@ -26,7 +26,7 @@ export class UserService {
       return;
     }
 
-    this.http.get(`api/user/verify/${ currentUser.token }`).subscribe(() => {
+    this.http.get(`/api/user/verify/${ currentUser.token }`).subscribe(() => {
       this.user.next(currentUser);
     }, () => {
       this.logout();
@@ -43,7 +43,7 @@ export class UserService {
           });
           this.auth2.attachClickHandler('signin-button', {}, (googleUser: gapi.auth2.GoogleUser) => {
             const token = googleUser.getAuthResponse().id_token;
-            this.http.post<User>(`api/user/sign-in/${ token }`, null).subscribe((user: User) => {
+            this.http.post<User>(`/api/user/sign-in/${ token }`, null).subscribe((user: User) => {
               this.user.next(user);
               localStorage.setItem('token', user.token);
               localStorage.setItem('user', JSON.stringify(user));
@@ -67,7 +67,7 @@ export class UserService {
         picture: 'https://img.icons8.com/office/80/000000/batman-old.png',
         token: 'mock-123'
       };
-      this.http.get(`api/user/verify/${ mockUser.token }`).subscribe(() => {
+      this.http.get(`/api/user/verify/${ mockUser.token }`).subscribe(() => {
         this.user.next(mockUser);
       });
     }

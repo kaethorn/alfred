@@ -15,21 +15,21 @@ export class ComicsService {
   ) {}
 
   public list(): Observable<Comic[]> {
-    return this.http.get('api/comics/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc').pipe(
+    return this.http.get('/api/comics/search/findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
   }
 
   public listComicsWithErrors(): Observable<Comic[]> {
-    return this.http.get('api/queue').pipe(
+    return this.http.get('/api/queue').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
   }
 
   public listComicsWithoutErrors(): Observable<Comic[]> {
-    return this.http.get('api/queue/valid').pipe(
+    return this.http.get('/api/queue/valid').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
@@ -43,14 +43,14 @@ export class ComicsService {
         volume
       }
     });
-    return this.http.get('api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition', { params }).pipe(
+    return this.http.get('/api/comics/search/findAllByPublisherAndSeriesAndVolumeOrderByPosition', { params }).pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
   }
 
   public get(id: string): Observable<Comic> {
-    return this.http.get<Comic>(`api/comics/${ id }`).pipe(
+    return this.http.get<Comic>(`/api/comics/${ id }`).pipe(
       map(this.addId)
     );
   }
@@ -63,7 +63,7 @@ export class ComicsService {
         volume
       }
     });
-    return this.http.get<Comic>('api/comics/search/findLastReadForVolume', { params }).pipe(
+    return this.http.get<Comic>('/api/comics/search/findLastReadForVolume', { params }).pipe(
       map(this.addId)
     );
   }
@@ -76,66 +76,66 @@ export class ComicsService {
         volume
       }
     });
-    return this.http.get<Comic>('api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition', { params }).pipe(
+    return this.http.get<Comic>('/api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition', { params }).pipe(
       map(this.addId)
     );
   }
 
   public scan(): Observable<any> {
-    return this.http.get('api/scan');
+    return this.http.get('/api/scan');
   }
 
   public listLastReadByVolume(): Observable<Comic[]> {
-    return this.http.get('api/comics/search/findAllLastReadPerVolume').pipe(
+    return this.http.get('/api/comics/search/findAllLastReadPerVolume').pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );
   }
 
   public update(comic: Comic): Observable<Comic> {
-    return this.http.put<Comic>('api/comics', comic).pipe(
+    return this.http.put<Comic>('/api/comics', comic).pipe(
       map(this.addId)
     );
   }
 
   public updateProgress(comic: Comic): Observable<Comic> {
-    return this.http.put<Comic>('api/comics/progress', comic).pipe(
+    return this.http.put<Comic>('/api/comics/progress', comic).pipe(
       map(this.addId)
     );
   }
 
   public scrape(comic: Comic): Observable<Comic> {
-    return this.http.put<Comic>('api/comics/scrape', comic).pipe(
+    return this.http.put<Comic>('/api/comics/scrape', comic).pipe(
       map(this.addId)
     );
   }
 
   public markAsRead(comic: Comic): Observable<any> {
-    return this.http.put<Comic>('api/comics/markAsRead', comic).pipe(
+    return this.http.put<Comic>('/api/comics/markAsRead', comic).pipe(
       map(this.addId)
     );
   }
 
   public markAsUnread(comic: Comic): Observable<any> {
-    return this.http.put<Comic>('api/comics/markAsUnread', comic).pipe(
+    return this.http.put<Comic>('/api/comics/markAsUnread', comic).pipe(
       map(this.addId)
     );
   }
 
   public deleteComics(): Observable<any> {
-    return this.http.delete('api/comics');
+    return this.http.delete('/api/comics');
   }
 
   public deleteProgress(): Observable<any> {
-    return this.http.delete('api/progress');
+    return this.http.delete('/api/progress');
   }
 
   public deleteProgressForCurrentUser(): Observable<any> {
-    return this.http.delete('api/progress/me');
+    return this.http.delete('/api/progress/me');
   }
 
   public deletePage(comic: Comic, path: string): Observable<Comic> {
-    return this.http.delete<Comic>(`api/comics/${ comic.id }/page`, {
+    return this.http.delete<Comic>(`/api/comics/${ comic.id }/page`, {
       params: new HttpParams().set('path', path)
     }).pipe(
       map(this.addId)
@@ -143,7 +143,7 @@ export class ComicsService {
   }
 
   public bundleVolumes(): Observable<any> {
-    return this.http.put('api/comics/bundle', {});
+    return this.http.put('/api/comics/bundle', {});
   }
 
   public getPage(comicId: string, page: number): Observable<Blob> {

@@ -1,9 +1,12 @@
 import { of } from 'rxjs';
 
-const statsService = jasmine.createSpyObj('StatsService', [
-  'get'
-]);
+import { StatsService } from '../app/stats.service';
 
-statsService.get.and.returnValue( of({}) );
+export class StatsServiceMocks {
 
-export { statsService as StatsServiceMocks };
+  public static get statsService(): jasmine.SpyObj<StatsService> {
+    return jasmine.createSpyObj('StatsService', {
+      get: of({})
+    });
+  }
+}

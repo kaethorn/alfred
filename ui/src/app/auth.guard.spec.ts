@@ -5,11 +5,12 @@ import { of } from 'rxjs';
 import { AuthGuard } from './auth.guard';
 import { UserService } from './user.service';
 
-describe('AuthGuard', () => {
+const userService = { user: of({}) };
+const router: jasmine.SpyObj<Router> = jasmine.createSpyObj('Router', ['navigate']);
 
-  let authGuard: AuthGuard;
-  const userService = { user: of({}) };
-  const router = jasmine.createSpyObj('MockRouter', ['navigate']);
+let authGuard: AuthGuard;
+
+describe('AuthGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({

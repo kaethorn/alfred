@@ -1,21 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
-import { comic1 as comic } from '../testing/comic.fixtures';
+import { ComicFixtures } from '../testing/comic.fixtures';
 
 import { Comic } from './comic';
 import { ComicDatabaseService } from './comic-database.service';
 import { ComicsService } from './comics.service';
 import { QueueService } from './queue.service';
 
+let service: QueueService;
+let dbService: ComicDatabaseService;
+
+const comicsService = jasmine.createSpyObj('ComicsService', [ 'updateProgress' ]);
+const updateProgressSpy: jasmine.Spy = comicsService.updateProgress;
+
 describe('QueueService', () => {
-  let service: QueueService;
-  let dbService: ComicDatabaseService;
-  const comicsService = jasmine.createSpyObj('ComicsService', [ 'updateProgress' ]);
-  const updateProgressSpy: jasmine.Spy = comicsService.updateProgress;
 
   beforeEach(async () => {
-    updateProgressSpy.and.returnValue(of(comic));
+    updateProgressSpy.and.returnValue(of(ComicFixtures.comic));
     TestBed.configureTestingModule({
       providers: [{
         provide: ComicsService, useValue: comicsService
@@ -70,7 +72,7 @@ describe('QueueService', () => {
       describe('on error', () => {
 
         beforeEach(() => {
-          updateProgressSpy.and.returnValue( throwError(comic) );
+          updateProgressSpy.and.returnValue(throwError(ComicFixtures.comic));
         });
 
         it('does not complete', done => {
@@ -104,10 +106,10 @@ describe('QueueService', () => {
           let index = 0;
           updateProgressSpy.and.callFake(() => {
             if (index > 0) {
-              return throwError(comic);
+              return throwError(ComicFixtures.comic);
             }
             index += 1;
-            return of(comic);
+            return of(ComicFixtures.comic);
           });
         });
 

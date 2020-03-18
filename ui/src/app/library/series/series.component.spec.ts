@@ -1,17 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { VolumesServiceMocks as volumesService } from '../../../testing/volumes.service.mocks';
+import { VolumesServiceMocks } from '../../../testing/volumes.service.mocks';
 import { VolumesService } from '../../volumes.service';
 import { LibraryPageModule } from '../library.module';
 
 import { SeriesComponent } from './series.component';
 
+let component: SeriesComponent;
+let fixture: ComponentFixture<SeriesComponent>;
+let volumesService: jasmine.SpyObj<VolumesService>;
+
 describe('SeriesComponent', () => {
-  let component: SeriesComponent;
-  let fixture: ComponentFixture<SeriesComponent>;
 
   beforeEach(() => {
+    volumesService = VolumesServiceMocks.volumesService;
+
     TestBed.configureTestingModule({
       imports: [
         LibraryPageModule,

@@ -3,38 +3,40 @@ import { TestBed } from '@angular/core/testing';
 
 import { SettingsService } from './settings.service';
 
+let service: SettingsService;
+let httpMock: HttpTestingController;
+
+const mockSettingA = {
+  id: '1',
+  key: 'a',
+  name: 'Sample A',
+  value: 'foo',
+  comment: '',
+  _links: {
+    self: {
+      href: 'foo.bar/1'
+    }
+  }
+};
+const mockSettingB = {
+  id: '2',
+  key: 'b',
+  name: 'Sample B',
+  value: 'bar',
+  comment: '',
+  _links: {
+    self: {
+      href: 'foo.bar/2'
+    }
+  }
+};
+const mockSettings = {
+  _embedded: {
+    settings: [ mockSettingA, mockSettingB ]
+  }
+};
+
 describe('SettingsService', () => {
-  let service: SettingsService;
-  let httpMock: HttpTestingController;
-  const mockSettingA = {
-    id: '1',
-    key: 'a',
-    name: 'Sample A',
-    value: 'foo',
-    comment: '',
-    _links: {
-      self: {
-        href: 'foo.bar/1'
-      }
-    }
-  };
-  const mockSettingB = {
-    id: '2',
-    key: 'b',
-    name: 'Sample B',
-    value: 'bar',
-    comment: '',
-    _links: {
-      self: {
-        href: 'foo.bar/2'
-      }
-    }
-  };
-  const mockSettings = {
-    _embedded: {
-      settings: [ mockSettingA, mockSettingB ]
-    }
-  };
 
   beforeEach(() => {
     localStorage.clear();
@@ -58,7 +60,7 @@ describe('SettingsService', () => {
         expect(settings[0].id).toEqual('1');
         expect(settings[1].id).toEqual('2');
       });
-      const req = httpMock.expectOne('api/settings');
+      const req = httpMock.expectOne('/api/settings');
       expect(req.request.method).toBe('GET');
       req.flush(mockSettings);
     });
@@ -70,7 +72,7 @@ describe('SettingsService', () => {
       service.get('a').subscribe(setting => {
         expect(setting.id).toEqual('1');
       });
-      const req = httpMock.expectOne('api/settings/search/findByKey?key=a');
+      const req = httpMock.expectOne('/api/settings/search/findByKey?key=a');
       expect(req.request.method).toBe('GET');
       req.flush(mockSettingA);
     });
@@ -82,7 +84,7 @@ describe('SettingsService', () => {
       service.update(mockSettingA).subscribe(setting => {
         expect(setting.id).toEqual('1');
       });
-      const req = httpMock.expectOne('api/settings/1');
+      const req = httpMock.expectOne('/api/settings/1');
       expect(req.request.method).toBe('PUT');
       req.flush(mockSettingA);
     });

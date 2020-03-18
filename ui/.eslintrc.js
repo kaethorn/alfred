@@ -164,6 +164,7 @@ module.exports = {
         "no-var": "error",
         "object-shorthand": "error",
         "prefer-const": "error",
+        "quote-props": [ "error", "as-needed" ],
         "radix": "error",
         "space-before-function-paren": [
             "error",
@@ -172,8 +173,10 @@ module.exports = {
                 "named": "never",
                 "asyncArrow": "always"
             }
-         ],
+        ],
+        "space-in-parens": "error",
         "spaced-comment": "error",
+        "template-curly-spacing": [ "error", "always" ]
     },
     "settings": {},
     "overrides": [

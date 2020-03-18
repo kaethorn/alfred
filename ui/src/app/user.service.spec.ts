@@ -4,9 +4,10 @@ import { TestBed } from '@angular/core/testing';
 import { User } from './user';
 import { UserService } from './user.service';
 
+let service: UserService;
+let httpMock: HttpTestingController;
+
 describe('UserService', () => {
-  let service: UserService;
-  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     localStorage.clear();
@@ -33,7 +34,7 @@ describe('UserService', () => {
       });
 
       it('accepts valid users', () => {
-        const req = httpMock.expectOne('api/user/verify/test-token-1');
+        const req = httpMock.expectOne('/api/user/verify/test-token-1');
         expect(req.request.method).toBe('GET');
         req.flush('');
 
@@ -44,7 +45,7 @@ describe('UserService', () => {
       });
 
       it('rejects invalid users', () => {
-        const req = httpMock.expectOne('api/user/verify/test-token-1');
+        const req = httpMock.expectOne('/api/user/verify/test-token-1');
         expect(req.request.method).toBe('GET');
         req.flush('', { status: 401, statusText: 'Unauthorized' });
 
@@ -80,7 +81,7 @@ describe('UserService', () => {
 
       it('attempts to authenticate a mock user', () => {
         service.setupGoogleSignIn();
-        const req = httpMock.expectOne('api/user/verify/mock-123');
+        const req = httpMock.expectOne('/api/user/verify/mock-123');
         expect(req.request.method).toBe('GET');
         req.flush('');
 
@@ -113,7 +114,7 @@ describe('UserService', () => {
           }
         };
         service.setupGoogleSignIn();
-        req = httpMock.expectOne('api/user/sign-in/mock-google-token-1');
+        req = httpMock.expectOne('/api/user/sign-in/mock-google-token-1');
         expect(req.request.method).toBe('POST');
       });
 

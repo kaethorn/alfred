@@ -62,7 +62,7 @@ export class EditPage {
       },
       () => {
         this.editInProgress = false;
-        this.showToast('Error saving comic.');
+        this.showToast('Error saving comic.', 4000);
       }
     );
   }
@@ -77,7 +77,7 @@ export class EditPage {
       },
       () => {
         this.scrapeInProgress = false;
-        this.showToast('Error scraping comic.');
+        this.showToast('Error scraping comic.', 4000);
       }
     );
   }

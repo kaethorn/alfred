@@ -31,7 +31,7 @@ export class BookmarksPage {
     this.comicDatabaseService.ready.toPromise().then(() => this.list());
   }
 
-  public async openMenu(event: any, comic: Comic): Promise<void> {
+  public async openMenu(event: Event, comic: Comic): Promise<void> {
     const popover = await this.popoverController.create({
       component: BookmarkActionsComponent,
       componentProps: { comic },
@@ -48,9 +48,8 @@ export class BookmarksPage {
         this.updateStoredState(comic.id);
         this.showToast('Volume cached.');
         this.syncing = false;
-      }).catch(error => {
-        this.showToast('Error while syncing volume.');
-        console.error(error);
+      }).catch(() => {
+        this.showToast('Error while syncing volume.', 4000);
         this.syncing = false;
       });
   }

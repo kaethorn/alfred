@@ -5,6 +5,8 @@ RUN gradle dependencies > /dev/null
 COPY src src
 COPY ui ui
 COPY config config
+RUN curl -sL https://deb.nodesource.com/setup_12.x  | bash -
+RUN apt-get install -y --no-install-recommends nodejs
 RUN gradle build unpack -x test -x check
 WORKDIR /workspace/app/build/dependency
 RUN jar -xf ../libs/*.jar

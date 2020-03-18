@@ -2,8 +2,9 @@ import { TestBed } from '@angular/core/testing';
 
 import { UserSettingsService } from './user-settings.service';
 
+let service: UserSettingsService;
+
 describe('UserSettingsService', () => {
-  let service: UserSettingsService;
 
   beforeEach(() => {
     localStorage.clear();

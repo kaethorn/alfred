@@ -34,7 +34,7 @@ export class SettingsPage {
         .subscribe(
           () => this.showToast('Settings saved.'),
           error => this
-            .showToast(`Error saving settings (${ error.status }: ${ error.statusText }).`, 5000)
+            .showToast(`Error saving settings (${ error.status }: ${ error.statusText }).`, 4000)
         );
     }
   }

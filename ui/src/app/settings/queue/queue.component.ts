@@ -28,7 +28,7 @@ export class QueueComponent {
       this.list();
       this.showToast(`Flattened comic archive "${ comic.fileName }".`);
     }, () => {
-      this.showToast(`Error while flattening comic archive "${ comic.fileName }".`);
+      this.showToast(`Error while flattening comic archive "${ comic.fileName }".`, 4000);
     });
   }
 
@@ -39,7 +39,7 @@ export class QueueComponent {
       });
   }
 
-  private async showToast(message: string, duration = 4000): Promise<void> {
+  private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
       message,
       duration
