@@ -14,8 +14,8 @@ export class IndexedDb {
   public ready: AsyncSubject<void> = new AsyncSubject<void>();
   private db: IDBDatabase;
 
-  constructor(name: string, version: number, stores: Store[]) {
-    this.open(name, version, stores);
+  constructor(name: string, version: number, stores: Store[], indexedDb: IDBFactory = window.indexedDB) {
+    this.open(name, version, stores, indexedDb);
   }
 
   public hasKey(storeName: string, key: IDBValidKey): Promise<boolean> {
@@ -96,9 +96,9 @@ export class IndexedDb {
     });
   }
 
-  private open(name: string, version: number, stores: Store[]): Promise<void> {
+  private open(name: string, version: number, stores: Store[], indexedDb: IDBFactory): Promise<void> {
     return new Promise((resolve, reject) => {
-      const request: IDBOpenDBRequest = window.indexedDB.open(name, version);
+      const request: IDBOpenDBRequest = indexedDb.open(name, version);
       request.onerror = (event): void => {
         console.error(`Error opening DB '${ name }': ${ event }.`);
         reject();

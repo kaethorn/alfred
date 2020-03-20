@@ -1,4 +1,5 @@
-import { ComicFixtures } from 'src/testing/comic.fixtures';
+import { ComicFixtures } from '../testing/comic.fixtures';
+import { IndexedDbMocks } from '../testing/indexed-db.mock';
 
 import { IndexedDb } from './indexed-db';
 
@@ -17,9 +18,13 @@ fdescribe('IndexedDb', () => {
         [ 'id', 'id', { unique: true }],
         [ 'dirty', 'dirty', { unique: false }]
       ]
-    }]);
+    }], IndexedDbMocks.create);
 
     await service.ready.toPromise();
+  });
+
+  afterEach(() => {
+    IndexedDbMocks.reset();
   });
 
   describe('#hasKey', () => {
@@ -60,10 +65,6 @@ fdescribe('IndexedDb', () => {
         await service.save('Comics', ComicFixtures.comic);
       });
 
-      afterEach(async () => {
-        await service.delete('Comics', ComicFixtures.comic.id);
-      });
-
       it('resolves to `true`', async () => {
         const result = await service.hasKey('Comics', ComicFixtures.comic.id);
         expect(result).toBeTrue();
@@ -89,10 +90,6 @@ fdescribe('IndexedDb', () => {
 
       beforeEach(async () => {
         await service.save('Comics', ComicFixtures.comic);
-      });
-
-      afterEach(async () => {
-        await service.delete('Comics', ComicFixtures.comic.id);
       });
 
       it('resolves with the item', async () => {
