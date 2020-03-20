@@ -1,5 +1,5 @@
 import { ComicFixtures } from '../testing/comic.fixtures';
-import { IndexedDbMocks } from '../testing/indexed-db.mock';
+import { IndexedDbMock, IndexedDbMockFlag } from '../testing/indexed-db.mock';
 
 import { IndexedDb } from './indexed-db';
 
@@ -18,13 +18,36 @@ fdescribe('IndexedDb', () => {
         [ 'id', 'id', { unique: true }],
         [ 'dirty', 'dirty', { unique: false }]
       ]
-    }], IndexedDbMocks.create);
+    }], IndexedDbMock.create);
 
     await service.ready.toPromise();
   });
 
   afterEach(() => {
-    IndexedDbMocks.reset();
+    IndexedDbMock.reset();
+  });
+
+  describe('#constructor', () => {
+
+    describe('on error', () => {
+
+      beforeEach(() => {
+        spyOn(console, 'error');
+        IndexedDbMock.setFlag(IndexedDbMockFlag.OPEN_ERROR);
+      });
+
+      it('does not initialize', async () => {
+        service = new IndexedDb('Comics', 1, [], IndexedDbMock.create);
+
+        try {
+          await service.ready.toPromise();
+        } catch (exception) {
+          expect(service.ready.hasError).toBeTrue();
+          expect(service.ready.thrownError).toEqual('Error opening DB \'Comics\'.');
+          expect(console.error).toHaveBeenCalledWith('Error opening DB \'Comics\'.', jasmine.any(Event));
+        }
+      });
+    });
   });
 
   describe('#hasKey', () => {
@@ -59,6 +82,42 @@ fdescribe('IndexedDb', () => {
       });
     });
 
+    describe('on transaction error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+      });
+
+      it('resolves to `false`', async () => {
+        const result = await service.hasKey('Comics', ComicFixtures.comic.id);
+        expect(result).toBeFalse();
+      });
+    });
+
+    describe('on transaction abort', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+      });
+
+      it('resolves to `false`', async () => {
+        const result = await service.hasKey('Comics', ComicFixtures.comic.id);
+        expect(result).toBeFalse();
+      });
+    });
+
+    describe('on request error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+      });
+
+      it('resolves to `false`', async () => {
+        const result = await service.hasKey('Comics', ComicFixtures.comic.id);
+        expect(result).toBeFalse();
+      });
+    });
+
     describe('with a matching key', () => {
 
       beforeEach(async () => {
@@ -75,6 +134,54 @@ fdescribe('IndexedDb', () => {
   describe('#get', () => {
 
     describe('without a matching item', () => {
+
+      it('rejects', async () => {
+        try {
+          await service.get('Comics', ComicFixtures.comic.id);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on transaction error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.get('Comics', ComicFixtures.comic.id);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on transaction abort', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.get('Comics', ComicFixtures.comic.id);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on request error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+      });
 
       it('rejects', async () => {
         try {

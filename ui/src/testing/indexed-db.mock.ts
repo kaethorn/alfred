@@ -1,5 +1,45 @@
-// FIXME inline this
 const storage = {};
+const flags: IndexedDbMockFlag[] = [];
+
+export enum IndexedDbMockFlag {
+  OPEN_ERROR,
+  TRANSACTION_ERROR,
+  TRANSACTION_ABORT,
+  REQUEST_ERROR
+}
+
+class Request implements IDBRequest {
+
+  public error: DOMException | null;
+  public result: any;
+  public addEventListener: null;
+  public removeEventListener: null;
+  public dispatchEvent: null;
+  public onerror: (event: any) => {};
+  public onsuccess: (event: any) => {};
+  public readyState: null;
+  public source: null;
+  public transaction: null;
+
+  constructor(result: any) {
+    this.result = result;
+    setTimeout(() => {
+      if (!this.hasRequestErrors() && this.onsuccess) {
+        this.onsuccess({ target: { result: this.result } });
+      }
+    }, 100);
+  }
+
+  private hasRequestErrors(): boolean {
+    if (flags.includes(IndexedDbMockFlag.REQUEST_ERROR)) {
+      if (this.onerror) {
+        this.onerror(new Event('Could not process request.'));
+      }
+      return true;
+    }
+    return false;
+  }
+}
 
 class ObjectStore implements IDBObjectStore {
 
@@ -16,19 +56,21 @@ class ObjectStore implements IDBObjectStore {
   }
 
   public getKey(query: any): IDBRequest {
-    if (storage[this.transaction.db.name][this.name][query]) {
-      return this.request(query);
-    } else {
-      return this.request(null);
+    if (!this.hasTransactionErrors() && storage[this.transaction.db.name][this.name][query]) {
+      return new Request(query);
     }
+    return new Request(null);
   }
 
   public get(query: any): IDBRequest {
-    return this.request(storage[this.transaction.db.name][this.name][query]);
+    if (!this.hasTransactionErrors()) {
+      return new Request(storage[this.transaction.db.name][this.name][query]);
+    }
+    return new Request(null);
   }
 
   public getAll(): IDBRequest {
-    return this.request(null);
+    return new Request(null);
   }
 
   public index(): IDBIndex {
@@ -36,20 +78,18 @@ class ObjectStore implements IDBObjectStore {
   }
 
   public delete(): IDBRequest {
-    return this.request(null);
+    return new Request(null);
   }
 
-  public put(item: any, key: any): IDBRequest {
-    if (!key) {
-      key = item.id;
-    }
+  public put(item: any, key: any = item.id): IDBRequest {
     storage[this.transaction.db.name][this.name][key] = item;
+
     setTimeout(() => {
-      if (this.transaction.oncomplete) {
+      if (!this.hasTransactionErrors() && this.transaction.oncomplete) {
         this.transaction.oncomplete(new Event(''));
       }
     }, 20);
-    return this.request(null);
+    return new Request(null);
   }
 
   public createIndex(): IDBIndex {
@@ -79,6 +119,21 @@ class ObjectStore implements IDBObjectStore {
   public openKeyCursor(): any {
   }
 
+  private hasTransactionErrors(): boolean {
+    if (flags.includes(IndexedDbMockFlag.TRANSACTION_ERROR)) {
+      if (this.transaction.onerror) {
+        this.transaction.onerror(new Event('Could not execute transaction.'));
+      }
+      return true;
+    } else if (flags.includes(IndexedDbMockFlag.TRANSACTION_ABORT)) {
+      if (this.transaction.onabort) {
+        this.transaction.onabort(new Event('Aborted transaction.'));
+      }
+      return true;
+    }
+    return false;
+  }
+
   private generateIndex(): IDBIndex {
     return {
       keyPath: null,
@@ -94,30 +149,6 @@ class ObjectStore implements IDBObjectStore {
       openCursor: null,
       openKeyCursor: null
     };
-  }
-
-  private request(result: any): IDBRequest {
-    const request = {
-      result: null,
-      addEventListener: null,
-      removeEventListener: null,
-      dispatchEvent: null,
-      error: null,
-      onerror: null,
-      onsuccess: null,
-      readyState: null,
-      source: null,
-      transaction: null
-    };
-
-    setTimeout(() => {
-      if (request.onsuccess) {
-        request.result = result;
-        request.onsuccess({ target: { result } });
-      }
-    }, 100);
-
-    return request;
   }
 }
 
@@ -258,7 +289,7 @@ class VersionChangeEvent implements IDBVersionChangeEvent {
   public stopPropagation(): any {}
 }
 
-export class IndexedDbMocks {
+export class IndexedDbMock {
 
   public static get create(): IDBFactory {
     return {
@@ -276,6 +307,15 @@ export class IndexedDbMocks {
     for (const prop of Object.getOwnPropertyNames(storage)) {
       delete storage[prop];
     }
+    flags.splice(0, flags.length);
+  }
+
+  public static setFlag(flag: IndexedDbMockFlag): void {
+    flags.push(flag);
+  }
+
+  public static removeFlag(flag: IndexedDbMockFlag): void {
+    flags.splice(flags.indexOf(flag), 1);
   }
 
   private static openRequest(name: string, version: number): IDBOpenDBRequest {
@@ -295,12 +335,19 @@ export class IndexedDbMocks {
     };
 
     setTimeout(() => {
-      (request as any).result = new Database(name, version);
-      if (request.onupgradeneeded) {
-        request.onupgradeneeded(new VersionChangeEvent({ result: request.result }, version, -1));
-      }
-      if (request.onsuccess) {
-        request.onsuccess(new Event(''));
+      if (flags.includes(IndexedDbMockFlag.OPEN_ERROR)) {
+        if (request.onerror) {
+          request.onerror(new Event('could not open DB'));
+        }
+        return;
+      } else {
+        (request as any).result = new Database(name, version);
+        if (request.onupgradeneeded) {
+          request.onupgradeneeded(new VersionChangeEvent({ result: request.result }, version, -1));
+        }
+        if (request.onsuccess) {
+          request.onsuccess(new Event(''));
+        }
       }
     }, 10);
 
