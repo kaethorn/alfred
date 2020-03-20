@@ -205,4 +205,237 @@ describe('IndexedDb', () => {
       });
     });
   });
+
+  describe('#getAll', () => {
+
+    beforeEach(async () => {
+      for (const comic of ComicFixtures.volume) {
+        await service.save('Comics', comic);
+      }
+    });
+
+    it('resolves with the items', async () => {
+      const result = await service.getAll('Comics');
+      expect(Object.keys(result).length).toBe(8);
+    });
+
+    describe('on transaction error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.getAll('Comics');
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on transaction abort', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.getAll('Comics');
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on request error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.getAll('Comics');
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+  });
+
+  describe('#getAllBy', () => {
+
+    beforeEach(async () => {
+      for (const comic of ComicFixtures.volumeInProgress) {
+        if (comic.read) {
+          await service.save('Comics', Object.assign(comic, { dirty: true }));
+        } else {
+          await service.save('Comics', comic);
+        }
+      }
+    });
+
+    it('resolves with the items', async () => {
+      const result = await service.getAllBy('Comics', 'dirty', true);
+      expect(result.length).toBe(2);
+    });
+
+    describe('on transaction error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+      });
+
+      it('resolves with no items', async () => {
+        const result = await service.getAllBy('Comics', 'dirty', true);
+        expect(result.length).toBe(0);
+      });
+    });
+
+    describe('on transaction abort', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.getAllBy('Comics', 'dirty', true);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on request error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+      });
+
+      it('resolves with no items', async () => {
+        const result = await service.getAllBy('Comics', 'dirty', true);
+        expect(result.length).toBe(0);
+      });
+    });
+  });
+
+  describe('#save', () => {
+
+    it('resolves after the items has been saved', async () => {
+      await service.save('Comics', ComicFixtures.comic);
+      const result = await service.get('Comics', ComicFixtures.comic.id);
+      expect(result).toEqual(ComicFixtures.comic);
+    });
+
+    describe('on transaction error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.save('Comics', ComicFixtures.comic);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on transaction abort', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.save('Comics', ComicFixtures.comic);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on request error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.save('Comics', ComicFixtures.comic);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+  });
+
+  describe('#delete', () => {
+
+    it('resolves after the item has been deleted', async () => {
+      await service.delete('Comics', ComicFixtures.comic.id);
+      expect(await service.hasKey('Comics', ComicFixtures.comic.id)).toBeFalse();
+    });
+
+    describe('on transaction error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.delete('Comics', ComicFixtures.comic.id);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on transaction abort', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.delete('Comics', ComicFixtures.comic.id);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
+    describe('on request error', () => {
+
+      beforeEach(() => {
+        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.delete('Comics', ComicFixtures.comic.id);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+  });
 });

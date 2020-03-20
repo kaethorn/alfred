@@ -22,18 +22,90 @@ class Request implements IDBRequest {
   public transaction: null;
 
   constructor(result: any) {
-    this.result = result;
     setTimeout(() => {
+      this.result = result;
       if (!this.hasRequestErrors() && this.onsuccess) {
         this.onsuccess({ target: { result: this.result } });
       }
-    }, 100);
+    });
   }
 
   private hasRequestErrors(): boolean {
     if (flags.includes(IndexedDbMockFlag.REQUEST_ERROR)) {
       if (this.onerror) {
         this.onerror(new Event('Could not process request.'));
+      }
+      return true;
+    }
+    return false;
+  }
+}
+
+class Index implements IDBIndex {
+
+  public keyPath: string | string [];
+  public multiEntry: boolean;
+  public name: string;
+  public objectStore: IDBObjectStore;
+  public unique: boolean;
+
+  private options: IDBIndexParameters;
+
+  constructor(
+    objectStore: IDBObjectStore,
+    name: string,
+    keyPath: string | string[],
+    options?: IDBIndexParameters
+  ) {
+    this.objectStore = objectStore;
+    this.name = name;
+    this.keyPath = keyPath;
+    this.options = options;
+  }
+
+  public count(): IDBRequest<any> {
+    return new Request(null);
+  }
+
+  public get(): IDBRequest {
+    return new Request(null);
+  }
+
+  public getAll(query: any, count?: number): IDBRequest {
+    if (!this.hasTransactionErrors()) {
+      const allItems: Map<string, any> = storage[this.objectStore.transaction.db.name][this.objectStore.name].store;
+      const items: any[] = Array.from(allItems.values()).filter(item => {
+        if (typeof this.keyPath === 'string') {
+          return item[this.keyPath] === query;
+        }
+        this.keyPath.reduce((result, key) => result && item[key] === query, true);
+      });
+
+      if (this.options.unique) {
+        return new Request(items.slice(0, 1));
+      } else if (count !== undefined && count !== null) {
+        return new Request(items.slice(0, count));
+      }
+
+      return new Request(items);
+    }
+    return new Request(null);
+  }
+
+  public getAllKeys(): any {}
+  public getKey(): any {}
+  public openCursor(): any {}
+  public openKeyCursor(): any {}
+
+  private hasTransactionErrors(): boolean {
+    if (flags.includes(IndexedDbMockFlag.TRANSACTION_ERROR)) {
+      if (this.objectStore.transaction.onerror) {
+        this.objectStore.transaction.onerror(new Event('Could not execute transaction.'));
+      }
+      return true;
+    } else if (flags.includes(IndexedDbMockFlag.TRANSACTION_ABORT)) {
+      if (this.objectStore.transaction.onabort) {
+        this.objectStore.transaction.onabort(new Event('Aborted transaction.'));
       }
       return true;
     }
@@ -49,6 +121,9 @@ class ObjectStore implements IDBObjectStore {
   public name: string;
   public transaction: IDBTransaction;
 
+  private store = new Map<string, any>();
+  private indices: { [key: string]: IDBIndex } = {};
+
   constructor(
     name: string
   ) {
@@ -56,7 +131,7 @@ class ObjectStore implements IDBObjectStore {
   }
 
   public getKey(query: any): IDBRequest {
-    if (!this.hasTransactionErrors() && storage[this.transaction.db.name][this.name][query]) {
+    if (!this.hasTransactionErrors() && this.store.has(query)) {
       return new Request(query);
     }
     return new Request(null);
@@ -64,36 +139,45 @@ class ObjectStore implements IDBObjectStore {
 
   public get(query: any): IDBRequest {
     if (!this.hasTransactionErrors()) {
-      return new Request(storage[this.transaction.db.name][this.name][query]);
+      return new Request(this.store.get(query));
     }
     return new Request(null);
   }
 
   public getAll(): IDBRequest {
+    if (!this.hasTransactionErrors()) {
+      return new Request(Array.from(this.store.values()));
+    }
     return new Request(null);
   }
 
-  public index(): IDBIndex {
-    return this.generateIndex();
+  public index(name: string): IDBIndex {
+    return this.indices[name];
   }
 
-  public delete(): IDBRequest {
+  public delete(key: any): IDBRequest {
+    setTimeout(() => {
+      this.store.delete(key);
+      if (!this.hasTransactionErrors() && this.transaction.oncomplete) {
+        this.transaction.oncomplete(new Event(''));
+      }
+    }, 10);
     return new Request(null);
   }
 
   public put(item: any, key: any = item.id): IDBRequest {
-    storage[this.transaction.db.name][this.name][key] = item;
-
     setTimeout(() => {
+      this.store.set(key, item);
       if (!this.hasTransactionErrors() && this.transaction.oncomplete) {
         this.transaction.oncomplete(new Event(''));
       }
-    }, 20);
+    }, 10);
     return new Request(null);
   }
 
-  public createIndex(): IDBIndex {
-    return this.generateIndex();
+  public createIndex(name: string, keyPath: string | string[], options?: IDBIndexParameters): IDBIndex {
+    this.indices[name] = new Index(this, name, keyPath, options);
+    return this.indices[name];
   }
 
   public getAllKeys(): any {
@@ -102,8 +186,14 @@ class ObjectStore implements IDBObjectStore {
   public clear(): any {
   }
 
-  public add(value: any, key?: any): any {
-    storage[this.name][key] = value;
+  public add(item: any, key: any = item.id): IDBRequest {
+    if (this.store.has(key)) {
+      if (this.transaction.onerror) {
+        this.transaction.onerror(new Event('Constraint error'));
+      }
+      return new Request(null);
+    }
+    return this.put(item, key);
   }
 
   public count(): any {
@@ -132,23 +222,6 @@ class ObjectStore implements IDBObjectStore {
       return true;
     }
     return false;
-  }
-
-  private generateIndex(): IDBIndex {
-    return {
-      keyPath: null,
-      multiEntry: false,
-      name: null,
-      objectStore: null,
-      unique: null,
-      count: null,
-      get: null,
-      getAll: null,
-      getAllKeys: null,
-      getKey: null,
-      openCursor: null,
-      openKeyCursor: null
-    };
   }
 }
 
@@ -349,7 +422,7 @@ export class IndexedDbMock {
           request.onsuccess(new Event(''));
         }
       }
-    }, 10);
+    });
 
     return request;
   }
