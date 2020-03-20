@@ -5,7 +5,7 @@ import { IndexedDb } from './indexed-db';
 
 let service: IndexedDb;
 
-fdescribe('IndexedDb', () => {
+describe('IndexedDb', () => {
 
   beforeEach(async () => {
     service = new IndexedDb('Comics', 1, [{
