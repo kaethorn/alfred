@@ -35,7 +35,7 @@ export class ReaderPage {
 
   @HostListener('document:keyup.esc', ['$event'])
   public handleEscape(): void {
-    this.router.navigate([this.parent]);
+    this.back();
   }
 
   @HostListener('document:keyup.arrowleft', ['$event'])
@@ -58,7 +58,7 @@ export class ReaderPage {
           this.showToast('Volume cached.');
         });
       }).catch(() => {
-        this.showToast('Comic book not available, please try again later.');
+        this.showToast('Comic book not available, please try again later.', 4000);
         this.back();
       });
   }
@@ -79,11 +79,11 @@ export class ReaderPage {
     }
   }
 
-  public openNext(options?: IOpenOptions): void {
+  public openNext(options: IOpenOptions = {}): void {
     this.open('nextId', options);
   }
 
-  public openPrevious(options?: IOpenOptions): void {
+  public openPrevious(options: IOpenOptions = {}): void {
     this.open('previousId', options);
   }
 
@@ -91,7 +91,7 @@ export class ReaderPage {
     this.showControls = !this.showControls;
   }
 
-  public onSwipe(direction): void {
+  public onSwipe(direction: number): void {
     this.navigate(this.navigator.go(direction));
   }
 
@@ -125,11 +125,9 @@ export class ReaderPage {
   }
 
   private setImage(image: PageSource): void {
-    if (!image.loaded) {
-      this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
-        image.src = url;
-      });
-    }
+    this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
+      image.src = url;
+    });
   }
 
   private setup(comic: Comic): void {
@@ -203,7 +201,11 @@ export class ReaderPage {
         queryParamsHandling: 'merge'
       });
       if (options.showToast) {
-        this.showToast(`Opening next issue of ${ this.comic.series } (${ this.comic.volume }).`);
+        if (adjacentAttr === 'nextId') {
+          this.showToast(`Opening next issue of ${ this.comic.series } (${ this.comic.volume }).`);
+        } else {
+          this.showToast(`Opening previous issue of ${ this.comic.series } (${ this.comic.volume }).`);
+        }
       }
     }
   }
