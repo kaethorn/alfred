@@ -9,10 +9,10 @@ export class PublisherFixtures {
     publisher.name = 'DC Comics';
     publisher.seriesCount = 4;
     publisher.series = [
-      SeriesFixtures.series,
-      Object.assign(SeriesFixtures.series, { name: 'Batgirl' }),
-      Object.assign(SeriesFixtures.series, { name: 'Green Lantern' }),
-      Object.assign(SeriesFixtures.series, { name: 'Flash' })
+      SeriesFixtures.serie,
+      Object.assign(SeriesFixtures.serie, { name: 'Batgirl' }),
+      Object.assign(SeriesFixtures.serie, { name: 'Green Lantern' }),
+      Object.assign(SeriesFixtures.serie, { name: 'Flash' })
     ];
 
     return publisher;
@@ -25,33 +25,33 @@ export class PublisherFixtures {
         name: 'Marvel Comics',
         seriesCount: 2,
         series: [
-          Object.assign(SeriesFixtures.series, { name: 'Wolverine' }),
-          Object.assign(SeriesFixtures.series, { name: 'Spider-Man' })
+          Object.assign(SeriesFixtures.serie, { name: 'Wolverine' }),
+          Object.assign(SeriesFixtures.serie, { name: 'Spider-Man' })
         ]
       }),
       Object.assign(this.publisher, {
         name: 'Dark Horse Comics',
         seriesCount: 2,
         series: [
-          Object.assign(SeriesFixtures.series, { name: 'Aliens' }),
-          Object.assign(SeriesFixtures.series, { name: 'Star Wars' })
+          Object.assign(SeriesFixtures.serie, { name: 'Aliens' }),
+          Object.assign(SeriesFixtures.serie, { name: 'Star Wars' })
         ]
       }),
       Object.assign(this.publisher, {
         name: 'Aspen Comics',
         seriesCount: 2,
         series: [
-          Object.assign(SeriesFixtures.series, { name: 'Fathom' }),
-          Object.assign(SeriesFixtures.series, { name: 'Ekos' })
+          Object.assign(SeriesFixtures.serie, { name: 'Fathom' }),
+          Object.assign(SeriesFixtures.serie, { name: 'Ekos' })
         ]
       }),
       Object.assign(this.publisher, {
         name: 'Top Cow Productions',
         seriesCount: 3,
         series: [
-          Object.assign(SeriesFixtures.series, { name: 'Witchblade' }),
-          Object.assign(SeriesFixtures.series, { name: 'The Darkness' }),
-          Object.assign(SeriesFixtures.series, { name: 'Magdalena' })
+          Object.assign(SeriesFixtures.serie, { name: 'Witchblade' }),
+          Object.assign(SeriesFixtures.serie, { name: 'The Darkness' }),
+          Object.assign(SeriesFixtures.serie, { name: 'Magdalena' })
         ]
       })
     ];
