@@ -26,7 +26,8 @@ export class ComicsServiceMocks {
       bundleVolumes: of(null),
       getFirstByVolume: of(ComicFixtures.comic),
       getLastUnreadByVolume: of(ComicFixtures.comic),
-      updateProgress: of(ComicFixtures.comic)
+      updateProgress: of(ComicFixtures.comic),
+      getPage: of(null)
     });
     comicsService.markAsRead.and.callFake(c => of(Object.assign({}, c, { read: true })));
     comicsService.markAsUnread.and.callFake(c => of(Object.assign({}, c, { read: false })));

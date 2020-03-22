@@ -1,14 +1,19 @@
+import { TestBed } from '@angular/core/testing';
+
 import { ComicFixtures } from '../testing/comic.fixtures';
 import { IndexedDbMock, IndexedDbMockFlag } from '../testing/indexed-db.mock';
 
-import { IndexedDb } from './indexed-db';
+import { IndexedDbService } from './indexed-db.service';
 
-let service: IndexedDb;
+let service: IndexedDbService;
 
 describe('IndexedDb', () => {
 
   beforeEach(async () => {
-    service = new IndexedDb('Comics', 1, [{
+    TestBed.configureTestingModule({ });
+    service = TestBed.inject(IndexedDbService);
+
+    service.open('Comics', 1, [{
       name: 'Images',
       options: { autoIncrement: true }
     }, {
@@ -27,7 +32,7 @@ describe('IndexedDb', () => {
     IndexedDbMock.reset();
   });
 
-  describe('#constructor', () => {
+  describe('#open', () => {
 
     describe('on error', () => {
 
@@ -37,9 +42,8 @@ describe('IndexedDb', () => {
       });
 
       it('does not initialize', async () => {
-        service = new IndexedDb('Comics', 1, [], IndexedDbMock.create);
-
         try {
+          service.open('Comics', 1, [], IndexedDbMock.create);
           await service.ready.toPromise();
         } catch (exception) {
           expect(service.ready.hasError).toBeTrue();
@@ -55,7 +59,7 @@ describe('IndexedDb', () => {
     describe('without a db', () => {
 
       beforeEach(() => {
-        service = new IndexedDb('Comics', 1, [{
+        service.open('Comics', 1, [{
           name: 'Images',
           options: { autoIncrement: true }
         }, {

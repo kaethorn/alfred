@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { AsyncSubject } from 'rxjs';
 
 export interface Store {
@@ -9,14 +10,13 @@ export interface Store {
 /**
  * Convenience wrapper around indexedDB.
  */
-export class IndexedDb {
+@Injectable({
+  providedIn: 'root'
+})
+export class IndexedDbService {
 
   public ready: AsyncSubject<void> = new AsyncSubject<void>();
   private db: IDBDatabase;
-
-  constructor(name: string, version: number, stores: Store[], indexedDb: IDBFactory = window.indexedDB) {
-    this.open(name, version, stores, indexedDb);
-  }
 
   public hasKey(storeName: string, key: IDBValidKey): Promise<boolean> {
     return new Promise(resolve => {
@@ -96,7 +96,7 @@ export class IndexedDb {
     });
   }
 
-  public open(name: string, version: number, stores: Store[], indexedDb: IDBFactory): void {
+  public open(name: string, version: number, stores: Store[], indexedDb: IDBFactory = window.indexedDB): void {
     const request: IDBOpenDBRequest = indexedDb.open(name, version);
     request.onerror = (event): void => {
       const error = `Error opening DB '${ name }'.`;
