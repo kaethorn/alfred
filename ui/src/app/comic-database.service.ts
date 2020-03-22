@@ -56,9 +56,11 @@ export class ComicDatabaseService {
    * @param comic The comic to delete.
    */
   public delete(comic: Comic): Promise<Event> {
-    return Array.from(Array(comic.pageCount)).reduce((result, value, page) =>
-      result.then(() => this.indexedDbService.delete('Images', `${ comic.id }/${ page }`))
-    , Promise.resolve()).then(() => this.indexedDbService.delete('Comics', comic.id));
+    return Array.from(Array(comic.pageCount))
+      .reduce((result, value, page) =>
+        result.then(() => this.indexedDbService.delete('Images', `${ comic.id }/${ page }`))
+      , Promise.resolve())
+      .then(() => this.indexedDbService.delete('Comics', comic.id));
   }
 
   public async deleteAll(): Promise<void> {

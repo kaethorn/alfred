@@ -8,7 +8,11 @@ export class IndexedDbServiceMocks {
     const service = jasmine.createSpyObj('IndexedDbService', {
       open: null,
       save: Promise.resolve(new Event('')),
-      hasKey: Promise.resolve(true)
+      hasKey: Promise.resolve(true),
+      delete: Promise.resolve(new Event('')),
+      getAll: Promise.resolve([]),
+      get: Promise.resolve(),
+      getAllBy: Promise.resolve([])
     });
     service.ready = new AsyncSubject<void>();
 

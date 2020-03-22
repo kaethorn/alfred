@@ -1,3 +1,13 @@
+/**
+ * A mock IndexedDB implementation.
+ *
+ * It supports setting error flags so it's useful to test error
+ * handling during transactions and requests.
+ *
+ * It's by no means feature complete and only supports IndexedDB
+ * methods used in this project.
+ */
+
 const storage = {};
 const flags: IndexedDbMockFlag[] = [];
 
