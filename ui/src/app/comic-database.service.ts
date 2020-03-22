@@ -28,8 +28,8 @@ export class ComicDatabaseService {
       ]
     }]);
     this.db.ready.subscribe(
-      () => {},
-      () => this.ready.thrownError(),
+      null,
+      error => this.ready.error(error),
       () => this.ready.complete());
   }
 

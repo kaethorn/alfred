@@ -96,7 +96,7 @@ export class IndexedDb {
     });
   }
 
-  private open(name: string, version: number, stores: Store[], indexedDb: IDBFactory): void {
+  public open(name: string, version: number, stores: Store[], indexedDb: IDBFactory): void {
     const request: IDBOpenDBRequest = indexedDb.open(name, version);
     request.onerror = (event): void => {
       const error = `Error opening DB '${ name }'.`;
