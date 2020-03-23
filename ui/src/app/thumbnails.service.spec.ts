@@ -24,13 +24,25 @@ describe('ThumbnailsService', () => {
     TestBed.resetTestingModule();
   });
 
-  describe('#get', () => {
+  describe('#getFrontCover', () => {
 
-    it('returns a sanitized URL', () => {
+    it('returns a sanitized URL to the front cover', () => {
       service.getFrontCover(ComicFixtures.comic.id).subscribe(thumbnail => {
         expect((thumbnail.url as any).changingThisBreaksApplicationSecurity).toContain('abcedf1234');
       });
       const req = httpMock.expectOne(`/api/thumbnails/front-cover/${ ComicFixtures.comic.id }`);
+      expect(req.request.method).toBe('GET');
+      req.flush(ThumbnailFixtures.thumbnail);
+    });
+  });
+
+  describe('#getBackCover', () => {
+
+    it('returns a sanitized URL to the back cover', () => {
+      service.getBackCover(ComicFixtures.comic.id).subscribe(thumbnail => {
+        expect((thumbnail.url as any).changingThisBreaksApplicationSecurity).toContain('abcedf1234');
+      });
+      const req = httpMock.expectOne(`/api/thumbnails/back-cover/${ ComicFixtures.comic.id }`);
       expect(req.request.method).toBe('GET');
       req.flush(ThumbnailFixtures.thumbnail);
     });

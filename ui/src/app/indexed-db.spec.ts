@@ -4,6 +4,7 @@ import { ComicFixtures } from '../testing/comic.fixtures';
 import { IndexedDbMock, IndexedDbMockFlag } from '../testing/indexed-db.mock';
 
 import { IndexedDbService } from './indexed-db.service';
+import { AsyncSubject } from 'rxjs';
 
 let service: IndexedDbService;
 
@@ -37,6 +38,7 @@ describe('IndexedDb', () => {
     describe('on error', () => {
 
       beforeEach(() => {
+        service.ready = new AsyncSubject<void>();
         spyOn(console, 'error');
         IndexedDbMock.setFlag(IndexedDbMockFlag.OPEN_ERROR);
       });
@@ -45,6 +47,7 @@ describe('IndexedDb', () => {
         try {
           service.open('Comics', 1, [], IndexedDbMock.create);
           await service.ready.toPromise();
+          expect(false).toBeTrue();
         } catch (exception) {
           expect(service.ready.hasError).toBeTrue();
           expect(service.ready.thrownError).toEqual('Error opening DB \'Comics\'.');
