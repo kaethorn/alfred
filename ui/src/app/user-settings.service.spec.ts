@@ -59,6 +59,25 @@ describe('UserSettingsService', () => {
         expect(service.get().darkMode).toEqual(true);
       });
     });
+
+    describe('when changing preferred color scheme', () => {
+
+      beforeEach(() => {
+        spyOn(window, 'matchMedia').and.returnValue({
+          addEventListener: jasmine.createSpy()
+        } as any);
+        service.load();
+      });
+
+      it('changes the settings', () => {
+        const initialDarkModeFlag = service.get().darkMode;
+        expect(window.matchMedia).toHaveBeenCalled();
+        // Retrieve and call the event listener
+        (window.matchMedia as jasmine.Spy<any>).calls.mostRecent().returnValue
+          .addEventListener.calls.mostRecent().args[1]({ matches: !initialDarkModeFlag });
+        expect(service.get().darkMode).toBe(!initialDarkModeFlag);
+      });
+    });
   });
 
   describe('#save', () => {

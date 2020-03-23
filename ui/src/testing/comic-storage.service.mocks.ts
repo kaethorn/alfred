@@ -6,7 +6,7 @@ export class ComicStorageServiceMocks {
 
   public static get comicStorageService(): jasmine.SpyObj<ComicStorageService> {
     return jasmine.createSpyObj('ComicStorageService', {
-      get: Promise.resolve(Object.assign({}, ComicFixtures.comic)),
+      get: Promise.resolve(ComicFixtures.comic),
       saveProgress: Promise.resolve(),
       getPageUrl: Promise.resolve('/api/read/923/0'),
       storeSurrounding: Promise.resolve({}),

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Router, RouterEvent } from '@angular/router';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 
+import { LOCATION_TOKEN } from './location.token';
 import { User } from './user';
 import { UserSettingsService } from './user-settings.service';
 import { UserService } from './user.service';
@@ -30,7 +31,8 @@ export class AppComponent {
     private statusBar: StatusBar,
     private userService: UserService,
     private router: Router,
-    private userSettingsService: UserSettingsService
+    private userSettingsService: UserSettingsService,
+    @Inject(LOCATION_TOKEN) private location: Location
   ) {
     this.userSettingsService.load();
     this.initializeApp();
@@ -47,7 +49,7 @@ export class AppComponent {
 
   public logout(): void {
     this.userService.logout();
-    window.location.reload();
+    this.location.reload();
   }
 
   private initializeApp(): void {

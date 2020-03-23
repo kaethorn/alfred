@@ -34,4 +34,15 @@ describe('SeriesComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('#filter', () => {
+
+    it('filters the series by name', () => {
+      expect(component.series.length).toBe(5);
+      component.filter('man');
+      expect(component.series.length).toBe(2);
+      component.filter('Foo');
+      expect(component.series.length).toBe(0);
+    });
+  });
 });

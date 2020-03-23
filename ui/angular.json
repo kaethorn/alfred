@@ -114,6 +114,9 @@
             "codeCoverage": false,
             "styles": [],
             "scripts": [],
+            "codeCoverageExclude": [
+              "src/testing/**/*"
+            ],
             "assets": [
               {
                 "glob": "favicon.ico",

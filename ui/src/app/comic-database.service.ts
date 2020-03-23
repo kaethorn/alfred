@@ -3,7 +3,7 @@ import { AsyncSubject } from 'rxjs';
 
 import { Comic } from './comic';
 import { ComicsService } from './comics.service';
-import { IndexedDb } from './indexed-db';
+import { IndexedDbService } from './indexed-db.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +11,12 @@ import { IndexedDb } from './indexed-db';
 export class ComicDatabaseService {
 
   public ready: AsyncSubject<void> = new AsyncSubject<void>();
-  private db: IndexedDb;
 
   constructor(
-    private comicService: ComicsService
+    private comicService: ComicsService,
+    private indexedDbService: IndexedDbService
   ) {
-    this.db = new IndexedDb('Comics', 1, [{
+    this.indexedDbService.open('Comics', 1, [{
       name: 'Images',
       options: { autoIncrement: true }
     }, {
@@ -27,9 +27,10 @@ export class ComicDatabaseService {
         [ 'dirty', 'dirty', { unique: false }]
       ]
     }]);
-    this.db.ready.subscribe(
-      () => {},
-      () => this.ready.thrownError(),
+
+    this.indexedDbService.ready.subscribe(
+      null,
+      error => this.ready.error(error),
       () => this.ready.complete());
   }
 
@@ -42,12 +43,12 @@ export class ComicDatabaseService {
     if (!isStored) {
       return Array.from(Array(comic.pageCount)).reduce((result, value, page) =>
         result.then(() => this.saveImage(comic.id, page))
-      , Promise.resolve()).then(() => this.db.save('Comics', comic));
+      , Promise.resolve()).then(() => this.indexedDbService.save('Comics', comic));
     }
   }
 
   public isStored(comicId: string): Promise<boolean> {
-    return this.db.hasKey('Comics', comicId);
+    return this.indexedDbService.hasKey('Comics', comicId);
   }
 
   /**
@@ -55,9 +56,11 @@ export class ComicDatabaseService {
    * @param comic The comic to delete.
    */
   public delete(comic: Comic): Promise<Event> {
-    return Array.from(Array(comic.pageCount)).reduce((result, value, page) =>
-      result.then(() => this.db.delete('Images', `${ comic.id }/${ page }`))
-    , Promise.resolve()).then(() => this.db.delete('Comics', comic.id));
+    return Array.from(Array(comic.pageCount))
+      .reduce((result, value, page) =>
+        result.then(() => this.indexedDbService.delete('Images', `${ comic.id }/${ page }`))
+      , Promise.resolve())
+      .then(() => this.indexedDbService.delete('Comics', comic.id));
   }
 
   public async deleteAll(): Promise<void> {
@@ -68,33 +71,33 @@ export class ComicDatabaseService {
   }
 
   public getImageUrl(comicId: string, page: number): Promise<string> {
-    return this.db.get('Images', `${ comicId }/${ page }`).then((data: any) =>
+    return this.indexedDbService.get('Images', `${ comicId }/${ page }`).then((data: any) =>
       URL.createObjectURL(data)
     );
   }
 
   public async getComic(comicId: string): Promise<Comic> {
     await this.ready.toPromise();
-    return this.db.get('Comics', comicId);
+    return this.indexedDbService.get('Comics', comicId);
   }
 
   public async getComics(): Promise<Comic[]> {
     await this.ready.toPromise();
-    return this.db.getAll('Comics');
+    return this.indexedDbService.getAll('Comics');
   }
 
   public getComicsBy(key: string, value: any): Promise<Comic[]> {
-    return this.db.getAllBy('Comics', key, value);
+    return this.indexedDbService.getAllBy('Comics', key, value);
   }
 
   public save(comic: Comic): Promise<Event> {
-    return this.db.save('Comics', comic);
+    return this.indexedDbService.save('Comics', comic);
   }
 
   private saveImage(comicId: string, page: number): Promise<Event> {
     return new Promise((resolve, reject) => {
       this.comicService.getPage(comicId, page).subscribe((image: Blob) => {
-        this.db.save('Images', image, `${ comicId }/${ page }`)
+        this.indexedDbService.save('Images', image, `${ comicId }/${ page }`)
           .then(resolve)
           .catch(error => reject(error));
       }, error => reject(error));
