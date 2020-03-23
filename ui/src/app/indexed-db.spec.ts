@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { AsyncSubject } from 'rxjs';
 
 import { ComicFixtures } from '../testing/comic.fixtures';
 import { IndexedDbMock, IndexedDbMockFlag } from '../testing/indexed-db.mock';
 
 import { IndexedDbService } from './indexed-db.service';
-import { AsyncSubject } from 'rxjs';
 
 let service: IndexedDbService;
 
