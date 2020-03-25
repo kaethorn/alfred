@@ -62,7 +62,7 @@ public class ScannerIngrationTest {
         .expectNext("association")
         .expectNext("done")
         .thenCancel()
-        .verify(Duration.ofSeconds(6L));
+        .verify(Duration.ofSeconds(9L));
 
     // Then
     final List<Comic> comics = this.comicRepository.findAll();

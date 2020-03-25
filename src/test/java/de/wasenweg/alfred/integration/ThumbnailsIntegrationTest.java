@@ -58,7 +58,7 @@ public class ThumbnailsIntegrationTest {
         .expectNext("association")
         .expectNext("done")
         .thenCancel()
-        .verify(Duration.ofSeconds(6L));
+        .verify(Duration.ofSeconds(9L));
   }
 
   @AfterEach

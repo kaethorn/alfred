@@ -106,7 +106,7 @@ public class ScannerServiceTest {
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
-        .verify(Duration.ofSeconds(4L));
+        .verify(Duration.ofSeconds(8L));
   }
 
   @Test
@@ -126,7 +126,7 @@ public class ScannerServiceTest {
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
-        .verify(Duration.ofSeconds(4L));
+        .verify(Duration.ofSeconds(8L));
 
     verify(this.objectMapper).writeValueAsString(any());
   }
@@ -169,7 +169,7 @@ public class ScannerServiceTest {
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
-        .verify(Duration.ofSeconds(4L));
+        .verify(Duration.ofSeconds(8L));
 
     verify(this.objectMapper).writeValueAsString(any());
   }
@@ -211,7 +211,7 @@ public class ScannerServiceTest {
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
-        .verify(Duration.ofSeconds(4L));
+        .verify(Duration.ofSeconds(8L));
 
     verify(this.objectMapper).writeValueAsString(any());
   }
@@ -253,7 +253,7 @@ public class ScannerServiceTest {
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
-        .verify(Duration.ofSeconds(4L));
+        .verify(Duration.ofSeconds(8L));
 
     verify(this.objectMapper).writeValueAsString(any());
   }
@@ -302,7 +302,7 @@ public class ScannerServiceTest {
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
-        .verify(Duration.ofSeconds(4L));
+        .verify(Duration.ofSeconds(8L));
 
     verify(this.objectMapper).writeValueAsString(any());
     verify(this.fileMetaDataService).write(any());
@@ -325,7 +325,7 @@ public class ScannerServiceTest {
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
-        .verify(Duration.ofSeconds(4L));
+        .verify(Duration.ofSeconds(8L));
 
     verify(this.objectMapper).writeValueAsString(any());
   }

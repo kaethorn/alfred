@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,5 +33,10 @@ public class IndexControllerTest {
     this.mockMvc.perform(get("/error"))
         .andExpect(forwardedUrl("/index.html"))
         .andExpect(status().isOk());
+  }
+
+  @Test
+  public void returnsErrorPath() throws Exception {
+    assertThat(this.controller.getErrorPath()).isEqualTo("/error");
   }
 }
