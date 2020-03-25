@@ -22,7 +22,7 @@ public class ReaderController {
   @Transactional
   @GetMapping("/read/{id}")
   @ResponseBody
-  public ResponseEntity<StreamingResponseBody> readFromBeginning(
+  public ResponseEntity<StreamingResponseBody> read(
       @PathVariable("id") final String id,
       final Principal principal) {
     return this.readerService.read(id, 0, true, principal.getName());
