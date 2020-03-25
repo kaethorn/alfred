@@ -18,6 +18,14 @@ public class SettingsService {
   private final SettingRepository settingRepository;
   private final Environment environment;
 
+  /**
+   * Establishes application settings.
+   *
+   * It follows this order:
+   * 1. Spring Environment properties.
+   * 2. Existing database entries.
+   * 3. Defaults.
+   */
   @PostConstruct
   public void setup() {
     // Built in defaults:
@@ -27,23 +35,15 @@ public class SettingsService {
     this.defaults.add(new Setting("auth.client.id", "Google client ID", "", "Google client ID to use for this server"));
 
     this.defaults.forEach((settingDefault) -> {
-      // Defaults passed in via a property override built in defaults
+      final Optional<Setting> existingSetting = this.settingRepository.findByKey(settingDefault.getKey());
+      if (existingSetting.isPresent()) {
+        settingDefault.setValue(existingSetting.get().getValue());
+      }
       final Optional<String> environmentValue = this.getEnvironmentValue(settingDefault.getKey());
       if (environmentValue.isPresent()) {
         settingDefault.setValue(environmentValue.get());
       }
-
-      // Defaults are ignored if values for the given key already exist
-      final Optional<Setting> maybeSetting = this.settingRepository.findByKey(settingDefault.getKey());
-      if (maybeSetting.isPresent()) {
-        if (environmentValue.isPresent()) {
-          final Setting setting = maybeSetting.get();
-          setting.setValue(environmentValue.get());
-          this.settingRepository.save(setting);
-        }
-      } else {
-        this.settingRepository.save(settingDefault);
-      }
+      this.settingRepository.save(settingDefault);
     });
   }
 
