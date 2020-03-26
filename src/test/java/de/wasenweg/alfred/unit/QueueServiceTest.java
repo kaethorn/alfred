@@ -5,14 +5,12 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.fixtures.ComicFixtures;
 import de.wasenweg.alfred.queue.QueueService;
 import de.wasenweg.alfred.scanner.ScannerService;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.List;
@@ -21,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class QueueServiceTest {
 
   @TempDir
