@@ -6,6 +6,7 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
 
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,6 +40,23 @@ public class QueueFixIntegrationTest {
   private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
   private final IntegrationTestHelper helper;
+  private transient Comic comic;
+
+  @BeforeEach
+  public void setUp() {
+    // Given
+    this.helper.setComicsPath("src/test/resources/fixtures/not_flat", this.testBed);
+    final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
+
+    this.comic = this.comicRepository.save(Comic.builder()
+        .path(comicPath)
+        .fileName("Batman 402 (1940).cbz")
+        .number("402")
+        .publisher("DC Comics")
+        .series("Batman")
+        .volume("1940")
+        .build());
+  }
 
   @AfterEach
   public void tearDown() {
@@ -46,25 +65,11 @@ public class QueueFixIntegrationTest {
 
   @Test
   public void flatten() throws Exception {
-    // Given
-    this.helper.setComicsPath("src/test/resources/fixtures/not_flat", this.testBed);
-    final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
-    Comic comic = Comic.builder()
-        .path(comicPath)
-        .fileName("Batman 402 (1940).cbz")
-        .number("402")
-        .publisher("DC Comics")
-        .series("Batman")
-        .volume("1940")
-        .build();
-
-    comic = this.comicRepository.save(comic);
-
     // When / Then
     this.mockMvc.perform(put("/api/queue/fix/NOT_FLAT")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .accept(MediaTypes.HAL_JSON_VALUE)
-        .content(TestUtil.toJson(comic)))
+        .content(TestUtil.toJson(this.comic)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$.number").value("402"))
@@ -74,5 +79,18 @@ public class QueueFixIntegrationTest {
         .andExpect(jsonPath("$.files[2]").value("/3.png"))
         .andExpect(jsonPath("$.files[3]").value("/4.png"))
         .andExpect(jsonPath("$.files[4]").value("/ComicInfo.xml"));
+  }
+
+  @Test
+  public void unknownIssue() throws Exception {
+    // When / Then
+    this.mockMvc.perform(put("/api/queue/fix/UNKNOWN")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.toJson(this.comic)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$.number").value("402"))
+        .andExpect(jsonPath("$.files").value(nullValue()));
   }
 }

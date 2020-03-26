@@ -69,7 +69,7 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  public void getInvalidOmitsvalid() throws Exception {
+  public void getInvalidOmitsValid() throws Exception {
     // Given / When / Then
     this.mockMvc.perform(get("/api/queue"))
         .andExpect(status().isOk())

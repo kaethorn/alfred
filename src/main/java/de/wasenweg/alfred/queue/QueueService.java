@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -17,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
 
@@ -42,13 +40,10 @@ public class QueueService {
       final List<Path> files = ZipReaderUtil.getEntries(fs);
       files.stream()
           .filter(Files::isDirectory)
-          .flatMap(directory -> {
-            try {
-              return Files.walk(directory).filter(Files::isRegularFile);
-            } catch (final IOException exception) {
-              return Stream.empty();
-            }
-          }).forEach(file -> {
+          .flatMap(directory -> files.stream()
+              .filter(Files::isRegularFile)
+              .filter(file -> file.startsWith(directory)))
+          .forEach(file -> {
             try {
               final String fileName = file.getFileName().toString();
               final String filePathInZip = file.toString();
@@ -69,10 +64,8 @@ public class QueueService {
             try {
               log.debug(format("Removing directory %s.", directory));
               Files.delete(directory);
-            } catch (final DirectoryNotEmptyException exception) {
-              log.debug(format("Directory %s not empty.", directory));
             } catch (final IOException exception) {
-              log.debug(format("Directory %s could not be deleted.", directory));
+              log.error(format("Directory %s could not be deleted.", directory), exception);
             }
           });
     }
