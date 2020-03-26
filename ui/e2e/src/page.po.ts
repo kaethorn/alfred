@@ -1,12 +1,12 @@
-import { browser, by, element, ExpectedConditions, ElementFinder, WebElement } from 'protractor';
+import { browser, by, element, promise, ExpectedConditions, ElementFinder, WebElement } from 'protractor';
 
 export class Page {
 
-  static getTitleText () {
+  public static getTitleText(): promise.Promise<string> {
     return element.all(by.css('app-root ion-toolbar ion-title')).last().getText();
   }
 
-  static async clickActionItem (target: ElementFinder, item: string) {
+  public static async clickActionItem(target: ElementFinder, item: string): Promise<void> {
     const menuButton = target.element(by.css('ion-button.menu'));
     await this.scrollIntoView(menuButton);
     await menuButton.click();
@@ -20,20 +20,20 @@ export class Page {
    * when it's already in the DOM due to being on another
    * page.
    */
-  static waitForElement (target: ElementFinder, timeout = 5000) {
+  public static waitForElement(target: ElementFinder, timeout = 5000): promise.Promise<void> {
     return browser.wait(
       ExpectedConditions.and(
         ExpectedConditions.elementToBeClickable(target),
         ExpectedConditions.presenceOf(target)
-    ), timeout);
+      ), timeout);
   }
 
-  static async waitForText (target: ElementFinder, text: string) {
+  public static async waitForText(target: ElementFinder, text: string): Promise<void> {
     await this.waitForElement(target);
     return browser.wait(ExpectedConditions.textToBePresentInElement(target, text), 2500);
   }
 
-  static async scrollIntoView (target: ElementFinder) {
+  public static async scrollIntoView(target: ElementFinder): Promise<void>  {
     await browser.executeScript(
       'arguments[0].scrollIntoView({ block: "center", behavior: "instant" })',
       target.getWebElement());
@@ -41,22 +41,27 @@ export class Page {
   }
 
   // Work around broken by.deepCss
-  static getShadowRoot (parentSelector: string, childSelector: string) {
+  public static getShadowRoot(parentSelector: string, childSelector: string): promise.Promise<WebElement> {
     return browser.executeScript(
       'return document.querySelector(arguments[0]).shadowRoot.querySelector(arguments[1]);',
       parentSelector, childSelector);
   }
 
-  static waitForToast (timeout = 1000) {
+  public static waitForToast(timeout = 1000): promise.Promise<void> {
     return browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), timeout);
   }
 
-  static async getToastMessage (timeout = 4000) {
+  public static async getToastMessage(timeout = 4000): Promise<string> {
     await this.waitForToast(timeout);
-    return (await Page.getShadowRoot('ion-toast', '.toast-message') as WebElement).getText();
+    return (await Page.getShadowRoot('ion-toast', '.toast-message')).getText();
   }
 
-  static async waitForToastMessageGone (timeout = 6000) {
+  public static async expectToastMessage(message: string): Promise<void> {
+    expect(await Page.getToastMessage()).toEqual(message);
+    return Page.waitForToastMessageGone();
+  }
+
+  public static waitForToastMessageGone(timeout = 6000): promise.Promise<void> {
     return browser.wait(
       ExpectedConditions.not(
         ExpectedConditions.presenceOf(

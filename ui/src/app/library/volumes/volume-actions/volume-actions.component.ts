@@ -7,13 +7,13 @@ import { VolumesService } from '../../../volumes.service';
 @Component({
   selector: 'app-volume-actions',
   templateUrl: './volume-actions.component.html',
-  styleUrls: ['./volume-actions.component.sass'],
+  styleUrls: ['./volume-actions.component.sass']
 })
 export class VolumeActionsComponent {
 
-  volume: Volume;
+  public volume: Volume;
 
-  constructor (
+  constructor(
     private popoverCtrl: PopoverController,
     private volumesService: VolumesService,
     private navParams: NavParams
@@ -21,13 +21,13 @@ export class VolumeActionsComponent {
     this.volume = this.navParams.get('volume');
   }
 
-  markAsRead (volume: Volume) {
+  public markAsRead(volume: Volume): void {
     this.volumesService.markAsRead(volume).subscribe(
       () => this.popoverCtrl.dismiss(),
       () => this.popoverCtrl.dismiss());
   }
 
-  markAsUnread (volume: Volume) {
+  public markAsUnread(volume: Volume): void {
     this.volumesService.markAsUnread(volume).subscribe(
       () => this.popoverCtrl.dismiss(),
       () => this.popoverCtrl.dismiss());

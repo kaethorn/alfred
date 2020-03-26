@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -20,6 +19,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Thumbnail {
 
+  public enum ThumbnailType {
+    FRONT_COVER,
+    BACK_COVER
+  }
+
   @Id
   private String id;
 
@@ -27,5 +31,11 @@ public class Thumbnail {
   @Indexed
   private ObjectId comicId;
 
-  private byte[] thumbnail;
+  @NonNull
+  @Indexed
+  private ThumbnailType type;
+
+  private String path;
+
+  private byte[] image;
 }

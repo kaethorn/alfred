@@ -1,12 +1,26 @@
 import { Volume } from '../app/volume';
 
-const volume1: Volume = {} as Volume;
-volume1.volume = '1999';
-volume1.series = 'Batgirl';
-volume1.publisher = 'DC Comics';
-volume1.read = false;
-volume1.issueCount = 10;
-volume1.readCount = 0;
-volume1.firstComicId = '1234';
+export class VolumeFixtures {
 
-export { volume1 };
+  public static get volume(): Volume {
+    const volume: Volume = {} as Volume;
+    volume.name = '1999';
+    volume.series = 'Batgirl';
+    volume.publisher = 'DC Comics';
+    volume.read = false;
+    volume.issueCount = 10;
+    volume.readCount = 0;
+    volume.firstComicId = '1234';
+
+    return volume;
+  }
+
+  public static get volumes(): Volume[] {
+    return [
+      this.volume,
+      Object.assign(this.volume, { name: '2003' }),
+      Object.assign(this.volume, { name: '2008' }),
+      Object.assign(this.volume, { name: '2009' })
+    ];
+  }
+}

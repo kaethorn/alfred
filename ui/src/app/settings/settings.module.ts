@@ -1,14 +1,15 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
-import { MomentModule } from 'ngx-moment';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { MomentModule } from 'ngx-moment';
 
-import { SettingsPage } from './settings.page';
-import { ScannerComponent } from './scanner/scanner.component';
+import { CoversComponent } from './covers/covers.component';
 import { QueueComponent } from './queue/queue.component';
+import { ScannerComponent } from './scanner/scanner.component';
+import { SettingsPage } from './settings.page';
 
 @NgModule({
   imports: [
@@ -23,12 +24,16 @@ import { QueueComponent } from './queue/queue.component';
     }, {
       path: 'queue',
       component: QueueComponent
+    }, {
+      path: 'covers',
+      component: CoversComponent
     }])
   ],
   declarations: [
     SettingsPage,
     ScannerComponent,
-    QueueComponent
+    QueueComponent,
+    CoversComponent
   ]
 })
 export class SettingsPageModule {}

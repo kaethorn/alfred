@@ -5,30 +5,30 @@ import { Injectable } from '@angular/core';
 })
 export class UserSettingsService {
 
-  private userSettings: { [key: string]: any; } = {};
+  private userSettings: { [key: string]: any } = {};
 
-  constructor () { }
+  constructor() { }
 
-  get () {
+  public get(): { [key: string]: any } {
     return this.userSettings;
   }
 
-  save () {
+  public save(): void {
     this.toggleColorScheme();
     localStorage.setItem('userSettings', JSON.stringify(this.userSettings));
   }
 
-  load () {
+  public load(): void {
     this.userSettings = JSON.parse(localStorage.getItem('userSettings')) || {};
     this.handleColorScheme();
   }
 
-  private handleColorScheme () {
+  private handleColorScheme(): void {
     if (!('darkMode' in this.userSettings)) {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
       this.userSettings.darkMode = prefersDark.matches;
       this.toggleColorScheme();
-      prefersDark.addEventListener('change', (mediaQuery) => {
+      prefersDark.addEventListener('change', mediaQuery => {
         this.userSettings.darkMode = mediaQuery.matches;
         this.save();
       });
@@ -37,7 +37,7 @@ export class UserSettingsService {
     }
   }
 
-  private toggleColorScheme () {
+  private toggleColorScheme(): void {
     document.body.classList.toggle('dark', this.userSettings.darkMode);
   }
 }

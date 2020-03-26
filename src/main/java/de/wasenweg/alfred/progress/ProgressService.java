@@ -2,9 +2,8 @@ package de.wasenweg.alfred.progress;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.volumes.Volume;
-
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,27 +13,29 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class ProgressService {
 
-  @Autowired
-  private MongoTemplate mongoTemplate;
+  private final MongoTemplate mongoTemplate;
+  private final ProgressRepository progressRepository;
+
+  public void deleteProgress() {
+    this.progressRepository.deleteAll();
+  }
+
+  public void deleteProgressForCurrentUser(final String userId) {
+    this.progressRepository.deleteByUserId(userId);
+  }
 
   public Comic updateComic(final String userId, final Comic comic, final Boolean read) {
     final Query query = Query.query(Criteria
         .where("comicId").is(new ObjectId(comic.getId()))
         .and("userId").is(userId));
 
-    comic.setRead(read);
-    comic.setCurrentPage(null);
-    if (read) {
-      comic.setCurrentPage((short) 0);
-      comic.setLastRead(new Date());
-    }
-
     final Update update = new Update();
-    update.set("read", comic.isRead());
-    update.set("currentPage", comic.getCurrentPage());
-    update.set("lastRead", comic.getLastRead());
+    update.set("read", read);
+    update.set("currentPage", read ? Integer.valueOf(0) : comic.getCurrentPage());
+    update.set("lastRead", new Date());
 
     this.mongoTemplate.upsert(query, update, Progress.class);
     return comic;
@@ -44,7 +45,7 @@ public class ProgressService {
     this.mongoTemplate.find(Query.query(Criteria
         .where("publisher").is(volume.getPublisher())
         .and("series").is(volume.getSeries())
-        .and("volume").is(volume.getVolume())), Comic.class)
+        .and("volume").is(volume.getName())), Comic.class)
       .stream().forEach(affectedComic -> this.updateComic(userId, affectedComic, read));
   }
 
@@ -54,6 +55,6 @@ public class ProgressService {
         .and("series").is(comic.getSeries())
         .and("volume").is(comic.getVolume())
         .and("position").lte(comic.getPosition())), Comic.class)
-      .forEach(affectedComic -> this.updateComic(userId, affectedComic, true));
+        .forEach(affectedComic -> this.updateComic(userId, affectedComic, true));
   }
 }

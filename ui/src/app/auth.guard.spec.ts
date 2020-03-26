@@ -1,23 +1,18 @@
-import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
+import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { of } from 'rxjs';
 
+import { AuthGuard } from './auth.guard';
 import { UserService } from './user.service';
 
-import { AuthGuard } from './auth.guard';
+const userService = { user: of({}) };
+const router: jasmine.SpyObj<Router> = jasmine.createSpyObj('Router', ['navigate']);
 
-class MockRouter {
-  navigate (path) {}
-}
+let authGuard: AuthGuard;
 
 describe('AuthGuard', () => {
 
-  let authGuard: AuthGuard;
-  const userService = { user: of({}) };
-  let router = new MockRouter;
-
   beforeEach(() => {
-    router = new MockRouter();
     TestBed.configureTestingModule({
       providers: [
         AuthGuard,
@@ -39,7 +34,6 @@ describe('AuthGuard', () => {
     it('should navigate to home for a logged out user', async () => {
       userService.user = of('Login error');
       authGuard = new AuthGuard((userService as any), (router as any));
-      spyOn(router, 'navigate');
 
       expect(await (authGuard.canActivate(({} as any), ({ url: '/settings' } as any)) as Promise<boolean>)).toBe(false);
       expect(router.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { target: '/settings' } });

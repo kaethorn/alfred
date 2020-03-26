@@ -1,127 +1,69 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
-import { trigger, style, animate, transition } from '@angular/animations';
+import { ToastController } from '@ionic/angular';
 
-import { NavigatorService, NavigationInstruction, AdjacentComic } from '../navigator.service';
 import { Comic } from '../comic';
 import { ComicStorageService } from '../comic-storage.service';
+import { NavigatorService, NavigationInstruction, AdjacentComic, PageSource } from '../navigator.service';
 
 interface IOpenOptions {
   showToast?: boolean;
 }
-interface PageSource {
-  src: string;
-  page: number;
-  loaded: boolean;
-}
-type Direction = ('initial' | 'forward' | 'backward');
 
 @Component({
   selector: 'app-reader',
   templateUrl: './reader.page.html',
-  styleUrls: ['./reader.page.sass'],
-  animations: [
-    trigger('swap', [
-      transition('void => initial', [
-        style({
-          opacity: 0
-        }),
-        animate('1.5s', style({
-          opacity: 1
-        })),
-      ]),
-      transition('void => forward', [
-        style({
-          transform: 'translateX(100%)',
-        }),
-        animate('0.5s', style({
-          transform: 'translateX(0)',
-        })),
-      ]),
-      transition('void => backward', [
-        style({
-          transform: 'translateX(-100%)',
-        }),
-        animate('0.5s', style({
-          transform: 'translateX(0)'
-        })),
-      ]),
-    ]),
-  ]
+  styleUrls: ['./reader.page.sass']
 })
 export class ReaderPage {
 
-  comic: Comic = {} as Comic;
-  images: PageSource[];
-  showControls = false;
-  direction: Direction = 'initial';
+  @ViewChild('pagesLayer', { static: true }) public pagesLayer: ElementRef;
+  public comic: Comic = {} as Comic;
+  public imageSets: PageSource[][];
+  public showControls = false;
+  public transformation = {};
   private parent: string;
-  private sideBySide = false;
-  private isInitialLoad = true;
+  private initialNavigation = true;
 
-  constructor (
+  constructor(
     private route: ActivatedRoute,
     private router: Router,
     private navigator: NavigatorService,
     private toastController: ToastController,
-    private comicStorageService: ComicStorageService,
+    private comicStorageService: ComicStorageService
   ) { }
 
-  @ViewChild('pagesLayer', { static: true }) pagesLayer: ElementRef;
-
   @HostListener('document:keyup.esc', ['$event'])
-  handleEscape () {
-    this.router.navigate([this.parent]);
+  public handleEscape(): void {
+    this.back();
   }
 
   @HostListener('document:keyup.arrowleft', ['$event'])
-  handleLeft () {
+  public handleLeft(): void {
     this.go(-1);
   }
   @HostListener('document:keyup.arrowright', ['$event'])
-  handleRight () {
+  public handleRight(): void {
     this.go(1);
   }
 
-  async ionViewDidEnter () {
+  public ionViewDidEnter(): void {
     const comicId = this.route.snapshot.params.id;
     this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
     this.comicStorageService.get(comicId)
-      .then((comic) => {
+      .then(comic => {
         this.comic = comic;
         this.setup(this.comic);
+        this.comicStorageService.storeSurrounding(comicId).then(() => {
+          this.showToast('Volume cached.');
+        });
       }).catch(() => {
-        this.showToast('Comic book not available, please try again later.');
+        this.showToast('Comic book not available, please try again later.', 4000);
         this.back();
       });
-    this.comicStorageService.storeSurrounding(comicId).then(() => {
-      this.showToast('Volume cached.');
-    });
   }
 
-  private setup (comic: Comic) {
-    this.images = new Array(comic.pageCount).fill(null).map((value, index) => {
-      return { page: index, src: null, loaded: false };
-    });
-    this.comic = comic;
-    const parentElement = this.pagesLayer.nativeElement.parentElement;
-    this.navigator.set(
-      this.comic.pageCount,
-      this.getPage(this.comic),
-      (parentElement.clientWidth > parentElement.clientHeight) ? true : false
-    );
-    this.navigate(this.navigator.go());
-  }
-
-  private getPage (comic: Comic): number {
-    if (comic.currentPage === null || comic.currentPage === undefined) {
-      return Number.parseInt(this.route.snapshot.queryParams.page, 10) || 0;
-    }
-    return comic.currentPage;
-  }
-
-  onClick (event: MouseEvent): void {
+  public onClick(event: MouseEvent): void {
     const direction = this.getDirection(event);
     if (direction === 0) {
       this.toggleControls();
@@ -130,71 +72,48 @@ export class ReaderPage {
     }
   }
 
-  go (direction: number, event?: MouseEvent): void {
+  public go(direction: number, event?: MouseEvent): void {
     this.navigate(this.navigator.go(direction));
     if (event) {
       event.stopPropagation();
     }
   }
 
-  private open (adjacentAttr: string, options?: IOpenOptions) {
-    if (this.comic[adjacentAttr]) {
-      this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
-      this.router.navigate(['/read', this.comic[adjacentAttr]], {
-        replaceUrl: true,
-        relativeTo: this.route,
-        queryParamsHandling: 'merge'
-      });
-      if (options.showToast) {
-        this.showToast(`Opening next issue of ${ this.comic.series } (${ this.comic.volume }).`);
-      }
-    }
-  }
-
-  private async showToast (message: string, duration: number = 3000) {
-    const toast = await this.toastController.create({
-      message,
-      duration
-    });
-    toast.present();
-  }
-
-  openNext (options?: IOpenOptions) {
+  public openNext(options: IOpenOptions = {}): void {
     this.open('nextId', options);
   }
 
-  openPrevious (options?: IOpenOptions) {
+  public openPrevious(options: IOpenOptions = {}): void {
     this.open('previousId', options);
   }
 
-  toggleControls (): void {
+  public toggleControls(): void {
     this.showControls = !this.showControls;
   }
 
-  onSwipe (direction): void {
+  public onSwipe(direction: number): void {
     this.navigate(this.navigator.go(direction));
   }
 
-  back (): void {
+  public back(): void {
     this.router.navigate([this.parent]);
   }
 
-  private navigate (instruction: NavigationInstruction) {
-    if (!this.isInitialLoad) {
-      this.direction = NavigatorService.offset < 0 ? 'backward' : 'forward';
-    } else {
-      this.isInitialLoad = false;
-    }
+  public imageLoaded(image: PageSource): void {
+    image.loaded = true;
+  }
+
+  private navigate(instruction: NavigationInstruction): void {
     switch (instruction.adjacent) {
       case AdjacentComic.same:
         this.comic.currentPage = NavigatorService.page;
-        this.sideBySide = instruction.sideBySide;
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: { page: NavigatorService.page },
           queryParamsHandling: 'merge'
         });
-        this.setImages(instruction.sideBySide);
+        this.setTransformation();
+        this.comicStorageService.saveProgress(this.comic);
         break;
       case AdjacentComic.next:
         this.openNext({ showToast: true });
@@ -205,30 +124,50 @@ export class ReaderPage {
     }
   }
 
-  private setImages (sideBySide: boolean) {
-    this.setImage(NavigatorService.page);
-    if (sideBySide) {
-      this.setImage(NavigatorService.page + 1);
+  private setImage(image: PageSource): void {
+    this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
+      image.src = url;
+    });
+  }
+
+  private setup(comic: Comic): void {
+    this.comic = comic;
+    this.imageSets = this.navigator.set(
+      this.comic.pageCount,
+      this.getPage(this.comic),
+      this.isSideBySide()
+    );
+    for (const set of this.imageSets) {
+      for (const image of set) {
+        this.setImage(image);
+      }
     }
+    this.navigate(this.navigator.go());
   }
 
-  private setImage (pageNumber: number) {
-    const image = this.images[pageNumber];
-    if (!image.loaded) {
-      this.comicStorageService.readPage(this.comic.id, pageNumber).then(url => {
-        image.src = url;
-      });
+  private isSideBySide(): boolean {
+    const parentElement = this.pagesLayer.nativeElement.parentElement;
+    return parentElement.clientWidth > parentElement.clientHeight;
+  }
+
+  private getPage(comic: Comic): number {
+    if (comic.currentPage === null || comic.currentPage === undefined) {
+      return Number.parseInt(this.route.snapshot.queryParams.page, 10) || 0;
     }
+    return comic.currentPage;
   }
 
-  imageLoaded (image: PageSource) {
-    image.loaded = true;
-  }
+  private setTransformation(): void {
+    const currentSet = this.navigator.getSet();
 
-  isImageVisible (image: PageSource) {
-    return image && image.src &&
-      ( (image.page === this.comic.currentPage) ||
-        (this.sideBySide && image.page === this.comic.currentPage + 1) );
+    this.transformation = {
+      transform: `translateX(-${ currentSet }00vw)`,
+      transition: this.initialNavigation ? '' : 'transform 0.8s ease-out'
+    };
+
+    if (this.initialNavigation) {
+      this.initialNavigation = false;
+    }
   }
 
   /**
@@ -240,7 +179,7 @@ export class ReaderPage {
    *
    * @returns `-1` for backwards, `1` for backwards and `0` for no navigation.
    */
-  private getDirection (event: MouseEvent): number {
+  private getDirection(event: MouseEvent): number {
     const center = (<HTMLElement>event.currentTarget).offsetWidth / 2;
     const leftSide = center * 0.5;
     const rightSide = center * 1.5;
@@ -251,5 +190,31 @@ export class ReaderPage {
     } else {
       return 0;
     }
+  }
+
+  private open(adjacentAttr: string, options?: IOpenOptions): void {
+    if (this.comic[adjacentAttr]) {
+      this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
+      this.router.navigate(['/read', this.comic[adjacentAttr]], {
+        replaceUrl: true,
+        relativeTo: this.route,
+        queryParamsHandling: 'merge'
+      });
+      if (options.showToast) {
+        if (adjacentAttr === 'nextId') {
+          this.showToast(`Opening next issue of ${ this.comic.series } (${ this.comic.volume }).`);
+        } else {
+          this.showToast(`Opening previous issue of ${ this.comic.series } (${ this.comic.volume }).`);
+        }
+      }
+    }
+  }
+
+  private async showToast(message: string, duration = 3000): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration
+    });
+    toast.present();
   }
 }

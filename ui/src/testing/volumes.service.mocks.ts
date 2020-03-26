@@ -1,19 +1,22 @@
 import { of } from 'rxjs';
 
-import { volume1 as volume } from './volume.fixtures';
-import { series1 as series } from './series.fixtures';
-import { publisher1 as publisher } from './publisher.fixtures';
+import { VolumesService } from '../app/volumes.service';
 
-const volumesService = jasmine.createSpyObj('VolumesService', [
-  'listVolumesByPublisher',
-  'listVolumes',
-  'listSeries',
-  'listPublishers'
-]);
+import { PublisherFixtures } from './publisher.fixtures';
+import { SeriesFixtures } from './series.fixtures';
+import { VolumeFixtures } from './volume.fixtures';
 
-volumesService.listVolumesByPublisher.and.returnValue( of([volume]) );
-volumesService.listVolumes.and.returnValue( of([volume]) );
-volumesService.listSeries.and.returnValue( of([series]) );
-volumesService.listPublishers.and.returnValue( of([publisher]) );
+export class VolumesServiceMocks {
 
-export { volumesService as VolumesServiceMocks };
+  public static get volumesService(): jasmine.SpyObj<VolumesService> {
+    return jasmine.createSpyObj('VolumesService', {
+      listVolumesByPublisher: of([VolumeFixtures.volume]),
+      listVolumes: of(VolumeFixtures.volumes),
+      listSeries: of(SeriesFixtures.series),
+      listPublishers: of(PublisherFixtures.publishers),
+      markAsRead: of(null),
+      markAsUnread: of(null),
+      markAllAsReadUntil: of(null)
+    });
+  }
+}

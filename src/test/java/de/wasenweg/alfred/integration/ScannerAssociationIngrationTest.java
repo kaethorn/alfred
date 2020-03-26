@@ -1,65 +1,59 @@
 package de.wasenweg.alfred.integration;
 
-import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.EnableEmbeddedMongo;
+import de.wasenweg.alfred.TestUtil;
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.progress.ProgressRepository;
-
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import reactor.test.StepVerifier;
 
+import java.io.File;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = { AlfredApplication.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
-@EnableAutoConfiguration
-@ActiveProfiles(profiles = "test")
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+@DirtiesContext
+@EnableEmbeddedMongo
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@ActiveProfiles("test")
 public class ScannerAssociationIngrationTest {
+
+  @TempDir
+  public File testBed;
 
   @LocalServerPort
   private int port;
 
-  @Autowired
-  private ComicRepository comicRepository;
+  private final ComicRepository comicRepository;
+  private final ProgressRepository progressRepository;
+  private final IntegrationTestHelper helper;
 
-  @Autowired
-  private ProgressRepository progressRepository;
-
-  @Autowired
-  private IntegrationTestHelper helper;
-
-  @Rule
-  public TemporaryFolder testBed = new TemporaryFolder();
-
-  @After
+  @AfterEach
   public void tearDown() {
     this.comicRepository.deleteAll();
     this.progressRepository.deleteAll();
   }
 
   @Test
-  @DirtiesContext
   public void associatesComics() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/full", this.testBed);
 
     // When
-    StepVerifier.create(this.helper.triggerScan(this.port))
+    StepVerifier.create(TestUtil.triggerScan(this.port))
         .expectNext("start")
         .expectNext("305")
         .expectNextCount(305)

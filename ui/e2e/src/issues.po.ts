@@ -1,43 +1,44 @@
-import { by, element, browser } from 'protractor';
+import { by, element, browser, promise, ElementArrayFinder, ElementFinder } from 'protractor';
+
 import { Page } from './page.po';
 
 export class IssuesPage {
 
-  static getIssues () {
+  public static getIssues(): ElementArrayFinder {
     return element.all(by.css('app-issues ion-card'));
   }
 
-  static getUnreadIssues () {
-    return this.getIssues().filter((issue) => {
-      return issue.$('.read-badge').isPresent().then(read => !read);
-    });
+  public static getUnreadIssues(): ElementArrayFinder {
+    return this.getIssues().filter(issue =>
+      issue.$('.read-badge').isPresent().then(read => !read)
+    );
   }
 
-  static async getUnreadIssuesCount (): Promise<number> {
+  public static getUnreadIssuesCount(): promise.Promise<number> {
     return this.getIssues().reduce(async (result, issue) => {
       const read = await issue.element(by.css('.read-badge')).isPresent();
       return read ? result : result + 1;
     }, 0);
   }
 
-  static getSyncedIssues () {
-    return this.getIssues().filter((e) => {
-      return e.element(by.css('.synced-badge')).isPresent().then(present => present);
-    });
+  public static getSyncedIssues(): ElementArrayFinder {
+    return this.getIssues().filter(e =>
+      e.element(by.css('.synced-badge')).isPresent().then(present => present)
+    );
   }
 
-  static getSyncedIssueNumbers () {
-    return this.getSyncedIssues().map(async (issue) => {
+  public static getSyncedIssueNumbers(): promise.Promise<string[]> {
+    return this.getSyncedIssues().map(async issue => {
       const title = await issue.element(by.css('ion-card-title')).getText();
       return title.match(/#(\d+)/)[1];
     });
   }
 
-  static wait () {
+  public static wait(): promise.Promise<void> {
     return Page.waitForElement(this.getIssues().first());
   }
 
-  static async toggleMarkAsRead (issueNumber: number) {
+  public static async toggleMarkAsRead(issueNumber: number): Promise<boolean> {
     const issue = await this.getIssues().get(issueNumber);
     await Page.scrollIntoView(issue);
 
@@ -52,28 +53,26 @@ export class IssuesPage {
     }, 6500);
   }
 
-  static async markAsReaduntil (issueNumber: number) {
+  public static async markAsReaduntil(issueNumber: number): Promise<boolean | void> {
     const previousCount = await this.getUnreadIssuesCount();
     await this.clickIssueMenuItem(issueNumber, 'Mark read until here');
 
-    return browser.wait(() => {
-      return this.getUnreadIssuesCount().then(count => {
-        return count !== previousCount;
-      });
-    }, 7500);
+    return browser.wait(() =>
+      this.getUnreadIssuesCount().then(count => count !== previousCount)
+    , 7500);
   }
 
-  static get markReadUntilHereButton () {
+  public static get markReadUntilHereButton(): ElementFinder {
     return element(by.partialButtonText('Mark read until here'));
   }
 
-  static async clickButtonByLabel (issue: number, label: string) {
+  public static async clickButtonByLabel(issue: number, label: string): promise.Promise<void> {
     await Page.scrollIntoView(this.getIssues().get(issue));
     return this.getIssues().get(issue)
       .element(by.cssContainingText('ion-button', label)).click();
   }
 
-  static clickIssueMenuItem (issue: number, item: string) {
+  public static clickIssueMenuItem(issue: number, item: string): Promise<void> {
     return Page.clickActionItem(this.getIssues().get(issue), item);
   }
 }

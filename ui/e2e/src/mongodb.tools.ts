@@ -16,14 +16,15 @@ export class MongoDBTools {
   });
 
   // Prepare DB and fixtures for E2E tests.
-  static async prepare (): Promise<any> {
+  public static async prepare(): Promise<any> {
+    const comicsPath = process.env.DOCKER_MODE === 'true' ? '/comics' : 'src/test/resources/fixtures/full';
     await this.connect;
     await mongoose.connection.db.dropDatabase();
     const collection = await mongoose.connection.db.createCollection('setting');
     return collection.insertOne({
       key    : 'comics.path',
       name   : 'Path',
-      value  : '/comics',
+      value  : comicsPath,
       comment: 'Path to your comic library'
     });
   }

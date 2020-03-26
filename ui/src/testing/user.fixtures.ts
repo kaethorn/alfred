@@ -1,8 +1,13 @@
 import { User } from '../app/user';
 
-const user1: User = {} as User;
-user1.email = 'foo@bar.com';
-user1.name = 'Foo Bar';
-user1.picture = 'https://bar.com/foo.png';
+export class UserFixtures {
 
-export { user1 };
+  public static get user(): User {
+    const user: User = {} as User;
+    user.email = 'foo@bar.com';
+    user.name = 'Foo Bar';
+    user.picture = 'https://bar.com/foo.png';
+
+    return user;
+  }
+}

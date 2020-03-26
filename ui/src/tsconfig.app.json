@@ -7,9 +7,11 @@
       "gapi.auth2"
     ]
   },
-  "exclude": [
-    "test.ts",
-    "testing/**/*",
-    "**/*.spec.ts"
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
   ]
 }

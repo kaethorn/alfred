@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -10,21 +10,19 @@ import { Stats } from './stats';
 })
 export class StatsService {
 
-  constructor (
+  constructor(
     private http: HttpClient
   ) { }
 
-  get (): Observable<Stats> {
-    return this.http.get<Stats>('api/stats').pipe(
-      map((stats: any) => {
-        return {
-          issues: stats.issues,
-          publishers: stats.publishers,
-          series: stats.series,
-          volumes: stats.volumes,
-          users: stats.users
-        };
-      })
+  public get(): Observable<Stats> {
+    return this.http.get<Stats>('/api/stats').pipe(
+      map((stats: any) => ({
+        issues: stats.issues,
+        publishers: stats.publishers,
+        series: stats.series,
+        volumes: stats.volumes,
+        users: stats.users
+      }))
     );
   }
 }

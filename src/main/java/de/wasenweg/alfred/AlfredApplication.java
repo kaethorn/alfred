@@ -2,29 +2,14 @@ package de.wasenweg.alfred;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-@Controller
 @EnableCaching
-@SpringBootApplication
-public class AlfredApplication implements ErrorController {
-
-  private static final String ERROR_PATH = "/error";
+@SpringBootApplication(exclude = EmbeddedMongoAutoConfiguration.class)
+public class AlfredApplication {  // NOPMD
 
   public static void main(final String[] args) {
     SpringApplication.run(AlfredApplication.class, args);
-  }
-
-  @RequestMapping(ERROR_PATH)
-  public String error() {
-    return "forward:/index.html";
-  }
-
-  @Override
-  public String getErrorPath() {
-    return ERROR_PATH;
   }
 }

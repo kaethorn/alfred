@@ -40,7 +40,7 @@
           class="synced-badge" color="secondary">
           &#9921;
         </ion-badge>
-        <img [attr.src]="thumbnails.get(comic.id) | async">
+        <img [attr.src]="(thumbnails.get(comic.id) | async)?.url">
         <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
       </a>
       <ion-item>
@@ -56,7 +56,7 @@
           </ion-button>
         </ng-template>
         <ion-button class="menu" fill="clear" slot="end" (click)="openMenu($event, comic)">
-          <ion-icon color="tertiary" name="more"></ion-icon>
+          <ion-icon color="tertiary" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
         </ion-button>
       </ion-item>
     </ion-card>

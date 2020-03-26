@@ -1,7 +1,8 @@
 package de.wasenweg.alfred.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -14,20 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
+@RequiredArgsConstructor
 public class JwtFilter implements Filter {
 
   private static final String HEADER_PREFIX = "Bearer ";
 
-  private String secret;
-
-  private IJwtService jwtService;
-
-  private Logger logger = LoggerFactory.getLogger(JwtFilter.class);
-
-  public JwtFilter(final String secret, final IJwtService jwtService) {
-    this.secret = secret;
-    this.jwtService = jwtService;
-  }
+  private final String secret;
+  private final IJwtService jwtService;
 
   @Override
   public void doFilter(
@@ -36,25 +31,26 @@ public class JwtFilter implements Filter {
       final FilterChain chain) throws IOException, ServletException {
 
     final HttpServletRequest request = (HttpServletRequest) req;
-    final HttpServletResponse response = (HttpServletResponse) res;
 
-    this.logger.info("Running filter on URL: {}", request.getRequestURL().toString());
+    log.debug("Running filter on URL: {}", request.getRequestURL().toString());
 
-    final Optional<String> token = Optional.ofNullable(request.getHeader("Authorization"));
+    final Optional<String> token = Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION));
 
     if (!token.isPresent() || !token.get().startsWith(HEADER_PREFIX)) {
-      this.logger.info("No token found in header.");
+      log.debug("No token found in header.");
       res.reset();
+      final HttpServletResponse response = (HttpServletResponse) res;
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
 
     if (this.jwtService.verifyToken(token.get().replace(HEADER_PREFIX, ""), this.secret)) {
-      this.logger.info("Token is valid.");
+      log.debug("Token is valid.");
       chain.doFilter(req, res);
     } else {
-      this.logger.info("Token is invalid.");
+      log.debug("Token is invalid.");
       res.reset();
+      final HttpServletResponse response = (HttpServletResponse) res;
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
   }

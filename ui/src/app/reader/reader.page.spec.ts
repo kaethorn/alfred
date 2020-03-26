@@ -1,62 +1,73 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, ActivatedRoute } from '@angular/router';
 import { By } from '@angular/platform-browser';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastController } from '@ionic/angular';
 
-import { comic1 as comic } from '../../testing/comic.fixtures';
-
+import { ComicStorageServiceMocks } from '../../testing/comic-storage.service.mocks';
+import { ComicFixtures } from '../../testing/comic.fixtures';
+import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
 import { ComicStorageService } from '../comic-storage.service';
-import { ReaderPage } from './reader.page';
+
 import { ReaderPageModule } from './reader.module';
+import { ReaderPage } from './reader.page';
+
+let component: ReaderPage;
+let fixture: ComponentFixture<ReaderPage>;
+let router: jasmine.SpyObj<Router>;
+let comicStorageService: jasmine.SpyObj<ComicStorageService>;
+let activatedRoute;
+let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
+let toastController: jasmine.SpyObj<ToastController>;
+
+const clickRightSide = async (): Promise<void> => {
+  fixture.debugElement.query(By.css('.pages-layer'))
+    .triggerEventHandler('click', {
+      clientX      : 700,
+      currentTarget: { offsetWidth: 800 }
+    });
+  await fixture.whenStable();
+  fixture.detectChanges();
+};
+const clickLeftSide = async (): Promise<void> => {
+  fixture.debugElement.query(By.css('.pages-layer'))
+    .triggerEventHandler('click', {
+      clientX      : 100,
+      currentTarget: { offsetWidth: 800 }
+    });
+  await fixture.whenStable();
+  fixture.detectChanges();
+};
+const clickCenter = async (): Promise<void> => {
+  fixture.debugElement.query(By.css('.pages-layer'))
+    .triggerEventHandler('click', {
+      clientX      : 500,
+      currentTarget: { offsetWidth: 800 }
+    });
+  await fixture.whenStable();
+  fixture.detectChanges();
+};
 
 describe('ReaderPage', () => {
 
-  let component: ReaderPage;
-  let fixture: ComponentFixture<ReaderPage>;
-  let router;
-  let comicStorageService;
-
-  const clickRightSide = async () => {
-    fixture.debugElement.query(By.css('.pages-layer'))
-      .triggerEventHandler('click', {
-        clientX      : 700,
-        currentTarget: { offsetWidth: 800 }
-      });
-    await fixture.whenStable();
-    fixture.detectChanges();
-  };
-  const clickLeftSide = async () => {
-    fixture.debugElement.query(By.css('.pages-layer'))
-      .triggerEventHandler('click', {
-        clientX      : 100,
-        currentTarget: { offsetWidth: 800 }
-      });
-    await fixture.whenStable();
-    fixture.detectChanges();
-  };
-  const clickCenter = async () => {
-    fixture.debugElement.query(By.css('.pages-layer'))
-      .triggerEventHandler('click', {
-        clientX      : 500,
-        currentTarget: { offsetWidth: 800 }
-      });
-    await fixture.whenStable();
-    fixture.detectChanges();
-  };
-
-  beforeEach(() => {
+  beforeEach(async () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
-    comicStorageService = jasmine
-      .createSpyObj('ComicStorageService', ['get', 'readPage', 'storeSurrounding']);
-    comicStorageService.get.and.returnValue(Promise.resolve(Object.assign({}, comic)));
-    comicStorageService.readPage.and.returnValue(Promise.resolve('/api/read/923/0'));
-    comicStorageService.storeSurrounding.and.returnValue(Promise.resolve({}));
+    comicStorageService = ComicStorageServiceMocks.comicStorageService;
+    toastController = ToastControllerMocks.toastController;
+    toastElement = ToastControllerMocks.toastElementSpy;
+    activatedRoute = {
+      snapshot: {
+        params: { id: '493' },
+        queryParams: {
+          page: 0,
+          parent: '/library/series'
+        }
+      }
+    };
 
     TestBed.configureTestingModule({
       imports: [
         ReaderPageModule,
-        NoopAnimationsModule,
         RouterTestingModule.withRoutes([
           { path: 'read/:id', component: ReaderPage }
         ])
@@ -64,20 +75,26 @@ describe('ReaderPage', () => {
       providers: [{
         provide: ComicStorageService, useValue: comicStorageService
       }, {
-        provide: ActivatedRoute, useValue: {
-          snapshot: {
-            params: { id: '493' },
-            queryParams: { page: 0 }
-          }
-        }
+        provide: ActivatedRoute, useValue: activatedRoute
       }, {
         provide: Router, useValue: router
+      }, {
+        provide: ToastController, useValue: toastController
       }]
     });
 
     fixture = TestBed.createComponent(ReaderPage);
     component = fixture.componentInstance;
+    component.pagesLayer = {
+      nativeElement: {
+        parentElement: {
+          clientWidth: 1000,
+          clientHeight: 2000
+        }
+      }
+    };
     component.ionViewDidEnter();
+    await fixture.whenStable();
     fixture.detectChanges();
   });
 
@@ -85,16 +102,75 @@ describe('ReaderPage', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('#constructor', () => {
+
+    describe('without a parent', () => {
+
+      beforeEach(async () => {
+        delete activatedRoute.snapshot.queryParams.parent;
+        fixture = TestBed.createComponent(ReaderPage);
+        component = fixture.componentInstance;
+        component.ionViewDidEnter();
+        await fixture.whenStable();
+        component.handleEscape();
+      });
+
+      it('falls back to the publishers page', () => {
+        expect(router.navigate).toHaveBeenCalledWith(['/library/publishers']);
+      });
+    });
+
+    describe('with an error loading the comic', () => {
+
+      beforeEach(async () => {
+        comicStorageService.get.and.rejectWith(null);
+        component.ionViewDidEnter();
+        await fixture.whenStable();
+      });
+
+      it('navigates back and shows an error toast', async () => {
+        await new Promise(resolve => comicStorageService.get.calls.mostRecent().returnValue.catch(resolve));
+        expect(router.navigate).toHaveBeenCalledWith(['/library/series']);
+        expect(toastController.create).toHaveBeenCalledWith({
+          message: 'Comic book not available, please try again later.',
+          duration: 4000
+        });
+        await toastController.create.calls.mostRecent().returnValue;
+        expect(toastElement.present).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('navigation', () => {
 
-    it('starts off on the first page', async () => {
-      expect(component.comic.id).toBeUndefined();
-
-      await fixture.whenStable();
-      fixture.detectChanges();
-
+    it('starts off on the first page', () => {
       expect(component.comic.id).toBe('923');
       expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);
+    });
+
+    describe('when pressing ESC', () => {
+
+      beforeEach(async () => {
+        component.handleEscape();
+        await fixture.whenStable();
+      });
+
+      it('navigates back to the parent page', () => {
+        expect(router.navigate).toHaveBeenCalledWith(['/library/series']);
+      });
+    });
+
+    describe('when pressing the left & right keys', () => {
+
+      it('opens the next and the previous page respectively', async () => {
+        component.handleRight();
+        await fixture.whenStable();
+        expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
+
+        component.handleLeft();
+        await fixture.whenStable();
+        expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);
+      });
     });
 
     describe('when clicking the center', () => {
@@ -116,9 +192,6 @@ describe('ReaderPage', () => {
     describe('in single page mode', () => {
 
       beforeEach(async () => {
-        await fixture.whenStable();
-        fixture.detectChanges();
-
         component.pagesLayer = {
           nativeElement: {
             parentElement: {
@@ -127,6 +200,14 @@ describe('ReaderPage', () => {
             }
           }
         };
+        component.ionViewDidEnter();
+        await fixture.whenStable();
+        fixture.detectChanges();
+      });
+
+      it('loads only the cover', () => {
+        expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+          .toEqual('translateX(0vw)');
       });
 
       describe('to the next page', () => {
@@ -151,7 +232,9 @@ describe('ReaderPage', () => {
         it('does not exceed the last page', async () => {
           expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
+          await clickRightSide();
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
         });
       });
     });
@@ -159,9 +242,6 @@ describe('ReaderPage', () => {
     describe('in side by side mode', () => {
 
       beforeEach(async () => {
-        await fixture.whenStable();
-        fixture.detectChanges();
-
         component.pagesLayer = {
           nativeElement: {
             parentElement: {
@@ -170,31 +250,35 @@ describe('ReaderPage', () => {
             }
           }
         };
+        component.ionViewDidEnter();
+        await fixture.whenStable();
+        fixture.detectChanges();
       });
 
       it('loads only the cover', () => {
-        expect(comicStorageService.readPage.calls.mostRecent().args[1]).toBe(0);
+        expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+          .toEqual('translateX(0vw)');
       });
 
       describe('to the next page', () => {
 
         beforeEach(async () => {
-          comicStorageService.readPage.calls.reset();
           await clickRightSide();
         });
 
-        it('sets the current page and updates the route', () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
+        it('updates the route', () => {
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(2);
         });
 
         it('displays two pages', () => {
-          expect(comicStorageService.readPage.calls.count()).toBe(2);
+          expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+            .toEqual('translateX(-100vw)');
         });
 
         it('navigating back displays only the cover', async () => {
-          comicStorageService.readPage.calls.reset();
           await clickLeftSide();
-          expect(comicStorageService.readPage.calls.count()).toBe(1);
+          expect(fixture.debugElement.query(By.css('.pages-layer')).styles.transform)
+            .toEqual('translateX(0vw)');
         });
       });
 
@@ -206,11 +290,123 @@ describe('ReaderPage', () => {
         });
 
         it('does not exceed the last page', async () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
         });
       });
+    });
+  });
+
+  describe('#go', () => {
+
+    beforeEach(async () => {
+      comicStorageService.get.and.resolveTo(ComicFixtures.volume[1]);
+      component.ionViewDidEnter();
+      await fixture.whenStable();
+      await comicStorageService.get.calls.mostRecent().returnValue;
+    });
+
+    describe('with an event', () => {
+
+      it('stops propagation', () => {
+        const event: jasmine.SpyObj<MouseEvent> = jasmine.createSpyObj('Event', ['stopPropagation']);
+        component.go(0, event);
+        expect(event.stopPropagation).toHaveBeenCalled();
+      });
+    });
+
+    describe('going back on the first page', () => {
+
+      beforeEach(() => {
+        component.go(-1);
+      });
+
+      it('opens the previous issue in the volume', () => {
+        expect(router.navigate.calls.mostRecent().args[0])
+          .toEqual(['/read', ComicFixtures.volume[0].id]);
+      });
+    });
+  });
+
+  describe('#openPrevious', () => {
+
+    beforeEach(async () => {
+      comicStorageService.get.and.resolveTo(ComicFixtures.volume[1]);
+      component.ionViewDidEnter();
+      await fixture.whenStable();
+      await comicStorageService.get.calls.mostRecent().returnValue;
+      component.openPrevious();
+    });
+
+    it('caches the volume', () => {
+      expect(comicStorageService.storeSurrounding).toHaveBeenCalledWith(ComicFixtures.volume[0].id);
+    });
+
+    it('opens the previous comic in the volume', () => {
+      expect(router.navigate.calls.mostRecent().args[0])
+        .toEqual(['/read', ComicFixtures.volume[0].id]);
+    });
+
+    describe('with the showToast option', () => {
+
+      beforeEach(() => {
+        component.openPrevious({ showToast: true });
+      });
+
+      it('shows a toast', () => {
+        expect(toastController.create).toHaveBeenCalledWith({
+          message: 'Opening previous issue of Batman (1940).',
+          duration: 3000
+        });
+      });
+    });
+  });
+
+  describe('#openNext', () => {
+
+    beforeEach(async () => {
+      comicStorageService.get.and.resolveTo(ComicFixtures.volume[1]);
+      component.ionViewDidEnter();
+      await fixture.whenStable();
+      await comicStorageService.get.calls.mostRecent().returnValue;
+      component.openNext();
+    });
+
+    it('caches the volume', () => {
+      expect(comicStorageService.storeSurrounding).toHaveBeenCalledWith(ComicFixtures.volume[2].id);
+    });
+
+    it('opens the next comic in the volume', () => {
+      expect(router.navigate.calls.mostRecent().args[0])
+        .toEqual(['/read', ComicFixtures.volume[2].id]);
+    });
+
+    describe('with the showToast option', () => {
+
+      beforeEach(() => {
+        component.openNext({ showToast: true });
+      });
+
+      it('shows a toast', () => {
+        expect(toastController.create).toHaveBeenCalledWith({
+          message: 'Opening next issue of Batman (1940).',
+          duration: 3000
+        });
+      });
+    });
+  });
+
+  describe('#onSwipe', () => {
+
+    it('navigates accordingly', async () => {
+      component.onSwipe(1);
+      await fixture.whenStable();
+      expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
+
+      component.onSwipe(-1);
+      await fixture.whenStable();
+      expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);
     });
   });
 });

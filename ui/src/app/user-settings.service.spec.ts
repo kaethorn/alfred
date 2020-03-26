@@ -2,14 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { UserSettingsService } from './user-settings.service';
 
+let service: UserSettingsService;
+
 describe('UserSettingsService', () => {
-  let service: UserSettingsService;
 
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
     });
-    service = TestBed.get(UserSettingsService);
+    service = TestBed.inject(UserSettingsService);
   });
 
   afterEach(() => {
@@ -56,6 +57,25 @@ describe('UserSettingsService', () => {
         localStorage.setItem('userSettings', JSON.stringify({ darkMode: true }));
         service.load();
         expect(service.get().darkMode).toEqual(true);
+      });
+    });
+
+    describe('when changing preferred color scheme', () => {
+
+      beforeEach(() => {
+        spyOn(window, 'matchMedia').and.returnValue({
+          addEventListener: jasmine.createSpy()
+        } as any);
+        service.load();
+      });
+
+      it('changes the settings', () => {
+        const initialDarkModeFlag = service.get().darkMode;
+        expect(window.matchMedia).toHaveBeenCalled();
+        // Retrieve and call the event listener
+        (window.matchMedia as jasmine.Spy<any>).calls.mostRecent().returnValue
+          .addEventListener.calls.mostRecent().args[1]({ matches: !initialDarkModeFlag });
+        expect(service.get().darkMode).toBe(!initialDarkModeFlag);
       });
     });
   });

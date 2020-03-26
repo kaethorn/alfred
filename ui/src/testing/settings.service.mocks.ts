@@ -1,8 +1,15 @@
 import { of } from 'rxjs';
 
-import { setting1 as setting } from './setting.fixtures';
+import { SettingsService } from '../app/settings.service';
 
-const settingsService = jasmine.createSpyObj('SettingsService', ['list']);
-settingsService.list.and.returnValue( of([setting]) );
+import { SettingFixtures } from './setting.fixtures';
 
-export { settingsService as SettingsServiceMocks };
+export class SettingsServiceMocks {
+
+  public static get settingsService(): jasmine.SpyObj<SettingsService> {
+    return jasmine.createSpyObj('SettingsService', {
+      list: of([SettingFixtures.setting]),
+      update: of(SettingFixtures.setting)
+    });
+  }
+}

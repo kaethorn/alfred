@@ -13,15 +13,26 @@ import java.util.Date;
 @AllArgsConstructor
 public class ScannerIssue {
 
-  public enum Type {
+  public enum Severity {
     INFO,
     WARNING,
     ERROR
   }
 
+  public enum Type {
+    UNKNOWN,
+    NOT_FLAT,
+    NO_MONTH,
+    NO_YEAR,
+    NO_IMAGES,
+    INVALID_FILE_FORMAT
+  }
+
   private String message;
+  private Severity severity;
   private Type type;
-  private String path;
+
+  private boolean fixable;
 
   @Builder.Default
   private Date date = new Date();

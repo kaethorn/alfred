@@ -1,6 +1,6 @@
-import { SettingsPage } from './settings.po';
 import { LibraryPage } from './library.po';
 import { MongoDBTools } from './mongodb.tools';
+import { SettingsPage } from './settings.po';
 
 describe('Scanning', () => {
 
@@ -20,7 +20,7 @@ describe('Scanning', () => {
 
   it('display scan progress', async () => {
     expect(await SettingsPage.getScanProgress())
-      .toMatch(/Scanning\ file\ \d+\ of\ \d+\ at\ .*/);
+      .toMatch(/Scanning file \d+ of \d+ at .*/);
     expect(await SettingsPage.getScanErrors().isPresent()).toBe(false);
   });
 

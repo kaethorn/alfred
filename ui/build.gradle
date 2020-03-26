@@ -1,12 +1,11 @@
 plugins {
   id 'java'
-  id 'com.moowork.node' version '1.3.1'
+  id 'com.github.node-gradle.node' version '2.2.3'
 }
 
 node {
-  version = '12.4.0'
-  npmVersion = '6.9.0'
-  download = true
+  download = false
+  npmInstallCommand = 'ci'
 }
 
 npmInstall {
@@ -18,8 +17,4 @@ jar.dependsOn 'npm_run_buildProd'
 jar {
   from 'www' into 'static'
 }
-
-test.dependsOn 'npm_run_testHeadless'
-
-check.dependsOn 'npm_run_lint'
 

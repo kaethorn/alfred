@@ -1,32 +1,34 @@
 import { TestBed } from '@angular/core/testing';
-
 import { of, throwError } from 'rxjs';
 
-import { comic1 as comic } from '../testing/comic.fixtures';
-import { QueueService } from './queue.service';
-import { ComicsService } from './comics.service';
+import { ComicFixtures } from '../testing/comic.fixtures';
+
 import { Comic } from './comic';
 import { ComicDatabaseService } from './comic-database.service';
+import { ComicsService } from './comics.service';
+import { QueueService } from './queue.service';
+
+let service: QueueService;
+let dbService: ComicDatabaseService;
+
+const comicsService = jasmine.createSpyObj('ComicsService', [ 'updateProgress' ]);
+const updateProgressSpy: jasmine.Spy = comicsService.updateProgress;
 
 describe('QueueService', () => {
-  let service: QueueService;
-  let dbService: ComicDatabaseService;
-  const comicsService = jasmine.createSpyObj('ComicsService', [ 'updateProgress' ]);
-  const updateProgressSpy: jasmine.Spy = comicsService.updateProgress;
 
   beforeEach(async () => {
-    updateProgressSpy.and.returnValue(of(comic));
+    updateProgressSpy.and.returnValue(of(ComicFixtures.comic));
     TestBed.configureTestingModule({
       providers: [{
         provide: ComicsService, useValue: comicsService
-      }],
+      }]
     });
-    dbService = TestBed.get(ComicDatabaseService);
+    dbService = TestBed.inject(ComicDatabaseService);
     await dbService.ready.toPromise();
-    service = TestBed.get(QueueService);
+    service = TestBed.inject(QueueService);
   });
 
-  afterEach(async (done) => {
+  afterEach(async done => {
     updateProgressSpy.calls.reset();
     TestBed.resetTestingModule();
     await dbService.deleteAll();
@@ -46,7 +48,7 @@ describe('QueueService', () => {
 
     describe('without items in the queue', () => {
 
-      it('completes', (done) => {
+      it('completes', done => {
         service.process().subscribe(() => {
           expect(true).toBe(true);
         }, () => {
@@ -61,7 +63,7 @@ describe('QueueService', () => {
 
     describe('with items', () => {
 
-      beforeEach(async (done) => {
+      beforeEach(async done => {
         await service.add({ id: 'one' } as Comic);
         await service.add({ id: 'two' } as Comic);
         done();
@@ -70,10 +72,10 @@ describe('QueueService', () => {
       describe('on error', () => {
 
         beforeEach(() => {
-          updateProgressSpy.and.returnValue( throwError(comic) );
+          updateProgressSpy.and.returnValue(throwError(ComicFixtures.comic));
         });
 
-        it('does not complete', (done) => {
+        it('does not complete', done => {
           service.process().subscribe(() => {
           }, async () => {
             expect(updateProgressSpy.calls.count()).toBe(1);
@@ -85,7 +87,7 @@ describe('QueueService', () => {
 
       describe('on success', () => {
 
-        it('completes', (done) => {
+        it('completes', done => {
           service.process().subscribe(() => {
           }, () => {
           }, async () => {
@@ -104,14 +106,14 @@ describe('QueueService', () => {
           let index = 0;
           updateProgressSpy.and.callFake(() => {
             if (index > 0) {
-              return throwError(comic);
+              return throwError(ComicFixtures.comic);
             }
             index += 1;
-            return of(comic);
+            return of(ComicFixtures.comic);
           });
         });
 
-        it('does not complete', (done) => {
+        it('does not complete', done => {
           service.process().subscribe(() => {
           }, async () => {
             expect(updateProgressSpy.calls.count()).toBe(2);

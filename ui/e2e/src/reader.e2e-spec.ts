@@ -1,13 +1,14 @@
-import { BookmarksPage } from './bookmarks.po';
-import { LibraryPage } from './library.po';
-import { SettingsPage } from './settings.po';
-import { IssuesPage } from './issues.po';
-import { MongoDBTools } from './mongodb.tools';
-import { ProxySettings } from './proxy-settings';
-import { AppPage } from './app.po';
-import { ReaderPage } from './reader.po';
 import { browser } from 'protractor';
+
+import { AppPage } from './app.po';
+import { BookmarksPage } from './bookmarks.po';
+import { IssuesPage } from './issues.po';
+import { LibraryPage } from './library.po';
+import { MongoDBTools } from './mongodb.tools';
 import { Page } from './page.po';
+import { ProxySettings } from './proxy-settings';
+import { ReaderPage } from './reader.po';
+import { SettingsPage } from './settings.po';
 
 describe('Reader Component', () => {
 
@@ -30,10 +31,10 @@ describe('Reader Component', () => {
     await LibraryPage.clickVolumeListButton('Vol. 2008');
     await IssuesPage.wait();
     await IssuesPage.toggleMarkAsRead(0);
+    await Page.expectToastMessage('Volume cached.');
   });
 
   it('shows cached bookmarks', async () => {
-    expect(await Page.getToastMessage()).toEqual('Volume cached.');
     await BookmarksPage.navigateTo();
     expect(await BookmarksPage.getUnsyncButton(0).isPresent()).toBe(true);
     expect(await BookmarksPage.getBookmarkTitles().count()).toBe(1);
@@ -44,6 +45,7 @@ describe('Reader Component', () => {
     await BookmarksPage.clickBookmarkMenuItem(0, 'View in volume');
     await IssuesPage.wait();
     await IssuesPage.toggleMarkAsRead(1);
+    await Page.expectToastMessage('Volume cached.');
   });
 
   describe('reading while offline', () => {
@@ -57,14 +59,13 @@ describe('Reader Component', () => {
       await BookmarksPage.wait();
       await BookmarksPage.getIssueCover(0).click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(0);
+      await Page.expectToastMessage('Volume cached.');
     });
 
     it('continues but does not finish the issue', async () => {
-      // Wait for caching to fail
-      await browser.sleep(500);
-      await ReaderPage.getImage().click();
+      await ReaderPage.openOverlay();
       await ReaderPage.getOverlayNextButton().click();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(1);
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
       await browser.sleep(500);
     });
 
@@ -81,6 +82,7 @@ describe('Reader Component', () => {
 
     it('continues reading at the last read page', async () => {
       await BookmarksPage.getIssueCover(0).click();
+      await Page.expectToastMessage('Volume cached.');
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
     });
   });
@@ -102,31 +104,31 @@ describe('Reader Component', () => {
     });
   });
 
-  describe('completing an issue', async () => {
+  describe('completing an issue', () => {
 
     it('resumes reading and caches agagin', async () => {
       await BookmarksPage.getIssueCover(0).click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
-      expect(await Page.getToastMessage()).toEqual('Volume cached.');
-      await Page.waitForToastMessageGone();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(1);
+      await Page.expectToastMessage('Volume cached.');
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(2);
     });
 
     it('reads until the last page', async () => {
-      await ReaderPage.getImage().click();
+      await ReaderPage.openOverlay(1);
       await ReaderPage.getOverlayNextButton().click();
-      expect(await ReaderPage.getPageNumberFromUrl()).toBe(3);
+      expect(await ReaderPage.getPageNumberFromUrl()).toBe(4);
+      // Wait for animation
+      await browser.sleep(1000);
     });
 
     it('opens the next issue', async () => {
       const previousId = await ReaderPage.getIssueIdFromUrl();
-      await ReaderPage.getImage().click();
+      await ReaderPage.openOverlay(3);
       await ReaderPage.getOverlayNextButton().click();
 
       const nextId = await ReaderPage.getIssueIdFromUrl();
       expect(previousId).not.toEqual(nextId);
-      expect(await Page.getToastMessage()).toEqual('Opening next issue of Batgirl (2008).');
-      await Page.waitForToastMessageGone();
+      await Page.expectToastMessage('Opening next issue of Batgirl (2008).');
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(0);
     });
 

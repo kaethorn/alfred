@@ -2,8 +2,7 @@ package de.wasenweg.alfred.volumes;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.progress.ProgressService;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,12 +12,12 @@ import javax.validation.Valid;
 
 import java.security.Principal;
 
-@RequestMapping("/api/volumes")
 @RestController
+@RequestMapping("/api/volumes")
+@RequiredArgsConstructor
 public class VolumeController {
 
-  @Autowired
-  private ProgressService progressService;
+  private final ProgressService progressService;
 
   @PutMapping("/markAsRead")
   public void markAsRead(@Valid @RequestBody final Volume volume, final Principal principal) {
@@ -31,7 +30,7 @@ public class VolumeController {
   }
 
   @PutMapping("/markAllAsReadUntil")
-  public void markAsUnread(@Valid @RequestBody final Comic comic, final Principal principal) {
+  public void markAllAsReadUntil(@Valid @RequestBody final Comic comic, final Principal principal) {
     this.progressService.updateVolumeUntil(principal.getName(), comic);
   }
 }

@@ -3,10 +3,9 @@ package de.wasenweg.alfred.scanner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.RateLimiter;
-
 import de.wasenweg.alfred.settings.SettingsService;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
@@ -18,38 +17,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class ComicVineService {
 
-  @Value("${comicVine.baseUrl:https://comicvine.gamespot.com/api/}")
-  private String baseUrl;
-  private String apiKey;
-  private ObjectMapper mapper;
-  private RateLimiter throttle;
-  private Environment environment;
 
-  @Autowired
-  public ComicVineService(
-      final SettingsService settingsService,
-      final Environment environment
-  ) {
-    this.environment = environment;
-    this.mapper = new ObjectMapper();
-    this.apiKey = settingsService.get("comics.comicVineApiKey");
-    // Throttle to 200 requests per hour
-    this.throttle = RateLimiter.create(200.0 / 3600.0);
+  @Value("${comics.comicVine.baseUrl:https://comicvine.gamespot.com/api/}")
+  private String baseUrl;
+
+  private final SettingsService settingsService;
+  private final Environment environment;
+
+  private final ObjectMapper mapper = new ObjectMapper();
+  // Throttle to 200 requests per hour
+  private final RateLimiter throttle = RateLimiter.create(200.0 / 3600.0);
+  private final RestTemplate restTemplate = new RestTemplate();
+
+  private String apiKey;
+
+  @PostConstruct
+  public void setup() {
+    this.apiKey = this.settingsService.get("comics.comicVine.ApiKey");
   }
 
   // Get details about a specific issue
   public JsonNode getIssueDetails(final String detailsUrl) {
     final String path = detailsUrl.split("/api/")[1];
-    final Map<String, String> requestParams = new HashMap<>();
+    final Map<String, String> requestParams = new ConcurrentHashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
     requestParams.put("field_list",
@@ -69,7 +72,7 @@ public class ComicVineService {
     // side. As a workaround, using the first term actually improves result numbers.
     final String query = series.split(" ")[0];
 
-    final Map<String, String> requestParams = new HashMap<>();
+    final Map<String, String> requestParams = new ConcurrentHashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
     requestParams.put("resources", "volume");
@@ -86,7 +89,7 @@ public class ComicVineService {
 
   // Get basic details about all issues in a volume
   public JsonNode findIssuesInVolume(final String volumeId, final int page) {
-    final Map<String, String> requestParams = new HashMap<>();
+    final Map<String, String> requestParams = new ConcurrentHashMap<>();
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
     requestParams.put("filter", "volume:" + volumeId);
@@ -107,14 +110,13 @@ public class ComicVineService {
     final HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
     headers.add("user-agent", "curl/7.52.1");
-    final HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-    final ResponseEntity<String> response = new RestTemplate().exchange(url, HttpMethod.GET, entity, String.class);
-    JsonNode root = null;
+    final HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+    final ResponseEntity<String> response = this.restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     try {
-      root = this.mapper.readTree(response.getBody());
+      return this.mapper.readTree(response.getBody());
     } catch (final IOException exception) {
-      exception.printStackTrace();
+      log.error("Error parsing response", exception);
+      return null;
     }
-    return root;
   }
 }

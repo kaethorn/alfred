@@ -1,55 +1,43 @@
 package de.wasenweg.alfred.integration;
 
-import de.wasenweg.alfred.AlfredApplication;
+import de.wasenweg.alfred.EnableEmbeddedMongo;
 import de.wasenweg.alfred.comics.ComicRepository;
+import de.wasenweg.alfred.fixtures.ComicFixtures;
+import de.wasenweg.alfred.fixtures.ProgressFixtures;
 import de.wasenweg.alfred.progress.ProgressRepository;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = { AlfredApplication.class })
-@EnableAutoConfiguration
+@SpringBootTest
+@AutoConfigureMockMvc
+@DirtiesContext
+@EnableEmbeddedMongo
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
 public class StatsIntegrationTest {
 
-  @Autowired
-  private ComicRepository comicRepository;
+  private final MockMvc mockMvc;
+  private final ComicRepository comicRepository;
+  private final ProgressRepository progressRepository;
 
-  @Autowired
-  private ProgressRepository progressRepository;
-
-  @Autowired
-  private WebApplicationContext context;
-
-  private MockMvc mockMvc;
-
-  @Before
+  @BeforeEach
   public void setUp() {
-    this.mockMvc = MockMvcBuilders
-        .webAppContextSetup(this.context)
-        .apply(springSecurity())
-        .build();
-
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2,
@@ -64,7 +52,7 @@ public class StatsIntegrationTest {
     this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     this.comicRepository.deleteAll();
     this.progressRepository.deleteAll();
@@ -72,9 +60,9 @@ public class StatsIntegrationTest {
 
   @Test
   public void getStats() throws Exception {
-    this.mockMvc.perform(MockMvcRequestBuilders.get("/api/stats"))
+    this.mockMvc.perform(get("/api/stats"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._links.self.href").value("http://localhost/api/stats"))
         .andExpect(jsonPath("$.issues").value(9))
         .andExpect(jsonPath("$.publishers").value(1))

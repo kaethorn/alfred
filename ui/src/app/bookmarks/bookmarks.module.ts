@@ -1,12 +1,13 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 
-import { BookmarksPage } from './bookmarks.page';
-import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
 import { SecureModule } from '../secure/secure.module';
+
+import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.component';
+import { BookmarksPage } from './bookmarks.page';
 
 @NgModule({
   imports: [

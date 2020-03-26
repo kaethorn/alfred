@@ -1,4 +1,7 @@
 ![](https://github.com/kaethorn/alfred/workflows/Tests/badge.svg?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7706ef5f5dfd4f8493de96965e0c14b9)](https://www.codacy.com/manual/scf/komix?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kaethorn/komix&amp;utm_campaign=Badge_Grade)
+[![CodeFactor](https://www.codefactor.io/repository/github/kaethorn/alfred/badge)](https://www.codefactor.io/repository/github/kaethorn/alfred)
+[![codecov](https://codecov.io/gh/kaethorn/alfred/branch/master/graph/badge.svg)](https://codecov.io/gh/kaethorn/alfred)
 
 # About
 

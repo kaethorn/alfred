@@ -1,8 +1,22 @@
 import { Series } from '../app/series';
 
-const series1: Series = {} as Series;
-series1.series = 'Batgirl';
-series1.publisher = 'DC Comics';
-series1.volumesCount = 7;
+export class SeriesFixtures {
 
-export { series1 };
+  public static get serie(): Series {
+    return {
+      name: 'Batgirl',
+      publisher: 'DC Comics',
+      volumesCount: 7
+    };
+  }
+
+  public static get series(): Series[] {
+    return [
+      this.serie,
+      Object.assign(this.serie, { name: 'Batman', volumesCount: 1 }),
+      Object.assign(this.serie, { name: 'Superman', volumesCount: 3 }),
+      Object.assign(this.serie, { name: 'Green Lantern', volumesCount: 2 }),
+      Object.assign(this.serie, { name: 'Arrow', volumesCount: 4 })
+    ];
+  }
+}

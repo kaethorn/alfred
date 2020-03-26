@@ -1,14 +1,24 @@
-export enum ScannerIssueType {
+export enum ScannerIssueSeverity {
   INFO,
   WARNING,
   ERROR
 }
 
+export enum ScannerIssueType {
+  UNKNOWN,
+  NOT_FLAT,
+  NO_MONTH,
+  NO_YEAR,
+  NO_IMAGES,
+  INVALID_FILE_FORMAT
+}
+
 export interface ScannerIssue {
   date: Date;
-  message: string;
-  path: string;
   type: ScannerIssueType;
+  message: string;
+  fixable: boolean;
+  severity: ScannerIssueSeverity;
 }
 
 export interface Comic {
@@ -45,4 +55,5 @@ export interface Comic {
   lastRead?: Date;
   dirty?: number;
   errors?: ScannerIssue[];
+  files: string[];
 }

@@ -1,15 +1,16 @@
 package de.wasenweg.alfred.settings;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -27,11 +28,4 @@ public class Setting {
   private String value;
   @NonNull
   private String comment;
-
-  @Override
-  public String toString() {
-    return String.format(
-        "Setting[id=%s, key='%s', value='%s']",
-        this.id, this.key, this.value);
-  }
 }

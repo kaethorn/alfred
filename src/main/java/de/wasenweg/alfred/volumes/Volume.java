@@ -1,28 +1,32 @@
 package de.wasenweg.alfred.volumes;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static java.lang.String.format;
+
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Volume {
 
   private String id;
 
-  private String volume;
+  private String name;
   private String series;
   private String publisher;
-  private Short issueCount;
-  private Short readCount;
+  private Integer issueCount;
+  private Integer readCount;
   private boolean read;
   private String firstComicId;
 
   @Override
   public String toString() {
-    return String.format(
+    return format(
         "%s (Vol. %s) by %s",
-        this.series, this.volume, this.publisher);
+        this.series, this.name, this.publisher);
   }
 }

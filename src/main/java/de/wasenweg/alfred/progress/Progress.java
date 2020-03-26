@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -30,12 +29,11 @@ public class Progress {
   @NonNull
   private ObjectId comicId;
 
-  @Builder.Default
-  private boolean read = false;
+  private boolean read;
 
   @NonNull
   @Builder.Default
-  private Short currentPage = 0;
+  private Integer currentPage = 0;
 
   private Date lastRead;
 }

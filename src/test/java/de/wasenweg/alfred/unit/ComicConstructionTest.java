@@ -1,8 +1,7 @@
 package de.wasenweg.alfred.unit;
 
 import de.wasenweg.alfred.comics.Comic;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,8 +10,8 @@ public class ComicConstructionTest {
   @Test
   public void constructWithNew() throws Exception {
     final Comic comic = new Comic();
-    assertThat(comic.getCurrentPage()).isEqualTo((short) 0);
-    assertThat(comic.isRead()).isEqualTo(false);
+    assertThat(comic.getCurrentPage()).isEqualTo(0);
+    assertThat(comic.isRead()).isFalse();
   }
 
   @Test
@@ -25,12 +24,12 @@ public class ComicConstructionTest {
         .volume("")
         .number("")
         .position("")
-        .year((short) 2000)
-        .month((short) 5)
+        .year(2000)
+        .month(5)
         .publisher("")
         .build();
-    assertThat(comic.getCurrentPage()).isEqualTo((short) 0);
-    assertThat(comic.isRead()).isEqualTo(false);
+    assertThat(comic.getCurrentPage()).isEqualTo(0);
+    assertThat(comic.isRead()).isFalse();
   }
 
   @Test

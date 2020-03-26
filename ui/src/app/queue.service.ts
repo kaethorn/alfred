@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-
-import { Comic } from './comic';
-import { ComicsService } from './comics.service';
 import { Observable, from } from 'rxjs';
 import { concatMap, flatMap } from 'rxjs/operators';
+
+import { Comic } from './comic';
 import { ComicDatabaseService } from './comic-database.service';
+import { ComicsService } from './comics.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QueueService {
 
-  constructor (
+  constructor(
     private comicsService: ComicsService,
-    private comicDatabaseService: ComicDatabaseService,
+    private comicDatabaseService: ComicDatabaseService
   ) {
     this.comicDatabaseService.ready.toPromise().then(() => this.process());
   }
@@ -21,13 +21,13 @@ export class QueueService {
   /**
    * Save each comic in the queue, removing it if successful.
    *
-   * Returns a promise that either resolves when all items are
-   * processed successfully or rejects on the first error.
+   * Returns an Observable that completes when all items are
+   * processed successfully or fails on the first error.
    */
-  process (): Observable<Comic> {
+  public process(): Observable<Comic> {
     return from(this.load()).pipe(
       flatMap(comics => from(comics)),
-      concatMap((comic) => {
+      concatMap(comic => {
         delete comic.dirty;
         const update = this.comicsService.updateProgress(comic);
         update.subscribe(() => {
@@ -41,22 +41,22 @@ export class QueueService {
     );
   }
 
-  private load (): Promise<Comic[]> {
-    return this.comicDatabaseService.getComicsBy('dirty', 1);
-  }
-
-  add (comic: Comic): Promise<any> {
+  public add(comic: Comic): Promise<Event> {
     comic.dirty = 1;
     return this.comicDatabaseService.save(comic);
   }
 
-  async hasItems (): Promise<boolean> {
+  public async hasItems(): Promise<boolean> {
     const count = await this.count();
     return count > 0;
   }
 
-  async count (): Promise<number> {
+  public async count(): Promise<number> {
     const comics = await this.load();
     return comics.length;
+  }
+
+  private load(): Promise<Comic[]> {
+    return this.comicDatabaseService.getComicsBy('dirty', 1);
   }
 }
