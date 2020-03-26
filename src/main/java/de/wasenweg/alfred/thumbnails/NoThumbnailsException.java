@@ -7,8 +7,4 @@ public class NoThumbnailsException extends RuntimeException {
   public NoThumbnailsException(final Throwable err) {
     super("No thumbnails could be extracted.", err);
   }
-
-  public NoThumbnailsException() {
-    super("No thumbnails could be extracted.");
-  }
 }

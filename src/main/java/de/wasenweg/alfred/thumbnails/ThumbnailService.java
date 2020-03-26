@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,7 +46,7 @@ public class ThumbnailService {
         this.saveThumbnail(comic, sortedEntries.get(0), ThumbnailType.FRONT_COVER);
         this.saveThumbnail(comic, sortedEntries.get(sortedEntries.size() - 1), ThumbnailType.BACK_COVER);
       }
-    } catch (final IOException exception) {
+    } catch (final FileSystemNotFoundException | IOException exception) {
       throw new NoThumbnailsException(exception);
     }
   }

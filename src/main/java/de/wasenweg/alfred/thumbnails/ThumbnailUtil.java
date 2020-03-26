@@ -45,7 +45,7 @@ public final class ThumbnailUtil {
           srcImage, 0, 0, dimension.width, dimension.height, null);
       ImageIO.write(dstImage, "jpg", out);
 
-    } catch (final IOException exception) {
+    } catch (final IllegalArgumentException | IOException exception) {
       log.error("Failed to generate thumbnail.", exception);
     }
     return out;

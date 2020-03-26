@@ -2,6 +2,7 @@ package de.wasenweg.alfred;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,6 +24,9 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
@@ -61,6 +65,15 @@ public final class TestUtil {
     } catch (final IOException | SecurityException exception) {
       log.error("Failed to check zip file.", exception);
       return false;
+    }
+  }
+
+  public static List<String> listFiles(final String zipPath) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
+      return ZipReaderUtil.getEntries(fs).stream().map(Path::toString).collect(Collectors.toList());
+    } catch (final IOException | SecurityException exception) {
+      log.error("Failed to read zip file.", exception);
+      return new ArrayList<>();
     }
   }
 

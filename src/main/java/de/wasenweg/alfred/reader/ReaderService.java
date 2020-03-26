@@ -42,16 +42,16 @@ public class ReaderService {
   /**
    * Returns the page of the given comic.
    *
-   * @param id         The ID of the comic to open.
+   * @param comicId    The ID of the comic to open.
    * @param page       The page number from which to start.
    * @param markAsRead Whether to marks the page as read.
    * @param userId     The current user's ID.
    * @return The extracted page.
    */
-  public ResponseEntity<StreamingResponseBody> read(final String id, final Integer page, final boolean markAsRead,
+  public ResponseEntity<StreamingResponseBody> read(final String comicId, final Integer page, final boolean markAsRead,
       final String userId) {
 
-    final Optional<Comic> comicQuery = this.comicRepository.findById(id);
+    final Optional<Comic> comicQuery = this.comicRepository.findById(comicId);
     final Comic comic = comicQuery.orElseThrow(ResourceNotFoundException::new);
 
     log.debug(format("Reading page %s (page count %s) of %s, files: [%s]", page, comic.getPageCount(), comic.getFiles(),
@@ -84,7 +84,7 @@ public class ReaderService {
             }
           });
 
-    } catch (final IOException | SecurityException | InvalidMediaTypeException exception) {
+    } catch (final IOException | SecurityException | InvalidMediaTypeException | IndexOutOfBoundsException exception) {
       log.error(exception.getLocalizedMessage());
       throw new ResourceNotFoundException(exception.getLocalizedMessage(), exception);
     }
@@ -93,8 +93,8 @@ public class ReaderService {
   /**
    * Downloads the CBZ archive designated by the given comic book ID.
    */
-  public ResponseEntity<StreamingResponseBody> download(final String id) {
-    final Optional<Comic> comicQuery = this.comicRepository.findById(id);
+  public ResponseEntity<StreamingResponseBody> download(final String comicId) {
+    final Optional<Comic> comicQuery = this.comicRepository.findById(comicId);
     final Comic comic = comicQuery.orElseThrow(ResourceNotFoundException::new);
 
     return ResponseEntity

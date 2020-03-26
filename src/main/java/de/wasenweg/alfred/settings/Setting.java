@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import static java.lang.String.format;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -30,11 +28,4 @@ public class Setting {
   private String value;
   @NonNull
   private String comment;
-
-  @Override
-  public String toString() {
-    return format(
-        "Setting[id=%s, key='%s', value='%s']",
-        this.id, this.key, this.value);
-  }
 }

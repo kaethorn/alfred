@@ -59,7 +59,7 @@ public class ReaderIntegrationTest {
         .expectNext("association")
         .expectNext("done")
         .thenCancel()
-        .verify(Duration.ofSeconds(6L));
+        .verify(Duration.ofSeconds(9L));
   }
 
   @AfterEach
@@ -77,6 +77,34 @@ public class ReaderIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
         .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=/1.png"))
+        .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 90))
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE));
+  }
+
+  @Test
+  public void readPage() throws Exception {
+    // Given
+    final Comic comic = this.comicRepository.findAll().get(0);
+
+    // When / Then
+    this.mockMvc.perform(get("/api/read/" + comic.getId() + "/1"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
+        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=/2.png"))
+        .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 90))
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE));
+  }
+
+  @Test
+  public void downloadPage() throws Exception {
+    // Given
+    final Comic comic = this.comicRepository.findAll().get(0);
+
+    // When / Then
+    this.mockMvc.perform(get("/api/download/" + comic.getId() + "/2"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
+        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=/3.png"))
         .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 90))
         .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE));
   }
