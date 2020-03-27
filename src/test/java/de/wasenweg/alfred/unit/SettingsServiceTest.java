@@ -35,7 +35,7 @@ public class SettingsServiceTest {
   private transient ArgumentCaptor<Setting> settingCaptor;
 
   @Test
-  public void setupWithoutExistingSettingsAndWithoutEnvironmentValue() throws Exception {
+  public void setupWithoutExistingSettingsAndWithoutEnvironmentValue() {
     when(this.settingRepository.findByKey("comics.path")).thenReturn(Optional.ofNullable(null));
     when(this.environment.getProperty("comics.path")).thenReturn(null);
 
@@ -47,7 +47,7 @@ public class SettingsServiceTest {
   }
 
   @Test
-  public void setupWithExistingSettingsAndWithoutEnvironmentValue() throws Exception {
+  public void setupWithExistingSettingsAndWithoutEnvironmentValue() {
     final Setting setting = Setting.builder()
         .key("comics.path")
         .name("Path")
@@ -64,7 +64,7 @@ public class SettingsServiceTest {
   }
 
   @Test
-  public void setupWithoutExistingSettingsAndWithEnvironmentValue() throws Exception {
+  public void setupWithoutExistingSettingsAndWithEnvironmentValue() {
     when(this.settingRepository.findByKey("comics.path")).thenReturn(Optional.ofNullable(null));
     when(this.environment.getProperty("comics.path")).thenReturn("/environment/comics");
 
@@ -76,7 +76,7 @@ public class SettingsServiceTest {
   }
 
   @Test
-  public void setupWithExistingSettingsAndWithEnvironmentValue() throws Exception {
+  public void setupWithExistingSettingsAndWithEnvironmentValue() {
     final Setting setting = Setting.builder()
         .key("comics.path")
         .name("Path")

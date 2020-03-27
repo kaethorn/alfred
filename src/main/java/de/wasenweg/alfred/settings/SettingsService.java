@@ -28,6 +28,8 @@ public class SettingsService {
    */
   @PostConstruct
   public void setup() {
+    this.defaults.clear();
+
     // Built in defaults:
     this.defaults.add(new Setting("comics.path", "Path", "/comics", "Path to your comic library"));
     this.defaults.add(new Setting("comics.comicVine.ApiKey", "Comi Vine API key", "", "Comic Vine API key from https://comicvine.gamespot.com/api/"));
