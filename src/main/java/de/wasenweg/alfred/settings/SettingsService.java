@@ -37,6 +37,7 @@ public class SettingsService {
     this.defaults.forEach((settingDefault) -> {
       final Optional<Setting> existingSetting = this.settingRepository.findByKey(settingDefault.getKey());
       if (existingSetting.isPresent()) {
+        settingDefault.setId(existingSetting.get().getId());
         settingDefault.setValue(existingSetting.get().getValue());
       }
       final Optional<String> environmentValue = this.getEnvironmentValue(settingDefault.getKey());
