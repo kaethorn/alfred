@@ -104,17 +104,14 @@ public class SettingsIntegrationTest {
   }
 
   private void setComicsPathEnvironment(final String value) {
-    final PropertySource<?> originalSource = this.environment.getPropertySources().get(TEST_APPLICATION_YML);
-    final PropertySource<?> propertySource = new PropertySource(TEST_APPLICATION_YML) {
+    this.environment.getPropertySources().replace(TEST_APPLICATION_YML, new PropertySource(TEST_APPLICATION_YML) {
       @Override
       public Object getProperty(final String name) {
-        if (name.equals("comics.path")) {
+        if ("comics.path".equals(name)) {
           return value;
         }
-        return originalSource.getProperty(name);
+        return null;
       }
-    };
-    this.environment.getPropertySources()
-        .replace(TEST_APPLICATION_YML, propertySource);
+    });
   }
 }
