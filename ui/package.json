@@ -83,7 +83,7 @@
     "mongoose": "^5.9.1",
     "protractor": "~5.4.3",
     "ts-node": "^8.6.2",
-    "tslint": "^6.0.0",
+    "tslint": "^6.1.1",
     "typescript": "~3.7.5"
   },
   "description": "Manage and read your comics.",
