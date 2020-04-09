@@ -19,7 +19,7 @@ export class ScannerComponent {
   public file: string;
   public counter = 0;
   public issues: ScannerIssue[] = [];
-  public stats: { [key: string]: number };
+  public stats: { [key: string]: number } = {};
   public cachedComicsCount = 0;
 
   public indeterminate: string;
