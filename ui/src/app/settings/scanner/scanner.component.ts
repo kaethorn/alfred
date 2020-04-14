@@ -19,7 +19,7 @@ export class ScannerComponent {
   public file: string;
   public counter = 0;
   public issues: ScannerIssue[] = [];
-  public stats: Stats;
+  public stats: { [key: string]: number } = {};
   public cachedComicsCount = 0;
 
   public indeterminate: string;
@@ -130,7 +130,9 @@ export class ScannerComponent {
 
   private getStats(): void {
     this.statsService.get().subscribe((stats: Stats) => {
-      this.stats = stats;
+      Object.keys(stats).forEach(key => {
+        this.stats[key] = stats[key];
+      });
     });
   }
 
