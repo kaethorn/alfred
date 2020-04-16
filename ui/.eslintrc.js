@@ -40,6 +40,14 @@ module.exports = {
             "error",
             "always"
         ],
+        "array-bracket-spacing": [
+            "error",
+            "always",
+            {
+                "objectsInArrays": false,
+                "arraysInArrays": false
+            }
+        ],
         "switch-colon-spacing": "error",
         "constructor-super": "error",
         "for-direction": "error",

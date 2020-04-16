@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
     return new Promise<boolean>(resolve => {
       this.userService.user.subscribe((user: User | string) => {
         if (typeof user === 'string') {
-          this.router.navigate(['/login'], { queryParams: { target: state.url } });
+          this.router.navigate([ '/login' ], { queryParams: { target: state.url } });
           resolve(false);
         } else {
           resolve(true);

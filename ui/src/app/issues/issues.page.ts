@@ -16,7 +16,7 @@ import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 @Component({
   selector: 'app-issues',
   templateUrl: './issues.page.html',
-  styleUrls: ['./issues.page.sass']
+  styleUrls: [ './issues.page.sass' ]
 })
 export class IssuesPage {
 

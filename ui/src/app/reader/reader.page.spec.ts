@@ -51,7 +51,7 @@ const clickCenter = async (): Promise<void> => {
 describe('ReaderPage', () => {
 
   beforeEach(async () => {
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    router = jasmine.createSpyObj('Router', [ 'navigate' ]);
     comicStorageService = ComicStorageServiceMocks.comicStorageService;
     toastController = ToastControllerMocks.toastController;
     toastElement = ToastControllerMocks.toastElementSpy;
@@ -116,7 +116,7 @@ describe('ReaderPage', () => {
       });
 
       it('falls back to the publishers page', () => {
-        expect(router.navigate).toHaveBeenCalledWith(['/library/publishers']);
+        expect(router.navigate).toHaveBeenCalledWith([ '/library/publishers' ]);
       });
     });
 
@@ -130,7 +130,7 @@ describe('ReaderPage', () => {
 
       it('navigates back and shows an error toast', async () => {
         await new Promise(resolve => comicStorageService.get.calls.mostRecent().returnValue.catch(resolve));
-        expect(router.navigate).toHaveBeenCalledWith(['/library/series']);
+        expect(router.navigate).toHaveBeenCalledWith([ '/library/series' ]);
         expect(toastController.create).toHaveBeenCalledWith({
           message: 'Comic book not available, please try again later.',
           duration: 4000
@@ -156,7 +156,7 @@ describe('ReaderPage', () => {
       });
 
       it('navigates back to the parent page', () => {
-        expect(router.navigate).toHaveBeenCalledWith(['/library/series']);
+        expect(router.navigate).toHaveBeenCalledWith([ '/library/series' ]);
       });
     });
 
@@ -310,7 +310,7 @@ describe('ReaderPage', () => {
     describe('with an event', () => {
 
       it('stops propagation', () => {
-        const event: jasmine.SpyObj<MouseEvent> = jasmine.createSpyObj('Event', ['stopPropagation']);
+        const event: jasmine.SpyObj<MouseEvent> = jasmine.createSpyObj('Event', [ 'stopPropagation' ]);
         component.go(0, event);
         expect(event.stopPropagation).toHaveBeenCalled();
       });
@@ -324,7 +324,7 @@ describe('ReaderPage', () => {
 
       it('opens the previous issue in the volume', () => {
         expect(router.navigate.calls.mostRecent().args[0])
-          .toEqual(['/read', ComicFixtures.volume[0].id]);
+          .toEqual([ '/read', ComicFixtures.volume[0].id ]);
       });
     });
   });
@@ -345,7 +345,7 @@ describe('ReaderPage', () => {
 
     it('opens the previous comic in the volume', () => {
       expect(router.navigate.calls.mostRecent().args[0])
-        .toEqual(['/read', ComicFixtures.volume[0].id]);
+        .toEqual([ '/read', ComicFixtures.volume[0].id ]);
     });
 
     describe('with the showToast option', () => {
@@ -379,7 +379,7 @@ describe('ReaderPage', () => {
 
     it('opens the next comic in the volume', () => {
       expect(router.navigate.calls.mostRecent().args[0])
-        .toEqual(['/read', ComicFixtures.volume[2].id]);
+        .toEqual([ '/read', ComicFixtures.volume[2].id ]);
     });
 
     describe('with the showToast option', () => {

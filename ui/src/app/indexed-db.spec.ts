@@ -69,8 +69,8 @@ describe('IndexedDb', () => {
           name: 'Comics',
           options: { keyPath: 'id' },
           indices: [
-            ['id', 'id', { unique: true }],
-            ['dirty', 'dirty', { unique: false }]
+            [ 'id', 'id', { unique: true }],
+            [ 'dirty', 'dirty', { unique: false }]
           ]
         }]);
       });

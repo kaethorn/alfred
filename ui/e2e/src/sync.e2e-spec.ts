@@ -35,7 +35,7 @@ describe('Sync', () => {
     expect(await IssuesPage.getIssues().count()).toBe(6);
     expect(await IssuesPage.getUnreadIssues().count()).toBe(5);
     expect(await IssuesPage.getSyncedIssues().count()).toBe(5);
-    expect(await IssuesPage.getSyncedIssueNumbers()).toEqual(['1', '2', '3', '4', '5']);
+    expect(await IssuesPage.getSyncedIssueNumbers()).toEqual([ '1', '2', '3', '4', '5' ]);
 
     await BookmarksPage.navigateTo();
     expect(await BookmarksPage.getUnsyncButton(0).isPresent()).toBe(true);
@@ -50,7 +50,7 @@ describe('Sync', () => {
     expect(await Page.getToastMessage()).toEqual('Volume cached.');
     expect(await IssuesPage.getUnreadIssues().count()).toBe(4);
     expect(await IssuesPage.getSyncedIssues().count()).toBe(5);
-    expect(await IssuesPage.getSyncedIssueNumbers()).toEqual(['2', '3', '4', '5', '6']);
+    expect(await IssuesPage.getSyncedIssueNumbers()).toEqual([ '2', '3', '4', '5', '6' ]);
 
     await BookmarksPage.navigateTo();
     expect(await BookmarksPage.getUnsyncButton(0).isPresent()).toBe(true);

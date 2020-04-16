@@ -10,7 +10,7 @@ export class VolumesServiceMocks {
 
   public static get volumesService(): jasmine.SpyObj<VolumesService> {
     return jasmine.createSpyObj('VolumesService', {
-      listVolumesByPublisher: of([VolumeFixtures.volume]),
+      listVolumesByPublisher: of([ VolumeFixtures.volume ]),
       listVolumes: of(VolumeFixtures.volumes),
       listSeries: of(SeriesFixtures.series),
       listPublishers: of(PublisherFixtures.publishers),

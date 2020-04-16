@@ -7,7 +7,7 @@ import { Comic } from '../../comic';
 @Component({
   selector: 'app-issue-actions',
   templateUrl: './issue-actions.component.html',
-  styleUrls: ['./issue-actions.component.sass']
+  styleUrls: [ './issue-actions.component.sass' ]
 })
 export class IssueActionsComponent {
 
@@ -30,12 +30,12 @@ export class IssueActionsComponent {
   }
 
   public goToLibrary(comic: Comic): void {
-    this.router.navigate(['/library/publishers', comic.publisher, 'series', comic.series, 'volumes']);
+    this.router.navigate([ '/library/publishers', comic.publisher, 'series', comic.series, 'volumes' ]);
     this.popoverCtrl.dismiss();
   }
 
   public edit(comic: Comic): void {
-    this.router.navigate(['/edit', comic.id]);
+    this.router.navigate([ '/edit', comic.id ]);
     this.popoverCtrl.dismiss();
   }
 }

@@ -176,7 +176,7 @@ describe('ComicDatabaseService', () => {
   describe('#getImageUrl', () => {
 
     beforeEach(() => {
-      indexedDbService.get.and.resolveTo(new Blob([''], { type: 'image/png' }));
+      indexedDbService.get.and.resolveTo(new Blob([ '' ], { type: 'image/png' }));
     });
 
     it('returns a URL of the given BLOB', async () => {

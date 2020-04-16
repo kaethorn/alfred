@@ -13,7 +13,7 @@ interface IOpenOptions {
 @Component({
   selector: 'app-reader',
   templateUrl: './reader.page.html',
-  styleUrls: ['./reader.page.sass']
+  styleUrls: [ './reader.page.sass' ]
 })
 export class ReaderPage {
 
@@ -33,16 +33,16 @@ export class ReaderPage {
     private comicStorageService: ComicStorageService
   ) { }
 
-  @HostListener('document:keyup.esc', ['$event'])
+  @HostListener('document:keyup.esc', [ '$event' ])
   public handleEscape(): void {
     this.back();
   }
 
-  @HostListener('document:keyup.arrowleft', ['$event'])
+  @HostListener('document:keyup.arrowleft', [ '$event' ])
   public handleLeft(): void {
     this.go(-1);
   }
-  @HostListener('document:keyup.arrowright', ['$event'])
+  @HostListener('document:keyup.arrowright', [ '$event' ])
   public handleRight(): void {
     this.go(1);
   }
@@ -96,7 +96,7 @@ export class ReaderPage {
   }
 
   public back(): void {
-    this.router.navigate([this.parent]);
+    this.router.navigate([ this.parent ]);
   }
 
   public imageLoaded(image: PageSource): void {
@@ -195,7 +195,7 @@ export class ReaderPage {
   private open(adjacentAttr: string, options?: IOpenOptions): void {
     if (this.comic[adjacentAttr]) {
       this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
-      this.router.navigate(['/read', this.comic[adjacentAttr]], {
+      this.router.navigate([ '/read', this.comic[adjacentAttr] ], {
         replaceUrl: true,
         relativeTo: this.route,
         queryParamsHandling: 'merge'

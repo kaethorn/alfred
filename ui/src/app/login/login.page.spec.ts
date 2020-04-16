@@ -20,7 +20,7 @@ describe('LoginPage', () => {
 
   beforeEach(() => {
     userService = UserServiceMocks.userService;
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    router = jasmine.createSpyObj('Router', [ 'navigate' ]);
     activatedRoute = {
       snapshot: {
         queryParams: {
@@ -79,7 +79,7 @@ describe('LoginPage', () => {
       });
 
       it('navigates to the library', () => {
-        expect(router.navigate).toHaveBeenCalledWith(['/library']);
+        expect(router.navigate).toHaveBeenCalledWith([ '/library' ]);
       });
     });
 
@@ -93,7 +93,7 @@ describe('LoginPage', () => {
       });
 
       it('navigates to the target', () => {
-        expect(router.navigate).toHaveBeenCalledWith(['/bookmarks']);
+        expect(router.navigate).toHaveBeenCalledWith([ '/bookmarks' ]);
       });
     });
   });

@@ -7,7 +7,7 @@ import { VolumesService } from '../../volumes.service';
 @Component({
   selector: 'app-publishers',
   templateUrl: './publishers.component.html',
-  styleUrls: ['./publishers.component.sass']
+  styleUrls: [ './publishers.component.sass' ]
 })
 export class PublishersComponent {
 
