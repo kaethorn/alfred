@@ -15,7 +15,7 @@ import { VolumeActionsComponent } from './volume-actions/volume-actions.componen
 @Component({
   selector: 'app-volumes',
   templateUrl: './volumes.component.html',
-  styleUrls: ['./volumes.component.sass']
+  styleUrls: [ './volumes.component.sass' ]
 })
 export class VolumesComponent {
 
@@ -46,14 +46,14 @@ export class VolumesComponent {
     if (volume.read) {
       this.comicsService.getFirstByVolume(volume.publisher, volume.series, volume.name)
         .subscribe((comic: Comic) => {
-          this.router.navigate(['/read', comic.id], {
+          this.router.navigate([ '/read', comic.id ], {
             queryParams: { page: comic.currentPage, parent: `/library/publishers/${ comic.publisher }/series/${ comic.series }/volumes` }
           });
         });
     } else {
       this.comicsService.getLastUnreadByVolume(volume.publisher, volume.series, volume.name)
         .subscribe((comic: Comic) => {
-          this.router.navigate(['/read', comic.id], {
+          this.router.navigate([ '/read', comic.id ], {
             queryParams: { page: comic.currentPage, parent: `/library/publishers/${ comic.publisher }/series/${ comic.series }/volumes` }
           });
         });

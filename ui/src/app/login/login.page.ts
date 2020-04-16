@@ -7,7 +7,7 @@ import { UserService } from '../user.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.sass']
+  styleUrls: [ './login.page.sass' ]
 })
 export class LoginPage {
 
@@ -24,9 +24,9 @@ export class LoginPage {
       this.ngZone.run(() => {
         this.message = typeof user === 'string' ? user : null;
         if (this.route.snapshot.queryParams.target) {
-          this.router.navigate([this.route.snapshot.queryParams.target]);
+          this.router.navigate([ this.route.snapshot.queryParams.target ]);
         } else {
-          this.router.navigate(['/library']);
+          this.router.navigate([ '/library' ]);
         }
       });
     });

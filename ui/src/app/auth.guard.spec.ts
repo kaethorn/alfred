@@ -6,7 +6,7 @@ import { AuthGuard } from './auth.guard';
 import { UserService } from './user.service';
 
 const userService = { user: of({}) };
-const router: jasmine.SpyObj<Router> = jasmine.createSpyObj('Router', ['navigate']);
+const router: jasmine.SpyObj<Router> = jasmine.createSpyObj('Router', [ 'navigate' ]);
 
 let authGuard: AuthGuard;
 
@@ -36,7 +36,7 @@ describe('AuthGuard', () => {
       authGuard = new AuthGuard((userService as any), (router as any));
 
       expect(await (authGuard.canActivate(({} as any), ({ url: '/settings' } as any)) as Promise<boolean>)).toBe(false);
-      expect(router.navigate).toHaveBeenCalledWith(['/login'], { queryParams: { target: '/settings' } });
+      expect(router.navigate).toHaveBeenCalledWith([ '/login' ], { queryParams: { target: '/settings' } });
     });
   });
 });

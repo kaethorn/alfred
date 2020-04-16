@@ -21,6 +21,6 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [EditPage]
+  declarations: [ EditPage ]
 })
 export class EditPageModule {}

@@ -9,32 +9,32 @@ import { ComicsService } from '../comics.service';
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.sass']
+  styleUrls: [ './edit.page.sass' ]
 })
 export class EditPage {
 
   public comic: Comic;
   public comicForm = this.formBuilder.group({
-    series: ['', Validators.required],
-    publisher: ['', Validators.required],
-    volume: ['', Validators.required],
-    number: ['', Validators.required],
-    year: [''],
-    month: [''],
-    title: [''],
-    summary: [''],
-    notes: [''],
-    writer: [''],
-    penciller: [''],
-    inker: [''],
-    colorist: [''],
-    letterer: [''],
-    coverArtist: [''],
-    editor: [''],
-    manga: [''],
-    characters: [''],
-    teams: [''],
-    locations: ['']
+    series: [ '', Validators.required ],
+    publisher: [ '', Validators.required ],
+    volume: [ '', Validators.required ],
+    number: [ '', Validators.required ],
+    year: [ '' ],
+    month: [ '' ],
+    title: [ '' ],
+    summary: [ '' ],
+    notes: [ '' ],
+    writer: [ '' ],
+    penciller: [ '' ],
+    inker: [ '' ],
+    colorist: [ '' ],
+    letterer: [ '' ],
+    coverArtist: [ '' ],
+    editor: [ '' ],
+    manga: [ '' ],
+    characters: [ '' ],
+    teams: [ '' ],
+    locations: [ '' ]
   });
   public scrapeInProgress = false;
   public editInProgress = false;

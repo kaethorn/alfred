@@ -48,6 +48,6 @@ describe('IssuesComponent', () => {
     await browser.sleep(500);
     await LibraryPage.waitForVolumes();
     expect(await LibraryPage.getVolumeTitles().getText())
-      .toEqual(['Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016']);
+      .toEqual([ 'Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016' ]);
   });
 });

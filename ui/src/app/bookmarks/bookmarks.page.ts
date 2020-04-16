@@ -11,7 +11,7 @@ import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.co
 @Component({
   selector: 'app-bookmarks',
   templateUrl: './bookmarks.page.html',
-  styleUrls: ['./bookmarks.page.sass']
+  styleUrls: [ './bookmarks.page.sass' ]
 })
 export class BookmarksPage {
 

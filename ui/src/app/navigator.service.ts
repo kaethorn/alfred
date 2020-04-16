@@ -84,8 +84,8 @@ export class NavigatorService {
 
     return Array.from(Array(setCount).keys())
       .map(set => NavigatorService.sideBySide ?
-        set === 0 ? [set] : (2 * set < NavigatorService.pageCount) ? [2 * set - 1, 2 * set] : [2 * set - 1] :
-        [set])
+        set === 0 ? [ set ] : (2 * set < NavigatorService.pageCount) ? [ 2 * set - 1, 2 * set ] : [ 2 * set - 1 ] :
+        [ set ])
       .map(set => set.map(index => ({ page: index, loaded: false })));
   }
 }

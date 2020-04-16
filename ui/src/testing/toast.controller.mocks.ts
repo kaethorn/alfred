@@ -6,7 +6,7 @@ export class ToastControllerMocks {
 
   public static get toastElementSpy(): jasmine.SpyObj<HTMLIonToastElement> {
     if (!this.toastElement) {
-      this.toastElement = jasmine.createSpyObj('HTMLIonToastElement', ['present']);
+      this.toastElement = jasmine.createSpyObj('HTMLIonToastElement', [ 'present' ]);
     }
     return this.toastElement;
   }

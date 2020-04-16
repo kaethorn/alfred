@@ -36,7 +36,7 @@ describe('BookmarksComponent', () => {
       await IssuesPage.clickIssueMenuItem(3, 'View in library');
       await LibraryPage.waitForVolumes();
       await LibraryPage.expectVolumeStats(
-        [ '0 of 73 issues read', '1 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
+        [ '0 of 73 issues read', '1 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read' ]);
     });
 
     it('shows that volume in the bookmarks', async () => {
@@ -59,7 +59,7 @@ describe('BookmarksComponent', () => {
 
     it('updates the read issue counter', async () => {
       await LibraryPage.expectVolumeStats(
-        [ '0 of 73 issues read', '1 of 6 issues read', '24 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
+        [ '0 of 73 issues read', '1 of 6 issues read', '24 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read' ]);
     });
 
     it('does not show that volume in the bookmarks', async () => {

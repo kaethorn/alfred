@@ -37,6 +37,6 @@ describe('Scanning', () => {
   it('displays publishers in the library', async () => {
     await LibraryPage.navigateTo();
     expect(await LibraryPage.getAllPublishers().getText())
-      .toEqual(['DC COMICS', 'F5 ENTERATINMENT', 'TOP COW']);
+      .toEqual([ 'DC COMICS', 'F5 ENTERATINMENT', 'TOP COW' ]);
   });
 });

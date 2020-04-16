@@ -9,7 +9,7 @@ import { StatsService } from '../../stats.service';
 @Component({
   selector: 'app-scanner',
   templateUrl: './scanner.component.html',
-  styleUrls: ['./scanner.component.sass']
+  styleUrls: [ './scanner.component.sass' ]
 })
 export class ScannerComponent {
 

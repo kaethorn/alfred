@@ -105,7 +105,7 @@ describe('VolumesComponent', () => {
 
         await comicService.getFirstByVolume.calls.mostRecent().returnValue.toPromise();
         expect(router.navigate).toHaveBeenCalledWith(
-          ['/read', ComicFixtures.comic.id],
+          [ '/read', ComicFixtures.comic.id ],
           { queryParams: { page: 4, parent: '/library/publishers/DC Comics/series/Batman/volumes' } });
       });
     });
@@ -126,7 +126,7 @@ describe('VolumesComponent', () => {
 
         await comicService.getLastUnreadByVolume.calls.mostRecent().returnValue.toPromise();
         expect(router.navigate).toHaveBeenCalledWith(
-          ['/read', ComicFixtures.comic.id],
+          [ '/read', ComicFixtures.comic.id ],
           { queryParams: { page: 7, parent: '/library/publishers/DC Comics/series/Batman/volumes' } });
       });
     });

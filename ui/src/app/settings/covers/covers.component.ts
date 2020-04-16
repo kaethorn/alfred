@@ -10,7 +10,7 @@ import { ThumbnailsService } from '../../thumbnails.service';
 @Component({
   selector: 'app-covers',
   templateUrl: './covers.component.html',
-  styleUrls: ['./covers.component.sass']
+  styleUrls: [ './covers.component.sass' ]
 })
 export class CoversComponent {
 

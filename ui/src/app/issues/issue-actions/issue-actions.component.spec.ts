@@ -17,7 +17,7 @@ let popoverController: jasmine.SpyObj<PopoverController>;
 describe('IssueActionsComponent', () => {
 
   beforeEach(() => {
-    router = jasmine.createSpyObj('Router', ['navigate']);
+    router = jasmine.createSpyObj('Router', [ 'navigate' ]);
     popoverController = PopoverControllerMocks.popoverController;
     navParams = new NavParams({ comic: ComicFixtures.comic });
 

@@ -23,17 +23,17 @@ let routerEvents: ReplaySubject<RouterEvent>;
 describe('AppComponent', () => {
 
   beforeEach(() => {
-    statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
-    splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
+    statusBarSpy = jasmine.createSpyObj('StatusBar', [ 'styleDefault' ]);
+    splashScreenSpy = jasmine.createSpyObj('SplashScreen', [ 'hide' ]);
     platformReadySpy = Promise.resolve();
     platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
     userService = UserServiceMocks.userService;
-    location = jasmine.createSpyObj('Location', ['reload']);
+    location = jasmine.createSpyObj('Location', [ 'reload' ]);
     routerEvents = new ReplaySubject<RouterEvent>(1);
 
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ AppComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       providers: [
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
@@ -45,7 +45,7 @@ describe('AppComponent', () => {
           routerState: {}
         } }
       ],
-      imports: [ RouterTestingModule.withRoutes([])]
+      imports: [ RouterTestingModule.withRoutes([]) ]
     });
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;

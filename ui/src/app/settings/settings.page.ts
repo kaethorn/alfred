@@ -8,7 +8,7 @@ import { UserSettingsService } from '../user-settings.service';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
-  styleUrls: ['./settings.page.sass']
+  styleUrls: [ './settings.page.sass' ]
 })
 export class SettingsPage {
 

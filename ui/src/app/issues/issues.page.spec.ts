@@ -177,12 +177,12 @@ describe('IssuesPage', () => {
 
       it('refreshes and caches the volume', async () => {
         expect(component.comics.map(comic => comic.read))
-          .toEqual([undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined]);
+          .toEqual([ undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined ]);
         component.markAsReadUntil(ComicFixtures.volume[1]);
         await volumesService.markAllAsReadUntil.calls.mostRecent().returnValue.toPromise();
 
         expect(component.comics.map(comic => comic.read))
-          .toEqual([true, true, undefined, undefined, undefined, undefined, undefined, undefined]);
+          .toEqual([ true, true, undefined, undefined, undefined, undefined, undefined, undefined ]);
         expect(comicStorageService.storeSurrounding).toHaveBeenCalledWith(ComicFixtures.volume[2].id);
       });
 
