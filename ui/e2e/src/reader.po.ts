@@ -1,4 +1,4 @@
-import { by, element, protractor, browser, promise, ElementFinder, ElementArrayFinder } from 'protractor';
+import { by, element, protractor, browser, ElementFinder, ElementArrayFinder } from 'protractor';
 
 import { Page } from './page.po';
 
@@ -22,10 +22,13 @@ export class ReaderPage {
     return this.getNavigationButtons().get(1);
   }
 
-  public static exit(): promise.Promise<void> {
-    return browser.actions().mouseMove(element.all(by.css('app-reader img')).last())
+  public static async exit(): Promise<void> {
+    await browser
+      .actions()
       .sendKeys(protractor.Key.ESCAPE)
       .perform();
+    // Wait for Service Worker to figure out that the server is offline
+    return browser.sleep(1000);
   }
 
   public static async getPageNumberFromUrl(): Promise<number> {

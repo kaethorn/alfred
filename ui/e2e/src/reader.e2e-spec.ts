@@ -71,8 +71,6 @@ describe('Reader Component', () => {
 
     it('quits the reader and returns to the bookmarks', async () => {
       await ReaderPage.exit();
-      // Wait for Service Worker to figure out that the server is offline
-      await browser.sleep(1000);
       expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #3' ]);
     });
 
@@ -134,7 +132,6 @@ describe('Reader Component', () => {
 
     it('marks the previous issue as read on the bookmarks page', async () => {
       await ReaderPage.exit();
-      await browser.sleep(1000);
       expect(await BookmarksPage.getBookmarkTitles().getText()).toEqual([ 'Batgirl #4' ]);
     });
 
