@@ -3,15 +3,15 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 
-import { Comic } from '../comic';
-import { ComicsService } from '../comics.service';
+import { Comic } from '../../comic';
+import { ComicsService } from '../../comics.service';
 
 @Component({
   selector: 'app-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: [ './edit.page.sass' ]
+  templateUrl: './edit.component.html',
+  styleUrls: [ './edit.component.sass' ]
 })
-export class EditPage {
+export class EditComponent {
 
   public comic: Comic;
   public comicForm = this.formBuilder.group({

@@ -4,21 +4,21 @@ import { ActivatedRoute } from '@angular/router';
 import { PopoverController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { Comic } from '../comic';
-import { ComicDatabaseService } from '../comic-database.service';
-import { ComicStorageService, StoredState } from '../comic-storage.service';
-import { ComicsService } from '../comics.service';
-import { ThumbnailsService } from '../thumbnails.service';
-import { VolumesService } from '../volumes.service';
+import { Comic } from '../../comic';
+import { ComicDatabaseService } from '../../comic-database.service';
+import { ComicStorageService, StoredState } from '../../comic-storage.service';
+import { ComicsService } from '../../comics.service';
+import { ThumbnailsService } from '../../thumbnails.service';
+import { VolumesService } from '../../volumes.service';
 
 import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 
 @Component({
   selector: 'app-issues',
-  templateUrl: './issues.page.html',
-  styleUrls: [ './issues.page.sass' ]
+  templateUrl: './issues.component.html',
+  styleUrls: [ './issues.component.sass' ]
 })
-export class IssuesPage {
+export class IssuesComponent {
 
   public currentRoute: string;
   public thumbnails = new Map<string, Observable<SafeUrl>>();

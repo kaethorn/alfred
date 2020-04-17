@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController, NavParams } from '@ionic/angular';
 
-import { Comic } from '../../comic';
+import { Comic } from '../../../comic';
 
 @Component({
   selector: 'app-issue-actions',
@@ -35,7 +35,11 @@ export class IssueActionsComponent {
   }
 
   public edit(comic: Comic): void {
-    this.router.navigate([ '/edit', comic.id ]);
+    this.router.navigate([
+      '/library/publishers', comic.publisher,
+      'series', comic.series,
+      'volumes', comic.volume,
+      'issues', comic.id, 'edit' ]);
     this.popoverCtrl.dismiss();
   }
 }

@@ -3,21 +3,21 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ToastController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
-import { ComicsServiceMocks } from '../../testing/comics.service.mocks';
-import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
-import { Comic } from '../comic';
-import { ComicsService } from '../comics.service';
+import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
+import { ToastControllerMocks } from '../../../testing/toast.controller.mocks';
+import { Comic } from '../../comic';
+import { ComicsService } from '../../comics.service';
+import { LibraryPageModule } from '../library.module';
 
-import { EditPageModule } from './edit.module';
-import { EditPage } from './edit.page';
+import { EditComponent } from './edit.component';
 
-let component: EditPage;
-let fixture: ComponentFixture<EditPage>;
+let component: EditComponent;
+let fixture: ComponentFixture<EditComponent>;
 let toastController: jasmine.SpyObj<ToastController>;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 
-describe('EditPage', () => {
+describe('EditComponent', () => {
 
   beforeEach(() => {
     toastController = ToastControllerMocks.toastController;
@@ -26,7 +26,7 @@ describe('EditPage', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        EditPageModule,
+        LibraryPageModule,
         RouterTestingModule
       ],
       providers: [{
@@ -35,7 +35,7 @@ describe('EditPage', () => {
         provide: ToastController, useValue: toastController
       }]
     });
-    fixture = TestBed.createComponent(EditPage);
+    fixture = TestBed.createComponent(EditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

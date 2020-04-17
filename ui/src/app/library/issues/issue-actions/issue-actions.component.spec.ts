@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { NavParams, PopoverController } from '@ionic/angular';
 
-import { ComicFixtures } from '../../../testing/comic.fixtures';
-import { PopoverControllerMocks } from '../../../testing/popover.controller.mocks';
-import { IssuesPageModule } from '../issues.module';
+import { ComicFixtures } from '../../../../testing/comic.fixtures';
+import { PopoverControllerMocks } from '../../../../testing/popover.controller.mocks';
+import { LibraryPageModule } from '../../library.module';
 
 import { IssueActionsComponent } from './issue-actions.component';
 
@@ -23,7 +23,7 @@ describe('IssueActionsComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        IssuesPageModule
+        LibraryPageModule
       ],
       providers: [{
         provide: NavParams, useValue: navParams
@@ -81,7 +81,11 @@ describe('IssueActionsComponent', () => {
     it('navigates to the edit page and closes the popover', () => {
       component.edit(ComicFixtures.comic);
       expect(router.navigate).toHaveBeenCalledWith([
-        '/edit', ComicFixtures.comic.id
+        '/library/publishers', ComicFixtures.comic.publisher,
+        'series', ComicFixtures.comic.series,
+        'volumes', ComicFixtures.comic.volume,
+        'issues', ComicFixtures.comic.id,
+        'edit'
       ]);
       expect(popoverController.dismiss).toHaveBeenCalledWith();
     });

@@ -3,8 +3,6 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from './auth.guard';
 import { BookmarksPageModule } from './bookmarks/bookmarks.module';
-import { EditPageModule } from './edit/edit.module';
-import { IssuesPageModule } from './issues/issues.module';
 import { LibraryPageModule } from './library/library.module';
 import { LoginPageModule } from './login/login.module';
 import { ReaderPageModule } from './reader/reader.module';
@@ -17,10 +15,6 @@ const routes: Routes = [{
 }, {
   path: 'library',
   loadChildren: (): Promise<LibraryPageModule> => import('./library/library.module').then(m => m.LibraryPageModule),
-  canActivate: [ AuthGuard ]
-}, {
-  path: 'issues/:publisher/:series/:volume',
-  loadChildren: (): Promise<IssuesPageModule> => import('./issues/issues.module').then(m => m.IssuesPageModule),
   canActivate: [ AuthGuard ]
 }, {
   path: 'read/:id',
@@ -37,10 +31,6 @@ const routes: Routes = [{
 }, {
   path: 'login',
   loadChildren: (): Promise<LoginPageModule> => import('./login/login.module').then(m => m.LoginPageModule)
-}, {
-  path: 'edit',
-  loadChildren: (): Promise<EditPageModule> => import('./edit/edit.module').then(m => m.EditPageModule),
-  canActivate: [ AuthGuard ]
 }];
 
 @NgModule({

@@ -3,23 +3,23 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ToastController, PopoverController } from '@ionic/angular';
 import { of } from 'rxjs';
 
-import { ComicStorageServiceMocks } from '../../testing/comic-storage.service.mocks';
-import { ComicFixtures } from '../../testing/comic.fixtures';
-import { ComicsServiceMocks } from '../../testing/comics.service.mocks';
-import { PopoverControllerMocks } from '../../testing/popover.controller.mocks';
-import { ThumbnailsServiceMocks } from '../../testing/thumbnails.service.mocks';
-import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
-import { VolumesServiceMocks } from '../../testing/volumes.service.mocks';
-import { ComicStorageService } from '../comic-storage.service';
-import { ComicsService } from '../comics.service';
-import { ThumbnailsService } from '../thumbnails.service';
-import { VolumesService } from '../volumes.service';
+import { ComicStorageServiceMocks } from '../../../testing/comic-storage.service.mocks';
+import { ComicFixtures } from '../../../testing/comic.fixtures';
+import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
+import { PopoverControllerMocks } from '../../../testing/popover.controller.mocks';
+import { ThumbnailsServiceMocks } from '../../../testing/thumbnails.service.mocks';
+import { ToastControllerMocks } from '../../../testing/toast.controller.mocks';
+import { VolumesServiceMocks } from '../../../testing/volumes.service.mocks';
+import { ComicStorageService } from '../../comic-storage.service';
+import { ComicsService } from '../../comics.service';
+import { ThumbnailsService } from '../../thumbnails.service';
+import { VolumesService } from '../../volumes.service';
+import { LibraryPageModule } from '../library.module';
 
-import { IssuesPageModule } from './issues.module';
-import { IssuesPage } from './issues.page';
+import { IssuesComponent } from './issues.component';
 
-let component: IssuesPage;
-let fixture: ComponentFixture<IssuesPage>;
+let component: IssuesComponent;
+let fixture: ComponentFixture<IssuesComponent>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 let comicStorageService: jasmine.SpyObj<ComicStorageService>;
 let volumesService: jasmine.SpyObj<VolumesService>;
@@ -28,7 +28,7 @@ let toastController: jasmine.SpyObj<ToastController>;
 let popoverElement: jasmine.SpyObj<HTMLIonPopoverElement>;
 let popoverController: jasmine.SpyObj<PopoverController>;
 
-describe('IssuesPage', () => {
+describe('IssuesComponent', () => {
 
   beforeEach(() => {
     comicsService = ComicsServiceMocks.comicsService;
@@ -41,7 +41,7 @@ describe('IssuesPage', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        IssuesPageModule,
+        LibraryPageModule,
         RouterTestingModule.withRoutes([
         ])
       ],
@@ -60,7 +60,7 @@ describe('IssuesPage', () => {
       }]
     });
 
-    fixture = TestBed.createComponent(IssuesPage);
+    fixture = TestBed.createComponent(IssuesComponent);
     component = fixture.componentInstance;
     component.ionViewDidEnter();
     fixture.detectChanges();

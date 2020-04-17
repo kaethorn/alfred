@@ -22,7 +22,7 @@ export class BookmarkActionsComponent {
   }
 
   public goToVolume(comic: Comic): void {
-    this.router.navigate([ '/issues', comic.publisher, comic.series, comic.volume ]);
+    this.router.navigate([ '/library/publishers', comic.publisher, 'series', comic.series, 'volumes', comic.volume, 'issues' ]);
     this.popoverCtrl.dismiss();
   }
 
