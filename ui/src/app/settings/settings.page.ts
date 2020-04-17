@@ -1,12 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
+import { LOCATION_TOKEN } from '../location.token';
 import { Setting } from '../setting';
 import { SettingsService } from '../settings.service';
-import { UserSettingsService } from '../user-settings.service';
 import { User } from '../user';
+import { UserSettingsService } from '../user-settings.service';
 import { UserService } from '../user.service';
-import { LOCATION_TOKEN } from '../location.token';
 
 @Component({
   selector: 'app-settings',
