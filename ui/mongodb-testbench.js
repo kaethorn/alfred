@@ -10,39 +10,38 @@ const log = console.log;
 const logError = console.error;
 
 const comicSchema = mongoose.Schema({
-  path     : String,
-  title    : String,
-  series   : String,
-  volume   : String,
-  number   : String,
-  position : String,
-  year     : Number,
-  month    : Number,
-  publisher: String,
-
-  summary    : String,
-  notes      : String,
-  writer     : String,
-  penciller  : String,
-  inker      : String,
+  characters : String,
   colorist   : String,
-  letterer   : String,
   coverArtist: String,
   editor     : String,
-  web        : String,
-  pageCount  : Number,
+  inker      : String,
+  letterer   : String,
   manga      : Boolean,
-  characters : String,
+  month      : Number,
+  notes      : String,
+  number     : String,
+  pageCount  : Number,
+  path       : String,
+  penciller  : String,
+  position   : String,
+  publisher  : String,
+  series     : String,
+  summary    : String,
   teams      : String,
-  thumbnail  : String
+  thumbnail  : String,
+  title      : String,
+  volume     : String,
+  web        : String,
+  writer     : String,
+  year       : Number
 });
 
 const progressSchema = mongoose.Schema({
   comicId    : String,
-  userId     : String,
-  read       : Boolean,
   currentPage: Number,
-  lastRead   : Date
+  lastRead   : Date,
+  read       : Boolean,
+  userId     : String
 });
 
 const Comic = mongoose.model('Comic', comicSchema, 'comic');
@@ -54,52 +53,63 @@ const mockUser = 'oauth2-mock-user-id';
 const progress = () => Progress.find();
 const findAllVolumes = () =>
   Comic.aggregate()
-    .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
+    .lookup({
+      as: 'progress',
+      foreignField: 'comicId',
+      from: 'progress',
+      localField: '_id'
+    })
     .match({ publisher: 'DC Comics', series: 'Batgirl' })
     .sort({ position: 1 })
     .group({
       _id         : { volume: '$volume' },
-      volume      : { $last: '$volume' },
-      series      : { $last: '$series' },
-      publisher   : { $last: '$publisher' },
+      firstComicId: { $first: '$_id' },
       issueCount  : { $sum: 1 },
+      publisher   : { $last: '$publisher' },
       read        : { $min: '$read' },
       readCount   : { $sum: { $cond: [ '$read', 1, 0 ] } },
-      firstComicId: { $first: '$_id' }
+      series      : { $last: '$series' },
+      volume      : { $last: '$volume' }
     })
     .sort({ volume: 1 });
 
 const findAllLastReadPerVolume = () =>
   Comic.aggregate()
     .sort({ position: 1 })
-    .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
-    .replaceRoot({
-      $mergeObjects: [
-        { $arrayElemAt: [{ $filter: {
-          input: '$progress',
-          as   : 'item',
-          cond : { $eq: [ '$$item.userId', userId ] }
-        } }, 0 ] },
-        '$$ROOT'
-      ]
+    .lookup({
+      as: 'progress',
+      foreignField: 'comicId',
+      from: 'progress',
+      localField: '_id'
     })
-    .project({ progress: 0, comicId: 0, userId: 0 })
+    .replaceRoot({
+      $mergeObjects: [{
+        $arrayElemAt: [{
+          $filter: {
+            as   : 'item',
+            cond : { $eq: [ '$$item.userId', userId ] },
+            input: '$progress'
+          }
+        }, 0 ]
+      }, '$$ROOT' ]
+    })
+    .project({ comicId: 0, progress: 0, userId: 0 })
     .group({
       _id       : { publisher: '$publisher', series: '$series', volume: '$volume' },
-      volumeRead: { $min: { $cond: [ '$read', true, false ] } },
+      comics: { $push: '$$ROOT' },
       readCount : { $sum: { $cond:
         [{ $or: [ '$currentPage', '$read' ] }, 1, 0 ]
       } },
-      comics: { $push: '$$ROOT' }
+      volumeRead: { $min: { $cond: [ '$read', true, false ] } }
     })
     .match({ $expr: { $eq: [ '$volumeRead', false ] } })
     .match({ $expr: { $gt: [ '$readCount', 0 ] } })
     .project({
       comics: {
         $filter: {
-          input: '$comics',
           as   : 'item',
-          cond : { $ne: [ '$$item.read', true ] }
+          cond : { $ne: [ '$$item.read', true ] },
+          input: '$comics'
         }
       }
     })
@@ -110,38 +120,45 @@ const findAllLastReadPerVolume = () =>
 // Publishers -> Series -> Volumes
 const publishers = () =>
   Comic.aggregate()
-    .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
+    .lookup({
+      as: 'progress',
+      foreignField: 'comicId',
+      from: 'progress',
+      localField: '_id'
+    })
     .replaceRoot({
       $mergeObjects: [
         '$$ROOT',
-        { $arrayElemAt: [{ $filter: {
-          input: '$progress',
-          as   : 'item',
-          cond : { $eq: [ '$$item.userId', userId ] }
-        } }, 0 ] },
+        { $arrayElemAt: [{
+          $filter: {
+            as   : 'item',
+            cond : { $eq: [ '$$item.userId', userId ] },
+            input: '$progress'
+          }
+        }, 0 ] },
         { _id: '$$ROOT._id' }
       ]
     })
-    .project({ progress: 0, comicId: 0, userId: 0 })
+    .project({ comicId: 0, progress: 0, userId: 0 })
 
     .sort({ position: 1 })
     .group({
       _id       : { publisher: '$publisher', series: '$series', volume: '$volume'  },
-      volume    : { $last: '$volume' },
       issueCount: { $sum: 1 },
       read      : { $min: '$read' },
-      readCount : { $sum: { $cond: [ '$read', 1, 0 ] } }
+      readCount : { $sum: { $cond: [ '$read', 1, 0 ] } },
+      volume    : { $last: '$volume' }
     })
     .sort({ volume: 1 })
     .group({
       _id    : { publisher: '$_id.publisher', series: '$_id.series'  },
       series : { $last: '$_id.series' },
       volumes: { $push: {
-        volume    : '$volume',
-        position  : '$position',
         issueCount: '$issueCount',
+        position  : '$position',
+        read      : '$read',
         readCount : '$readCount',
-        read      : '$read'
+        volume    : '$volume'
       } }
     })
     .sort({ series: -1 })
@@ -159,19 +176,26 @@ const findLastReadForVolume = () =>
     // should return #2 (first read)
     .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2016' })
 
-    .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
+    .lookup({
+      as: 'progress',
+      foreignField: 'comicId',
+      from: 'progress',
+      localField: '_id'
+    })
     .replaceRoot({
       $mergeObjects: [
         '$$ROOT',
-        { $arrayElemAt: [{ $filter: {
-          input: '$progress',
-          as   : 'item',
-          cond : { $eq: [ '$$item.userId', mockUser ] }
-        } }, 0 ] },
+        { $arrayElemAt: [{
+          $filter: {
+            as   : 'item',
+            cond : { $eq: [ '$$item.userId', mockUser ] },
+            input: '$progress'
+          }
+        }, 0 ] },
         { _id: '$$ROOT._id' }
       ]
     })
-    .project({ progress: 0, comicId: 0, userId: 0 })
+    .project({ comicId: 0, progress: 0, userId: 0 })
 
     .sort({ position: 1 })
     .sort({ read: 1 })
@@ -180,19 +204,25 @@ const findLastReadForVolume = () =>
 const findAllByPublisherAndSeriesAndVolumeOrderByPosition = () =>
   Comic.aggregate()
     .match({ publisher: 'DC Comics', series: 'Batgirl', volume: '2000' })
-    .lookup({ from: 'progress', localField: '_id', foreignField: 'comicId', as: 'progress' })
+    .lookup({
+      as: 'progress',
+      foreignField: 'comicId',
+      from: 'progress',
+      localField: '_id'
+    })
     .replaceRoot({
       $mergeObjects: [
-        { $arrayElemAt: [{ $filter: {
-          input: '$progress',
-          as   : 'item',
-          cond : { $eq: [ '$$item.userId', userId ] }
-        } }, 0 ] },
+        { $arrayElemAt: [{
+          $filter: {
+            as   : 'item',
+            cond : { $eq: [ '$$item.userId', userId ] },
+            input: '$progress'
+          }
+        }, 0 ] },
         '$$ROOT'
       ]
     })
-    .project({ progress: 0, comicId: 0, userId: 0 })
-
+    .project({ comicId: 0, progress: 0, userId: 0 })
     .sort({ position: 1 });
 
 const markAllAsReadUntil = () =>

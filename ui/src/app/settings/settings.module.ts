@@ -12,6 +12,12 @@ import { ScannerComponent } from './scanner/scanner.component';
 import { SettingsPage } from './settings.page';
 
 @NgModule({
+  declarations: [
+    SettingsPage,
+    ScannerComponent,
+    QueueComponent,
+    CoversComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -19,21 +25,12 @@ import { SettingsPage } from './settings.page';
     HttpClientModule,
     MomentModule,
     RouterModule.forChild([{
-      path: '',
-      component: SettingsPage
+      component: SettingsPage, path: ''
     }, {
-      path: 'queue',
-      component: QueueComponent
+      component: QueueComponent, path: 'queue'
     }, {
-      path: 'covers',
-      component: CoversComponent
+      component: CoversComponent, path: 'covers'
     }])
-  ],
-  declarations: [
-    SettingsPage,
-    ScannerComponent,
-    QueueComponent,
-    CoversComponent
   ]
 })
 export class SettingsPageModule {}

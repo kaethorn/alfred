@@ -6,8 +6,8 @@ import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: [ './login.page.sass' ]
+  styleUrls: [ './login.page.sass' ],
+  templateUrl: './login.page.html'
 })
 export class LoginPage {
 

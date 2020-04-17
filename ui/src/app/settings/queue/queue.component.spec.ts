@@ -60,8 +60,8 @@ describe('QueueComponent', () => {
 
         await comicsService.fixIssue.calls.mostRecent().returnValue.toPromise();
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Flattened comic archive "401.cbz".',
-          duration: 3000
+          duration: 3000,
+          message: 'Flattened comic archive "401.cbz".'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -80,8 +80,8 @@ describe('QueueComponent', () => {
         await new Promise(resolve =>
           comicsService.fixIssue.calls.mostRecent().returnValue.toPromise().catch(resolve));
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error while flattening comic archive "401.cbz".',
-          duration: 4000
+          duration: 4000,
+          message: 'Error while flattening comic archive "401.cbz".'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();

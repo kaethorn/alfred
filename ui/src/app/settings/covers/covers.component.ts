@@ -9,8 +9,8 @@ import { ThumbnailsService } from '../../thumbnails.service';
 
 @Component({
   selector: 'app-covers',
-  templateUrl: './covers.component.html',
-  styleUrls: [ './covers.component.sass' ]
+  styleUrls: [ './covers.component.sass' ],
+  templateUrl: './covers.component.html'
 })
 export class CoversComponent {
 
@@ -58,8 +58,8 @@ export class CoversComponent {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

@@ -32,7 +32,7 @@ describe('LoginPage', () => {
       imports: [
         LoginPageModule,
         RouterTestingModule.withRoutes([
-          { path: 'library', component: MockComponent }
+          { component: MockComponent, path: 'library' }
         ])
       ],
       providers: [{

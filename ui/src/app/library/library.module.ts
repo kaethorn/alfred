@@ -14,47 +14,44 @@ import { VolumeActionsComponent } from './volumes/volume-actions/volume-actions.
 import { VolumesComponent } from './volumes/volumes.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    IonicModule,
-    RouterModule.forChild([{
-      path: '',
-      children: [{
-        path: 'publishers',
-        component: PublishersComponent
-      }, {
-        path: 'publishers/:publisher/series',
-        component: SeriesComponent
-      }, {
-        path: 'publishers/:publisher/series/:series/volumes',
-        component: VolumesComponent
-      }, {
-        path: 'publishers/:publisher/series/:series/volumes/:volume/issues',
-        component: IssuesComponent
-      }, {
-        path: 'publishers/:publisher/series/:series/volumes/:volume/issues/:id/edit',
-        component: EditComponent
-      }, {
-        path: '',
-        redirectTo: '/library/publishers',
-        pathMatch: 'full'
-      }]
-    }])
-  ],
   declarations: [
+    EditComponent,
+    IssueActionsComponent,
+    IssuesComponent,
     PublishersComponent,
     SeriesComponent,
-    VolumesComponent,
     VolumeActionsComponent,
-    IssuesComponent,
-    IssueActionsComponent,
-    EditComponent
+    VolumesComponent
   ],
   entryComponents: [
     VolumeActionsComponent
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    IonicModule,
+    ReactiveFormsModule,
+    RouterModule.forChild([{
+      children: [{
+        component: PublishersComponent, path: 'publishers'
+      }, {
+        component: SeriesComponent, path: 'publishers/:publisher/series'
+      }, {
+        component: VolumesComponent, path: 'publishers/:publisher/series/:series/volumes'
+      }, {
+        component: IssuesComponent,
+        path: 'publishers/:publisher/series/:series/volumes/:volume/issues'
+      }, {
+        component: EditComponent,
+        path: 'publishers/:publisher/series/:series/volumes/:volume/issues/:id/edit'
+      }, {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: '/library/publishers'
+      }],
+      path: ''
+    }])
   ]
 })
 export class LibraryPageModule {}

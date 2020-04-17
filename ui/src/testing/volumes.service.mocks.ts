@@ -10,13 +10,13 @@ export class VolumesServiceMocks {
 
   public static get volumesService(): jasmine.SpyObj<VolumesService> {
     return jasmine.createSpyObj('VolumesService', {
-      listVolumesByPublisher: of([ VolumeFixtures.volume ]),
-      listVolumes: of(VolumeFixtures.volumes),
-      listSeries: of(SeriesFixtures.series),
       listPublishers: of(PublisherFixtures.publishers),
+      listSeries: of(SeriesFixtures.series),
+      listVolumes: of(VolumeFixtures.volumes),
+      listVolumesByPublisher: of([ VolumeFixtures.volume ]),
+      markAllAsReadUntil: of(null),
       markAsRead: of(null),
-      markAsUnread: of(null),
-      markAllAsReadUntil: of(null)
+      markAsUnread: of(null)
     });
   }
 }

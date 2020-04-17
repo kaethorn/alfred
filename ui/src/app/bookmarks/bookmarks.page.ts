@@ -10,8 +10,8 @@ import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.co
 
 @Component({
   selector: 'app-bookmarks',
-  templateUrl: './bookmarks.page.html',
-  styleUrls: [ './bookmarks.page.sass' ]
+  styleUrls: [ './bookmarks.page.sass' ],
+  templateUrl: './bookmarks.page.html'
 })
 export class BookmarksPage {
 
@@ -66,8 +66,8 @@ export class BookmarksPage {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

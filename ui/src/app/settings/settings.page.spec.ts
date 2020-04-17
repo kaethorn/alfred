@@ -89,8 +89,8 @@ describe('SettingsPage', () => {
 
         await settingsService.update.calls.mostRecent().returnValue.toPromise();
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Settings saved.',
-          duration: 3000
+          duration: 3000,
+          message: 'Settings saved.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -112,8 +112,8 @@ describe('SettingsPage', () => {
         await new Promise(resolve =>
           settingsService.update.calls.mostRecent().returnValue.toPromise().catch(resolve));
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error saving settings (500: Server error).',
-          duration: 4000
+          duration: 4000,
+          message: 'Error saving settings (500: Server error).'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();

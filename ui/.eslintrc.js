@@ -48,6 +48,13 @@ module.exports = {
                 "arraysInArrays": false
             }
         ],
+        "sort-keys": [
+            "error",
+            "asc",
+            {
+                "minKeys": 2
+            }
+        ],
         "switch-colon-spacing": "error",
         "constructor-super": "error",
         "for-direction": "error",
@@ -100,7 +107,7 @@ module.exports = {
         "no-useless-catch": "error",
         "no-useless-escape": "error",
         "no-with": "error",
-        "object-curly-spacing": [ "error", "always" ],
+        "object-curly-spacing": ["error", "always"],
         "prefer-arrow-callback": "error",
         "require-await": "error",
         "require-atomic-updates": "error",
@@ -111,7 +118,7 @@ module.exports = {
         "camelcase": [
             "error",
             {
-                "allow": [ "id_token", "client_id", "__Zone_disable_customElements" ],
+                "allow": ["id_token", "client_id", "__Zone_disable_customElements"],
 
             }
         ],
@@ -146,7 +153,7 @@ module.exports = {
         ],
         "no-bitwise": "error",
         "no-caller": "error",
-        "no-console": [ "error", { allow: [ "warn", "error" ] } ],
+        "no-console": ["error", { allow: ["warn", "error"] }],
         "no-eval": "error",
         "no-new-wrappers": "error",
         "no-restricted-imports": [
@@ -165,14 +172,14 @@ module.exports = {
         "no-underscore-dangle": [
             "error",
             {
-                "allow": [ "_embedded", "_links", "__Zone_disable_customElements" ] 
+                "allow": ["_embedded", "_links", "__Zone_disable_customElements"]
             }
         ],
         "no-unused-expressions": "error",
         "no-var": "error",
         "object-shorthand": "error",
         "prefer-const": "error",
-        "quote-props": [ "error", "as-needed" ],
+        "quote-props": ["error", "as-needed"],
         "radix": "error",
         "space-before-function-paren": [
             "error",
@@ -184,12 +191,12 @@ module.exports = {
         ],
         "space-in-parens": "error",
         "spaced-comment": "error",
-        "template-curly-spacing": [ "error", "always" ]
+        "template-curly-spacing": ["error", "always"]
     },
     "settings": {},
     "overrides": [
         {
-            "files": [ "*.ts" ],
+            "files": ["*.ts"],
             "parser": "@typescript-eslint/parser",
             "parserOptions": {
                 "project": "tsconfig.json"
@@ -250,7 +257,7 @@ module.exports = {
                 "@typescript-eslint/tslint/config": [
                     "error",
                     {
-                        "rulesDirectory": [ "codelyzer" ],
+                        "rulesDirectory": ["codelyzer"],
                         "rules": {
                             "component-class-suffix": [
                                 true,

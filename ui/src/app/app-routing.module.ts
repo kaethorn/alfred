@@ -10,33 +10,33 @@ import { SettingsPageModule } from './settings/settings.module';
 
 const routes: Routes = [{
   path: '',
-  redirectTo: 'library',
-  pathMatch: 'full'
+  pathMatch: 'full',
+  redirectTo: 'library'
 }, {
-  path: 'library',
+  canActivate: [ AuthGuard ],
   loadChildren: (): Promise<LibraryPageModule> => import('./library/library.module').then(m => m.LibraryPageModule),
-  canActivate: [ AuthGuard ]
+  path: 'library'
 }, {
-  path: 'read/:id',
+  canActivate: [ AuthGuard ],
   loadChildren: (): Promise<ReaderPageModule> => import('./reader/reader.module').then(m => m.ReaderPageModule),
-  canActivate: [ AuthGuard ]
+  path: 'read/:id'
 }, {
-  path: 'bookmarks',
+  canActivate: [ AuthGuard ],
   loadChildren: (): Promise<BookmarksPageModule> => import('./bookmarks/bookmarks.module').then(m => m.BookmarksPageModule),
-  canActivate: [ AuthGuard ]
+  path: 'bookmarks'
 }, {
-  path: 'settings',
+  canActivate: [ AuthGuard ],
   loadChildren: (): Promise<SettingsPageModule> => import('./settings/settings.module').then(m => m.SettingsPageModule),
-  canActivate: [ AuthGuard ]
+  path: 'settings'
 }, {
-  path: 'login',
-  loadChildren: (): Promise<LoginPageModule> => import('./login/login.module').then(m => m.LoginPageModule)
+  loadChildren: (): Promise<LoginPageModule> => import('./login/login.module').then(m => m.LoginPageModule),
+  path: 'login'
 }];
 
 @NgModule({
+  exports: [ RouterModule ],
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
-  ],
-  exports: [ RouterModule ]
+  ]
 })
 export class AppRoutingModule {}

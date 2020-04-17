@@ -35,12 +35,12 @@ module.exports = {
 
     // Proxy requests to the web server
     app.use('', createProxyMiddleware(proxyFilter, {
-      target: 'http://localhost:8080',
       onProxyReq: (proxyReq, req) => {
         if ('' in req.headers) {
           delete req.headers[''];
         }
-      }
+      },
+      target: 'http://localhost:8080'
     }));
 
     return new Promise((resolve, reject) => {

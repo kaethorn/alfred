@@ -15,8 +15,8 @@ import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 
 @Component({
   selector: 'app-issues',
-  templateUrl: './issues.component.html',
-  styleUrls: [ './issues.component.sass' ]
+  styleUrls: [ './issues.component.sass' ],
+  templateUrl: './issues.component.html'
 })
 export class IssuesComponent {
 
@@ -107,8 +107,8 @@ export class IssuesComponent {
 
   private async showToast(message: string): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration: 3000
+      duration: 3000,
+      message
     });
     toast.present();
   }

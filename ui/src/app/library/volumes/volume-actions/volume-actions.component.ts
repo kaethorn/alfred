@@ -6,8 +6,8 @@ import { VolumesService } from '../../../volumes.service';
 
 @Component({
   selector: 'app-volume-actions',
-  templateUrl: './volume-actions.component.html',
-  styleUrls: [ './volume-actions.component.sass' ]
+  styleUrls: [ './volume-actions.component.sass' ],
+  templateUrl: './volume-actions.component.html'
 })
 export class VolumeActionsComponent {
 

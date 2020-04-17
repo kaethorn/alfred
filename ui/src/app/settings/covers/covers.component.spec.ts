@@ -122,8 +122,8 @@ describe('CoversComponent', () => {
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Front cover of "401.cbz" deleted.',
-          duration: 3000
+          duration: 3000,
+          message: 'Front cover of "401.cbz" deleted.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -142,8 +142,8 @@ describe('CoversComponent', () => {
           comicsService.deletePage.calls.mostRecent().returnValue.toPromise().catch(resolve));
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error while deleting front cover of "401.cbz".',
-          duration: 4000
+          duration: 4000,
+          message: 'Error while deleting front cover of "401.cbz".'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -167,8 +167,8 @@ describe('CoversComponent', () => {
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Back cover of "401.cbz" deleted.',
-          duration: 3000
+          duration: 3000,
+          message: 'Back cover of "401.cbz" deleted.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -187,8 +187,8 @@ describe('CoversComponent', () => {
           comicsService.deletePage.calls.mostRecent().returnValue.toPromise().catch(resolve));
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error while deleting back cover of "401.cbz".',
-          duration: 4000
+          duration: 4000,
+          message: 'Error while deleting back cover of "401.cbz".'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();

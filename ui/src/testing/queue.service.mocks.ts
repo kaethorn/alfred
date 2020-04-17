@@ -8,8 +8,8 @@ export class QueueServiceMocks {
 
   public static get queueService(): jasmine.SpyObj<QueueService> {
     return jasmine.createSpyObj('QueueService', {
-      process: of(ComicFixtures.comic),
-      add: Promise.resolve()
+      add: Promise.resolve(),
+      process: of(ComicFixtures.comic)
     });
   }
 }

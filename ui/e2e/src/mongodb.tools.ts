@@ -22,10 +22,10 @@ export class MongoDBTools {
     await mongoose.connection.db.dropDatabase();
     const collection = await mongoose.connection.db.createCollection('setting');
     return collection.insertOne({
+      comment: 'Path to your comic library',
       key    : 'comics.path',
       name   : 'Path',
-      value  : comicsPath,
-      comment: 'Path to your comic library'
+      value  : comicsPath
     });
   }
 }

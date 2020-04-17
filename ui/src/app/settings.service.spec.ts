@@ -7,28 +7,28 @@ let service: SettingsService;
 let httpMock: HttpTestingController;
 
 const mockSettingA = {
-  id: '1',
-  key: 'a',
-  name: 'Sample A',
-  value: 'foo',
-  comment: '',
   _links: {
     self: {
       href: 'foo.bar/1'
     }
-  }
+  },
+  comment: '',
+  id: '1',
+  key: 'a',
+  name: 'Sample A',
+  value: 'foo'
 };
 const mockSettingB = {
-  id: '2',
-  key: 'b',
-  name: 'Sample B',
-  value: 'bar',
-  comment: '',
   _links: {
     self: {
       href: 'foo.bar/2'
     }
-  }
+  },
+  comment: '',
+  id: '2',
+  key: 'b',
+  name: 'Sample B',
+  value: 'bar'
 };
 const mockSettings = {
   _embedded: {

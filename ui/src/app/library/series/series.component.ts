@@ -6,8 +6,8 @@ import { VolumesService } from '../../volumes.service';
 
 @Component({
   selector: 'app-series',
-  templateUrl: './series.component.html',
-  styleUrls: [ './series.component.sass' ]
+  styleUrls: [ './series.component.sass' ],
+  templateUrl: './series.component.html'
 })
 export class SeriesComponent {
 

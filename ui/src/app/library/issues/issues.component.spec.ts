@@ -108,8 +108,8 @@ describe('IssuesComponent', () => {
           await comicStorageService.storeSurrounding.calls.mostRecent().returnValue;
 
           expect(toastController.create).toHaveBeenCalledWith({
-            message: 'Volume cached.',
-            duration: 3000
+            duration: 3000,
+            message: 'Volume cached.'
           });
         });
       });
@@ -154,8 +154,8 @@ describe('IssuesComponent', () => {
           await comicStorageService.storeSurrounding.calls.mostRecent().returnValue;
 
           expect(toastController.create).toHaveBeenCalledWith({
-            message: 'Volume cached.',
-            duration: 3000
+            duration: 3000,
+            message: 'Volume cached.'
           });
         });
       });
@@ -201,8 +201,8 @@ describe('IssuesComponent', () => {
           await comicStorageService.storeSurrounding.calls.mostRecent().returnValue;
 
           expect(toastController.create).toHaveBeenCalledWith({
-            message: 'Volume cached.',
-            duration: 3000
+            duration: 3000,
+            message: 'Volume cached.'
           });
         });
       });

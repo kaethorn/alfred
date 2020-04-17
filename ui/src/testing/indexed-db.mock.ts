@@ -376,13 +376,13 @@ export class IndexedDbMock {
 
   public static get create(): IDBFactory {
     return {
+      cmp: null,
+      deleteDatabase: null,
       open: (name: string, version?: number): IDBOpenDBRequest => {
         storage[name] = {};
         storage[name].$version = version;
         return this.openRequest(name, version);
-      },
-      cmp: null,
-      deleteDatabase: null
+      }
     };
   }
 
@@ -403,18 +403,18 @@ export class IndexedDbMock {
 
   private static openRequest(name: string, version: number): IDBOpenDBRequest {
     const request: IDBOpenDBRequest = {
-      result: null,
-      onblocked: null,
-      onupgradeneeded: null,
       addEventListener: null,
-      removeEventListener: null,
+      dispatchEvent: null,
       error: null,
+      onblocked: null,
       onerror: null,
       onsuccess: null,
+      onupgradeneeded: null,
       readyState: null,
+      removeEventListener: null,
+      result: null,
       source: null,
-      transaction: null,
-      dispatchEvent: null
+      transaction: null
     };
 
     setTimeout(() => {

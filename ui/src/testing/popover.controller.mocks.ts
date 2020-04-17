@@ -7,9 +7,9 @@ export class PopoverControllerMocks {
   public static get popoverElementSpy(): jasmine.SpyObj<HTMLIonPopoverElement> {
     if (!this.popoverElement) {
       this.popoverElement = jasmine.createSpyObj('HTMLIonPopoverElement', {
-        present: null,
         onDidDismiss: Promise.resolve({}),
-        onWillDismiss: Promise.resolve()
+        onWillDismiss: Promise.resolve(),
+        present: null
       });
     }
     return this.popoverElement;

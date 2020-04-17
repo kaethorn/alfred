@@ -8,33 +8,33 @@ import { ComicsService } from '../../comics.service';
 
 @Component({
   selector: 'app-edit',
-  templateUrl: './edit.component.html',
-  styleUrls: [ './edit.component.sass' ]
+  styleUrls: [ './edit.component.sass' ],
+  templateUrl: './edit.component.html'
 })
 export class EditComponent {
 
   public comic: Comic;
   public comicForm = this.formBuilder.group({
-    series: [ '', Validators.required ],
-    publisher: [ '', Validators.required ],
-    volume: [ '', Validators.required ],
-    number: [ '', Validators.required ],
-    year: [ '' ],
-    month: [ '' ],
-    title: [ '' ],
-    summary: [ '' ],
-    notes: [ '' ],
-    writer: [ '' ],
-    penciller: [ '' ],
-    inker: [ '' ],
+    characters: [ '' ],
     colorist: [ '' ],
-    letterer: [ '' ],
     coverArtist: [ '' ],
     editor: [ '' ],
+    inker: [ '' ],
+    letterer: [ '' ],
+    locations: [ '' ],
     manga: [ '' ],
-    characters: [ '' ],
+    month: [ '' ],
+    notes: [ '' ],
+    number: [ '', Validators.required ],
+    penciller: [ '' ],
+    publisher: [ '', Validators.required ],
+    series: [ '', Validators.required ],
+    summary: [ '' ],
     teams: [ '' ],
-    locations: [ '' ]
+    title: [ '' ],
+    volume: [ '', Validators.required ],
+    writer: [ '' ],
+    year: [ '' ]
   });
   public scrapeInProgress = false;
   public editInProgress = false;
@@ -84,8 +84,8 @@ export class EditComponent {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

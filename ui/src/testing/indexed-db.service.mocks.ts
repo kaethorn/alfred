@@ -6,13 +6,13 @@ export class IndexedDbServiceMocks {
 
   public static get IndexedDbService(): jasmine.SpyObj<IndexedDbService> {
     const service = jasmine.createSpyObj('IndexedDbService', {
-      open: null,
-      save: Promise.resolve(new Event('')),
-      hasKey: Promise.resolve(true),
       delete: Promise.resolve(new Event('')),
-      getAll: Promise.resolve([]),
       get: Promise.resolve(),
-      getAllBy: Promise.resolve([])
+      getAll: Promise.resolve([]),
+      getAllBy: Promise.resolve([]),
+      hasKey: Promise.resolve(true),
+      open: null,
+      save: Promise.resolve(new Event(''))
     });
     service.ready = new AsyncSubject<void>();
 

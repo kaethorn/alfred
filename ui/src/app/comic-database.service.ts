@@ -20,12 +20,12 @@ export class ComicDatabaseService {
       name: 'Images',
       options: { autoIncrement: true }
     }, {
-      name: 'Comics',
-      options: { keyPath: 'id' },
       indices: [
         [ 'id', 'id', { unique: true }],
         [ 'dirty', 'dirty', { unique: false }]
-      ]
+      ],
+      name: 'Comics',
+      options: { keyPath: 'id' }
     }]);
 
     this.indexedDbService.ready.subscribe(

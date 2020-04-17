@@ -18,12 +18,12 @@ describe('IndexedDb', () => {
       name: 'Images',
       options: { autoIncrement: true }
     }, {
-      name: 'Comics',
-      options: { keyPath: 'id' },
       indices: [
         [ 'id', 'id', { unique: true }],
         [ 'dirty', 'dirty', { unique: false }]
-      ]
+      ],
+      name: 'Comics',
+      options: { keyPath: 'id' }
     }], IndexedDbMock.create);
 
     await service.ready.toPromise();
@@ -66,12 +66,12 @@ describe('IndexedDb', () => {
           name: 'Images',
           options: { autoIncrement: true }
         }, {
-          name: 'Comics',
-          options: { keyPath: 'id' },
           indices: [
             [ 'id', 'id', { unique: true }],
             [ 'dirty', 'dirty', { unique: false }]
-          ]
+          ],
+          name: 'Comics',
+          options: { keyPath: 'id' }
         }]);
       });
 

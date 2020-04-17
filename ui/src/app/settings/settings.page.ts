@@ -10,8 +10,8 @@ import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-settings',
-  templateUrl: './settings.page.html',
-  styleUrls: [ './settings.page.sass' ]
+  styleUrls: [ './settings.page.sass' ],
+  templateUrl: './settings.page.html'
 })
 export class SettingsPage {
 
@@ -59,8 +59,8 @@ export class SettingsPage {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

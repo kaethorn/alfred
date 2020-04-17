@@ -6,8 +6,8 @@ import { Comic } from '../../../comic';
 
 @Component({
   selector: 'app-issue-actions',
-  templateUrl: './issue-actions.component.html',
-  styleUrls: [ './issue-actions.component.sass' ]
+  styleUrls: [ './issue-actions.component.sass' ],
+  templateUrl: './issue-actions.component.html'
 })
 export class IssueActionsComponent {
 

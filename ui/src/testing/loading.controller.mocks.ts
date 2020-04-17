@@ -7,8 +7,8 @@ export class LoadingControllerMocks {
   public static get loadingElementSpy(): jasmine.SpyObj<HTMLIonLoadingElement> {
     if (!this.loadingElement) {
       this.loadingElement = jasmine.createSpyObj('HTMLIonLoadingElement', {
-        present: Promise.resolve(),
-        dismiss: Promise.resolve()
+        dismiss: Promise.resolve(),
+        present: Promise.resolve()
       });
     }
     return this.loadingElement;

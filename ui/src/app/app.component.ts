@@ -9,8 +9,8 @@ import { UserSettingsService } from './user-settings.service';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: [ './app.component.sass' ]
+  styleUrls: [ './app.component.sass' ],
+  templateUrl: 'app.component.html'
 })
 export class AppComponent {
   public hideMenu = false;

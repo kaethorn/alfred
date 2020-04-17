@@ -4,14 +4,14 @@ import { NgModule } from '@angular/core';
 import { SecurePipe } from './secure.pipe';
 
 @NgModule({
-  imports: [
-    HttpClientModule
-  ],
   declarations: [
     SecurePipe
   ],
   exports: [
     SecurePipe
+  ],
+  imports: [
+    HttpClientModule
   ]
 })
 export class SecureModule {}

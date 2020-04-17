@@ -30,7 +30,7 @@ describe('UserService', () => {
     describe('with a user', () => {
 
       beforeEach(() => {
-        localStorage.setItem('user', JSON.stringify({ token: 'test-token-1', email: 'a@b.com' }));
+        localStorage.setItem('user', JSON.stringify({ email: 'a@b.com', token: 'test-token-1' }));
         service.verifyCurrentUser();
       });
 
@@ -122,10 +122,10 @@ describe('UserService', () => {
           signIn: jasmine.createSpy()
         };
         (window as any).gapi = {
-          load: jasmine.createSpy().and.callFake((api, callback) => callback()),
           auth2: {
             init: (): any => auth2
-          }
+          },
+          load: jasmine.createSpy().and.callFake((api, callback) => callback())
         };
         service.setupGoogleSignIn();
         req = httpMock.expectOne('/api/user/sign-in/mock-google-token-1');
@@ -209,10 +209,10 @@ describe('UserService', () => {
           }
         };
         (window as any).gapi = {
-          load: jasmine.createSpy().and.callFake((api, callback) => callback()),
           auth2: {
             init: (): any => auth2
-          }
+          },
+          load: jasmine.createSpy().and.callFake((api, callback) => callback())
         };
         service.setupGoogleSignIn();
       });

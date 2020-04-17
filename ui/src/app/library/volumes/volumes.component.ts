@@ -14,8 +14,8 @@ import { VolumeActionsComponent } from './volume-actions/volume-actions.componen
 
 @Component({
   selector: 'app-volumes',
-  templateUrl: './volumes.component.html',
-  styleUrls: [ './volumes.component.sass' ]
+  styleUrls: [ './volumes.component.sass' ],
+  templateUrl: './volumes.component.html'
 })
 export class VolumesComponent {
 

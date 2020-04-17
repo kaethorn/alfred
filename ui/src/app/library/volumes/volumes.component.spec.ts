@@ -40,7 +40,7 @@ describe('VolumesComponent', () => {
       imports: [
         LibraryPageModule,
         RouterTestingModule.withRoutes([{
-          path: '**', component: MockComponent
+          component: MockComponent, path: '**'
         }])
       ],
       providers: [{

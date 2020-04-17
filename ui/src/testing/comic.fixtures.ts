@@ -20,27 +20,27 @@ export class ComicFixtures {
 
   public static get volume(): Comic[] {
     return [
-      Object.assign({}, this.comic, { id: '11', position: '401.0', nextId: '12' }),
-      Object.assign({}, this.comic, { id: '12', position: '402.0', nextId: '13', previousId: '11' }),
-      Object.assign({}, this.comic, { id: '13', position: '403.0', nextId: '14', previousId: '12' }),
-      Object.assign({}, this.comic, { id: '14', position: '404.0', nextId: '15', previousId: '13' }),
-      Object.assign({}, this.comic, { id: '15', position: '405.0', nextId: '16', previousId: '14' }),
-      Object.assign({}, this.comic, { id: '16', position: '406.0', nextId: '17', previousId: '15' }),
-      Object.assign({}, this.comic, { id: '17', position: '407.0', nextId: '18', previousId: '16' }),
+      Object.assign({}, this.comic, { id: '11', nextId: '12', position: '401.0' }),
+      Object.assign({}, this.comic, { id: '12', nextId: '13', position: '402.0',  previousId: '11' }),
+      Object.assign({}, this.comic, { id: '13', nextId: '14', position: '403.0',  previousId: '12' }),
+      Object.assign({}, this.comic, { id: '14', nextId: '15', position: '404.0',  previousId: '13' }),
+      Object.assign({}, this.comic, { id: '15', nextId: '16', position: '405.0',  previousId: '14' }),
+      Object.assign({}, this.comic, { id: '16', nextId: '17', position: '406.0',  previousId: '15' }),
+      Object.assign({}, this.comic, { id: '17', nextId: '18', position: '407.0',  previousId: '16' }),
       Object.assign({}, this.comic, { id: '18', position: '408.0', previousId: '17' })
     ];
   }
 
   public static get volume2(): Comic[] {
     return [
-      Object.assign({}, this.comic, { id: '21', series: 'Batgirl', volume: '2018', position: '1.0', nextId: '22' }),
-      Object.assign({}, this.comic, { id: '22', series: 'Batgirl', volume: '2018', position: '2.0', nextId: '23', previousId: '21' }),
-      Object.assign({}, this.comic, { id: '23', series: 'Batgirl', volume: '2018', position: '3.0', nextId: '24', previousId: '22' }),
-      Object.assign({}, this.comic, { id: '24', series: 'Batgirl', volume: '2018', position: '4.0', nextId: '25', previousId: '23' }),
-      Object.assign({}, this.comic, { id: '25', series: 'Batgirl', volume: '2018', position: '5.0', nextId: '26', previousId: '24' }),
-      Object.assign({}, this.comic, { id: '26', series: 'Batgirl', volume: '2018', position: '6.0', nextId: '27', previousId: '25' }),
-      Object.assign({}, this.comic, { id: '27', series: 'Batgirl', volume: '2018', position: '7.0', nextId: '28', previousId: '26' }),
-      Object.assign({}, this.comic, { id: '28', series: 'Batgirl', volume: '2018', position: '8.0', previousId: '27' })
+      Object.assign({}, this.comic, { id: '21', nextId: '22', position: '1.0', series: 'Batgirl', volume: '2018' }),
+      Object.assign({}, this.comic, { id: '22', nextId: '23', position: '2.0', previousId: '21', series: 'Batgirl', volume: '2018' }),
+      Object.assign({}, this.comic, { id: '23', nextId: '24', position: '3.0', previousId: '22', series: 'Batgirl', volume: '2018' }),
+      Object.assign({}, this.comic, { id: '24', nextId: '25', position: '4.0', previousId: '23', series: 'Batgirl', volume: '2018' }),
+      Object.assign({}, this.comic, { id: '25', nextId: '26', position: '5.0', previousId: '24', series: 'Batgirl', volume: '2018' }),
+      Object.assign({}, this.comic, { id: '26', nextId: '27', position: '6.0', previousId: '25', series: 'Batgirl', volume: '2018' }),
+      Object.assign({}, this.comic, { id: '27', nextId: '28', position: '7.0', previousId: '26', series: 'Batgirl', volume: '2018' }),
+      Object.assign({}, this.comic, { id: '28', position: '8.0', previousId: '27', series: 'Batgirl', volume: '2018' })
     ];
   }
 
@@ -62,10 +62,10 @@ export class ComicFixtures {
   public static get scannerIssueFixable(): ScannerIssue {
     return {
       date: new Date('2020-03-10T21:24:00'),
-      type: ScannerIssueType.NOT_FLAT,
-      message: 'Found directory entries in the archive.',
       fixable: true,
-      severity: ScannerIssueSeverity.WARNING
+      message: 'Found directory entries in the archive.',
+      severity: ScannerIssueSeverity.WARNING,
+      type: ScannerIssueType.NOT_FLAT
     };
   }
 }
