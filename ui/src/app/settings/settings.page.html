@@ -29,26 +29,10 @@
   </ion-card>
 
   <ion-card>
-    <ion-card-header>Appearance</ion-card-header>
-    <ion-card-content>
-      <ion-list lines="none">
-        <ion-item>
-          <ion-label>
-            <p>Dark mode</p>
-          </ion-label>
-          <ion-toggle [(ngModel)]="userSettings.darkMode"
-            (ionChange)="saveUserSettings()" name="Dark mode">
-          </ion-toggle>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>Server</ion-card-header>
+    <ion-card-header>Server settings</ion-card-header>
     <ion-card-content>
       <form (ngSubmit)="onSubmit()" #settingsForm="ngForm">
-        <ion-list lines="none">
+        <ion-list>
           <ion-item *ngFor="let setting of settings">
             <ion-label position="floating">
               <p>{{ setting.comment }}</p>
@@ -70,4 +54,20 @@
   </ion-card>
 
   <app-scanner></app-scanner>
+
+  <ion-card>
+    <ion-card-header>Appearance</ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-label>
+            <p>Dark mode</p>
+          </ion-label>
+          <ion-toggle [(ngModel)]="userSettings.darkMode"
+            (ionChange)="saveUserSettings()" name="Dark mode">
+          </ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

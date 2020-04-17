@@ -55,7 +55,7 @@
   <ion-card-content>
     <ion-list class="stats">
       <ion-item *ngFor="let stat of stats | keyvalue">
-        <ion-label>{{ stat.key }}</ion-label>
+        <ion-label class="ion-text-capitalize">{{ stat.key }}</ion-label>
         <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
       </ion-item>
     </ion-list>
@@ -67,7 +67,7 @@
   <ion-card-content>
     <ion-list>
       <ion-item>
-        Clear {{ cachedComicsCount }} cached comics in the current browser
+        Clear {{ cachedComicsCount }} cached comics in the current browser.
         <ion-button slot="end" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount == 0" color="warning">
           <ion-icon slot="start" name="trash"></ion-icon>
           Clear
