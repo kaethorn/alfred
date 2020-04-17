@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { PopoverController, ToastController } from '@ionic/angular';
 
 import { ComicDatabaseServiceMocks } from '../../testing/comic-database.service.mocks';
@@ -41,7 +42,8 @@ describe('BookmarksPage', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        BookmarksPageModule
+        BookmarksPageModule,
+        RouterTestingModule
       ],
       providers: [{
         provide: ComicsService, useValue: comicsService

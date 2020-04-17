@@ -23,9 +23,6 @@ import { BookmarksPage } from './bookmarks.page';
   declarations: [
     BookmarksPage,
     BookmarkActionsComponent
-  ],
-  entryComponents: [
-    BookmarkActionsComponent
   ]
 })
 export class BookmarksPageModule {}

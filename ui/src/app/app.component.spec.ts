@@ -63,28 +63,22 @@ describe('AppComponent', () => {
     expect(splashScreenSpy.hide).toHaveBeenCalled();
   });
 
-  it('should have menu labels', () => {
+  it('should have tab labels', () => {
     const app = fixture.nativeElement;
-    const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(4);
-    expect(menuItems[0].textContent).toContain('Foo Barfoo@bar.com');
-    expect(menuItems[1].textContent).toContain('Bookmarks');
-    expect(menuItems[2].textContent).toContain('Library');
-    expect(menuItems[3].textContent).toContain('Settings');
+    const tabs = app.querySelectorAll('ion-tab-button');
+    expect(tabs.length).toEqual(3);
+    expect(tabs[0].textContent).toContain('Bookmarks');
+    expect(tabs[1].textContent).toContain('Library');
+    expect(tabs[2].textContent).toContain('Settings');
   });
 
-  it('should have URLs', () => {
+  it('should have links', () => {
     const app = fixture.nativeElement;
-    const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(4);
-    expect(menuItems[0].getAttribute('ng-reflect-router-link')).toBe(null);
-    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual('/bookmarks');
-    expect(menuItems[2].getAttribute('ng-reflect-router-link')).toEqual('/library/publishers');
-    expect(menuItems[3].getAttribute('ng-reflect-router-link')).toEqual('/settings');
-  });
-
-  it('retrieves user info on startup', () => {
-    expect(component.user.email).toEqual('foo@bar.com');
+    const tabs = app.querySelectorAll('ion-tab-button');
+    expect(tabs.length).toEqual(3);
+    expect(tabs[0].getAttribute('tab')).toEqual('bookmarks');
+    expect(tabs[1].getAttribute('tab')).toEqual('library');
+    expect(tabs[2].getAttribute('tab')).toEqual('settings');
   });
 
   describe('on route change', () => {
@@ -113,15 +107,6 @@ describe('AppComponent', () => {
       it('shows the menu', () => {
         expect(component.hideMenu).toBeFalse();
       });
-    });
-  });
-
-  describe('#logout', () => {
-
-    it('logs out the user and reloads', () => {
-      component.logout();
-      expect(userService.logout).toHaveBeenCalled();
-      expect(location.reload).toHaveBeenCalled();
     });
   });
 });

@@ -8,10 +8,13 @@ import { SettingFixtures } from '../../testing/setting.fixtures';
 import { SettingsServiceMocks } from '../../testing/settings.service.mocks';
 import { StatsServiceMocks } from '../../testing/stats.service.mocks';
 import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
+import { UserServiceMocks } from '../../testing/user.service.mocks';
 import { ComicsService } from '../comics.service';
+import { LOCATION_TOKEN } from '../location.token';
 import { SettingsService } from '../settings.service';
 import { StatsService } from '../stats.service';
 import { UserSettingsService } from '../user-settings.service';
+import { UserService } from '../user.service';
 
 import { SettingsPageModule } from './settings.module';
 import { SettingsPage } from './settings.page';
@@ -20,9 +23,11 @@ let component: SettingsPage;
 let fixture: ComponentFixture<SettingsPage>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 let settingsService: jasmine.SpyObj<SettingsService>;
+let userService: jasmine.SpyObj<UserService>;
 let statsService: jasmine.SpyObj<StatsService>;
 let toastController: jasmine.SpyObj<ToastController>;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
+let location: Location;
 
 describe('SettingsPage', () => {
 
@@ -30,24 +35,24 @@ describe('SettingsPage', () => {
     comicsService = ComicsServiceMocks.comicsService;
     settingsService = SettingsServiceMocks.settingsService;
     statsService = StatsServiceMocks.statsService;
+    userService = UserServiceMocks.userService;
     toastController = ToastControllerMocks.toastController;
     toastElement = ToastControllerMocks.toastElementSpy;
+    location = jasmine.createSpyObj('Location', [ 'reload' ]);
 
     TestBed.configureTestingModule({
       imports: [
         SettingsPageModule,
         RouterTestingModule
       ],
-      providers: [{
-        provide: SettingsService, useValue: settingsService
-      }, {
-        provide: ComicsService, useValue: comicsService
-      }, {
-        provide: StatsService, useValue: statsService
-      }, {
-        provide: ToastController, useValue: toastController
-      },
-      UserSettingsService
+      providers: [
+        { provide: SettingsService, useValue: settingsService },
+        { provide: ComicsService, useValue: comicsService },
+        { provide: StatsService, useValue: statsService },
+        { provide: ToastController, useValue: toastController },
+        { provide: UserService, useValue: userService },
+        { provide: LOCATION_TOKEN, useValue: location },
+        UserSettingsService
       ]
     });
     fixture = TestBed.createComponent(SettingsPage);
@@ -57,6 +62,10 @@ describe('SettingsPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('retrieves user info on startup', () => {
+    expect(component.user.email).toEqual('foo@bar.com');
   });
 
   describe('#onSubmit', () => {
@@ -128,6 +137,15 @@ describe('SettingsPage', () => {
       expect(JSON.parse(localStorage.getItem('userSettings'))).toEqual({
         darkMode: true
       });
+    });
+  });
+
+  describe('#logout', () => {
+
+    it('logs out the user and reloads', () => {
+      component.logout();
+      expect(userService.logout).toHaveBeenCalled();
+      expect(location.reload).toHaveBeenCalled();
     });
   });
 });

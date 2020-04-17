@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
 import { Setting } from '../setting';
 import { SettingsService } from '../settings.service';
 import { UserSettingsService } from '../user-settings.service';
+import { User } from '../user';
+import { UserService } from '../user.service';
+import { LOCATION_TOKEN } from '../location.token';
 
 @Component({
   selector: 'app-settings',
@@ -14,14 +17,25 @@ export class SettingsPage {
 
   public settings: Setting[] = [];
   public updateError: any;
+  public user: User;
   public userSettings;
 
   constructor(
     private settingsService: SettingsService,
     private toastController: ToastController,
-    private userSettingsService: UserSettingsService
+    private userSettingsService: UserSettingsService,
+    private userService: UserService,
+    @Inject(LOCATION_TOKEN) private location: Location
   ) {
     this.userSettings = userSettingsService.get();
+    this.userService.user.subscribe((user: User) => {
+      this.user = user;
+    });
+  }
+
+  public logout(): void {
+    this.userService.logout();
+    this.location.reload();
   }
 
   public ionViewWillEnter(): void {
