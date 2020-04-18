@@ -11,19 +11,27 @@
     <ion-card-header>Account</ion-card-header>
     <ion-card-content>
       <ion-item>
-        <ion-avatar slot="start">
-          <ion-img class="avatar" [src]="user?.picture"></ion-img>
-        </ion-avatar>
-        <ion-label>
-          <h3>{{ user?.name }}</h3>
-          <p>{{ user?.email }}</p>
-        </ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-button slot="end" (click)="logout()">
-          <ion-icon slot="start" name="log-out"></ion-icon>
-          Logout
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-avatar slot="start">
+                  <ion-img class="avatar" [src]="user?.picture"></ion-img>
+                </ion-avatar>
+                <ion-label>
+                  <h3>{{ user?.name }}</h3>
+                  <p>{{ user?.email }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" size="small" (click)="logout()">
+                <ion-icon slot="start" name="log-out"></ion-icon>
+                Logout
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-card-content>
   </ion-card>
@@ -43,10 +51,17 @@
             </ion-input>
           </ion-item>
           <ion-item>
-            <ion-button type="submit" color="primary" slot="end"
-              [disabled]="!settingsForm.form.valid">
-              Save
-            </ion-button>
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                </ion-col>
+                <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+                  <ion-button type="submit" expand="block" [disabled]="!settingsForm.form.valid">
+                    Save
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
         </ion-list>
       </form>

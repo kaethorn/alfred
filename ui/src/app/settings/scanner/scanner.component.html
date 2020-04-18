@@ -25,11 +25,19 @@
 
     <ion-list>
       <ion-item>
-        Scan the library folder for new comic books.
-        <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
-          <ion-icon name="search"></ion-icon>
-          Scan
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Scan the library folder for new comic books.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" size="small" (click)="scan()" [disabled]="scanProgress">
+                <ion-icon name="search"></ion-icon>
+                Scan
+              </ion-button>
+            </ion-col>
+            </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item *ngIf="issues.length">
         <ion-icon slot="start" color="danger" name="alert"></ion-icon>
@@ -40,11 +48,19 @@
         </ion-button>
       </ion-item>
       <ion-item>
-        View front- and back covers.
-        <ion-button slot="end" [routerLink]="['covers']" color="primary">
-          <ion-icon name="search"></ion-icon>
-          Inspect
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              View front- and back covers.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" size="small" [routerLink]="['covers']">
+                <ion-icon name="search"></ion-icon>
+                Inspect
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-list>
   </ion-card-content>
@@ -67,18 +83,34 @@
   <ion-card-content>
     <ion-list>
       <ion-item>
-        Clear {{ cachedComicsCount }} cached comics in the current browser.
-        <ion-button slot="end" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount == 0" color="warning">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Clear
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Clear {{ cachedComicsCount }} cached comics in the current browser.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount == 0" color="warning">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Clear
+              </ion-button>
+            </ion-col>
+            </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item>
-        Remove progress information and bookmarks of the current user.
-        <ion-button slot="end" (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Delete
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Remove progress information and bookmarks of the current user.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Delete
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-list>
   </ion-card-content>
@@ -89,25 +121,49 @@
   <ion-card-content>
     <ion-list>
       <ion-item>
-        Remove scanned comic book information. Does not delete files from disk.
-        <ion-button slot="end" (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Delete
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Remove scanned comic book information. Does not delete files from disk.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Delete
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item>
-        Remove progress information and bookmarks of all users. Does not affect comic information.
-        <ion-button slot="end" (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Delete
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Remove progress information and bookmarks of all users. Does not affect comic information.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Delete
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item>
-        Associate comics in a volume. Automatically done after scanning.
-        <ion-button slot="end" (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
-          <ion-icon slot="start" name="newspaper"></ion-icon>
-          Bundle
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Associate comics in a volume. Automatically done after scanning.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
+                <ion-icon slot="start" name="newspaper"></ion-icon>
+                Bundle
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-list>
   </ion-card-content>
