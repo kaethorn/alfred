@@ -6,10 +6,10 @@ import { ComicsService } from '../../comics.service';
 
 @Component({
   selector: 'app-queue',
-  styleUrls: [ './queue.component.sass' ],
-  templateUrl: './queue.component.html'
+  styleUrls: [ './queue.page.sass' ],
+  templateUrl: './queue.page.html'
 })
-export class QueueComponent {
+export class QueuePage {
 
   public comics: Array<Comic> = [];
   public issueSeverityToColor = { ERROR: 'danger', INFO: 'secondary', WARNING: 'warning' };

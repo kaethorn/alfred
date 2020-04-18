@@ -8,10 +8,10 @@ import { ComicsService } from '../../comics.service';
 
 @Component({
   selector: 'app-edit',
-  styleUrls: [ './edit.component.sass' ],
-  templateUrl: './edit.component.html'
+  styleUrls: [ './edit.page.sass' ],
+  templateUrl: './edit.page.html'
 })
-export class EditComponent {
+export class EditPage {
 
   public comic: Comic;
   public comicForm = this.formBuilder.group({

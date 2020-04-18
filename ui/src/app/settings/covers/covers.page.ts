@@ -9,10 +9,10 @@ import { ThumbnailsService } from '../../thumbnails.service';
 
 @Component({
   selector: 'app-covers',
-  styleUrls: [ './covers.component.sass' ],
-  templateUrl: './covers.component.html'
+  styleUrls: [ './covers.page.sass' ],
+  templateUrl: './covers.page.html'
 })
-export class CoversComponent {
+export class CoversPage {
 
   public comics: Array<Comic> = [];
   public frontCoverThumbnails = new Map<string, Observable<Thumbnail>>();

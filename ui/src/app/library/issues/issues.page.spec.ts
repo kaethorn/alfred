@@ -16,10 +16,10 @@ import { ThumbnailsService } from '../../thumbnails.service';
 import { VolumesService } from '../../volumes.service';
 import { LibraryPageModule } from '../library.module';
 
-import { IssuesComponent } from './issues.component';
+import { IssuesPage } from './issues.page';
 
-let component: IssuesComponent;
-let fixture: ComponentFixture<IssuesComponent>;
+let component: IssuesPage;
+let fixture: ComponentFixture<IssuesPage>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 let comicStorageService: jasmine.SpyObj<ComicStorageService>;
 let volumesService: jasmine.SpyObj<VolumesService>;
@@ -28,7 +28,7 @@ let toastController: jasmine.SpyObj<ToastController>;
 let popoverElement: jasmine.SpyObj<HTMLIonPopoverElement>;
 let popoverController: jasmine.SpyObj<PopoverController>;
 
-describe('IssuesComponent', () => {
+describe('IssuesPage', () => {
 
   beforeEach(() => {
     comicsService = ComicsServiceMocks.comicsService;
@@ -60,7 +60,7 @@ describe('IssuesComponent', () => {
       }]
     });
 
-    fixture = TestBed.createComponent(IssuesComponent);
+    fixture = TestBed.createComponent(IssuesPage);
     component = fixture.componentInstance;
     component.ionViewDidEnter();
     fixture.detectChanges();

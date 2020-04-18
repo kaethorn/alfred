@@ -9,15 +9,15 @@ import { Comic } from '../../comic';
 import { ComicsService } from '../../comics.service';
 import { LibraryPageModule } from '../library.module';
 
-import { EditComponent } from './edit.component';
+import { EditPage } from './edit.page';
 
-let component: EditComponent;
-let fixture: ComponentFixture<EditComponent>;
+let component: EditPage;
+let fixture: ComponentFixture<EditPage>;
 let toastController: jasmine.SpyObj<ToastController>;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 
-describe('EditComponent', () => {
+describe('EditPage', () => {
 
   beforeEach(() => {
     toastController = ToastControllerMocks.toastController;
@@ -35,7 +35,7 @@ describe('EditComponent', () => {
         provide: ToastController, useValue: toastController
       }]
     });
-    fixture = TestBed.createComponent(EditComponent);
+    fixture = TestBed.createComponent(EditPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

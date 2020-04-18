@@ -14,10 +14,10 @@ import { VolumeActionsComponent } from './volume-actions/volume-actions.componen
 
 @Component({
   selector: 'app-volumes',
-  styleUrls: [ './volumes.component.sass' ],
-  templateUrl: './volumes.component.html'
+  styleUrls: [ './volumes.page.sass' ],
+  templateUrl: './volumes.page.html'
 })
-export class VolumesComponent {
+export class VolumesPage {
 
   public volumes: Volume[];
   public publisher = '';

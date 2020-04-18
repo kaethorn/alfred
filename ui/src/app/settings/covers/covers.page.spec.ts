@@ -12,10 +12,10 @@ import { ComicsService } from '../../comics.service';
 import { ThumbnailsService } from '../../thumbnails.service';
 import { SettingsPageModule } from '../settings.module';
 
-import { CoversComponent } from './covers.component';
+import { CoversPage } from './covers.page';
 
-let component: CoversComponent;
-let fixture: ComponentFixture<CoversComponent>;
+let component: CoversPage;
+let fixture: ComponentFixture<CoversPage>;
 let loadingController: jasmine.SpyObj<LoadingController>;
 let loadingElement: jasmine.SpyObj<HTMLIonLoadingElement>;
 let toastController: jasmine.SpyObj<ToastController>;
@@ -23,7 +23,7 @@ let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 let thumbnailsService: jasmine.SpyObj<ThumbnailsService>;
 
-describe('CoversComponent', () => {
+describe('CoversPage', () => {
 
   beforeEach(<any>fakeAsync(async () => {
     loadingController = LoadingControllerMocks.loadingController;
@@ -49,7 +49,7 @@ describe('CoversComponent', () => {
       }]
     });
 
-    fixture = TestBed.createComponent(CoversComponent);
+    fixture = TestBed.createComponent(CoversPage);
     component = fixture.componentInstance;
     component.ionViewWillEnter();
 

@@ -6,10 +6,10 @@ import { VolumesService } from '../../volumes.service';
 
 @Component({
   selector: 'app-publishers',
-  styleUrls: [ './publishers.component.sass' ],
-  templateUrl: './publishers.component.html'
+  styleUrls: [ './publishers.page.sass' ],
+  templateUrl: './publishers.page.html'
 })
-export class PublishersComponent {
+export class PublishersPage {
 
   public publishers: Publisher[];
   private publishersData: Publisher[];

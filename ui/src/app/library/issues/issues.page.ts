@@ -15,10 +15,10 @@ import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 
 @Component({
   selector: 'app-issues',
-  styleUrls: [ './issues.component.sass' ],
-  templateUrl: './issues.component.html'
+  styleUrls: [ './issues.page.sass' ],
+  templateUrl: './issues.page.html'
 })
-export class IssuesComponent {
+export class IssuesPage {
 
   public currentRoute: string;
   public thumbnails = new Map<string, Observable<SafeUrl>>();

@@ -9,15 +9,15 @@ import { ToastControllerMocks } from '../../../testing/toast.controller.mocks';
 import { ComicsService } from '../../comics.service';
 import { SettingsPageModule } from '../settings.module';
 
-import { QueueComponent } from './queue.component';
+import { QueuePage } from './queue.page';
 
-let component: QueueComponent;
-let fixture: ComponentFixture<QueueComponent>;
+let component: QueuePage;
+let fixture: ComponentFixture<QueuePage>;
 let toastController: jasmine.SpyObj<ToastController>;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 
-describe('QueueComponent', () => {
+describe('QueuePage', () => {
 
   beforeEach(() => {
     toastController = ToastControllerMocks.toastController;
@@ -35,7 +35,7 @@ describe('QueueComponent', () => {
         provide: ToastController, useValue: toastController
       }]
     });
-    fixture = TestBed.createComponent(QueueComponent);
+    fixture = TestBed.createComponent(QueuePage);
     component = fixture.componentInstance;
     component.ionViewWillEnter();
     fixture.detectChanges();

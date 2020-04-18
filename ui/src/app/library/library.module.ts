@@ -5,23 +5,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
-import { EditComponent } from './edit/edit.component';
+import { EditPage } from './edit/edit.page';
 import { IssueActionsComponent } from './issues/issue-actions/issue-actions.component';
-import { IssuesComponent } from './issues/issues.component';
-import { PublishersComponent } from './publishers/publishers.component';
-import { SeriesComponent } from './series/series.component';
+import { IssuesPage } from './issues/issues.page';
+import { PublishersPage } from './publishers/publishers.page';
+import { SeriesPage } from './series/series.page';
 import { VolumeActionsComponent } from './volumes/volume-actions/volume-actions.component';
-import { VolumesComponent } from './volumes/volumes.component';
+import { VolumesPage } from './volumes/volumes.page';
 
 @NgModule({
   declarations: [
-    EditComponent,
+    EditPage,
     IssueActionsComponent,
-    IssuesComponent,
-    PublishersComponent,
-    SeriesComponent,
+    IssuesPage,
+    PublishersPage,
+    SeriesPage,
     VolumeActionsComponent,
-    VolumesComponent
+    VolumesPage
   ],
   entryComponents: [
     VolumeActionsComponent
@@ -34,16 +34,16 @@ import { VolumesComponent } from './volumes/volumes.component';
     ReactiveFormsModule,
     RouterModule.forChild([{
       children: [{
-        component: PublishersComponent, path: 'publishers'
+        component: PublishersPage, path: 'publishers'
       }, {
-        component: SeriesComponent, path: 'publishers/:publisher/series'
+        component: SeriesPage, path: 'publishers/:publisher/series'
       }, {
-        component: VolumesComponent, path: 'publishers/:publisher/series/:series/volumes'
+        component: VolumesPage, path: 'publishers/:publisher/series/:series/volumes'
       }, {
-        component: IssuesComponent,
+        component: IssuesPage,
         path: 'publishers/:publisher/series/:series/volumes/:volume/issues'
       }, {
-        component: EditComponent,
+        component: EditPage,
         path: 'publishers/:publisher/series/:series/volumes/:volume/issues/:id/edit'
       }, {
         path: '',

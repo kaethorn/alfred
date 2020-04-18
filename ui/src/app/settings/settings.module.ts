@@ -6,8 +6,8 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { MomentModule } from 'ngx-moment';
 
-import { CoversComponent } from './covers/covers.component';
-import { QueueComponent } from './queue/queue.component';
+import { CoversPage } from './covers/covers.page';
+import { QueuePage } from './queue/queue.page';
 import { ScannerComponent } from './scanner/scanner.component';
 import { SettingsPage } from './settings.page';
 
@@ -15,8 +15,8 @@ import { SettingsPage } from './settings.page';
   declarations: [
     SettingsPage,
     ScannerComponent,
-    QueueComponent,
-    CoversComponent
+    QueuePage,
+    CoversPage
   ],
   imports: [
     CommonModule,
@@ -27,9 +27,9 @@ import { SettingsPage } from './settings.page';
     RouterModule.forChild([{
       component: SettingsPage, path: ''
     }, {
-      component: QueueComponent, path: 'queue'
+      component: QueuePage, path: 'queue'
     }, {
-      component: CoversComponent, path: 'covers'
+      component: CoversPage, path: 'covers'
     }])
   ]
 })

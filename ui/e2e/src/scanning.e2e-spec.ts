@@ -27,11 +27,11 @@ describe('Scanning', () => {
   it('displays comics stats when the scan is finished', async () => {
     await SettingsPage.waitForScanEnd();
     const stats = await SettingsPage.getStatsText();
-    expect(stats[0]).toMatch(/^issues\s+305$/);
-    expect(stats[1]).toMatch(/^publishers\s+3$/);
-    expect(stats[2]).toMatch(/^series\s+5$/);
-    expect(stats[3]).toMatch(/^users\s+0$/);
-    expect(stats[4]).toMatch(/^volumes\s+9$/);
+    expect(stats[0]).toMatch(/^Issues\s+305$/);
+    expect(stats[1]).toMatch(/^Publishers\s+3$/);
+    expect(stats[2]).toMatch(/^Series\s+5$/);
+    expect(stats[3]).toMatch(/^Users\s+0$/);
+    expect(stats[4]).toMatch(/^Volumes\s+9$/);
   });
 
   it('displays publishers in the library', async () => {
