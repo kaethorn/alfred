@@ -6,10 +6,9 @@ const { SpecReporter } = require('jasmine-spec-reporter');
 const testProxy = require('./test-proxy');
 
 exports.config = {
+  SELENIUM_PROMISE_MANAGER: false,
   allScriptsTimeout: 11000,
-  specs            : [
-    './src/**/*.e2e-spec.ts'
-  ],
+  baseUrl                 : 'http://localhost:8090/',
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
@@ -17,14 +16,13 @@ exports.config = {
     }
   },
   directConnect           : true,
-  baseUrl                 : 'http://localhost:8090/',
   framework               : 'jasmine',
-  SELENIUM_PROMISE_MANAGER: false,
   jasmineNodeOpts         : {
-    showColors            : true,
     defaultTimeoutInterval: 30000,
-    print() {}
+    print() {},
+    showColors            : true
   },
+  onCleanUp: () => testProxy.stop(),
   onPrepare: async () => {
     await testProxy.start();
 
@@ -55,6 +53,7 @@ exports.config = {
     });
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
   },
-
-  onCleanUp: () => testProxy.stop()
+  specs            : [
+    './src/**/*.e2e-spec.ts'
+  ]
 };

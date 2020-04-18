@@ -1,8 +1,5 @@
-<ion-header>
+<ion-header translucent>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
     <ion-title>
       Settings
     </ion-title>
@@ -11,7 +8,70 @@
 
 <ion-content>
   <ion-card>
-    <ion-card-header>User settings</ion-card-header>
+    <ion-card-header>Account</ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-avatar slot="start">
+                  <ion-img class="avatar" [src]="user?.picture"></ion-img>
+                </ion-avatar>
+                <ion-label>
+                  <h3>{{ user?.name }}</h3>
+                  <p>{{ user?.email }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" size="small" (click)="logout()">
+                <ion-icon slot="start" name="log-out"></ion-icon>
+                Logout
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>Server settings</ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="onSubmit()" #settingsForm="ngForm">
+        <ion-list>
+          <ion-item *ngFor="let setting of settings">
+            <ion-label position="floating">
+              <p>{{ setting.comment }}</p>
+            </ion-label>
+            <ion-input placeholder="{{ setting.name }}" required
+              [(ngModel)]="setting.value" name="{{ setting.key }}"
+              #value="ngModel">
+            </ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                </ion-col>
+                <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+                  <ion-button type="submit" expand="block" [disabled]="!settingsForm.form.valid">
+                    Save
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <app-scanner></app-scanner>
+
+  <ion-card>
+    <ion-card-header>Appearance</ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
         <ion-item>
@@ -25,30 +85,4 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-
-  <ion-card>
-    <ion-card-header>Server settings</ion-card-header>
-    <ion-card-content>
-      <form (ngSubmit)="onSubmit()" #settingsForm="ngForm">
-        <ion-list lines="none">
-          <ion-item *ngFor="let setting of settings">
-            <ion-label position="floating">
-              <p>{{ setting.comment }}</p>
-            </ion-label>
-            <ion-input placeholder="{{ setting.name }}" required
-              [(ngModel)]="setting.value" name="{{ setting.key }}"
-              #value="ngModel">
-            </ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-button type="submit" color="primary" slot="end"
-              [disabled]="!settingsForm.form.valid">
-              Save
-            </ion-button>
-          </ion-item>
-        </ion-list>
-      </form>
-    </ion-card-content>
-  </ion-card>
-  <app-scanner></app-scanner>
 </ion-content>

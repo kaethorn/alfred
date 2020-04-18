@@ -15,24 +15,24 @@ import { AuthInterceptor } from './auth.interceptor';
 import { LOCATION_TOKEN } from './location.token';
 
 @NgModule({
+  bootstrap: [ AppComponent ],
   declarations: [
     AppComponent
   ],
   entryComponents: [],
   imports: [
-    BrowserModule,
-    IonicModule.forRoot(),
     AppRoutingModule,
+    BrowserModule,
     HttpClientModule,
+    IonicModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
-    StatusBar,
     SplashScreen,
+    StatusBar,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { multi: true, provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor },
     { provide: LOCATION_TOKEN, useValue: window.location }
-  ],
-  bootstrap: [ AppComponent ]
+  ]
 })
 export class AppModule {}

@@ -9,10 +9,10 @@ import { ThumbnailsService } from '../../thumbnails.service';
 
 @Component({
   selector: 'app-covers',
-  templateUrl: './covers.component.html',
-  styleUrls: [ './covers.component.sass' ]
+  styleUrls: [ './covers.page.sass' ],
+  templateUrl: './covers.page.html'
 })
-export class CoversComponent {
+export class CoversPage {
 
   public comics: Array<Comic> = [];
   public frontCoverThumbnails = new Map<string, Observable<Thumbnail>>();
@@ -58,8 +58,8 @@ export class CoversComponent {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

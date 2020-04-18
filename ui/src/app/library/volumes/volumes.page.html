@@ -1,7 +1,7 @@
-<ion-header>
+<ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>
       <i>{{ series }}</i> volumes
@@ -50,7 +50,7 @@
     </a>
     <ion-item>
       <ion-button slot="start" fill="clear"
-        [routerLink]="['/issues', volume.publisher, volume.series, volume.name]">
+        [routerLink]="['/library/publishers', volume.publisher, 'series', volume.series, 'volumes', volume.name, 'issues']">
         <ion-icon name="list"></ion-icon>
         List
       </ion-button>

@@ -12,8 +12,8 @@ interface IOpenOptions {
 
 @Component({
   selector: 'app-reader',
-  templateUrl: './reader.page.html',
-  styleUrls: [ './reader.page.sass' ]
+  styleUrls: [ './reader.page.sass' ],
+  templateUrl: './reader.page.html'
 })
 export class ReaderPage {
 
@@ -108,9 +108,9 @@ export class ReaderPage {
       case AdjacentComic.same:
         this.comic.currentPage = NavigatorService.page;
         this.router.navigate([], {
-          relativeTo: this.route,
           queryParams: { page: NavigatorService.page },
-          queryParamsHandling: 'merge'
+          queryParamsHandling: 'merge',
+          relativeTo: this.route
         });
         this.setTransformation();
         this.comicStorageService.saveProgress(this.comic);
@@ -196,9 +196,9 @@ export class ReaderPage {
     if (this.comic[adjacentAttr]) {
       this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
       this.router.navigate([ '/read', this.comic[adjacentAttr] ], {
-        replaceUrl: true,
+        queryParamsHandling: 'merge',
         relativeTo: this.route,
-        queryParamsHandling: 'merge'
+        replaceUrl: true
       });
       if (options.showToast) {
         if (adjacentAttr === 'nextId') {
@@ -212,8 +212,8 @@ export class ReaderPage {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

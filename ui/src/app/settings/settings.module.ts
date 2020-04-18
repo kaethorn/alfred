@@ -6,12 +6,18 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { MomentModule } from 'ngx-moment';
 
-import { CoversComponent } from './covers/covers.component';
-import { QueueComponent } from './queue/queue.component';
+import { CoversPage } from './covers/covers.page';
+import { QueuePage } from './queue/queue.page';
 import { ScannerComponent } from './scanner/scanner.component';
 import { SettingsPage } from './settings.page';
 
 @NgModule({
+  declarations: [
+    SettingsPage,
+    ScannerComponent,
+    QueuePage,
+    CoversPage
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -19,21 +25,12 @@ import { SettingsPage } from './settings.page';
     HttpClientModule,
     MomentModule,
     RouterModule.forChild([{
-      path: '',
-      component: SettingsPage
+      component: SettingsPage, path: ''
     }, {
-      path: 'queue',
-      component: QueueComponent
+      component: QueuePage, path: 'queue'
     }, {
-      path: 'covers',
-      component: CoversComponent
+      component: CoversPage, path: 'covers'
     }])
-  ],
-  declarations: [
-    SettingsPage,
-    ScannerComponent,
-    QueueComponent,
-    CoversComponent
   ]
 })
 export class SettingsPageModule {}

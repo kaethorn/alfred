@@ -3,38 +3,38 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 
-import { Comic } from '../comic';
-import { ComicsService } from '../comics.service';
+import { Comic } from '../../comic';
+import { ComicsService } from '../../comics.service';
 
 @Component({
   selector: 'app-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: [ './edit.page.sass' ]
+  styleUrls: [ './edit.page.sass' ],
+  templateUrl: './edit.page.html'
 })
 export class EditPage {
 
   public comic: Comic;
   public comicForm = this.formBuilder.group({
-    series: [ '', Validators.required ],
-    publisher: [ '', Validators.required ],
-    volume: [ '', Validators.required ],
-    number: [ '', Validators.required ],
-    year: [ '' ],
-    month: [ '' ],
-    title: [ '' ],
-    summary: [ '' ],
-    notes: [ '' ],
-    writer: [ '' ],
-    penciller: [ '' ],
-    inker: [ '' ],
+    characters: [ '' ],
     colorist: [ '' ],
-    letterer: [ '' ],
     coverArtist: [ '' ],
     editor: [ '' ],
+    inker: [ '' ],
+    letterer: [ '' ],
+    locations: [ '' ],
     manga: [ '' ],
-    characters: [ '' ],
+    month: [ '' ],
+    notes: [ '' ],
+    number: [ '', Validators.required ],
+    penciller: [ '' ],
+    publisher: [ '', Validators.required ],
+    series: [ '', Validators.required ],
+    summary: [ '' ],
     teams: [ '' ],
-    locations: [ '' ]
+    title: [ '' ],
+    volume: [ '', Validators.required ],
+    writer: [ '' ],
+    year: [ '' ]
   });
   public scrapeInProgress = false;
   public editInProgress = false;
@@ -84,8 +84,8 @@ export class EditPage {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

@@ -4,19 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { PopoverController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { Comic } from '../comic';
-import { ComicDatabaseService } from '../comic-database.service';
-import { ComicStorageService, StoredState } from '../comic-storage.service';
-import { ComicsService } from '../comics.service';
-import { ThumbnailsService } from '../thumbnails.service';
-import { VolumesService } from '../volumes.service';
+import { Comic } from '../../comic';
+import { ComicDatabaseService } from '../../comic-database.service';
+import { ComicStorageService, StoredState } from '../../comic-storage.service';
+import { ComicsService } from '../../comics.service';
+import { ThumbnailsService } from '../../thumbnails.service';
+import { VolumesService } from '../../volumes.service';
 
 import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 
 @Component({
   selector: 'app-issues',
-  templateUrl: './issues.page.html',
-  styleUrls: [ './issues.page.sass' ]
+  styleUrls: [ './issues.page.sass' ],
+  templateUrl: './issues.page.html'
 })
 export class IssuesPage {
 
@@ -43,7 +43,7 @@ export class IssuesPage {
     this.publisher = this.route.snapshot.params.publisher;
     this.series = this.route.snapshot.params.series;
     this.volume = this.route.snapshot.params.volume;
-    this.currentRoute = `/issues/${ this.publisher }/${ this.series }/${ this.volume }`;
+    this.currentRoute = `/library/publishers/${ this.publisher }/series/${ this.series }/volumes/${ this.volume }/issues`;
 
     this.list();
   }
@@ -107,8 +107,8 @@ export class IssuesPage {
 
   private async showToast(message: string): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration: 3000
+      duration: 3000,
+      message
     });
     toast.present();
   }

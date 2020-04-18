@@ -20,8 +20,8 @@ export class StatsService {
         issues: stats.issues,
         publishers: stats.publishers,
         series: stats.series,
-        volumes: stats.volumes,
-        users: stats.users
+        users: stats.users,
+        volumes: stats.volumes
       }))
     );
   }

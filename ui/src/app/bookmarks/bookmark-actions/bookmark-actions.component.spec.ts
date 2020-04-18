@@ -49,10 +49,10 @@ describe('BookmarkActionsComponent', () => {
     it('navigates to the issues page and closes the popover', () => {
       component.goToVolume(ComicFixtures.comic);
       expect(router.navigate).toHaveBeenCalledWith([
-        '/issues',
-        ComicFixtures.comic.publisher,
-        ComicFixtures.comic.series,
-        ComicFixtures.comic.volume
+        '/library/publishers', ComicFixtures.comic.publisher,
+        'series', ComicFixtures.comic.series,
+        'volumes', ComicFixtures.comic.volume,
+        'issues'
       ]);
       expect(popoverController.dismiss).toHaveBeenCalledWith();
     });

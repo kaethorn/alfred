@@ -69,7 +69,7 @@ describe('ReaderPage', () => {
       imports: [
         ReaderPageModule,
         RouterTestingModule.withRoutes([
-          { path: 'read/:id', component: ReaderPage }
+          { component: ReaderPage, path: 'read/:id' }
         ])
       ],
       providers: [{
@@ -88,8 +88,8 @@ describe('ReaderPage', () => {
     component.pagesLayer = {
       nativeElement: {
         parentElement: {
-          clientWidth: 1000,
-          clientHeight: 2000
+          clientHeight: 2000,
+          clientWidth: 1000
         }
       }
     };
@@ -132,8 +132,8 @@ describe('ReaderPage', () => {
         await new Promise(resolve => comicStorageService.get.calls.mostRecent().returnValue.catch(resolve));
         expect(router.navigate).toHaveBeenCalledWith([ '/library/series' ]);
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Comic book not available, please try again later.',
-          duration: 4000
+          duration: 4000,
+          message: 'Comic book not available, please try again later.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -195,8 +195,8 @@ describe('ReaderPage', () => {
         component.pagesLayer = {
           nativeElement: {
             parentElement: {
-              clientWidth : 1000,
-              clientHeight: 2000
+              clientHeight: 2000,
+              clientWidth : 1000
             }
           }
         };
@@ -245,8 +245,8 @@ describe('ReaderPage', () => {
         component.pagesLayer = {
           nativeElement: {
             parentElement: {
-              clientWidth : 2000,
-              clientHeight: 1000
+              clientHeight: 1000,
+              clientWidth : 2000
             }
           }
         };
@@ -356,8 +356,8 @@ describe('ReaderPage', () => {
 
       it('shows a toast', () => {
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Opening previous issue of Batman (1940).',
-          duration: 3000
+          duration: 3000,
+          message: 'Opening previous issue of Batman (1940).'
         });
       });
     });
@@ -390,8 +390,8 @@ describe('ReaderPage', () => {
 
       it('shows a toast', () => {
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Opening next issue of Batman (1940).',
-          duration: 3000
+          duration: 3000,
+          message: 'Opening next issue of Batman (1940).'
         });
       });
     });

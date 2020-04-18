@@ -10,13 +10,13 @@ export class ProxySettings {
     const bodyString = JSON.stringify(body);
     return new Promise((resolve, reject) => {
       const req = http.request({
-        port   : '8090',
-        path,
         headers: {
-          'Content-Type'  : 'application/json',
-          'Content-Length': Buffer.byteLength(bodyString)
+          'Content-Length': Buffer.byteLength(bodyString),
+          'Content-Type'  : 'application/json'
         },
-        method: 'POST'
+        method: 'POST',
+        path,
+        port   : '8090'
       }, res => {
         try {
           if (res.statusCode > 399) {

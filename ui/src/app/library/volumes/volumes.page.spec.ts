@@ -16,10 +16,10 @@ import { ThumbnailsService } from '../../thumbnails.service';
 import { VolumesService } from '../../volumes.service';
 import { LibraryPageModule } from '../library.module';
 
-import { VolumesComponent } from './volumes.component';
+import { VolumesPage } from './volumes.page';
 
-let component: VolumesComponent;
-let fixture: ComponentFixture<VolumesComponent>;
+let component: VolumesPage;
+let fixture: ComponentFixture<VolumesPage>;
 let router: Router;
 let thumbnailsService: jasmine.SpyObj<ThumbnailsService>;
 let volumesService: jasmine.SpyObj<VolumesService>;
@@ -27,7 +27,7 @@ let comicService: jasmine.SpyObj<ComicsService>;
 let popoverElement: jasmine.SpyObj<HTMLIonPopoverElement>;
 let popoverController: jasmine.SpyObj<PopoverController>;
 
-describe('VolumesComponent', () => {
+describe('VolumesPage', () => {
 
   beforeEach(() => {
     thumbnailsService = ThumbnailsServiceMocks.thumbnailsService;
@@ -40,7 +40,7 @@ describe('VolumesComponent', () => {
       imports: [
         LibraryPageModule,
         RouterTestingModule.withRoutes([{
-          path: '**', component: MockComponent
+          component: MockComponent, path: '**'
         }])
       ],
       providers: [{
@@ -62,7 +62,7 @@ describe('VolumesComponent', () => {
         provide: ThumbnailsService, useValue: thumbnailsService
       }]
     });
-    fixture = TestBed.createComponent(VolumesComponent);
+    fixture = TestBed.createComponent(VolumesPage);
     router = TestBed.inject(Router);
     component = fixture.componentInstance;
     component.ionViewDidEnter();

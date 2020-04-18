@@ -23,36 +23,36 @@ export class PublisherFixtures {
       this.publisher,
       Object.assign(this.publisher, {
         name: 'Marvel Comics',
-        seriesCount: 2,
         series: [
           Object.assign(SeriesFixtures.serie, { name: 'Wolverine' }),
           Object.assign(SeriesFixtures.serie, { name: 'Spider-Man' })
-        ]
+        ],
+        seriesCount: 2
       }),
       Object.assign(this.publisher, {
         name: 'Dark Horse Comics',
-        seriesCount: 2,
         series: [
           Object.assign(SeriesFixtures.serie, { name: 'Aliens' }),
           Object.assign(SeriesFixtures.serie, { name: 'Star Wars' })
-        ]
+        ],
+        seriesCount: 2
       }),
       Object.assign(this.publisher, {
         name: 'Aspen Comics',
-        seriesCount: 2,
         series: [
           Object.assign(SeriesFixtures.serie, { name: 'Fathom' }),
           Object.assign(SeriesFixtures.serie, { name: 'Ekos' })
-        ]
+        ],
+        seriesCount: 2
       }),
       Object.assign(this.publisher, {
         name: 'Top Cow Productions',
-        seriesCount: 3,
         series: [
           Object.assign(SeriesFixtures.serie, { name: 'Witchblade' }),
           Object.assign(SeriesFixtures.serie, { name: 'The Darkness' }),
           Object.assign(SeriesFixtures.serie, { name: 'Magdalena' })
-        ]
+        ],
+        seriesCount: 3
       })
     ];
   }

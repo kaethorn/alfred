@@ -8,26 +8,26 @@ export class ComicsServiceMocks {
 
   public static get comicsService(): jasmine.SpyObj<ComicsService> {
     const comicsService: jasmine.SpyObj<ComicsService> = jasmine.createSpyObj(ComicsService, {
-      get: of(ComicFixtures.comic),
-      list: of(ComicFixtures.volume),
-      listComicsWithErrors: of(ComicFixtures.volume),
-      listByVolume: of(ComicFixtures.volume),
-      listLastReadByVolume: of(ComicFixtures.volume),
-      update: of(ComicFixtures.comic),
-      scrape: of(ComicFixtures.comic),
-      listComicsWithoutErrors: of(ComicFixtures.volume),
-      deletePage: of(null),
-      fixIssue: of(null),
-      markAsRead: of(ComicFixtures.comic),
-      markAsUnread: of(ComicFixtures.comic),
+      bundleVolumes: of(null),
       deleteComics: of(null),
+      deletePage: of(null),
       deleteProgress: of(null),
       deleteProgressForCurrentUser: of(null),
-      bundleVolumes: of(null),
+      fixIssue: of(null),
+      get: of(ComicFixtures.comic),
       getFirstByVolume: of(ComicFixtures.comic),
       getLastUnreadByVolume: of(ComicFixtures.comic),
-      updateProgress: of(ComicFixtures.comic),
-      getPage: of(null)
+      getPage: of(null),
+      list: of(ComicFixtures.volume),
+      listByVolume: of(ComicFixtures.volume),
+      listComicsWithErrors: of(ComicFixtures.volume),
+      listComicsWithoutErrors: of(ComicFixtures.volume),
+      listLastReadByVolume: of(ComicFixtures.volume),
+      markAsRead: of(ComicFixtures.comic),
+      markAsUnread: of(ComicFixtures.comic),
+      scrape: of(ComicFixtures.comic),
+      update: of(ComicFixtures.comic),
+      updateProgress: of(ComicFixtures.comic)
     });
     comicsService.markAsRead.and.callFake(c => of(Object.assign({}, c, { read: true })));
     comicsService.markAsUnread.and.callFake(c => of(Object.assign({}, c, { read: false })));

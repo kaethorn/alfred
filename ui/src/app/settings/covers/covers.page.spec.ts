@@ -12,10 +12,10 @@ import { ComicsService } from '../../comics.service';
 import { ThumbnailsService } from '../../thumbnails.service';
 import { SettingsPageModule } from '../settings.module';
 
-import { CoversComponent } from './covers.component';
+import { CoversPage } from './covers.page';
 
-let component: CoversComponent;
-let fixture: ComponentFixture<CoversComponent>;
+let component: CoversPage;
+let fixture: ComponentFixture<CoversPage>;
 let loadingController: jasmine.SpyObj<LoadingController>;
 let loadingElement: jasmine.SpyObj<HTMLIonLoadingElement>;
 let toastController: jasmine.SpyObj<ToastController>;
@@ -23,7 +23,7 @@ let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 let thumbnailsService: jasmine.SpyObj<ThumbnailsService>;
 
-describe('CoversComponent', () => {
+describe('CoversPage', () => {
 
   beforeEach(<any>fakeAsync(async () => {
     loadingController = LoadingControllerMocks.loadingController;
@@ -49,7 +49,7 @@ describe('CoversComponent', () => {
       }]
     });
 
-    fixture = TestBed.createComponent(CoversComponent);
+    fixture = TestBed.createComponent(CoversPage);
     component = fixture.componentInstance;
     component.ionViewWillEnter();
 
@@ -122,8 +122,8 @@ describe('CoversComponent', () => {
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Front cover of "401.cbz" deleted.',
-          duration: 3000
+          duration: 3000,
+          message: 'Front cover of "401.cbz" deleted.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -142,8 +142,8 @@ describe('CoversComponent', () => {
           comicsService.deletePage.calls.mostRecent().returnValue.toPromise().catch(resolve));
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error while deleting front cover of "401.cbz".',
-          duration: 4000
+          duration: 4000,
+          message: 'Error while deleting front cover of "401.cbz".'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -167,8 +167,8 @@ describe('CoversComponent', () => {
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Back cover of "401.cbz" deleted.',
-          duration: 3000
+          duration: 3000,
+          message: 'Back cover of "401.cbz" deleted.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -187,8 +187,8 @@ describe('CoversComponent', () => {
           comicsService.deletePage.calls.mostRecent().returnValue.toPromise().catch(resolve));
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error while deleting back cover of "401.cbz".',
-          duration: 4000
+          duration: 4000,
+          message: 'Error while deleting back cover of "401.cbz".'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();

@@ -89,6 +89,7 @@ describe('Sync', () => {
       await ProxySettings.set({ offline: true });
       await AppPage.clickMenuItem('Library');
       await AppPage.clickMenuItem('Bookmarks');
+      await Page.waitForElement(BookmarksPage.getBookmarks());
       expect(await BookmarksPage.getBookmarkTitles().count()).toBe(0);
       expect(await BookmarksPage.getBookmarks().getText()).toContain('No comics found');
       expect(await BookmarksPage.getBookmarks().getText()).toContain('START NOW');

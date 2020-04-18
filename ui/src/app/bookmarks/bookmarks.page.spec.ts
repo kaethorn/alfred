@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { PopoverController, ToastController } from '@ionic/angular';
 
 import { ComicDatabaseServiceMocks } from '../../testing/comic-database.service.mocks';
@@ -41,7 +42,8 @@ describe('BookmarksPage', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        BookmarksPageModule
+        BookmarksPageModule,
+        RouterTestingModule
       ],
       providers: [{
         provide: ComicsService, useValue: comicsService
@@ -102,8 +104,8 @@ describe('BookmarksPage', () => {
         expect(comicDatabaseService.isStored).toHaveBeenCalledWith(ComicFixtures.comic.id);
         expect(component.syncing).toBe(false);
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Volume cached.',
-          duration: 3000
+          duration: 3000,
+          message: 'Volume cached.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -125,8 +127,8 @@ describe('BookmarksPage', () => {
         });
         expect(component.syncing).toBe(false);
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error while syncing volume.',
-          duration: 4000
+          duration: 4000,
+          message: 'Error while syncing volume.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();

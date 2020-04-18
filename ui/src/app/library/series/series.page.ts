@@ -6,10 +6,10 @@ import { VolumesService } from '../../volumes.service';
 
 @Component({
   selector: 'app-series',
-  templateUrl: './series.component.html',
-  styleUrls: [ './series.component.sass' ]
+  styleUrls: [ './series.page.sass' ],
+  templateUrl: './series.page.html'
 })
-export class SeriesComponent {
+export class SeriesPage {
 
   public series: Series[];
   public publisher = '';

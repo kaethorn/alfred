@@ -296,35 +296,35 @@ describe('NavigatorService', () => {
         expect(service.set(0, 0, true)).toEqual([]);
         expect(service.set(1, 0, true)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }]
         ]);
         expect(service.set(4, 0, true)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }],
           [{
-            page: 1, loaded: false
+            loaded: false, page: 1
           }, {
-            page: 2, loaded: false
+            loaded: false, page: 2
           }],
           [{
-            page: 3, loaded: false
+            loaded: false, page: 3
           }]
         ]);
         expect(service.set(5, 0, true)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }],
           [{
-            page: 1, loaded: false
+            loaded: false, page: 1
           }, {
-            page: 2, loaded: false
+            loaded: false, page: 2
           }],
           [{
-            page: 3, loaded: false
+            loaded: false, page: 3
           }, {
-            page: 4, loaded: false
+            loaded: false, page: 4
           }]
         ]);
       });
@@ -336,21 +336,21 @@ describe('NavigatorService', () => {
         expect(service.set(0, 0, false)).toEqual([]);
         expect(service.set(1, 0, false)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }]
         ]);
         expect(service.set(4, 0, false)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }],
           [{
-            page: 1, loaded: false
+            loaded: false, page: 1
           }],
           [{
-            page: 2, loaded: false
+            loaded: false, page: 2
           }],
           [{
-            page: 3, loaded: false
+            loaded: false, page: 3
           }]
         ]);
       });

@@ -3,12 +3,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ToastController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
-import { ComicsServiceMocks } from '../../testing/comics.service.mocks';
-import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
-import { Comic } from '../comic';
-import { ComicsService } from '../comics.service';
+import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
+import { ToastControllerMocks } from '../../../testing/toast.controller.mocks';
+import { Comic } from '../../comic';
+import { ComicsService } from '../../comics.service';
+import { LibraryPageModule } from '../library.module';
 
-import { EditPageModule } from './edit.module';
 import { EditPage } from './edit.page';
 
 let component: EditPage;
@@ -26,7 +26,7 @@ describe('EditPage', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        EditPageModule,
+        LibraryPageModule,
         RouterTestingModule
       ],
       providers: [{
@@ -66,8 +66,8 @@ describe('EditPage', () => {
         component.onSubmit();
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Comic saved.',
-          duration: 3000
+          duration: 3000,
+          message: 'Comic saved.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -84,8 +84,8 @@ describe('EditPage', () => {
         component.onSubmit();
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error saving comic.',
-          duration: 4000
+          duration: 4000,
+          message: 'Error saving comic.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -111,8 +111,8 @@ describe('EditPage', () => {
         component.scrape();
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Comic scraped.',
-          duration: 3000
+          duration: 3000,
+          message: 'Comic scraped.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
@@ -129,8 +129,8 @@ describe('EditPage', () => {
         component.scrape();
 
         expect(toastController.create).toHaveBeenCalledWith({
-          message: 'Error scraping comic.',
-          duration: 4000
+          duration: 4000,
+          message: 'Error scraping comic.'
         });
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();

@@ -5,13 +5,13 @@ import { VolumesServiceMocks } from '../../../testing/volumes.service.mocks';
 import { VolumesService } from '../../volumes.service';
 import { LibraryPageModule } from '../library.module';
 
-import { PublishersComponent } from './publishers.component';
+import { SeriesPage } from './series.page';
 
-let component: PublishersComponent;
-let fixture: ComponentFixture<PublishersComponent>;
+let component: SeriesPage;
+let fixture: ComponentFixture<SeriesPage>;
 let volumesService: jasmine.SpyObj<VolumesService>;
 
-describe('PublishersComponent', () => {
+describe('SeriesPage', () => {
 
   beforeEach(() => {
     volumesService = VolumesServiceMocks.volumesService;
@@ -25,8 +25,9 @@ describe('PublishersComponent', () => {
         provide: VolumesService, useValue: volumesService
       }]
     });
-    fixture = TestBed.createComponent(PublishersComponent);
+    fixture = TestBed.createComponent(SeriesPage);
     component = fixture.componentInstance;
+    component.ionViewDidEnter();
     fixture.detectChanges();
   });
 
@@ -36,12 +37,12 @@ describe('PublishersComponent', () => {
 
   describe('#filter', () => {
 
-    it('filters the publishers by series', () => {
-      expect(component.publishers.length).toBe(5);
-      component.filter('Fath');
-      expect(component.publishers.length).toBe(1);
-      component.filter('W');
-      expect(component.publishers.length).toBe(3);
+    it('filters the series by name', () => {
+      expect(component.series.length).toBe(5);
+      component.filter('man');
+      expect(component.series.length).toBe(2);
+      component.filter('Foo');
+      expect(component.series.length).toBe(0);
     });
   });
 });

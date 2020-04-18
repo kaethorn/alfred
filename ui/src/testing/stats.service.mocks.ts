@@ -10,8 +10,8 @@ export class StatsServiceMocks {
         issues: 218,
         publishers: 4,
         series: 18,
-        volumes: 29,
-        users: 2
+        users: 2,
+        volumes: 29
       })
     });
   }

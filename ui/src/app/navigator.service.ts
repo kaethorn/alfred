@@ -68,8 +68,8 @@ export class NavigatorService {
     }
 
     return {
-      sideBySide: NavigatorService.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (NavigatorService.pageCount - 1),
-      adjacent: direction
+      adjacent: direction,
+      sideBySide: NavigatorService.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (NavigatorService.pageCount - 1)
     };
   }
 
@@ -86,6 +86,6 @@ export class NavigatorService {
       .map(set => NavigatorService.sideBySide ?
         set === 0 ? [ set ] : (2 * set < NavigatorService.pageCount) ? [ 2 * set - 1, 2 * set ] : [ 2 * set - 1 ] :
         [ set ])
-      .map(set => set.map(index => ({ page: index, loaded: false })));
+      .map(set => set.map(index => ({ loaded: false, page: index })));
   }
 }

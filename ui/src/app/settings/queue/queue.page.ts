@@ -6,13 +6,13 @@ import { ComicsService } from '../../comics.service';
 
 @Component({
   selector: 'app-queue',
-  templateUrl: './queue.component.html',
-  styleUrls: [ './queue.component.sass' ]
+  styleUrls: [ './queue.page.sass' ],
+  templateUrl: './queue.page.html'
 })
-export class QueueComponent {
+export class QueuePage {
 
   public comics: Array<Comic> = [];
-  public issueSeverityToColor = { ERROR: 'danger', WARNING: 'warning', INFO: 'secondary' };
+  public issueSeverityToColor = { ERROR: 'danger', INFO: 'secondary', WARNING: 'warning' };
 
   constructor(
     private comicsService: ComicsService,
@@ -41,8 +41,8 @@ export class QueueComponent {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

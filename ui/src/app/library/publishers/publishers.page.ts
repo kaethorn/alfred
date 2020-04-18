@@ -6,10 +6,10 @@ import { VolumesService } from '../../volumes.service';
 
 @Component({
   selector: 'app-publishers',
-  templateUrl: './publishers.component.html',
-  styleUrls: [ './publishers.component.sass' ]
+  styleUrls: [ './publishers.page.sass' ],
+  templateUrl: './publishers.page.html'
 })
-export class PublishersComponent {
+export class PublishersPage {
 
   public publishers: Publisher[];
   private publishersData: Publisher[];
@@ -27,8 +27,8 @@ export class PublishersComponent {
         if (series.length) {
           result.push({
             name: publisher.name,
-            seriesCount: publisher.seriesCount,
-            series
+            series,
+            seriesCount: publisher.seriesCount
           });
         }
         return result;
