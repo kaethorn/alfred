@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 
 import { Comic } from '../comic';
 import { ComicStorageService } from '../comic-storage.service';
@@ -24,14 +24,18 @@ export class ReaderPage {
   public transformation = {};
   private parent: string;
   private initialNavigation = true;
+  private loading: HTMLIonLoadingElement;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private navigator: NavigatorService,
     private toastController: ToastController,
+    private loadingController: LoadingController,
     private comicStorageService: ComicStorageService
-  ) { }
+  ) {
+    this.presentLoading();
+  }
 
   @HostListener('document:keyup.esc', [ '$event' ])
   public handleEscape(): void {
@@ -53,11 +57,12 @@ export class ReaderPage {
     this.comicStorageService.get(comicId)
       .then(comic => {
         this.comic = comic;
-        this.setup(this.comic);
+        this.setup(this.comic).then(() => this.loading.dismiss());
         this.comicStorageService.storeSurrounding(comicId).then(() => {
           this.showToast('Volume cached.');
         });
       }).catch(() => {
+        this.loading.dismiss();
         this.showToast('Comic book not available, please try again later.', 4000);
         this.back();
       });
@@ -125,12 +130,18 @@ export class ReaderPage {
   }
 
   private setImage(image: PageSource): void {
-    this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
+    image.loader = this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
       image.src = url;
     });
   }
 
-  private setup(comic: Comic): void {
+  /**
+   * Partitions the comic pages, triggers loading of images and starts navigation.
+   *
+   * @param comic The comic to load
+   * @returns A promise that resolved once the current set of pages are loaded.
+   */
+  private setup(comic: Comic): Promise<void[]> {
     this.comic = comic;
     this.imageSets = this.navigator.set(
       this.comic.pageCount,
@@ -143,6 +154,11 @@ export class ReaderPage {
       }
     }
     this.navigate(this.navigator.go());
+
+    // Determine when the current set is loaded
+    const currentSet = this.navigator.getSet();
+    const pagesToLoad: Promise<void>[] = this.imageSets[currentSet].map(image => image.loader);
+    return Promise.all(pagesToLoad);
   }
 
   private isSideBySide(): boolean {
@@ -216,5 +232,13 @@ export class ReaderPage {
       message
     });
     toast.present();
+  }
+
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    this.loading = await this.loadingController.create({
+      message: 'Opening comic...'
+    });
+    await this.loading.present();
+    return this.loading;
   }
 }

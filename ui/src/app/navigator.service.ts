@@ -15,6 +15,7 @@ export interface PageSource {
   src?: string;
   page: number;
   loaded: boolean;
+  loader?: Promise<void>;
 }
 
 @Injectable({
