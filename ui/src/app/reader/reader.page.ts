@@ -68,6 +68,10 @@ export class ReaderPage {
       });
   }
 
+  public ionViewDidLeave(): void {
+    this.loading.dismiss();
+  }
+
   public onClick(event: MouseEvent): void {
     const direction = this.getDirection(event);
     if (direction === 0) {

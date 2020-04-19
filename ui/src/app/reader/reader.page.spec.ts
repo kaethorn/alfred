@@ -21,6 +21,7 @@ let activatedRoute;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let toastController: jasmine.SpyObj<ToastController>;
 let loadingController: jasmine.SpyObj<LoadingController>;
+let loadingElement: jasmine.SpyObj<HTMLIonLoadingElement>;
 
 const clickRightSide = async (): Promise<void> => {
   fixture.debugElement.query(By.css('.pages-layer'))
@@ -58,6 +59,7 @@ describe('ReaderPage', () => {
     toastController = ToastControllerMocks.toastController;
     toastElement = ToastControllerMocks.toastElementSpy;
     loadingController = LoadingControllerMocks.loadingController;
+    loadingElement = LoadingControllerMocks.loadingElementSpy;
     activatedRoute = {
       snapshot: {
         params: { id: '493' },
@@ -143,6 +145,17 @@ describe('ReaderPage', () => {
         await toastController.create.calls.mostRecent().returnValue;
         expect(toastElement.present).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('on destroy', () => {
+
+    beforeEach(() => {
+      component.ionViewDidLeave();
+    });
+
+    it('dismisses the loading screen', () => {
+      expect(loadingElement.dismiss).toHaveBeenCalled();
     });
   });
 
