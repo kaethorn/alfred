@@ -161,6 +161,10 @@ describe('ReaderPage', () => {
 
   describe('navigation', () => {
 
+    beforeEach(async () => {
+      await loadingElement.present.calls.mostRecent().returnValue;
+    });
+
     it('starts off on the first page', () => {
       expect(component.comic.id).toBe('923');
       expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);

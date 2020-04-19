@@ -58,13 +58,20 @@ export class Page {
 
   public static async expectToastMessage(message: string): Promise<void> {
     expect(await Page.getToastMessage()).toEqual(message);
-    return Page.waitForToastMessageGone();
+    return Page.waitForToastGone();
   }
 
-  public static waitForToastMessageGone(timeout = 6000): promise.Promise<void> {
+  public static waitForToastGone(timeout = 6000): promise.Promise<void> {
     return browser.wait(
       ExpectedConditions.not(
         ExpectedConditions.presenceOf(
           element(by.css('ion-toast')))), timeout);
+  }
+
+  public static waitForLoadingGone(timeout = 2000): promise.Promise<void> {
+    return browser.wait(
+      ExpectedConditions.not(
+        ExpectedConditions.presenceOf(
+          element(by.css('ion-loading')))), timeout);
   }
 }

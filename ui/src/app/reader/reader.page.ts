@@ -33,9 +33,7 @@ export class ReaderPage {
     private toastController: ToastController,
     private loadingController: LoadingController,
     private comicStorageService: ComicStorageService
-  ) {
-    this.presentLoading();
-  }
+  ) { }
 
   @HostListener('document:keyup.esc', [ '$event' ])
   public handleEscape(): void {
@@ -52,20 +50,8 @@ export class ReaderPage {
   }
 
   public ionViewDidEnter(): void {
-    const comicId = this.route.snapshot.params.id;
     this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-    this.comicStorageService.get(comicId)
-      .then(comic => {
-        this.comic = comic;
-        this.setup(this.comic).then(() => this.loading.dismiss());
-        this.comicStorageService.storeSurrounding(comicId).then(() => {
-          this.showToast('Volume cached.');
-        });
-      }).catch(() => {
-        this.loading.dismiss();
-        this.showToast('Comic book not available, please try again later.', 4000);
-        this.back();
-      });
+    this.loadComic(this.route.snapshot.params.id);
   }
 
   public ionViewDidLeave(): void {
@@ -110,6 +96,22 @@ export class ReaderPage {
 
   public imageLoaded(image: PageSource): void {
     image.loaded = true;
+  }
+
+  private async loadComic(comicId: string): Promise<void> {
+    await this.presentLoading();
+    this.comicStorageService.get(comicId)
+      .then(comic => {
+        this.comic = comic;
+        this.setup(this.comic).then(() => this.loading.dismiss());
+        this.comicStorageService.storeSurrounding(comicId).then(() => {
+          this.showToast('Volume cached.');
+        });
+      }).catch(() => {
+        this.loading.dismiss();
+        this.showToast('Comic book not available, please try again later.', 4000);
+        this.back();
+      });
   }
 
   private navigate(instruction: NavigationInstruction): void {
