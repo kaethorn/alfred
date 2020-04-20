@@ -2,7 +2,7 @@
   "name": "Alfred",
   "short_name": "Alfred",
   "theme_color": "#1428cff",
-  "background_color": "#ffffff",
+  "background_color": "#a3a3a3",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
