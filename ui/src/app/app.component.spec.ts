@@ -11,6 +11,7 @@ import { UserServiceMocks } from '../testing/user.service.mocks';
 
 import { AppComponent } from './app.component';
 import { LOCATION_TOKEN } from './location.token';
+import { UpdateService } from './update.service';
 import { UserService } from './user.service';
 
 let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -33,8 +34,11 @@ describe('AppComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ AppComponent ],
-      imports: [ RouterTestingModule.withRoutes([]) ],
+      imports: [
+        RouterTestingModule.withRoutes([])
+      ],
       providers: [
+        { provide: UpdateService, useValue: { start: jasmine.createSpy() } },
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },

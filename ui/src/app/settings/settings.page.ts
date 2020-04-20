@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
+import { environment } from '../../environments/environment';
 import { LOCATION_TOKEN } from '../location.token';
 import { Setting } from '../setting';
 import { SettingsService } from '../settings.service';
@@ -19,6 +20,7 @@ export class SettingsPage {
   public updateError: any;
   public user: User;
   public userSettings;
+  public version: string;
 
   constructor(
     private settingsService: SettingsService,
@@ -27,6 +29,7 @@ export class SettingsPage {
     private userService: UserService,
     @Inject(LOCATION_TOKEN) private location: Location
   ) {
+    this.version = environment.version;
     this.userSettings = userSettingsService.get();
     this.userService.user.subscribe((user: User) => {
       this.user = user;

@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 
 import { Comic } from '../comic';
 import { ComicStorageService } from '../comic-storage.service';
@@ -24,12 +24,14 @@ export class ReaderPage {
   public transformation = {};
   private parent: string;
   private initialNavigation = true;
+  private loading: HTMLIonLoadingElement;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private navigator: NavigatorService,
     private toastController: ToastController,
+    private loadingController: LoadingController,
     private comicStorageService: ComicStorageService
   ) { }
 
@@ -48,19 +50,12 @@ export class ReaderPage {
   }
 
   public ionViewDidEnter(): void {
-    const comicId = this.route.snapshot.params.id;
     this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-    this.comicStorageService.get(comicId)
-      .then(comic => {
-        this.comic = comic;
-        this.setup(this.comic);
-        this.comicStorageService.storeSurrounding(comicId).then(() => {
-          this.showToast('Volume cached.');
-        });
-      }).catch(() => {
-        this.showToast('Comic book not available, please try again later.', 4000);
-        this.back();
-      });
+    this.loadComic(this.route.snapshot.params.id);
+  }
+
+  public ionViewDidLeave(): void {
+    this.loading.dismiss();
   }
 
   public onClick(event: MouseEvent): void {
@@ -103,6 +98,22 @@ export class ReaderPage {
     image.loaded = true;
   }
 
+  private async loadComic(comicId: string): Promise<void> {
+    await this.presentLoading();
+    this.comicStorageService.get(comicId)
+      .then(comic => {
+        this.comic = comic;
+        this.setup(this.comic).then(() => this.loading.dismiss());
+        this.comicStorageService.storeSurrounding(comicId).then(() => {
+          this.showToast('Volume cached.');
+        });
+      }).catch(() => {
+        this.loading.dismiss();
+        this.showToast('Comic book not available, please try again later.', 4000);
+        this.back();
+      });
+  }
+
   private navigate(instruction: NavigationInstruction): void {
     switch (instruction.adjacent) {
       case AdjacentComic.same:
@@ -110,7 +121,8 @@ export class ReaderPage {
         this.router.navigate([], {
           queryParams: { page: NavigatorService.page },
           queryParamsHandling: 'merge',
-          relativeTo: this.route
+          relativeTo: this.route,
+          replaceUrl: true
         });
         this.setTransformation();
         this.comicStorageService.saveProgress(this.comic);
@@ -125,12 +137,18 @@ export class ReaderPage {
   }
 
   private setImage(image: PageSource): void {
-    this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
+    image.loader = this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
       image.src = url;
     });
   }
 
-  private setup(comic: Comic): void {
+  /**
+   * Partitions the comic pages, triggers loading of images and starts navigation.
+   *
+   * @param comic The comic to load
+   * @returns A promise that resolved once the current set of pages are loaded.
+   */
+  private setup(comic: Comic): Promise<void[]> {
     this.comic = comic;
     this.imageSets = this.navigator.set(
       this.comic.pageCount,
@@ -143,6 +161,11 @@ export class ReaderPage {
       }
     }
     this.navigate(this.navigator.go());
+
+    // Determine when the current set is loaded
+    const currentSet = this.navigator.getSet();
+    const pagesToLoad: Promise<void>[] = this.imageSets[currentSet].map(image => image.loader);
+    return Promise.all(pagesToLoad);
   }
 
   private isSideBySide(): boolean {
@@ -216,5 +239,13 @@ export class ReaderPage {
       message
     });
     toast.present();
+  }
+
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    this.loading = await this.loadingController.create({
+      message: 'Opening comic...'
+    });
+    await this.loading.present();
+    return this.loading;
   }
 }

@@ -2,10 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 
 import { ComicStorageServiceMocks } from '../../testing/comic-storage.service.mocks';
 import { ComicFixtures } from '../../testing/comic.fixtures';
+import { LoadingControllerMocks } from '../../testing/loading.controller.mocks';
 import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
 import { ComicStorageService } from '../comic-storage.service';
 
@@ -19,6 +20,8 @@ let comicStorageService: jasmine.SpyObj<ComicStorageService>;
 let activatedRoute;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let toastController: jasmine.SpyObj<ToastController>;
+let loadingController: jasmine.SpyObj<LoadingController>;
+let loadingElement: jasmine.SpyObj<HTMLIonLoadingElement>;
 
 const clickRightSide = async (): Promise<void> => {
   fixture.debugElement.query(By.css('.pages-layer'))
@@ -55,6 +58,8 @@ describe('ReaderPage', () => {
     comicStorageService = ComicStorageServiceMocks.comicStorageService;
     toastController = ToastControllerMocks.toastController;
     toastElement = ToastControllerMocks.toastElementSpy;
+    loadingController = LoadingControllerMocks.loadingController;
+    loadingElement = LoadingControllerMocks.loadingElementSpy;
     activatedRoute = {
       snapshot: {
         params: { id: '493' },
@@ -80,6 +85,8 @@ describe('ReaderPage', () => {
         provide: Router, useValue: router
       }, {
         provide: ToastController, useValue: toastController
+      }, {
+        provide: LoadingController, useValue: loadingController
       }]
     });
 
@@ -141,7 +148,22 @@ describe('ReaderPage', () => {
     });
   });
 
+  describe('on destroy', () => {
+
+    beforeEach(() => {
+      component.ionViewDidLeave();
+    });
+
+    it('dismisses the loading screen', () => {
+      expect(loadingElement.dismiss).toHaveBeenCalled();
+    });
+  });
+
   describe('navigation', () => {
+
+    beforeEach(async () => {
+      await loadingElement.present.calls.mostRecent().returnValue;
+    });
 
     it('starts off on the first page', () => {
       expect(component.comic.id).toBe('923');
@@ -398,6 +420,10 @@ describe('ReaderPage', () => {
   });
 
   describe('#onSwipe', () => {
+
+    beforeEach(async () => {
+      await loadingElement.present.calls.mostRecent().returnValue;
+    });
 
     it('navigates accordingly', async () => {
       component.onSwipe(1);

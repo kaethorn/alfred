@@ -38,7 +38,6 @@ describe('QueueService', () => {
   describe('#hasItems', () => {
 
     it('reflects the state of the internal queue', async () => {
-      expect(await service.hasItems()).toBe(false);
       service.add({ id: '123' } as Comic);
       expect(await service.hasItems()).toBe(true);
     });
@@ -95,6 +94,7 @@ describe('QueueService', () => {
             expect(comicsService.updateProgress).toHaveBeenCalledWith({ id: 'one' });
             expect(comicsService.updateProgress).toHaveBeenCalledWith({ id: 'two' });
             expect(await service.count()).toBe(0);
+            expect(await service.hasItems()).toBeFalse();
             done();
           });
         });

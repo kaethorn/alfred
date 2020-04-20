@@ -46,7 +46,7 @@ describe('ComicDatabaseService', () => {
     it('opens the DB', () => {
       service = TestBed.inject(ComicDatabaseService);
       expect(indexedDbService.open)
-        .toHaveBeenCalledWith('Comics', 1, jasmine.any(Array));
+        .toHaveBeenCalledWith('Comics', 2, jasmine.any(Array));
     });
 
     describe('on success', () => {

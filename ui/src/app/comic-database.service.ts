@@ -16,7 +16,7 @@ export class ComicDatabaseService {
     private comicService: ComicsService,
     private indexedDbService: IndexedDbService
   ) {
-    this.indexedDbService.open('Comics', 1, [{
+    this.indexedDbService.open('Comics', 2, [{
       name: 'Images',
       options: { autoIncrement: true }
     }, {

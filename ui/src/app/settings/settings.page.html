@@ -75,12 +75,24 @@
     <ion-card-content>
       <ion-list lines="none">
         <ion-item>
-          <ion-label>
-            <p>Dark mode</p>
-          </ion-label>
-          <ion-toggle [(ngModel)]="userSettings.darkMode"
+          Dark mode
+          <ion-toggle slot="end" [(ngModel)]="userSettings.darkMode"
             (ionChange)="saveUserSettings()" name="Dark mode">
           </ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>Version</ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          UI
+          <ion-text slot="end">
+            v{{ version }}
+          </ion-text>
         </ion-item>
       </ion-list>
     </ion-card-content>

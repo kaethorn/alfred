@@ -1,8 +1,6 @@
-<div class="pages-layer" #pagesLayer
-  [ngStyle]="transformation"
-  (click)="onClick($event)"
-  (swipeleft)="onSwipe(1)"
-  (swiperight)="onSwipe(-1)">
+<div class="pages-layer" #pagesLayer [ngStyle]="transformation" (click)="onClick($event)"
+  (swipeleft)="onSwipe(1)" (swiperight)="onSwipe(-1)"
+  (swipeup)="toggleControls()" (swipedown)="toggleControls()">
   <div class="set" *ngFor="let imageSet of imageSets">
     <div *ngFor="let image of imageSet">
       <img *ngIf="image.src" [attr.src]="image.src | secure | async"
@@ -15,6 +13,12 @@
 
 <div class="control-layer" *ngIf="showControls" (click)="toggleControls()">
   <div class="top">
+    <ion-button class="hidden">
+      <ion-icon name="close"></ion-icon>
+    </ion-button>
+    <ion-text color="primary">
+      Page {{ comic.currentPage + 1 }}
+    </ion-text>
     <ion-button color="secondary" (click)="back()">
       <ion-icon name="close"></ion-icon>
     </ion-button>
