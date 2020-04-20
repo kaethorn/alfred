@@ -12,6 +12,12 @@
 
 <div class="control-layer" *ngIf="showControls" (click)="toggleControls()">
   <div class="top">
+    <ion-button class="hidden">
+      <ion-icon name="close"></ion-icon>
+    </ion-button>
+    <ion-text color="primary">
+      Page {{ comic.currentPage + 1 }}
+    </ion-text>
     <ion-button color="secondary" (click)="back()">
       <ion-icon name="close"></ion-icon>
     </ion-button>
