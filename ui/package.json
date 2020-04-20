@@ -1,6 +1,6 @@
 {
-  "name": "Alfred",
-  "version": "0.0.1",
+  "name": "alfred",
+  "version": "0.1.0",
   "author": "Falko Schmidt <scf@panter.ch>",
   "homepage": "https://alfred.cx/",
   "scripts": {
