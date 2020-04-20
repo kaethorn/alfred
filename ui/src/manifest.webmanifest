@@ -2,7 +2,7 @@
   "name": "Alfred",
   "short_name": "Alfred",
   "theme_color": "#3880ff",
-  "background_color": "#a3a3a3",
+  "background_color": "#dcdcdc",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
@@ -54,6 +54,11 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/alfred-512x512-splash.png",
+      "sizes": "512x512",
+      "type": "image/png"
     },
     {
       "src": "assets/icons/favicon-16x16.png",
