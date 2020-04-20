@@ -5,6 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 
+import { UpdateService } from './update.service';
 import { UserSettingsService } from './user-settings.service';
 
 @Component({
@@ -21,8 +22,10 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private router: Router,
-    private userSettingsService: UserSettingsService
+    private userSettingsService: UserSettingsService,
+    private updateService: UpdateService
   ) {
+    this.updateService.start();
     this.userSettingsService.load();
     this.initializeApp();
     this.router.events.pipe(
