@@ -1,6 +1,7 @@
-<div class="pages-layer" #pagesLayer [ngStyle]="transformation" (click)="onClick($event)">
+<div class="pages-layer" #pagesLayer [ngStyle]="transformation" (click)="onClick($event)"
+  (swipeleft)="onSwipe(1)" (swiperight)="onSwipe(-1)">
   <div class="set" *ngFor="let imageSet of imageSets">
-    <div *ngFor="let image of imageSet" (swipeleft)="onSwipe(1)" (swiperight)="onSwipe(-1)">
+    <div *ngFor="let image of imageSet">
       <img *ngIf="image.src" [attr.src]="image.src | secure | async"
           [ngClass]="{ loaded: image.loaded }"
           (load)="imageLoaded(image)"

@@ -1,6 +1,6 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -25,6 +25,7 @@ import { LOCATION_TOKEN } from './location.token';
     BrowserModule,
     HttpClientModule,
     IonicModule.forRoot(),
+    HammerModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [

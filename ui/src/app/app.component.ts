@@ -5,6 +5,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
 import { filter } from 'rxjs/operators';
 
+import 'hammerjs';
+
 import { UpdateService } from './update.service';
 import { UserSettingsService } from './user-settings.service';
 
