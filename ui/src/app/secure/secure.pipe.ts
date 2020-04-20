@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
@@ -14,8 +14,10 @@ export class SecurePipe implements PipeTransform {
     private sanitizer: DomSanitizer
   ) { }
 
-  public transform(url): Observable<SafeUrl> {
-    return this.http.get(url, { responseType: 'blob' }).pipe(
+  public transform(url: string): Observable<SafeUrl> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${ token }` });
+    return this.http.get(url, { headers, responseType: 'blob' }).pipe(
       map(val => this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(val)))
     );
   }
