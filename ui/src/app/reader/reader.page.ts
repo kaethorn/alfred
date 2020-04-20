@@ -121,7 +121,8 @@ export class ReaderPage {
         this.router.navigate([], {
           queryParams: { page: NavigatorService.page },
           queryParamsHandling: 'merge',
-          relativeTo: this.route
+          relativeTo: this.route,
+          replaceUrl: true
         });
         this.setTransformation();
         this.comicStorageService.saveProgress(this.comic);
