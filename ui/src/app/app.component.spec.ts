@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
@@ -33,7 +34,10 @@ describe('AppComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ AppComponent ],
-      imports: [ RouterTestingModule.withRoutes([]) ],
+      imports: [
+        RouterTestingModule.withRoutes([]),
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: false })
+      ],
       providers: [
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },

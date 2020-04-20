@@ -421,6 +421,10 @@ describe('ReaderPage', () => {
 
   describe('#onSwipe', () => {
 
+    beforeEach(async () => {
+      await loadingElement.present.calls.mostRecent().returnValue;
+    });
+
     it('navigates accordingly', async () => {
       component.onSwipe(1);
       await fixture.whenStable();
