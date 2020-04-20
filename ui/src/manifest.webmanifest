@@ -1,7 +1,7 @@
 {
   "name": "Alfred",
   "short_name": "Alfred",
-  "theme_color": "#1428cff",
+  "theme_color": "#3880ff",
   "background_color": "#a3a3a3",
   "display": "standalone",
   "scope": "./",
