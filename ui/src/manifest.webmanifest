@@ -56,10 +56,6 @@
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icons/alfred.svg",
-      "type": "image/svg+xml"
-    },
-    {
       "src": "assets/icons/favicon-16x16.png",
       "sizes": "16x16",
       "type": "image/png"
