@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { TestBed } from '@angular/core/testing';
-import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker';
+import { SwUpdate } from '@angular/service-worker';
 import { AlertController } from '@ionic/angular';
 
 import { AlertControllerMocks } from '../testing/alert.controller.mocks';
@@ -26,15 +26,13 @@ describe('UpdateService', () => {
     spyOn(console, 'log');
 
     TestBed.configureTestingModule({
-      imports: [
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: false })
-      ],
       providers: [
         { provide: SwUpdate, useValue: swUpdate },
         { provide: AlertController, useValue: alertController },
         { provide: LOCATION_TOKEN, useValue: location }
       ]
     });
+    (swUpdate as any).isEnabled = true;
     service = TestBed.inject(UpdateService);
   });
 

@@ -21,6 +21,9 @@ export class UpdateService {
   ) { }
 
   public start(): void {
+    if (!this.updates.isEnabled) {
+      return;
+    }
     this.updates.available.subscribe(event => {
       console.log('current version is', event.current);
       console.log('available version is', event.available);
@@ -39,9 +42,7 @@ export class UpdateService {
     const everySixHoursOnceAppIsStable$ = concat(appIsStable$, everySixHours$);
 
     everySixHoursOnceAppIsStable$.subscribe(() => {
-      if (this.updates.isEnabled) {
-        this.updates.checkForUpdate();
-      }
+      this.updates.checkForUpdate();
     });
   }
 

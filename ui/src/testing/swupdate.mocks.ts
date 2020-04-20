@@ -10,7 +10,7 @@ export class SwUpdateMocks {
     });
     updates.available = of({  available: { hash: '2' }, current: { hash: '1' } });
     updates.activated = of({ current: { hash: '4' }, previous: { hash: '3' } });
-    updates.isEnabled = true;
+    updates.isEnabled = false;
 
     return updates;
   }

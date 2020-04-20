@@ -2,7 +2,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
@@ -12,6 +11,7 @@ import { UserServiceMocks } from '../testing/user.service.mocks';
 
 import { AppComponent } from './app.component';
 import { LOCATION_TOKEN } from './location.token';
+import { UpdateService } from './update.service';
 import { UserService } from './user.service';
 
 let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -35,10 +35,10 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ AppComponent ],
       imports: [
-        RouterTestingModule.withRoutes([]),
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: false })
+        RouterTestingModule.withRoutes([])
       ],
       providers: [
+        { provide: UpdateService, useValue: { start: jasmine.createSpy() } },
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
