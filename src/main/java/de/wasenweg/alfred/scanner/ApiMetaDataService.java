@@ -112,6 +112,16 @@ public class ApiMetaDataService {
           .message("No unique issue found")
           .severity(ScannerIssue.Severity.ERROR)
           .build());
+      return "";
+    }
+
+    if (!filteredIssues.get(0).has("api_detail_url")
+        || filteredIssues.get(0).get("api_detail_url").asText().isEmpty()) {
+      this.scannerIssues.add(ScannerIssue.builder()
+          .message("No issue detail URL found")
+          .severity(ScannerIssue.Severity.ERROR)
+          .build());
+      return "";
     }
 
     return filteredIssues.get(0).get("api_detail_url").asText();
@@ -243,7 +253,7 @@ public class ApiMetaDataService {
 
   private void query(final Comic comic) {
     final String volumeId = this.findVolumeId(comic.getPublisher(), comic.getSeries(), comic.getVolume());
-    if ("".equals(volumeId)) {
+    if (volumeId.isEmpty()) {
       return;
     }
     final List<JsonNode> issues = this.findVolumeIssues(volumeId);
