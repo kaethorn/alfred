@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { BrowserModule, HammerModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -15,6 +15,7 @@ import { AppComponent } from './app.component';
 import { AuthInterceptor } from './auth.interceptor';
 import { LOCATION_TOKEN } from './location.token';
 
+@Injectable()
 export class HammerConfig extends HammerGestureConfig {
   public overrides = <any> {
     swipe: { direction: Hammer.DIRECTION_ALL }
