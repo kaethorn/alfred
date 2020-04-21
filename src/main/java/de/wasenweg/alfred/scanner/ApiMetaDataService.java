@@ -250,6 +250,9 @@ public class ApiMetaDataService {
       return;
     }
     final String issueDetailsUrl = this.findIssueDetailsUrl(comic, issues);
+    if (issueDetailsUrl.isEmpty()) {
+      return;
+    }
     this.applyIssueDetails(issueDetailsUrl, comic);
   }
 }

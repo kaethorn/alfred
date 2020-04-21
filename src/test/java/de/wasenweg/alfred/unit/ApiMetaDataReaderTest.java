@@ -162,7 +162,6 @@ public class ApiMetaDataReaderTest {
         this.createJsonObject(Map.of("issue_number", "2")),
         this.createJsonObject(Map.of("issue_number", "3")));
     doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
-    doNothing().when(this.apiMetaDataService).applyIssueDetails(any(), any());
     final Comic comic = new Comic();
     comic.setPath("/c/DC Comics/Batman (1940)/Batman 4 (1940).cbz");
 
