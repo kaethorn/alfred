@@ -66,6 +66,7 @@ public class ApiMetaDataService {
           .message("Missing meta data: " + String.join(", ", missingAttributes))
           .severity(ScannerIssue.Severity.ERROR)
           .build());
+      return this.scannerIssues;
     }
 
     // Here we can assume to have enough meta data about the comic to make

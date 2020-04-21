@@ -130,7 +130,6 @@ public class ApiMetaDataReaderTest {
 
   @Test
   public void parseWithMissingAttributes() throws Exception {
-    doReturn("").when(this.apiMetaDataService).findVolumeId(null, null, null);
     final Comic comic = new Comic();
     comic.setPath("/c/Batman 3 (1940).cbz");
 
