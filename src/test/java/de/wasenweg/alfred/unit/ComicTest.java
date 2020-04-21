@@ -81,4 +81,14 @@ public class ComicTest {
     assertThat(comic.getNumber()).isNull();
     assertThat(comic.getPosition()).isNull();
   }
+
+  @Test
+  public void issueNumberEquals() throws Exception {
+    assertThat(Comic.issueNumberEquals("001", "001")).isTrue();
+    assertThat(Comic.issueNumberEquals("1", "001")).isTrue();
+    assertThat(Comic.issueNumberEquals("1", "foo")).isFalse();
+    assertThat(Comic.issueNumberEquals("2", "3")).isFalse();
+    assertThat(Comic.issueNumberEquals("2a", "2.5")).isTrue();
+    assertThat(Comic.issueNumberEquals("1/2", "000.5")).isTrue();
+  }
 }

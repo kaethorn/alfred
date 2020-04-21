@@ -95,7 +95,7 @@ public class ApiMetaDataService {
 
   private String findIssueDetailsUrl(final Comic comic, final List<JsonNode> issues) {
     final List<JsonNode> filteredIssues = issues.stream()
-        .filter(issue -> issue.get("issue_number").asText().equals(comic.getNumber()))
+        .filter(issue -> Comic.issueNumberEquals(issue.get("issue_number").asText(), comic.getNumber()))
         .collect(Collectors.toList());
 
     if (filteredIssues.isEmpty()) {
