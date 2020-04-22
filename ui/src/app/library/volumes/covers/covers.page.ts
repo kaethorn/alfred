@@ -78,26 +78,21 @@ export class CoversPage {
    * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:lru"
    * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:age"
    */
-  private resetThumbnailsCache(comicId: string): Promise<boolean> {
-    return new Promise(resolve => {
-      this.caches.keys().then(cacheNames => cacheNames
-        .filter(cacheName => /:thumbnails-api:cache$/.test(cacheName))
-        .forEach(cacheName => {
-          this.caches.open(cacheName).then(cache => {
-            cache.keys().then(requests => requests
-              .filter(request => request.url.includes(comicId))
-              .forEach(request => {
-                cache.delete(request).then(success => {
-                  // eslint-disable-next-line no-console
-                  console.log(`Removed cached request to ${ request.url }: ${ success }`);
-                  resolve(success);
-                });
-              })
-            );
-          });
-        })
-      );
-    });
+  private async resetThumbnailsCache(comicId: string): Promise<boolean> {
+    const cacheNames = await this.caches.keys();
+    const thumbnailCaches = cacheNames.filter(cacheName => /:thumbnails-api:cache$/.test(cacheName));
+    for (const thumbailCache of thumbnailCaches) {
+      const cache = await this.caches.open(thumbailCache);
+      const requests = await cache.keys();
+      const matchingRequests = requests.filter(request => request.url.includes(comicId));
+      for (const request of matchingRequests) {
+        const success = await cache.delete(request);
+        // eslint-disable-next-line no-console
+        console.log(`Removed cached request to ${ request.url }: ${ success }`);
+        return success;
+      }
+    }
+    return false;
   }
 
   private async showToast(message: string, duration = 3000): Promise<void> {
