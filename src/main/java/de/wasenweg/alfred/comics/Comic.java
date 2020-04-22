@@ -176,6 +176,14 @@ public class Comic {
     }
   }
 
+  public static Boolean issueNumberEquals(final String numberA, final String numberB) {
+    try {
+      return Comic.mapPosition(numberA).equals(Comic.mapPosition(numberB));
+    } catch (final InvalidIssueNumberException exception) {
+      return false;
+    }
+  }
+
   public void purgeProgress() {
     this.setRead(false);
     this.setCurrentPage(0);

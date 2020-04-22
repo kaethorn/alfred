@@ -49,7 +49,7 @@ public class ScannerIngrationTest {
   }
 
   @Test
-  public void emittsScanProgressEvents() throws Exception {
+  public void emitsScanProgressEvents() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
 

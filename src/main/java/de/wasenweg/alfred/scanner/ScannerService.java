@@ -200,7 +200,7 @@ public class ScannerService {
             .filter(path -> path.getFileName().toString().endsWith(".cbz")).collect(Collectors.toList());
 
         this.reportTotal(comicFiles.size());
-        comicFiles.forEach(path -> this.processComicByPath(path));
+        comicFiles.stream().sorted().forEach(path -> this.processComicByPath(path));
         log.info("Parsed {} comics.", comicFiles.size());
 
         this.reportCleanUp();

@@ -66,6 +66,7 @@ public class ApiMetaDataService {
           .message("Missing meta data: " + String.join(", ", missingAttributes))
           .severity(ScannerIssue.Severity.ERROR)
           .build());
+      return this.scannerIssues;
     }
 
     // Here we can assume to have enough meta data about the comic to make
@@ -95,7 +96,7 @@ public class ApiMetaDataService {
 
   private String findIssueDetailsUrl(final Comic comic, final List<JsonNode> issues) {
     final List<JsonNode> filteredIssues = issues.stream()
-        .filter(issue -> issue.get("issue_number").asText().equals(comic.getNumber()))
+        .filter(issue -> Comic.issueNumberEquals(issue.get("issue_number").asText(), comic.getNumber()))
         .collect(Collectors.toList());
 
     if (filteredIssues.isEmpty()) {
@@ -111,6 +112,16 @@ public class ApiMetaDataService {
           .message("No unique issue found")
           .severity(ScannerIssue.Severity.ERROR)
           .build());
+      return "";
+    }
+
+    if (!filteredIssues.get(0).has("api_detail_url")
+        || filteredIssues.get(0).get("api_detail_url").asText().isEmpty()) {
+      this.scannerIssues.add(ScannerIssue.builder()
+          .message("No issue detail URL found")
+          .severity(ScannerIssue.Severity.ERROR)
+          .build());
+      return "";
     }
 
     return filteredIssues.get(0).get("api_detail_url").asText();
@@ -242,7 +253,7 @@ public class ApiMetaDataService {
 
   private void query(final Comic comic) {
     final String volumeId = this.findVolumeId(comic.getPublisher(), comic.getSeries(), comic.getVolume());
-    if ("".equals(volumeId)) {
+    if (volumeId.isEmpty()) {
       return;
     }
     final List<JsonNode> issues = this.findVolumeIssues(volumeId);
@@ -250,6 +261,9 @@ public class ApiMetaDataService {
       return;
     }
     final String issueDetailsUrl = this.findIssueDetailsUrl(comic, issues);
+    if (issueDetailsUrl.isEmpty()) {
+      return;
+    }
     this.applyIssueDetails(issueDetailsUrl, comic);
   }
 }
