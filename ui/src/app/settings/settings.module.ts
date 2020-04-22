@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { MomentModule } from 'ngx-moment';
+
+import { EditPage } from '../library/edit/edit.page';
 
 import { CoversPage } from './covers/covers.page';
 import { QueuePage } from './queue/queue.page';
@@ -13,10 +15,10 @@ import { SettingsPage } from './settings.page';
 
 @NgModule({
   declarations: [
-    SettingsPage,
-    ScannerComponent,
+    CoversPage,
     QueuePage,
-    CoversPage
+    SettingsPage,
+    ScannerComponent
   ],
   imports: [
     CommonModule,
@@ -24,10 +26,13 @@ import { SettingsPage } from './settings.page';
     IonicModule,
     HttpClientModule,
     MomentModule,
+    ReactiveFormsModule,
     RouterModule.forChild([{
       component: SettingsPage, path: ''
     }, {
       component: QueuePage, path: 'queue'
+    }, {
+      component: EditPage, path: 'queue/edit/:id'
     }, {
       component: CoversPage, path: 'covers'
     }])
