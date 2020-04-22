@@ -9,6 +9,7 @@
 /.gradletasknamecache
 /.vscode
 /lombok.config
+/GH_TOKEN
 
 ### STS ###
 .apt_generated
