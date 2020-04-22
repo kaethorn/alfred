@@ -13,6 +13,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './auth.interceptor';
+import { CACHES_TOKEN } from './caches.token';
 import { LOCATION_TOKEN } from './location.token';
 
 @Injectable()
@@ -42,6 +43,7 @@ export class HammerConfig extends HammerGestureConfig {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { multi: true, provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor },
     { provide: LOCATION_TOKEN, useValue: window.location },
+    { provide: CACHES_TOKEN, useValue: window.caches },
     { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig }
   ]
 })

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastController, LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
+import { CACHES_TOKEN } from '../../../caches.token';
 import { Comic } from '../../../comic';
 import { ComicsService } from '../../../comics.service';
 import { Thumbnail } from '../../../thumbnail';
@@ -27,7 +28,8 @@ export class CoversPage {
     private route: ActivatedRoute,
     private thumbnailsService: ThumbnailsService,
     private toastController: ToastController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    @Inject(CACHES_TOKEN) private caches: CacheStorage
   ) { }
 
   public ionViewWillEnter(): void {
@@ -51,8 +53,8 @@ export class CoversPage {
 
   public deleteBackCover(comic: Comic): void {
     this.backCoverThumbnails.get(comic.id).subscribe(thumbail => {
-      this.comicsService.deletePage(comic, thumbail.path).subscribe(() => {
-        this.updateThumbnails(comic);
+      this.comicsService.deletePage(comic, thumbail.path).subscribe(async () => {
+        await this.updateThumbnails(comic);
         this.showToast(`Back cover of "${ comic.fileName }" deleted.`);
       }, () => {
         this.showToast(`Error while deleting back cover of "${ comic.fileName }".`, 4000);
@@ -60,9 +62,32 @@ export class CoversPage {
     });
   }
 
-  private updateThumbnails(comic: Comic): void {
+  private async updateThumbnails(comic: Comic): Promise<void> {
+    await this.resetThumbnailsCache();
     this.frontCoverThumbnails.set(comic.id, this.thumbnailsService.getFrontCover(comic.id));
     this.backCoverThumbnails.set(comic.id, this.thumbnailsService.getBackCover(comic.id));
+    await this.frontCoverThumbnails.get(comic.id);
+    await this.backCoverThumbnails.get(comic.id);
+  }
+
+  /**
+   * Remove the thumbnails for the given comic ID.
+   * "ngsw:/:1:data:dynamic:thumbnails-api:cache"
+   * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:lru"
+   * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:age"
+   */
+  private async resetThumbnailsCache(comicId: string): Promise<void> {
+    (await this.caches.keys())
+      .filter(cacheName => /:thumbnails-api:cache$/.test(cacheName))
+      .forEach(cacheName => {
+        this.caches.open(cacheName).then(cache => {
+          cache.keys().then(requests => {
+            requests
+              .filter(request => request.url.includes(comicId))
+              .forEach(request => cache.delete(request));
+          });
+        });
+      });
   }
 
   private async showToast(message: string, duration = 3000): Promise<void> {
