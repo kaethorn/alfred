@@ -78,7 +78,7 @@ export class CoversPage {
    * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:lru"
    * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:age"
    */
-  private async resetThumbnailsCache(comicId: string): Promise<boolean> {
+  private async resetThumbnailsCache(comicId: string): Promise<void> {
     const cacheNames = await this.caches.keys();
     const thumbnailCaches = cacheNames.filter(cacheName => /:thumbnails-api:cache$/.test(cacheName));
     for (const thumbailCache of thumbnailCaches) {
@@ -89,10 +89,8 @@ export class CoversPage {
         const success = await cache.delete(request);
         // eslint-disable-next-line no-console
         console.log(`Removed cached request to ${ request.url }: ${ success }`);
-        return success;
       }
     }
-    return false;
   }
 
   private async showToast(message: string, duration = 3000): Promise<void> {
