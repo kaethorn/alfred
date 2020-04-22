@@ -31,8 +31,8 @@ public class QueueService {
     return this.comicQueryRepository.findAllWithErrors();
   }
 
-  public List<Comic> getValid() {
-    return this.comicQueryRepository.findAllWithoutErrors();
+  public List<Comic> getValid(final String publisher, final String series, final String volume) {
+    return this.comicQueryRepository.findAllWithoutErrors(publisher, series, volume);
   }
 
   public Comic flatten(final Comic comic) throws IOException {

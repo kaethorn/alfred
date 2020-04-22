@@ -23,5 +23,5 @@ public interface ComicQueryRepository {
 
   List<Comic> findAllWithErrors();
 
-  List<Comic> findAllWithoutErrors();
+  List<Comic> findAllWithoutErrors(final String publisher, final String series, final String volume);
 }

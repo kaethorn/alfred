@@ -8,14 +8,12 @@ import { MomentModule } from 'ngx-moment';
 
 import { EditPage } from '../library/edit/edit.page';
 
-import { CoversPage } from './covers/covers.page';
 import { QueuePage } from './queue/queue.page';
 import { ScannerComponent } from './scanner/scanner.component';
 import { SettingsPage } from './settings.page';
 
 @NgModule({
   declarations: [
-    CoversPage,
     QueuePage,
     SettingsPage,
     ScannerComponent
@@ -33,8 +31,6 @@ import { SettingsPage } from './settings.page';
       component: QueuePage, path: 'queue'
     }, {
       component: EditPage, path: 'queue/edit/:id'
-    }, {
-      component: CoversPage, path: 'covers'
     }])
   ]
 })

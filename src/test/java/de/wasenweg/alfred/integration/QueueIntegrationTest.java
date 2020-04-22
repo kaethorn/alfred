@@ -80,7 +80,10 @@ public class QueueIntegrationTest {
   @Test
   public void getValidReturnsValid() throws Exception {
     // Given / When / Then
-    this.mockMvc.perform(get("/api/queue/valid"))
+    this.mockMvc.perform(get("/api/queue/valid")
+        .param("publisher", "DC Comics")
+        .param("series", "Batman")
+        .param("volume", "1940"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics.length()").value(1));
@@ -95,7 +98,10 @@ public class QueueIntegrationTest {
     this.comicRepository.save(comic);
 
     // When / Then
-    this.mockMvc.perform(get("/api/queue/valid"))
+    this.mockMvc.perform(get("/api/queue/valid")
+        .param("publisher", "DC Comics")
+        .param("series", "Batman")
+        .param("volume", "1940"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
         .andExpect(jsonPath("$._embedded.comics").doesNotExist());

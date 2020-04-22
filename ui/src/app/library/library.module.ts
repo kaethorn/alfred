@@ -10,11 +10,13 @@ import { IssueActionsComponent } from './issues/issue-actions/issue-actions.comp
 import { IssuesPage } from './issues/issues.page';
 import { PublishersPage } from './publishers/publishers.page';
 import { SeriesPage } from './series/series.page';
+import { CoversPage } from './volumes/covers/covers.page';
 import { VolumeActionsComponent } from './volumes/volume-actions/volume-actions.component';
 import { VolumesPage } from './volumes/volumes.page';
 
 @NgModule({
   declarations: [
+    CoversPage,
     EditPage,
     IssueActionsComponent,
     IssuesPage,
@@ -45,6 +47,9 @@ import { VolumesPage } from './volumes/volumes.page';
       }, {
         component: EditPage,
         path: 'publishers/:publisher/series/:series/volumes/:volume/issues/:id/edit'
+      }, {
+        component: CoversPage,
+        path: 'publishers/:publisher/series/:series/volumes/:volume/covers'
       }, {
         path: '',
         pathMatch: 'full',

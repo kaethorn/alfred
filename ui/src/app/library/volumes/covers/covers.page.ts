@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ToastController, LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { Comic } from '../../comic';
-import { ComicsService } from '../../comics.service';
-import { Thumbnail } from '../../thumbnail';
-import { ThumbnailsService } from '../../thumbnails.service';
+import { Comic } from '../../../comic';
+import { ComicsService } from '../../../comics.service';
+import { Thumbnail } from '../../../thumbnail';
+import { ThumbnailsService } from '../../../thumbnails.service';
 
 @Component({
   selector: 'app-covers',
@@ -17,15 +18,23 @@ export class CoversPage {
   public comics: Array<Comic> = [];
   public frontCoverThumbnails = new Map<string, Observable<Thumbnail>>();
   public backCoverThumbnails = new Map<string, Observable<Thumbnail>>();
+  private publisher: string;
+  private series: string;
+  private volume: string;
 
   constructor(
     private comicsService: ComicsService,
+    private route: ActivatedRoute,
     private thumbnailsService: ThumbnailsService,
     private toastController: ToastController,
     private loadingController: LoadingController
   ) { }
 
   public ionViewWillEnter(): void {
+    this.publisher = this.route.snapshot.params.publisher;
+    this.series = this.route.snapshot.params.series;
+    this.volume = this.route.snapshot.params.volume;
+
     this.list();
   }
 
@@ -74,7 +83,7 @@ export class CoversPage {
 
   private async list(): Promise<void> {
     const loading = await this.presentLoading();
-    this.comicsService.listComicsWithoutErrors()
+    this.comicsService.listComicsWithoutErrors(this.publisher, this.series, this.volume)
       .subscribe((data: Comic[]) => {
         loading.dismiss();
         this.comics = data;

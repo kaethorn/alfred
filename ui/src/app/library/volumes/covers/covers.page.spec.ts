@@ -3,14 +3,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
-import { ComicFixtures } from '../../../testing/comic.fixtures';
-import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
-import { LoadingControllerMocks } from '../../../testing/loading.controller.mocks';
-import { ThumbnailsServiceMocks } from '../../../testing/thumbnails.service.mocks';
-import { ToastControllerMocks } from '../../../testing/toast.controller.mocks';
-import { ComicsService } from '../../comics.service';
-import { ThumbnailsService } from '../../thumbnails.service';
-import { SettingsPageModule } from '../settings.module';
+import { ComicFixtures } from '../../../../testing/comic.fixtures';
+import { ComicsServiceMocks } from '../../../../testing/comics.service.mocks';
+import { LoadingControllerMocks } from '../../../../testing/loading.controller.mocks';
+import { ThumbnailsServiceMocks } from '../../../../testing/thumbnails.service.mocks';
+import { ToastControllerMocks } from '../../../../testing/toast.controller.mocks';
+import { ComicsService } from '../../../comics.service';
+import { ThumbnailsService } from '../../../thumbnails.service';
+import { LibraryPageModule } from '../../library.module';
 
 import { CoversPage } from './covers.page';
 
@@ -35,7 +35,7 @@ describe('CoversPage', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        SettingsPageModule,
+        LibraryPageModule,
         RouterTestingModule
       ],
       providers: [{
