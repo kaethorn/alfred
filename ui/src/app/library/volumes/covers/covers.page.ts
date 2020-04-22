@@ -63,7 +63,7 @@ export class CoversPage {
   }
 
   private async updateThumbnails(comic: Comic): Promise<void> {
-    await this.resetThumbnailsCache();
+    await this.resetThumbnailsCache(comic.id);
     this.frontCoverThumbnails.set(comic.id, this.thumbnailsService.getFrontCover(comic.id));
     this.backCoverThumbnails.set(comic.id, this.thumbnailsService.getBackCover(comic.id));
     await this.frontCoverThumbnails.get(comic.id);
@@ -72,6 +72,8 @@ export class CoversPage {
 
   /**
    * Remove the thumbnails for the given comic ID.
+   *
+   * Angular currently establishes the following Cache Storage entries:
    * "ngsw:/:1:data:dynamic:thumbnails-api:cache"
    * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:lru"
    * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:age"
