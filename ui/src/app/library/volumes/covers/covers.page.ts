@@ -73,10 +73,9 @@ export class CoversPage {
   /**
    * Remove the thumbnails for the given comic ID.
    *
-   * Angular currently establishes the following Cache Storage entries:
+   * Angular currently establishes the following Cache Storage entry responsible
+   * for thumbnails from the API:
    * "ngsw:/:1:data:dynamic:thumbnails-api:cache"
-   * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:lru"
-   * "ngsw:/:db:ngsw:/:1:data:dynamic:thumbnails-api:age"
    */
   private async resetThumbnailsCache(comicId: string): Promise<void> {
     const cacheNames = await this.caches.keys();
@@ -86,9 +85,7 @@ export class CoversPage {
       const requests = await cache.keys();
       const matchingRequests = requests.filter(request => request.url.includes(comicId));
       for (const request of matchingRequests) {
-        const success = await cache.delete(request);
-        // eslint-disable-next-line no-console
-        console.log(`Removed cached request to ${ request.url }: ${ success }`);
+        await cache.delete(request);
       }
     }
   }
