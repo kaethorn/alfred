@@ -50,9 +50,9 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
   }
 
   @Override
-  public List<Comic> findAllWithoutErrors() {
+  public List<Comic> findAllWithoutErrors(final String publisher, final String series, final String volume) {
     return this.mongoTemplate.aggregate(Aggregation.newAggregation(
-        match(where("errors").exists(false)),
+        match(where(PUBLISHER).is(publisher).and(SERIES).is(series).and(VOLUME).is(volume).and("errors").exists(false)),
 
         sort(Sort.Direction.ASC, PATH)
         ), Comic.class, Comic.class).getMappedResults();

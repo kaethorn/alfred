@@ -36,7 +36,7 @@
         </ion-item>
       </ion-list>
       <ion-button slot="end"
-        [routerLink]="['/library/publishers', comic.publisher, 'series', comic.series, 'volumes', comic.volume, 'issues', comic.id, 'edit']">
+        [routerLink]="['edit', comic.id]">
         <ion-icon slot="start" name="create"></ion-icon>
         Edit
       </ion-button>

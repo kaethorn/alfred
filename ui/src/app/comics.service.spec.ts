@@ -64,11 +64,12 @@ describe('ComicsService', () => {
   describe('#listComicsWithoutErrors', () => {
 
     it('fetches all comics not containing scan errors', () => {
-      service.listComicsWithoutErrors().subscribe(comics => {
+      service.listComicsWithoutErrors('DC Comics', 'Batman', '1940').subscribe(comics => {
         expect(comics.length).toBe(2);
       });
 
-      const req = httpMock.expectOne('/api/queue/valid');
+      const req = httpMock.expectOne('/api/queue/valid?'
+            + 'publisher=DC%20Comics&series=Batman&volume=1940');
       expect(req.request.method).toBe('GET');
       req.flush(ComicHttpMocks.comics);
     });

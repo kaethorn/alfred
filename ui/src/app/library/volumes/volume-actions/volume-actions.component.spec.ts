@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { NavParams, PopoverController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
@@ -13,12 +14,14 @@ import { VolumeActionsComponent } from './volume-actions.component';
 let component: VolumeActionsComponent;
 let fixture: ComponentFixture<VolumeActionsComponent>;
 let navParams: NavParams;
+let router: jasmine.SpyObj<Router>;
 let popoverController: jasmine.SpyObj<PopoverController>;
 let volumesService: jasmine.SpyObj<VolumesService>;
 
 describe('VolumeActionsComponent', () => {
 
   beforeEach(() => {
+    router = jasmine.createSpyObj('Router', [ 'navigate' ]);
     popoverController = PopoverControllerMocks.popoverController;
     volumesService = VolumesServiceMocks.volumesService;
 
@@ -29,6 +32,8 @@ describe('VolumeActionsComponent', () => {
       ],
       providers: [{
         provide: NavParams, useValue: navParams
+      }, {
+        provide: Router, useValue: router
       }, {
         provide: VolumesService, useValue: volumesService
       }, {
@@ -108,6 +113,23 @@ describe('VolumeActionsComponent', () => {
 
         expect(popoverController.dismiss).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('#showCovers', () => {
+
+    it('navigates to the covers page and closes the popover', () => {
+      component.showCovers(VolumeFixtures.volume);
+      expect(router.navigate).toHaveBeenCalledWith([
+        '/library/publishers',
+        VolumeFixtures.volume.publisher,
+        'series',
+        VolumeFixtures.volume.series,
+        'volumes',
+        VolumeFixtures.volume.name,
+        'covers'
+      ]);
+      expect(popoverController.dismiss).toHaveBeenCalledWith();
     });
   });
 });

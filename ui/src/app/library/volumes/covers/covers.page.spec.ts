@@ -3,14 +3,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { throwError } from 'rxjs';
 
-import { ComicFixtures } from '../../../testing/comic.fixtures';
-import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
-import { LoadingControllerMocks } from '../../../testing/loading.controller.mocks';
-import { ThumbnailsServiceMocks } from '../../../testing/thumbnails.service.mocks';
-import { ToastControllerMocks } from '../../../testing/toast.controller.mocks';
-import { ComicsService } from '../../comics.service';
-import { ThumbnailsService } from '../../thumbnails.service';
-import { SettingsPageModule } from '../settings.module';
+import { ComicFixtures } from '../../../../testing/comic.fixtures';
+import { ComicsServiceMocks } from '../../../../testing/comics.service.mocks';
+import { LoadingControllerMocks } from '../../../../testing/loading.controller.mocks';
+import { ThumbnailsServiceMocks } from '../../../../testing/thumbnails.service.mocks';
+import { ToastControllerMocks } from '../../../../testing/toast.controller.mocks';
+import { CacheStorageService } from '../../../cache-storage.service';
+import { ComicsService } from '../../../comics.service';
+import { ThumbnailsService } from '../../../thumbnails.service';
+import { LibraryPageModule } from '../../library.module';
 
 import { CoversPage } from './covers.page';
 
@@ -22,6 +23,7 @@ let toastController: jasmine.SpyObj<ToastController>;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let comicsService: jasmine.SpyObj<ComicsService>;
 let thumbnailsService: jasmine.SpyObj<ThumbnailsService>;
+let cacheStorageService: jasmine.SpyObj<CacheStorageService>;
 
 describe('CoversPage', () => {
 
@@ -32,21 +34,22 @@ describe('CoversPage', () => {
     toastElement = ToastControllerMocks.toastElementSpy;
     comicsService = ComicsServiceMocks.comicsService;
     thumbnailsService = ThumbnailsServiceMocks.thumbnailsService;
+    cacheStorageService = jasmine.createSpyObj('CacheStorageService', {
+      resetThumbnailsCache: Promise.resolve(true)
+    });
 
     TestBed.configureTestingModule({
       imports: [
-        SettingsPageModule,
+        LibraryPageModule,
         RouterTestingModule
       ],
-      providers: [{
-        provide: ComicsService, useValue: comicsService
-      }, {
-        provide: ThumbnailsService, useValue: thumbnailsService
-      }, {
-        provide: LoadingController, useValue: loadingController
-      }, {
-        provide: ToastController, useValue: toastController
-      }]
+      providers: [
+        { provide: ComicsService, useValue: comicsService },
+        { provide: ThumbnailsService, useValue: thumbnailsService },
+        { provide: LoadingController, useValue: loadingController },
+        { provide: ToastController, useValue: toastController },
+        { provide: CacheStorageService, useValue: cacheStorageService }
+      ]
     });
 
     fixture = TestBed.createComponent(CoversPage);
@@ -120,6 +123,9 @@ describe('CoversPage', () => {
       it('shows a success toast', async () => {
         component.deleteFrontCover(ComicFixtures.volume[0]);
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
+        await cacheStorageService.resetThumbnailsCache.calls.mostRecent().returnValue;
+        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
+        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
           duration: 3000,
@@ -165,6 +171,9 @@ describe('CoversPage', () => {
       it('shows a success toast', async () => {
         component.deleteBackCover(ComicFixtures.volume[0]);
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
+        await cacheStorageService.resetThumbnailsCache.calls.mostRecent().returnValue;
+        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
+        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
           duration: 3000,

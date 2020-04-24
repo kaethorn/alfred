@@ -28,8 +28,15 @@ export class ComicsService {
     );
   }
 
-  public listComicsWithoutErrors(): Observable<Comic[]> {
-    return this.http.get('/api/queue/valid').pipe(
+  public listComicsWithoutErrors(publisher: string, series: string, volume: string): Observable<Comic[]> {
+    const params = new HttpParams({
+      fromObject: {
+        publisher,
+        series,
+        volume
+      }
+    });
+    return this.http.get('/api/queue/valid', { params }).pipe(
       this.consumeHateoas(),
       map((data: any) => data.map(this.addId))
     );

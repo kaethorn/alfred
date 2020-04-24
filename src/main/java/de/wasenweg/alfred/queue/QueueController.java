@@ -4,6 +4,7 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import de.wasenweg.alfred.util.BaseController;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +31,11 @@ public class QueueController extends BaseController<Comic> {
   }
 
   @GetMapping("/valid")
-  public CollectionModel<EntityModel<Comic>> getValid() {
-    return this.wrap(this.queueService.getValid());
+  public CollectionModel<EntityModel<Comic>> getValid(
+      @Param("publisher") final String publisher,
+      @Param("series") final String series,
+      @Param("volume") final String volume) {
+    return this.wrap(this.queueService.getValid(publisher, series, volume));
   }
 
   @PutMapping("/fix/{errorType}")
