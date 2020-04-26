@@ -2,12 +2,10 @@ package de.wasenweg.alfred.reader;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
-import de.wasenweg.alfred.progress.Progress;
 import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.InvalidMediaTypeException;
@@ -26,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -44,22 +41,16 @@ public class ReaderService {
    *
    * @param comicId    The ID of the comic to open.
    * @param page       The page number from which to start.
-   * @param markAsRead Whether to marks the page as read.
    * @param userId     The current user's ID.
    * @return The extracted page.
    */
-  public ResponseEntity<StreamingResponseBody> read(final String comicId, final Integer page, final boolean markAsRead,
-      final String userId) {
+  public ResponseEntity<StreamingResponseBody> read(final String comicId, final Integer page, final String userId) {
 
     final Optional<Comic> comicQuery = this.comicRepository.findById(comicId);
     final Comic comic = comicQuery.orElseThrow(ResourceNotFoundException::new);
 
     log.debug(format("Reading page %s (page count %s) of %s, files: [%s]", page, comic.getPageCount(), comic.getFiles(),
         String.join(",", comic.getFiles())));
-
-    if (markAsRead) {
-      this.setReadState(comic, page, userId);
-    }
 
     try {
       // Instantiate FileSystem here without try-with-resource as it's being
@@ -108,21 +99,5 @@ public class ReaderService {
             throw new ResourceNotFoundException(format("Error while downloading %s", comic.toString()), exception);
           }
         });
-  }
-
-  private void setReadState(final Comic comic, final Integer page, final String userId) {
-    final ObjectId comicId = new ObjectId(comic.getId());
-    final Progress progress = this.progressRepository
-        .findByUserIdAndComicId(userId, comicId)
-        .orElse(Progress.builder().comicId(comicId).userId(userId).build());
-
-    progress.setCurrentPage(page);
-    progress.setLastRead(new Date());
-
-    if (page == comic.getPageCount() - 1) {
-      progress.setRead(true);
-    }
-
-    this.progressRepository.save(progress);
   }
 }

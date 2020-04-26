@@ -154,7 +154,7 @@ export class ComicsService {
   }
 
   public getPage(comicId: string, page: number): Observable<Blob> {
-    return this.http.get(`/api/download/${ comicId }/${ page }`, {
+    return this.http.get(`/api/read/${ comicId }/${ page }`, {
       responseType: 'blob'
     });
   }
