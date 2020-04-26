@@ -25,7 +25,7 @@ public class ReaderController {
   public ResponseEntity<StreamingResponseBody> read(
       @PathVariable("id") final String id,
       final Principal principal) {
-    return this.readerService.read(id, 0, true, principal.getName());
+    return this.readerService.read(id, 0, principal.getName());
   }
 
   @Transactional
@@ -35,17 +35,7 @@ public class ReaderController {
       @PathVariable("id") final String id,
       @PathVariable("page") final Integer page,
       final Principal principal) {
-    return this.readerService.read(id, page, true, principal.getName());
-  }
-
-  @Transactional
-  @GetMapping("/download/{id}/{page}")
-  @ResponseBody
-  public ResponseEntity<StreamingResponseBody> downloadPage(
-      @PathVariable("id") final String id,
-      @PathVariable("page") final Integer page,
-      final Principal principal) {
-    return this.readerService.read(id, page, false, principal.getName());
+    return this.readerService.read(id, page, principal.getName());
   }
 
   @Transactional

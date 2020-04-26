@@ -96,20 +96,6 @@ public class ReaderIntegrationTest {
   }
 
   @Test
-  public void downloadPage() throws Exception {
-    // Given
-    final Comic comic = this.comicRepository.findAll().get(0);
-
-    // When / Then
-    this.mockMvc.perform(get("/api/download/" + comic.getId() + "/2"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.IMAGE_PNG_VALUE))
-        .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=/3.png"))
-        .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 90))
-        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE));
-  }
-
-  @Test
   public void download() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);

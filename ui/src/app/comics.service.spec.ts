@@ -297,7 +297,7 @@ describe('ComicsService', () => {
         expect(blob.size).toBe(0);
       });
 
-      const req = httpMock.expectOne(`/api/download/${ ComicFixtures.comic.id }/4`);
+      const req = httpMock.expectOne(`/api/read/${ ComicFixtures.comic.id }/4`);
       expect(req.request.method).toBe('GET');
       req.flush(new Blob());
     });
