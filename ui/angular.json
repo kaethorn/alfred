@@ -39,7 +39,6 @@
               }
             ],
             "scripts": [],
-            "es5BrowserSupport": false,
             "ngswConfigPath": "ngsw-config.json",
             "serviceWorker": true
           },
