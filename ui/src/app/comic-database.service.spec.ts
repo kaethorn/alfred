@@ -17,7 +17,7 @@ describe('ComicDatabaseService', () => {
 
   beforeEach(() => {
     comicsService = ComicsServiceMocks.comicsService;
-    indexedDbService = IndexedDbServiceMocks.IndexedDbService;
+    indexedDbService = IndexedDbServiceMocks.indexedDbService;
 
     TestBed.configureTestingModule({
       providers: [{
@@ -33,7 +33,7 @@ describe('ComicDatabaseService', () => {
 
     beforeEach(() => {
       TestBed.resetTestingModule();
-      indexedDbService = IndexedDbServiceMocks.IndexedDbService;
+      indexedDbService = IndexedDbServiceMocks.indexedDbService;
       TestBed.configureTestingModule({
         providers: [{
           provide: ComicsService, useValue: comicsService

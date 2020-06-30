@@ -4,7 +4,7 @@ import { IndexedDbService } from '../app/indexed-db.service';
 
 export class IndexedDbServiceMocks {
 
-  public static get IndexedDbService(): jasmine.SpyObj<IndexedDbService> {
+  public static get indexedDbService(): jasmine.SpyObj<IndexedDbService> {
     const service = jasmine.createSpyObj('IndexedDbService', {
       delete: Promise.resolve(new Event('')),
       get: Promise.resolve(),

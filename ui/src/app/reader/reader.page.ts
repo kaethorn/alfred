@@ -116,7 +116,7 @@ export class ReaderPage {
 
   private navigate(instruction: NavigationInstruction): void {
     switch (instruction.adjacent) {
-      case AdjacentComic.same:
+      case AdjacentComic.SAME:
         this.comic.currentPage = NavigatorService.page;
         this.router.navigate([], {
           queryParams: { page: NavigatorService.page },
@@ -127,10 +127,10 @@ export class ReaderPage {
         this.setTransformation();
         this.comicStorageService.saveProgress(this.comic);
         break;
-      case AdjacentComic.next:
+      case AdjacentComic.NEXT:
         this.openNext({ showToast: true });
         break;
-      case AdjacentComic.previous:
+      case AdjacentComic.PREVIOUS:
         this.openPrevious({ showToast: true });
         break;
     }
