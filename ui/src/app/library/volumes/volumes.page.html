@@ -31,32 +31,38 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngFor="let volume of volumes" class="volume">
-    <ion-card-header>
-      <ion-card-title>Vol. {{ volume.name }}</ion-card-title>
-      <ion-card-subtitle>{{ volume.readCount }} of {{ volume.issueCount }} issues read</ion-card-subtitle>
-    </ion-card-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-lg="3" size-md="4" size-sm="12" size-xs="12" *ngFor="let volume of volumes">
+        <ion-card class="volume">
+          <ion-card-header>
+            <ion-card-title>Vol. {{ volume.name }}</ion-card-title>
+            <ion-card-subtitle>{{ volume.readCount }} of {{ volume.issueCount }} issues read</ion-card-subtitle>
+          </ion-card-header>
 
-    <a class="thumbnail" (click)="resumeVolume(volume)">
-      <ion-badge *ngIf="volume.read"
-       class="read-badge" color="secondary">
-        &#10004;
-      </ion-badge>
-      <ion-badge *ngIf="stored[volume.firstComicId]"
-        class="synced-badge" color="secondary">
-        &#9921;
-      </ion-badge>
-      <img [attr.src]="thumbnails.get(volume.firstComicId) | async">
-    </a>
-    <ion-item>
-      <ion-button slot="start" fill="clear"
-        [routerLink]="['/library/publishers', volume.publisher, 'series', volume.series, 'volumes', volume.name, 'issues']">
-        <ion-icon name="list"></ion-icon>
-        List
-      </ion-button>
-      <ion-button class="menu" fill="clear" slot="end" (click)="openMenu($event, volume)">
-        <ion-icon color="tertiary" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-card>
+          <a class="thumbnail" (click)="resumeVolume(volume)">
+            <ion-badge *ngIf="volume.read"
+            class="read-badge" color="secondary">
+              &#10004;
+            </ion-badge>
+            <ion-badge *ngIf="stored[volume.firstComicId]"
+              class="synced-badge" color="secondary">
+              &#9921;
+            </ion-badge>
+            <img [attr.src]="thumbnails.get(volume.firstComicId) | async">
+          </a>
+          <ion-item>
+            <ion-button slot="start" fill="clear"
+              [routerLink]="['/library/publishers', volume.publisher, 'series', volume.series, 'volumes', volume.name, 'issues']">
+              <ion-icon name="list"></ion-icon>
+              List
+            </ion-button>
+            <ion-button class="menu" fill="clear" slot="end" (click)="openMenu($event, volume)">
+              <ion-icon color="tertiary" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
