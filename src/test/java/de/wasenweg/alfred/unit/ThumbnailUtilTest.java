@@ -9,20 +9,20 @@ public class ThumbnailUtilTest {
 
   @Test
   public void calculateTargetDimensionLandscape() {
-    assertThat(ThumbnailUtil.calculateTargetDimension(800, 500).getWidth()).isEqualTo(200);
-    assertThat(ThumbnailUtil.calculateTargetDimension(800, 500).getHeight()).isEqualTo(125);
+    assertThat(ThumbnailUtil.calculateTargetDimension(1600, 1000).getWidth()).isEqualTo(400);
+    assertThat(ThumbnailUtil.calculateTargetDimension(1600, 1000).getHeight()).isEqualTo(250);
   }
 
   @Test
   public void calculateTargetDimensionPortrait() {
-    assertThat(ThumbnailUtil.calculateTargetDimension(500, 800).getWidth()).isEqualTo(187);
-    assertThat(ThumbnailUtil.calculateTargetDimension(500, 800).getHeight()).isEqualTo(300);
+    assertThat(ThumbnailUtil.calculateTargetDimension(1000, 1600).getWidth()).isEqualTo(375);
+    assertThat(ThumbnailUtil.calculateTargetDimension(1000, 1600).getHeight()).isEqualTo(600);
   }
 
   @Test
   public void calculateTargetDimensionSquare() {
-    assertThat(ThumbnailUtil.calculateTargetDimension(800, 800).getWidth()).isEqualTo(200);
-    assertThat(ThumbnailUtil.calculateTargetDimension(800, 800).getHeight()).isEqualTo(200);
+    assertThat(ThumbnailUtil.calculateTargetDimension(1600, 1600).getWidth()).isEqualTo(400);
+    assertThat(ThumbnailUtil.calculateTargetDimension(1600, 1600).getHeight()).isEqualTo(400);
   }
 
   @Test

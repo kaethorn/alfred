@@ -26,36 +26,42 @@
   </ion-card>
 
   <div *ngIf="comics?.length > 0">
-    <ion-card *ngFor="let comic of comics" class="comic-tile">
-      <ion-card-header>
-        <ion-card-title>{{ comic.series }} #{{ comic.number }}</ion-card-title>
-        <ion-card-subtitle>Vol. {{ comic.volume }}</ion-card-subtitle>
-      </ion-card-header>
-      <a class="thumbnail" [routerLink]="['/read', comic.id]"
-         [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
-        <ion-badge *ngIf="stored[comic.id]"
-          class="synced-badge" color="secondary">
-          &#9921;
-        </ion-badge>
-        <img [attr.src]="thumbnails.get(comic.id) | async">
-        <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
-      </a>
-      <ion-item>
-        <ion-button *ngIf="stored[comic.id]; else allowSync"
-          fill="clear" class="unsync" (click)="delete(comic)">
-          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
-          Synced
-        </ion-button>
-        <ng-template #allowSync>
-          <ion-button class="sync" fill="clear" (click)="sync(comic)">
-            <ion-icon slot="start" name="sync" [ngClass]="{ 'syncing': syncing }"></ion-icon>
-            Sync
-          </ion-button>
-        </ng-template>
-        <ion-button class="menu" fill="clear" slot="end" (click)="openMenu($event, comic)">
-          <ion-icon color="tertiary" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </ion-card>
+    <ion-grid>
+      <ion-row>
+        <ion-col size-lg="3" size-md="4" size-sm="12" size-xs="12" *ngFor="let comic of comics">
+          <ion-card class="comic-tile">
+            <ion-card-header>
+              <ion-card-title>{{ comic.series }} #{{ comic.number }}</ion-card-title>
+              <ion-card-subtitle>Vol. {{ comic.volume }}</ion-card-subtitle>
+            </ion-card-header>
+            <a class="thumbnail" [routerLink]="['/read', comic.id]"
+              [queryParams]="{ page: comic.currentPage, parent: '/bookmarks' }">
+              <ion-badge *ngIf="stored[comic.id]"
+                class="synced-badge" color="secondary">
+                &#9921;
+              </ion-badge>
+              <img [attr.src]="thumbnails.get(comic.id) | async">
+              <div class="progress" [ngStyle]="{'width.%': comic.currentPage/comic.pageCount*100}"></div>
+            </a>
+            <ion-item>
+              <ion-button *ngIf="stored[comic.id]; else allowSync"
+                fill="clear" class="unsync" (click)="delete(comic)">
+                <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                Synced
+              </ion-button>
+              <ng-template #allowSync>
+                <ion-button class="sync" fill="clear" (click)="sync(comic)">
+                  <ion-icon slot="start" name="sync" [ngClass]="{ 'syncing': syncing }"></ion-icon>
+                  Sync
+                </ion-button>
+              </ng-template>
+              <ion-button class="menu" fill="clear" slot="end" (click)="openMenu($event, comic)">
+                <ion-icon color="tertiary" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>

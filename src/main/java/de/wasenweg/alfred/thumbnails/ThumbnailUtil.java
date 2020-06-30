@@ -13,8 +13,8 @@ import java.io.InputStream;
 @Slf4j
 public final class ThumbnailUtil {
 
-  private static final int BOUND_WIDTH = 200;
-  private static final int BOUND_HEIGHT = 300;
+  private static final int BOUND_WIDTH = 400;
+  private static final int BOUND_HEIGHT = 600;
 
   private ThumbnailUtil() {
   }
