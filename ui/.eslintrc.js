@@ -206,9 +206,34 @@ module.exports = {
                 "@typescript-eslint/tslint"
             ],
             "rules": {
-                "@typescript-eslint/class-name-casing": "error",
+                "@typescript-eslint/naming-convention": ["error",
+                    {
+                        selector: 'default',
+                        format: ['camelCase'],
+                        leadingUnderscore: 'allow',
+                        trailingUnderscore: 'allow',
+                    }, {
+                        selector: 'variable',
+                        format: ['camelCase', 'UPPER_CASE'],
+                        leadingUnderscore: 'allow',
+                        trailingUnderscore: 'allow',
+                    }, {
+                        selector: 'typeLike',
+                        format: ['PascalCase'],
+                    }, {
+                        selector: "property",
+                        format: ["camelCase", "PascalCase", "snake_case", "UPPER_CASE"],
+                        leadingUnderscore: 'allow',
+                    }, {
+                        selector: "enum",
+                        format: ["PascalCase"]
+                    }, {
+                        selector: "enumMember",
+                        format: ["UPPER_CASE"]
+                    }
+                ],
                 "@typescript-eslint/consistent-type-definitions": "error",
-                "@typescript-eslint/explicit-function-return-type": ["error"],
+                "@typescript-eslint/explicit-function-return-type": "error",
                 "@typescript-eslint/explicit-member-accessibility": [
                     "error",
                     {

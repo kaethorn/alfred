@@ -34,7 +34,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to stay on the current issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.same);
+            expect(result.adjacent).toBe(AdjacentComic.SAME);
           });
 
           it('keeps side by side mode', () => {
@@ -54,7 +54,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to open the previous issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.previous);
+            expect(result.adjacent).toBe(AdjacentComic.PREVIOUS);
           });
 
           it('exits side by side mode', () => {
@@ -77,7 +77,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to stay on the current issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.same);
+            expect(result.adjacent).toBe(AdjacentComic.SAME);
           });
 
           it('keeps single pagemode', () => {
@@ -97,7 +97,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to open the previous issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.previous);
+            expect(result.adjacent).toBe(AdjacentComic.PREVIOUS);
           });
 
           it('keeps single page mode', () => {
@@ -123,7 +123,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to stay on the current issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.same);
+            expect(result.adjacent).toBe(AdjacentComic.SAME);
           });
 
           it('keeps side by side mode', () => {
@@ -143,7 +143,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to open the next issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.next);
+            expect(result.adjacent).toBe(AdjacentComic.NEXT);
           });
 
           it('exits side by side mode', () => {
@@ -166,7 +166,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to stay on the current issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.same);
+            expect(result.adjacent).toBe(AdjacentComic.SAME);
           });
 
           it('keeps single pagemode', () => {
@@ -186,7 +186,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to open the next issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.next);
+            expect(result.adjacent).toBe(AdjacentComic.NEXT);
           });
 
           it('keeps single page mode', () => {
