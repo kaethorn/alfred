@@ -163,6 +163,8 @@ describe('ReaderPage', () => {
 
     beforeEach(async () => {
       await loadingElement.present.calls.mostRecent().returnValue;
+      await comicStorageService.get.calls.mostRecent().returnValue;
+      await comicStorageService.store.calls.mostRecent().returnValue;
     });
 
     it('starts off on the first page', () => {
@@ -358,6 +360,7 @@ describe('ReaderPage', () => {
       component.ionViewDidEnter();
       await fixture.whenStable();
       await comicStorageService.get.calls.mostRecent().returnValue;
+      await comicStorageService.get.calls.mostRecent().returnValue;
       component.openPrevious();
     });
 
@@ -392,6 +395,7 @@ describe('ReaderPage', () => {
       component.ionViewDidEnter();
       await fixture.whenStable();
       await comicStorageService.get.calls.mostRecent().returnValue;
+      await comicStorageService.get.calls.mostRecent().returnValue;
       component.openNext();
     });
 
@@ -423,6 +427,8 @@ describe('ReaderPage', () => {
 
     beforeEach(async () => {
       await loadingElement.present.calls.mostRecent().returnValue;
+      await comicStorageService.get.calls.mostRecent().returnValue;
+      await comicStorageService.store.calls.mostRecent().returnValue;
     });
 
     it('navigates accordingly', async () => {
