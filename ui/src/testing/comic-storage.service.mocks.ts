@@ -13,6 +13,7 @@ export class ComicStorageServiceMocks {
       getPageUrl: Promise.resolve('/api/read/923/0'),
       saveIfStored: Promise.resolve(),
       saveProgress: Promise.resolve(),
+      store: Promise.resolve({}),
       storeSurrounding: Promise.resolve({})
     });
   }

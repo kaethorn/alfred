@@ -118,8 +118,18 @@ export class ComicStorageService {
   }
 
   /**
+   * Caches the current comic book.
+   * @param comic The reference comic.
+   * @returns A promise that resolves when the comic is cached.
+   */
+  public store(comic: Comic): Promise<Event> {
+    return this.comicDatabaseService.store(comic);
+  }
+
+  /**
    * Caches the previous, the current and the three next comic books.
    * @param comicId The reference comic ID.
+   * @returns A promise that resolves when all surrounding comics are cached.
    */
   public async storeSurrounding(comicId: string): Promise<StoredState> {
     const cachedIds: StoredState = {};

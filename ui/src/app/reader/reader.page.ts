@@ -101,9 +101,10 @@ export class ReaderPage {
   private async loadComic(comicId: string): Promise<void> {
     await this.presentLoading();
     this.comicStorageService.get(comicId)
-      .then(comic => {
+      .then(async comic => {
         this.comic = comic;
-        this.setup(this.comic).then(() => this.loading.dismiss());
+        await this.comicStorageService.store(comic);
+        this.setup().then(() => this.loading.dismiss());
         this.comicStorageService.storeSurrounding(comicId).then(() => {
           this.showToast('Volume cached.');
         });
@@ -146,10 +147,9 @@ export class ReaderPage {
    * Partitions the comic pages, triggers loading of images and starts navigation.
    *
    * @param comic The comic to load
-   * @returns A promise that resolved once the current set of pages are loaded.
+   * @returns A promise that resolves once the current set of pages are loaded.
    */
-  private setup(comic: Comic): Promise<void[]> {
-    this.comic = comic;
+  private setup(): Promise<void[]> {
     this.imageSets = this.navigator.set(
       this.comic.pageCount,
       this.getPage(this.comic),

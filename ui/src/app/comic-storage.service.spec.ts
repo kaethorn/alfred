@@ -306,6 +306,15 @@ describe('ComicStorageService', () => {
     });
   });
 
+  describe('#store', () => {
+
+    it('stores the given comic', async () => {
+      await service.store(ComicFixtures.volume[3]);
+      expect(comicDatabaseService.store).toHaveBeenCalledTimes(1);
+      expect(comicDatabaseService.store).toHaveBeenCalledWith(ComicFixtures.volume[3]);
+    });
+  });
+
   describe('#storeSurrounding', () => {
 
     beforeEach(() => {
