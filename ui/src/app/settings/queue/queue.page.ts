@@ -25,10 +25,13 @@ export class QueuePage {
   }
 
   public fix(comic: Comic, error: ScannerIssue): void {
+    error.inProgress = true;
     this.comicsService.fixIssue(comic, error).subscribe(() => {
+      delete error.inProgress;
       this.list();
       this.showToast(`Flattened comic archive "${ comic.fileName }".`);
     }, () => {
+      delete error.inProgress;
       this.showToast(`Error while flattening comic archive "${ comic.fileName }".`, 4000);
     });
   }

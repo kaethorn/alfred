@@ -18,6 +18,7 @@ export interface ScannerIssue {
   type: ScannerIssueType;
   message: string;
   fixable: boolean;
+  inProgress?: boolean;
   severity: ScannerIssueSeverity;
 }
 
