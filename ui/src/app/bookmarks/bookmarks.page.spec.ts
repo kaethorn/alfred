@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PopoverController, ToastController } from '@ionic/angular';
+import { PopoverController, ToastController, LoadingController } from '@ionic/angular';
 
 import { ComicDatabaseServiceMocks } from '../../testing/comic-database.service.mocks';
 import { ComicStorageServiceMocks } from '../../testing/comic-storage.service.mocks';
 import { ComicFixtures } from '../../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../../testing/comics.service.mocks';
+import { LoadingControllerMocks } from '../../testing/loading.controller.mocks';
 import { PopoverControllerMocks } from '../../testing/popover.controller.mocks';
 import { ThumbnailsServiceMocks } from '../../testing/thumbnails.service.mocks';
 import { ToastControllerMocks } from '../../testing/toast.controller.mocks';
@@ -23,6 +24,8 @@ let comicsService: jasmine.SpyObj<ComicsService>;
 let thumbnailsService: jasmine.SpyObj<ThumbnailsService>;
 let toastController: jasmine.SpyObj<ToastController>;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
+let loadingController: jasmine.SpyObj<LoadingController>;
+let loadingElement: jasmine.SpyObj<HTMLIonLoadingElement>;
 let popoverElement: jasmine.SpyObj<HTMLIonPopoverElement>;
 let popoverController: jasmine.SpyObj<PopoverController>;
 let comicStorageService: jasmine.SpyObj<ComicStorageService>;
@@ -30,7 +33,9 @@ let comicDatabaseService: jasmine.SpyObj<ComicDatabaseService>;
 
 describe('BookmarksPage', () => {
 
-  beforeEach(async () => {
+  beforeEach(<any>fakeAsync(async () => {
+    loadingController = LoadingControllerMocks.loadingController;
+    loadingElement = LoadingControllerMocks.loadingElementSpy;
     comicsService = ComicsServiceMocks.comicsService;
     thumbnailsService = ThumbnailsServiceMocks.thumbnailsService;
     popoverController = PopoverControllerMocks.popoverController;
@@ -45,19 +50,15 @@ describe('BookmarksPage', () => {
         BookmarksPageModule,
         RouterTestingModule
       ],
-      providers: [{
-        provide: ComicsService, useValue: comicsService
-      }, {
-        provide: ThumbnailsService, useValue: thumbnailsService
-      }, {
-        provide: PopoverController, useValue: popoverController
-      }, {
-        provide: ToastController, useValue: toastController
-      }, {
-        provide: ComicStorageService, useValue: comicStorageService
-      }, {
-        provide: ComicDatabaseService, useValue: comicDatabaseService
-      }]
+      providers: [
+        { provide: ComicsService, useValue: comicsService },
+        { provide: ThumbnailsService, useValue: thumbnailsService },
+        { provide: PopoverController, useValue: popoverController },
+        { provide: LoadingController, useValue: loadingController },
+        { provide: ToastController, useValue: toastController },
+        { provide: ComicStorageService, useValue: comicStorageService },
+        { provide: ComicDatabaseService, useValue: comicDatabaseService }
+      ]
     });
 
     const dbService = TestBed.inject(ComicDatabaseService);
@@ -66,11 +67,58 @@ describe('BookmarksPage', () => {
     fixture = TestBed.createComponent(BookmarksPage);
     component = fixture.componentInstance;
     component.ionViewDidEnter();
+
+    await comicDatabaseService.ready.toPromise();
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await comicStorageService.getBookmarks.calls.mostRecent().returnValue;
+
     fixture.detectChanges();
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('displays feedback while loading', <any>fakeAsync(async () => {
+    loadingElement.dismiss.calls.reset();
+    component.ionViewDidEnter();
+
+    expect(loadingController.create).toHaveBeenCalledWith({
+      message: 'Loading bookmarks...'
+    });
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await comicStorageService.getBookmarks.calls.mostRecent().returnValue;
+
+    expect(loadingElement.dismiss).toHaveBeenCalled();
+  }));
+
+  describe('on loading error', () => {
+
+    beforeEach(() => {
+      comicStorageService.getBookmarks.and.rejectWith(null);
+    });
+
+    it('dismisses loading feedback', <any>fakeAsync(async () => {
+      loadingElement.dismiss.calls.reset();
+      component.ionViewDidEnter();
+
+      expect(loadingController.create).toHaveBeenCalledWith({
+        message: 'Loading bookmarks...'
+      });
+
+      await loadingController.create.calls.mostRecent().returnValue;
+      await loadingElement.present.calls.mostRecent().returnValue;
+      tick();
+      await new Promise(resolve =>
+        comicStorageService.getBookmarks.calls.mostRecent().returnValue.catch(resolve));
+
+      expect(loadingElement.dismiss).toHaveBeenCalled();
+    }));
   });
 
   describe('#openMenu', () => {

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LoadingController } from '@ionic/angular';
 
 import { Publisher } from '../../publisher';
 import { Series } from '../../series';
@@ -15,8 +16,11 @@ export class PublishersPage {
   private publishersData: Publisher[];
 
   constructor(
-    private volumesService: VolumesService
-  ) {
+    private volumesService: VolumesService,
+    private loadingController: LoadingController
+  ) { }
+
+  public ionViewWillEnter(): void {
     this.list();
   }
 
@@ -35,11 +39,21 @@ export class PublishersPage {
       }, []);
   }
 
-  private list(): void {
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingController.create({
+      message: 'Loading volumes...'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  private async list(): Promise<void> {
+    const loading = await this.presentLoading();
     this.volumesService.listPublishers()
       .subscribe((data: Publisher[]) => {
+        loading.dismiss();
         this.publishersData = data;
         this.publishers = this.publishersData;
-      });
+      }, () => loading.dismiss());
   }
 }

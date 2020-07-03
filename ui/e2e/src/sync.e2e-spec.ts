@@ -88,7 +88,9 @@ describe('Sync', () => {
     it('shows no booksmarks while offline', async () => {
       await ProxySettings.set({ offline: true });
       await AppPage.clickMenuItem('Library');
+      await Page.waitForLoadingGone();
       await AppPage.clickMenuItem('Bookmarks');
+      await Page.waitForLoadingGone();
       await Page.waitForElement(BookmarksPage.getBookmarks());
       expect(await BookmarksPage.getBookmarkTitles().count()).toBe(0);
       expect(await BookmarksPage.getBookmarks().getText()).toContain('No comics found');

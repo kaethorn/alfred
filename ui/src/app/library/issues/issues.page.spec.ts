@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ToastController, PopoverController } from '@ionic/angular';
-import { of } from 'rxjs';
+import { ToastController, PopoverController, LoadingController } from '@ionic/angular';
+import { of, throwError } from 'rxjs';
 
 import { ComicStorageServiceMocks } from '../../../testing/comic-storage.service.mocks';
 import { ComicFixtures } from '../../../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
+import { LoadingControllerMocks } from '../../../testing/loading.controller.mocks';
 import { PopoverControllerMocks } from '../../../testing/popover.controller.mocks';
 import { ThumbnailsServiceMocks } from '../../../testing/thumbnails.service.mocks';
 import { ToastControllerMocks } from '../../../testing/toast.controller.mocks';
@@ -25,17 +26,21 @@ let comicStorageService: jasmine.SpyObj<ComicStorageService>;
 let volumesService: jasmine.SpyObj<VolumesService>;
 let thumbnailsService: jasmine.SpyObj<ThumbnailsService>;
 let toastController: jasmine.SpyObj<ToastController>;
+let loadingController: jasmine.SpyObj<LoadingController>;
+let loadingElement: jasmine.SpyObj<HTMLIonLoadingElement>;
 let popoverElement: jasmine.SpyObj<HTMLIonPopoverElement>;
 let popoverController: jasmine.SpyObj<PopoverController>;
 
 describe('IssuesPage', () => {
 
-  beforeEach(() => {
+  beforeEach(<any>fakeAsync(async () => {
     comicsService = ComicsServiceMocks.comicsService;
     comicStorageService = ComicStorageServiceMocks.comicStorageService;
     volumesService = VolumesServiceMocks.volumesService;
     thumbnailsService = ThumbnailsServiceMocks.thumbnailsService;
     toastController = ToastControllerMocks.toastController;
+    loadingController = LoadingControllerMocks.loadingController;
+    loadingElement = LoadingControllerMocks.loadingElementSpy;
     popoverController = PopoverControllerMocks.popoverController;
     popoverElement = PopoverControllerMocks.popoverElementSpy;
 
@@ -45,29 +50,71 @@ describe('IssuesPage', () => {
         RouterTestingModule.withRoutes([
         ])
       ],
-      providers: [{
-        provide: ComicsService, useValue: comicsService
-      }, {
-        provide: ComicStorageService, useValue: comicStorageService
-      }, {
-        provide: VolumesService, useValue: volumesService
-      }, {
-        provide: ThumbnailsService, useValue: thumbnailsService
-      }, {
-        provide: PopoverController, useValue: popoverController
-      }, {
-        provide: ToastController, useValue: toastController
-      }]
+      providers: [
+        { provide: ComicsService, useValue: comicsService },
+        { provide: ComicStorageService, useValue: comicStorageService },
+        { provide: VolumesService, useValue: volumesService },
+        { provide: ThumbnailsService, useValue: thumbnailsService },
+        { provide: PopoverController, useValue: popoverController },
+        { provide: LoadingController, useValue: loadingController },
+        { provide: ToastController, useValue: toastController }
+      ]
     });
 
     fixture = TestBed.createComponent(IssuesPage);
     component = fixture.componentInstance;
     component.ionViewDidEnter();
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await comicsService.listByVolume.calls.mostRecent().returnValue.toPromise();
+
     fixture.detectChanges();
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('displays feedback while loading', <any>fakeAsync(async () => {
+    loadingElement.dismiss.calls.reset();
+    component.ionViewDidEnter();
+
+    expect(loadingController.create).toHaveBeenCalledWith({
+      message: 'Loading issues...'
+    });
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await comicsService.listByVolume.calls.mostRecent().returnValue.toPromise();
+
+    expect(loadingElement.dismiss).toHaveBeenCalled();
+  }));
+
+  describe('on loading error', () => {
+
+    beforeEach(() => {
+      comicsService.listByVolume.and.returnValue(throwError(''));
+    });
+
+    it('dismisses loading feedback', <any>fakeAsync(async () => {
+      loadingElement.dismiss.calls.reset();
+      component.ionViewDidEnter();
+
+      expect(loadingController.create).toHaveBeenCalledWith({
+        message: 'Loading issues...'
+      });
+
+      await loadingController.create.calls.mostRecent().returnValue;
+      await loadingElement.present.calls.mostRecent().returnValue;
+      tick();
+      await new Promise(resolve =>
+        comicsService.listByVolume.calls.mostRecent().returnValue.toPromise().catch(resolve));
+
+      expect(loadingElement.dismiss).toHaveBeenCalled();
+    }));
   });
 
   describe('#markAsRead', () => {
@@ -179,6 +226,8 @@ describe('IssuesPage', () => {
         expect(component.comics.map(comic => comic.read))
           .toEqual([ undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined ]);
         component.markAsReadUntil(ComicFixtures.volume[1]);
+        await loadingController.create.calls.mostRecent().returnValue;
+        await loadingElement.present.calls.mostRecent().returnValue;
         await volumesService.markAllAsReadUntil.calls.mostRecent().returnValue.toPromise();
 
         expect(component.comics.map(comic => comic.read))
@@ -189,6 +238,8 @@ describe('IssuesPage', () => {
       it('does not cache the volume when at the end', async () => {
         component.markAsReadUntil(ComicFixtures.volume[7]);
         await volumesService.markAllAsReadUntil.calls.mostRecent().returnValue.toPromise();
+        await loadingController.create.calls.mostRecent().returnValue;
+        await loadingElement.present.calls.mostRecent().returnValue;
 
         expect(comicStorageService.storeSurrounding).not.toHaveBeenCalled();
       });
@@ -198,6 +249,8 @@ describe('IssuesPage', () => {
         it('shows a success toast', async () => {
           component.markAsReadUntil(ComicFixtures.volume[1]);
           await volumesService.markAllAsReadUntil.calls.mostRecent().returnValue.toPromise();
+          await loadingController.create.calls.mostRecent().returnValue;
+          await loadingElement.present.calls.mostRecent().returnValue;
           await comicStorageService.storeSurrounding.calls.mostRecent().returnValue;
 
           expect(toastController.create).toHaveBeenCalledWith({

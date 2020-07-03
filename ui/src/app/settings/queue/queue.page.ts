@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 
 import { Comic, ScannerIssue } from '../../comic';
 import { ComicsService } from '../../comics.service';
@@ -16,7 +16,8 @@ export class QueuePage {
 
   constructor(
     private comicsService: ComicsService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) { }
 
   public ionViewWillEnter(): void {
@@ -24,19 +25,32 @@ export class QueuePage {
   }
 
   public fix(comic: Comic, error: ScannerIssue): void {
+    error.inProgress = true;
     this.comicsService.fixIssue(comic, error).subscribe(() => {
+      delete error.inProgress;
       this.list();
       this.showToast(`Flattened comic archive "${ comic.fileName }".`);
     }, () => {
+      delete error.inProgress;
       this.showToast(`Error while flattening comic archive "${ comic.fileName }".`, 4000);
     });
   }
 
-  private list(): void {
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingController.create({
+      message: 'Loading queue...'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  private async list(): Promise<void> {
+    const loading = await this.presentLoading();
     this.comicsService.listComicsWithErrors()
       .subscribe((data: Comic[]) => {
+        loading.dismiss();
         this.comics = data;
-      });
+      }, () => loading.dismiss());
   }
 
   private async showToast(message: string, duration = 3000): Promise<void> {

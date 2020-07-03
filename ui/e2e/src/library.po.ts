@@ -9,8 +9,9 @@ export class LibraryPage {
   private static selectSeries = 'app-series ion-item.serie ion-button';
   private static selectVolumes = 'app-volumes ion-card.volume';
 
-  public static navigateTo(): promise.Promise<void> {
-    return browser.get('/library/publishers');
+  public static async navigateTo(): Promise<void> {
+    await browser.get('/library/publishers');
+    return Page.waitForLoadingGone();
   }
 
   public static getAllPublishers(): ElementArrayFinder {

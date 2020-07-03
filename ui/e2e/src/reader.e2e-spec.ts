@@ -57,6 +57,7 @@ describe('Reader Component', () => {
     it('starts on the first page', async () => {
       await AppPage.clickMenuItem('Bookmarks');
       await BookmarksPage.wait();
+      await Page.waitForLoadingGone();
       await BookmarksPage.getIssueCover(0).click();
       expect(await ReaderPage.getPageNumberFromUrl()).toBe(0);
       await Page.expectToastMessage('Volume cached.');
@@ -138,6 +139,7 @@ describe('Reader Component', () => {
     it('marks the previous issue as read on the issues page', async () => {
       await BookmarksPage.clickBookmarkMenuItem(0, 'View in volume');
       await IssuesPage.wait();
+      await Page.waitForLoadingGone();
       const unreadIssues = await IssuesPage.getUnreadIssues().getText();
       expect(unreadIssues.length).toBe(3);
       expect(unreadIssues[0]).toContain('#4');

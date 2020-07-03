@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
-import { PopoverController, ToastController } from '@ionic/angular';
+import { PopoverController, ToastController, LoadingController } from '@ionic/angular';
 
 import { Comic } from '../comic';
 import { ComicDatabaseService } from '../comic-database.service';
@@ -24,7 +24,8 @@ export class BookmarksPage {
     private comicDatabaseService: ComicDatabaseService,
     private popoverController: PopoverController,
     private comicStorageService: ComicStorageService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) { }
 
   public ionViewDidEnter(): void {
@@ -72,13 +73,23 @@ export class BookmarksPage {
     toast.present();
   }
 
-  private list(): void {
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingController.create({
+      message: 'Loading bookmarks...'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  private async list(): Promise<void> {
+    const loading = await this.presentLoading();
     this.comicStorageService.getBookmarks().then((comics: Comic[]) => {
+      loading.dismiss();
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
         this.thumbnails.set(comic.id, this.comicStorageService.getFrontCoverThumbnail(comic.id));
         this.updateStoredState(comic.id);
       });
-    });
+    }, () => loading.dismiss());
   }
 }

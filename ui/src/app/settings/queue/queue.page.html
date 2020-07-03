@@ -29,7 +29,7 @@
             <sub>{{ error.date | amTimeAgo }}</sub>
           </ion-label>
           <ion-icon slot="start" color="{{ issueSeverityToColor[error.severity] }}" name="alert"></ion-icon>
-          <ion-button (click)="fix(comic, error)" *ngIf="error.fixable" slot="end">
+          <ion-button (click)="fix(comic, error)" *ngIf="error.fixable" [disabled]="error.inProgress" slot="end">
             <ion-icon slot="start" color="success" name="hammer"></ion-icon>
             Fix
           </ion-button>

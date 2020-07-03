@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, LoadingController } from '@ionic/angular';
 
 import { Comic } from '../../comic';
 import { ComicDatabaseService } from '../../comic-database.service';
@@ -33,7 +33,8 @@ export class VolumesPage {
     private comicStorageService: ComicStorageService,
     private volumesService: VolumesService,
     private popoverController: PopoverController,
-    private comicDatabaseService: ComicDatabaseService
+    private comicDatabaseService: ComicDatabaseService,
+    private loadingController: LoadingController
   ) { }
 
   public ionViewDidEnter(): void {
@@ -82,15 +83,25 @@ export class VolumesPage {
     this.stored[comicId] = await this.comicDatabaseService.isStored(comicId);
   }
 
-  private list(publisher: string, series: string): void {
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingController.create({
+      message: 'Loading volumes...'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  private async list(publisher: string, series: string): Promise<void> {
+    const loading = await this.presentLoading();
     this.volumesService.listVolumes(publisher, series)
       .subscribe((data: Volume[]) => {
+        loading.dismiss();
         this.volumesData = data;
         this.volumes = this.volumesData;
         this.volumes.forEach((volume: Volume) => {
           this.thumbnails.set(volume.firstComicId, this.comicStorageService.getFrontCoverThumbnail(volume.firstComicId));
           this.updateStoredState(volume.firstComicId);
         });
-      });
+      }, () => loading.dismiss());
   }
 }

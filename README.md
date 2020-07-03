@@ -236,7 +236,7 @@ docker run -d --name mongo mongo:3.6
 java -jar build/libs/alfred.jar --spring.profiles.active=test --spring.data.mongodb.uri=mongodb://localhost/alfred
 ```
 
-Switch to UI and dependencies:
+Switch to UI and install dependencies:
 
 `cd ui && npm i`
 

@@ -70,7 +70,7 @@ describe('CoversPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('loads covers and displays feedback', <any>fakeAsync(async () => {
+  it('displays feedback while loading', <any>fakeAsync(async () => {
     loadingElement.dismiss.calls.reset();
     component.ionViewWillEnter();
 
