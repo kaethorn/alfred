@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, LoadingController } from '@ionic/angular';
 import { of } from 'rxjs';
 
 import { ComicFixtures } from '../../../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
+import { LoadingControllerMocks } from '../../../testing/loading.controller.mocks';
 import { MockComponent } from '../../../testing/mock.component';
 import { PopoverControllerMocks } from '../../../testing/popover.controller.mocks';
 import { ThumbnailsServiceMocks } from '../../../testing/thumbnails.service.mocks';
@@ -21,6 +22,8 @@ import { VolumesPage } from './volumes.page';
 let component: VolumesPage;
 let fixture: ComponentFixture<VolumesPage>;
 let router: Router;
+let loadingController: jasmine.SpyObj<LoadingController>;
+let loadingElement: jasmine.SpyObj<HTMLIonLoadingElement>;
 let thumbnailsService: jasmine.SpyObj<ThumbnailsService>;
 let volumesService: jasmine.SpyObj<VolumesService>;
 let comicService: jasmine.SpyObj<ComicsService>;
@@ -29,7 +32,9 @@ let popoverController: jasmine.SpyObj<PopoverController>;
 
 describe('VolumesPage', () => {
 
-  beforeEach(() => {
+  beforeEach(<any>fakeAsync(async () => {
+    loadingController = LoadingControllerMocks.loadingController;
+    loadingElement = LoadingControllerMocks.loadingElementSpy;
     thumbnailsService = ThumbnailsServiceMocks.thumbnailsService;
     volumesService = VolumesServiceMocks.volumesService;
     comicService = ComicsServiceMocks.comicsService;
@@ -43,33 +48,38 @@ describe('VolumesPage', () => {
           component: MockComponent, path: '**'
         }])
       ],
-      providers: [{
-        provide: ActivatedRoute, useValue: {
-          snapshot: {
-            params: {
-              publisher: ComicFixtures.comic.publisher,
-              series: ComicFixtures.comic.series
+      providers: [
+        {
+          provide: ActivatedRoute, useValue: {
+            snapshot: {
+              params: {
+                publisher: ComicFixtures.comic.publisher,
+                series: ComicFixtures.comic.series
+              }
             }
           }
-        }
-      }, {
-        provide: PopoverController, useValue: popoverController
-      }, {
-        provide: VolumesService, useValue: volumesService
-      }, {
-        provide: ComicsService, useValue: comicService
-      }, {
-        provide: ThumbnailsService, useValue: thumbnailsService
-      }]
+        },
+        { provide: PopoverController, useValue: popoverController },
+        { provide: LoadingController, useValue: loadingController },
+        { provide: VolumesService, useValue: volumesService },
+        { provide: ComicsService, useValue: comicService },
+        { provide: ThumbnailsService, useValue: thumbnailsService }
+      ]
     });
     fixture = TestBed.createComponent(VolumesPage);
     router = TestBed.inject(Router);
     component = fixture.componentInstance;
     component.ionViewDidEnter();
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await volumesService.listVolumes.calls.mostRecent().returnValue.toPromise();
+
     fixture.detectChanges();
 
     spyOn(router, 'navigate').and.callThrough();
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();

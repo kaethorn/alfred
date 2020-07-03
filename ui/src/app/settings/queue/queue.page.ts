@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 
 import { Comic, ScannerIssue } from '../../comic';
 import { ComicsService } from '../../comics.service';
@@ -16,7 +16,8 @@ export class QueuePage {
 
   constructor(
     private comicsService: ComicsService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) { }
 
   public ionViewWillEnter(): void {
@@ -32,11 +33,21 @@ export class QueuePage {
     });
   }
 
-  private list(): void {
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingController.create({
+      message: 'Loading queue...'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  private async list(): Promise<void> {
+    const loading = await this.presentLoading();
     this.comicsService.listComicsWithErrors()
       .subscribe((data: Comic[]) => {
+        loading.dismiss();
         this.comics = data;
-      });
+      }, () => loading.dismiss());
   }
 
   private async showToast(message: string, duration = 3000): Promise<void> {

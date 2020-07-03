@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 
 import { Series } from '../../series';
 import { VolumesService } from '../../volumes.service';
@@ -17,7 +18,8 @@ export class SeriesPage {
 
   constructor(
     private route: ActivatedRoute,
-    private volumesService: VolumesService
+    private volumesService: VolumesService,
+    private loadingController: LoadingController
   ) { }
 
   public ionViewDidEnter(): void {
@@ -30,11 +32,21 @@ export class SeriesPage {
       .filter(series => series.name.match(value));
   }
 
-  private list(publisher: string): void {
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingController.create({
+      message: 'Loading series...'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  private async list(publisher: string): Promise<void> {
+    const loading = await this.presentLoading();
     this.volumesService.listSeries(publisher)
       .subscribe((data: Series[]) => {
+        loading.dismiss();
         this.seriesData = data;
         this.series = this.seriesData;
-      });
+      }, () => loading.dismiss());
   }
 }
