@@ -2,6 +2,7 @@ import { browser } from 'protractor';
 
 import { AppPage } from './app.po';
 import { MongoDBTools } from './mongodb.tools';
+import { Page } from './page.po';
 
 describe('AppComponent', () => {
 
@@ -15,6 +16,7 @@ describe('AppComponent', () => {
   });
 
   it('informs the user how to populate the library', async () => {
+    await Page.waitForLoadingGone();
     expect(await AppPage.getPublishersText()).toContain('No comics found');
     expect(await AppPage.getPublishersText()).toContain('SCAN FOR COMICS');
   });
