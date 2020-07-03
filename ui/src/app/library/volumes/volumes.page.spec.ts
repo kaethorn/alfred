@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PopoverController, LoadingController } from '@ionic/angular';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { ComicFixtures } from '../../../testing/comic.fixtures';
 import { ComicsServiceMocks } from '../../../testing/comics.service.mocks';
@@ -88,6 +88,46 @@ describe('VolumesPage', () => {
   it('renders volume information', () => {
     const volumeElement: HTMLElement = fixture.nativeElement;
     expect(volumeElement.textContent).toContain('1999');
+  });
+
+  it('displays feedback while loading', <any>fakeAsync(async () => {
+    loadingElement.dismiss.calls.reset();
+    component.ionViewDidEnter();
+
+    expect(loadingController.create).toHaveBeenCalledWith({
+      message: 'Loading volumes...'
+    });
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await volumesService.listVolumes.calls.mostRecent().returnValue.toPromise();
+
+    expect(loadingElement.dismiss).toHaveBeenCalled();
+  }));
+
+  describe('on loading error', () => {
+
+    beforeEach(() => {
+      volumesService.listVolumes.and.returnValue(throwError(''));
+    });
+
+    it('dismisses loading feedback', <any>fakeAsync(async () => {
+      loadingElement.dismiss.calls.reset();
+      component.ionViewDidEnter();
+
+      expect(loadingController.create).toHaveBeenCalledWith({
+        message: 'Loading volumes...'
+      });
+
+      await loadingController.create.calls.mostRecent().returnValue;
+      await loadingElement.present.calls.mostRecent().returnValue;
+      tick();
+      await new Promise(resolve =>
+        volumesService.listVolumes.calls.mostRecent().returnValue.toPromise().catch(resolve));
+
+      expect(loadingElement.dismiss).toHaveBeenCalled();
+    }));
   });
 
   describe('#resumeVolume', () => {

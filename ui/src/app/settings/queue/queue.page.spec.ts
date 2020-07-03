@@ -73,6 +73,46 @@ describe('QueuePage', () => {
     expect(loadingElement.dismiss).toHaveBeenCalled();
   }));
 
+  describe('on loading error', () => {
+
+    beforeEach(() => {
+      comicsService.listComicsWithErrors.and.returnValue(throwError(''));
+    });
+
+    it('dismisses loading feedback', <any>fakeAsync(async () => {
+      loadingElement.dismiss.calls.reset();
+      component.ionViewWillEnter();
+
+      expect(loadingController.create).toHaveBeenCalledWith({
+        message: 'Loading queue...'
+      });
+
+      await loadingController.create.calls.mostRecent().returnValue;
+      await loadingElement.present.calls.mostRecent().returnValue;
+      tick();
+      await new Promise(resolve =>
+        comicsService.listComicsWithErrors.calls.mostRecent().returnValue.toPromise().catch(resolve));
+
+      expect(loadingElement.dismiss).toHaveBeenCalled();
+    }));
+  });
+
+  it('displays feedback while loading', <any>fakeAsync(async () => {
+    loadingElement.dismiss.calls.reset();
+    component.ionViewWillEnter();
+
+    expect(loadingController.create).toHaveBeenCalledWith({
+      message: 'Loading queue...'
+    });
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await comicsService.listComicsWithErrors.calls.mostRecent().returnValue.toPromise();
+
+    expect(loadingElement.dismiss).toHaveBeenCalled();
+  }));
+
 
   describe('#fix', () => {
 

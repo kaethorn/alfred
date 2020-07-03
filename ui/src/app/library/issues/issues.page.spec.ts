@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastController, PopoverController, LoadingController } from '@ionic/angular';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { ComicStorageServiceMocks } from '../../../testing/comic-storage.service.mocks';
 import { ComicFixtures } from '../../../testing/comic.fixtures';
@@ -75,6 +75,46 @@ describe('IssuesPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('displays feedback while loading', <any>fakeAsync(async () => {
+    loadingElement.dismiss.calls.reset();
+    component.ionViewDidEnter();
+
+    expect(loadingController.create).toHaveBeenCalledWith({
+      message: 'Loading issues...'
+    });
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await comicsService.listByVolume.calls.mostRecent().returnValue.toPromise();
+
+    expect(loadingElement.dismiss).toHaveBeenCalled();
+  }));
+
+  describe('on loading error', () => {
+
+    beforeEach(() => {
+      comicsService.listByVolume.and.returnValue(throwError(''));
+    });
+
+    it('dismisses loading feedback', <any>fakeAsync(async () => {
+      loadingElement.dismiss.calls.reset();
+      component.ionViewDidEnter();
+
+      expect(loadingController.create).toHaveBeenCalledWith({
+        message: 'Loading issues...'
+      });
+
+      await loadingController.create.calls.mostRecent().returnValue;
+      await loadingElement.present.calls.mostRecent().returnValue;
+      tick();
+      await new Promise(resolve =>
+        comicsService.listByVolume.calls.mostRecent().returnValue.toPromise().catch(resolve));
+
+      expect(loadingElement.dismiss).toHaveBeenCalled();
+    }));
   });
 
   describe('#markAsRead', () => {

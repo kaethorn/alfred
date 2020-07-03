@@ -18,7 +18,9 @@ export class PublishersPage {
   constructor(
     private volumesService: VolumesService,
     private loadingController: LoadingController
-  ) {
+  ) { }
+
+  public ionViewWillEnter(): void {
     this.list();
   }
 

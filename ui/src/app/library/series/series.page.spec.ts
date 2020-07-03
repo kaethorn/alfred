@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LoadingController } from '@ionic/angular';
+import { throwError } from 'rxjs';
 
 import { LoadingControllerMocks } from '../../../testing/loading.controller.mocks';
 import { VolumesServiceMocks } from '../../../testing/volumes.service.mocks';
@@ -46,6 +47,46 @@ describe('SeriesPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('displays feedback while loading', <any>fakeAsync(async () => {
+    loadingElement.dismiss.calls.reset();
+    component.ionViewDidEnter();
+
+    expect(loadingController.create).toHaveBeenCalledWith({
+      message: 'Loading series...'
+    });
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await volumesService.listSeries.calls.mostRecent().returnValue.toPromise();
+
+    expect(loadingElement.dismiss).toHaveBeenCalled();
+  }));
+
+  describe('on loading error', () => {
+
+    beforeEach(() => {
+      volumesService.listSeries.and.returnValue(throwError(''));
+    });
+
+    it('dismisses loading feedback', <any>fakeAsync(async () => {
+      loadingElement.dismiss.calls.reset();
+      component.ionViewDidEnter();
+
+      expect(loadingController.create).toHaveBeenCalledWith({
+        message: 'Loading series...'
+      });
+
+      await loadingController.create.calls.mostRecent().returnValue;
+      await loadingElement.present.calls.mostRecent().returnValue;
+      tick();
+      await new Promise(resolve =>
+        volumesService.listSeries.calls.mostRecent().returnValue.toPromise().catch(resolve));
+
+      expect(loadingElement.dismiss).toHaveBeenCalled();
+    }));
   });
 
   describe('#filter', () => {

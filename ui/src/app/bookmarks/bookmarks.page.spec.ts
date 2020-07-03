@@ -81,6 +81,46 @@ describe('BookmarksPage', () => {
     expect(component).toBeTruthy();
   });
 
+  it('displays feedback while loading', <any>fakeAsync(async () => {
+    loadingElement.dismiss.calls.reset();
+    component.ionViewDidEnter();
+
+    expect(loadingController.create).toHaveBeenCalledWith({
+      message: 'Loading bookmarks...'
+    });
+
+    await loadingController.create.calls.mostRecent().returnValue;
+    await loadingElement.present.calls.mostRecent().returnValue;
+    tick();
+    await comicStorageService.getBookmarks.calls.mostRecent().returnValue;
+
+    expect(loadingElement.dismiss).toHaveBeenCalled();
+  }));
+
+  describe('on loading error', () => {
+
+    beforeEach(() => {
+      comicStorageService.getBookmarks.and.rejectWith(null);
+    });
+
+    it('dismisses loading feedback', <any>fakeAsync(async () => {
+      loadingElement.dismiss.calls.reset();
+      component.ionViewDidEnter();
+
+      expect(loadingController.create).toHaveBeenCalledWith({
+        message: 'Loading bookmarks...'
+      });
+
+      await loadingController.create.calls.mostRecent().returnValue;
+      await loadingElement.present.calls.mostRecent().returnValue;
+      tick();
+      await new Promise(resolve =>
+        comicStorageService.getBookmarks.calls.mostRecent().returnValue.catch(resolve));
+
+      expect(loadingElement.dismiss).toHaveBeenCalled();
+    }));
+  });
+
   describe('#openMenu', () => {
 
     it('creates a popover', async () => {
