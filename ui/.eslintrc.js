@@ -92,6 +92,7 @@ module.exports = {
         "no-prototype-builtins": "error",
         "no-redeclare": "error",
         "no-regex-spaces": "error",
+        "no-restricted-globals": ["error", "fit", "fdescribe"],
         "no-return-await": "error",
         "no-self-assign": "error",
         "no-shadow-restricted-names": "error",
