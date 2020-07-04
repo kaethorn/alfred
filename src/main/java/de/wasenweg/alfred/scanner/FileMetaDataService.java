@@ -214,7 +214,7 @@ public class FileMetaDataService {
       comic.setPageCount(0);
       try {
         comic.setPageCount((int) files.stream()
-            .filter(file -> Files.isRegularFile(file) && file.toString().toLowerCase().matches(".*(png|jpg)$"))
+            .filter(file -> Files.isRegularFile(file) && file.toString().matches("(?i).*(png|jpg)$"))
             .count());
       } catch (final IllegalArgumentException exception) {
         throw new InvalidFileException(exception);
