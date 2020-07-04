@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,13 +24,19 @@ export class VolumesService {
   }
 
   public listSeries(publisher: string): Observable<Series[]> {
-    return this.http.get(`/api/publishers/${ publisher }/series`).pipe(
+    return this.http.get('/api/series', {
+      params: new HttpParams().set('publisher', publisher)
+    }).pipe(
       this.consumeHateoas('series')
     );
   }
 
   public listVolumes(publisher: string, series: string): Observable<Volume[]> {
-    return this.http.get(`/api/publishers/${ publisher }/series/${ series }/volumes`).pipe(
+    return this.http.get('/api/volumes', {
+      params: new HttpParams()
+        .set('publisher', publisher)
+        .set('series', series)
+    }).pipe(
       this.consumeHateoas('volumes')
     );
   }

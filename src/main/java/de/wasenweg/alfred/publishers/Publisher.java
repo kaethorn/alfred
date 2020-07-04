@@ -1,5 +1,6 @@
-package de.wasenweg.alfred.publisher;
+package de.wasenweg.alfred.publishers;
 
+import de.wasenweg.alfred.series.Series;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

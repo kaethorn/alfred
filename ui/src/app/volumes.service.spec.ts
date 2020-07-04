@@ -65,7 +65,7 @@ describe('VolumesService', () => {
         expect(series[1].name).toEqual('Batman');
       });
 
-      const req = httpMock.expectOne('/api/publishers/DC Comics/series');
+      const req = httpMock.expectOne('/api/series?publisher=DC%20Comics');
       expect(req.request.method).toBe('GET');
       req.flush(VolumeHttpMocks.series);
     });
@@ -83,7 +83,7 @@ describe('VolumesService', () => {
         expect(volumes[4].name).toEqual('2016');
       });
 
-      const req = httpMock.expectOne('/api/publishers/DC Comics/series/Batgirl/volumes');
+      const req = httpMock.expectOne('/api/volumes?publisher=DC%20Comics&series=Batgirl');
       expect(req.request.method).toBe('GET');
       req.flush(VolumeHttpMocks.volumes);
     });
