@@ -24,7 +24,7 @@ public class ComicController extends BaseController<Comic> {
 
   private final ComicService comicService;
 
-  @GetMapping("")
+  @GetMapping
   public CollectionModel<EntityModel<Comic>> findAll() {
     return this.wrap(this.comicService.findAll());
   }

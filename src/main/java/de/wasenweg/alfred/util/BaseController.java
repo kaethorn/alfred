@@ -27,11 +27,9 @@ public class BaseController<T> {
   }
 
   protected CollectionModel<EntityModel<T>> wrap(final List<T> items) {
-    return new CollectionModel<EntityModel<T>>(
+    return CollectionModel.of(
         items.stream()
-          .map(item -> {
-            return this.wrap(item);
-          }).collect(Collectors.toList()),
+            .map(item -> this.wrap(item)).collect(Collectors.toList()),
         linkTo(this.getClass()).withSelfRel());
   }
 
@@ -45,11 +43,11 @@ public class BaseController<T> {
 
   protected EntityModel<T> wrap(final T item) {
     final Link link = linkTo(this.getClass()).slash(this.getItemId(item)).withSelfRel();
-    return new EntityModel<T>(item, link);
+    return EntityModel.of(item, link);
   }
 
   protected EntityModel<T> wrapRoot(final T item) {
     final Link link = linkTo(this.getClass()).withSelfRel();
-    return new EntityModel<T>(item, link);
+    return EntityModel.of(item, link);
   }
 }
