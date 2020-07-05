@@ -98,7 +98,7 @@ public class ApiMetaDataReaderTest {
 
     this.apiMetaDataService.applyIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/", comic);
     assertThat(comic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
-    assertThat(comic.getSummary().length()).isEqualTo(391);
+    assertThat(comic.getSummary().length()).isEqualTo(377);
     assertThat(comic.getYear()).isEqualTo(2010);
     assertThat(comic.getMonth()).isEqualTo(9);
     assertThat(comic.getCharacters())

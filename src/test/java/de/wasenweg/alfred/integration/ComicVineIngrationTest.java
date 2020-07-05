@@ -91,7 +91,7 @@ public class ComicVineIngrationTest {
     assertThat(comic.getVolume()).isEqualTo("1940");
     assertThat(comic.getNumber()).isEqualTo("701");
     assertThat(comic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
-    assertThat(comic.getSummary().length()).isEqualTo(391);
+    assertThat(comic.getSummary().length()).isEqualTo(377);
     assertThat(comic.getYear()).isEqualTo(2010);
     assertThat(comic.getMonth()).isEqualTo(9);
     assertThat(comic.getCharacters())
@@ -117,7 +117,7 @@ public class ComicVineIngrationTest {
     assertThat(TestUtil.getText(document, "Volume")).isEqualTo("1940");
     assertThat(TestUtil.getText(document, "Number")).isEqualTo("701");
     assertThat(TestUtil.getText(document, "Title")).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
-    assertThat(TestUtil.getText(document, "Summary").length()).isEqualTo(391);
+    assertThat(TestUtil.getText(document, "Summary").length()).isEqualTo(377);
     assertThat(TestUtil.getText(document, "Year")).isEqualTo("2010");
     assertThat(TestUtil.getText(document, "Month")).isEqualTo("9");
     assertThat(TestUtil.getText(document, "Characters"))
