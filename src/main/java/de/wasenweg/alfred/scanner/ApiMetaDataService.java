@@ -233,7 +233,7 @@ public class ApiMetaDataService {
   public void applyIssueDetails(final String url, final Comic comic) {
     final JsonNode response = this.comicVineService.getIssueDetails(url).get(RESULTS);
     comic.setTitle(this.getNodeText(response, NAME));
-    comic.setSummary(this.getNodeText(response, "description"));
+    comic.setSummary(this.getNodeText(response, "description").replaceAll("\\<.*?\\>", ""));
     final String[] coverDate = response.get("cover_date").asText().split("-");
     comic.setYear(Integer.valueOf(coverDate[0]));
     comic.setMonth(Integer.valueOf(coverDate[1]));
