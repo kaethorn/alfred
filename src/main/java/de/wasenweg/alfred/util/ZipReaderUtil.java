@@ -43,6 +43,6 @@ public final class ZipReaderUtil {
   }
 
   public static Boolean isImage(final Path path) {
-    return Files.isRegularFile(path) && path.toString().matches("(?i).*(png|jpg)$");
+    return Files.isRegularFile(path) && path.toString().matches("(?i).*(png|jpg|jpeg)$");
   }
 }
