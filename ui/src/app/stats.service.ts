@@ -18,6 +18,8 @@ export class StatsService {
     return this.http.get<Stats>('/api/stats').pipe(
       map((stats: any) => ({
         issues: stats.issues,
+        lastScanFinished: stats.lastScanFinished,
+        lastScanStarted: stats.lastScanStarted,
         publishers: stats.publishers,
         series: stats.series,
         users: stats.users,
