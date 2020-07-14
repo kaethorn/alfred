@@ -97,6 +97,10 @@ export class ScannerComponent implements OnInit {
 
       this.close();
     });
+
+    this.scanProgress.onerror = (): void => {
+      this.close();
+    };
   }
 
   public deleteComics(): void {

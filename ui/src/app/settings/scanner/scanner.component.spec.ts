@@ -152,6 +152,18 @@ describe('ScannerComponent', () => {
         expect(EventSource.prototype.close).toHaveBeenCalled();
       });
     });
+
+    describe('on error', () => {
+
+      beforeEach(() => {
+        component.scanProgress.onerror(new Event('error'));
+      });
+
+      it('closes the scan', () => {
+        expect(EventSource.prototype.close).toHaveBeenCalled();
+        expect(component.scanProgress).toBeNull();
+      });
+    });
   });
 
   describe('#deleteComics', () => {

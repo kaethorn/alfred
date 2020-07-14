@@ -122,7 +122,7 @@ public class ScanProgressService {
       log.warn("No emitter found.");
       final EmitterProcessor<ServerSentEvent<String>> closedEmitter = EmitterProcessor.create();
       closedEmitter.onComplete();
-      return closedEmitter;
+      return closedEmitter.log();
     } else {
       return this.emitter.log();
     }
