@@ -118,13 +118,13 @@ public class ScanProgressService {
   }
 
   public Flux<ServerSentEvent<String>> subscribeEmitter() {
-    if (this.emitter != null) {
-      return this.emitter.log();
-    } else {
+    if (this.emitter == null) {
       log.warn("No emitter found.");
       final EmitterProcessor<ServerSentEvent<String>> closedEmitter = EmitterProcessor.create();
       closedEmitter.onComplete();
       return closedEmitter;
+    } else {
+      return this.emitter.log();
     }
   }
 
