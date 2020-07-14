@@ -84,8 +84,8 @@ public class ScannerService {
    * 4. Attempt to match & scrape meta data from Comic Vine API.
    * 5. On match, write meta data XML and exit. Otherwise report error and ignore file.
    */
-  public Flux<ServerSentEvent<String>> scanComics() {
-    log.info("Triggered scan-progress.");
+  public Flux<ServerSentEvent<String>> scan() {
+    log.info("Triggered scan.");
     this.scanProgressService.createEmitter();
     final Path comicsPath = Paths.get(this.settingsService.get("comics.path"));
     this.scanProgressService.reportStart(comicsPath.toString());
@@ -112,7 +112,11 @@ public class ScannerService {
       this.scanProgressService.reportFinish();
     });
 
-    return this.scanProgressService.logEmitter();
+    return this.resume();
+  }
+
+  public Flux<ServerSentEvent<String>> resume() {
+    return this.scanProgressService.subscribeEmitter();
   }
 
   // Purge comics from the DB that don't have a corresponding file.

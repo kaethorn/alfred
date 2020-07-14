@@ -35,13 +35,13 @@ public class ScannerControllerTest {
   @Test
   public void startsScanProgressEvents() throws Exception {
     // when
-    this.mockMvc.perform(get("/api/scan-progress"))
+    this.mockMvc.perform(get("/api/scan/start"))
         .andExpect(status().isOk())
         .andReturn();
 
     // then
     // Wait for scan to start
     Thread.sleep(500);
-    verify(this.service).scanComics();
+    verify(this.service).scan();
   }
 }

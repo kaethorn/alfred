@@ -25,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(final WebSecurity web) {
     web.ignoring()
-        .antMatchers("/api/user/**", "/api/scan-progress",
+        .antMatchers("/api/user/**", "/api/scan/**",
           "/", "/index.html", "/manifest.json", "/*.js", "/*.css", "/assets/**", "/svg/**");
   }
 

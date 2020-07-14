@@ -9,6 +9,7 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.ReplayProcessor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ScanProgressService {
 
-  private EmitterProcessor<ServerSentEvent<String>> emitter;
+  private ReplayProcessor<ServerSentEvent<String>> emitter;
   private ScanProgress scanProgress;
   private final ObjectMapper objectMapper;
   private final ScanProgressRepository scanProgressRepository;
@@ -59,7 +60,7 @@ public class ScanProgressService {
   }
 
   public void reportFinish() {
-    this.sendEvent("done", "done");
+    this.sendEvent("done", ScanProgress.Status.DONE.toString());
     this.emitter.onComplete();
     this.scanProgress.setStatus(ScanProgress.Status.DONE);
     this.scanProgress.setFinished(new Date());
@@ -113,11 +114,18 @@ public class ScanProgressService {
   }
 
   public void createEmitter() {
-    this.emitter = EmitterProcessor.create();
+    this.emitter = ReplayProcessor.create();
   }
 
-  public Flux<ServerSentEvent<String>> logEmitter() {
-    return this.emitter.log();
+  public Flux<ServerSentEvent<String>> subscribeEmitter() {
+    if (this.emitter != null) {
+      return this.emitter.log();
+    } else {
+      log.warn("No emitter found.");
+      final EmitterProcessor<ServerSentEvent<String>> closedEmitter = EmitterProcessor.create();
+      closedEmitter.onComplete();
+      return closedEmitter;
+    }
   }
 
   private void sendEvent(final String data, final String name) {

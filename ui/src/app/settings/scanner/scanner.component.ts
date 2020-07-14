@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import * as moment from 'moment';
 
 import { Comic, ScannerIssue } from '../../comic';
@@ -12,7 +12,7 @@ import { StatsService } from '../../stats.service';
   styleUrls: [ './scanner.component.sass' ],
   templateUrl: './scanner.component.html'
 })
-export class ScannerComponent {
+export class ScannerComponent implements OnInit {
 
   @Output() public scanned = new EventEmitter<boolean>();
 
@@ -44,10 +44,15 @@ export class ScannerComponent {
     this.setCachedComicsCount();
   }
 
-  public scan(): void {
+  public ngOnInit(): void {
+    this.scan('/api/scan/resume');
+  }
+
+  public scan(url = '/api/scan/start'): void {
     this.issues = [];
 
-    this.scanProgress = new EventSource('/api/scan-progress?ngsw-bypass');
+    this.close();
+    this.scanProgress = new EventSource(`${ url }?ngsw-bypass`);
 
     this.scanProgress.addEventListener('START', () => {
       this.indeterminate = 'Counting files';
@@ -133,7 +138,9 @@ export class ScannerComponent {
   private close(): void {
     this.counter = 0;
     this.total = 0;
-    this.scanProgress.close();
+    if (this.scanProgress) {
+      this.scanProgress.close();
+    }
     this.scanProgress = null;
   }
 
