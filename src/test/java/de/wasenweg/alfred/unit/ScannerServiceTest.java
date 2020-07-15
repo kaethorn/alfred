@@ -361,7 +361,14 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void cleanOrphans() throws Exception {
+  public void resume() {
+    StepVerifier.create(this.scannerService.resume())
+        .expectComplete()
+        .verify(Duration.ofSeconds(1L));
+  }
+
+  @Test
+  public void cleanOrphans() {
     final Comic comic1 = new Comic();
     comic1.setPath("/a");
     final Comic comic2 = new Comic();
