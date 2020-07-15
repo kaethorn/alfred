@@ -39,7 +39,7 @@ public final class TestUtil {
 
   public static Flux<String> triggerScan(final int port) {
     return WebClient.create("http://localhost:" + port + "/api")
-        .get().uri("/scan-progress").accept(TEXT_EVENT_STREAM)
+        .get().uri("/scan/start").accept(TEXT_EVENT_STREAM)
         .retrieve().bodyToFlux(new ParameterizedTypeReference<String>() {
         });
   }

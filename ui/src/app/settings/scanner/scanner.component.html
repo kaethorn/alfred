@@ -64,9 +64,33 @@
   <ion-card-header>Statistics</ion-card-header>
   <ion-card-content>
     <ion-list class="stats">
-      <ion-item *ngFor="let stat of stats | keyvalue">
-        <ion-label class="ion-text-capitalize">{{ stat.key }}</ion-label>
-        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
+      <ion-item>
+        <ion-label>Last scan finished</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.lastScanFinished | amTimeAgo }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Last scan duration</ion-label>
+        <ion-badge slot="end" color="secondary">{{ lastScanDuration }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Publishers</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.publishers }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Series</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.series }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Volumes</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.volumes }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Issues</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.issues }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Users</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.users }}</ion-badge>
       </ion-item>
     </ion-list>
   </ion-card-content>

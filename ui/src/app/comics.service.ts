@@ -88,10 +88,6 @@ export class ComicsService {
     );
   }
 
-  public scan(): Observable<any> {
-    return this.http.get('/api/scan');
-  }
-
   public listLastReadByVolume(): Observable<Comic[]> {
     return this.http.get('/api/comics/search/findAllLastReadPerVolume').pipe(
       this.consumeHateoas(),

@@ -26,7 +26,7 @@ export class SettingsPage {
   }
 
   public static waitForScanEnd(): promise.Promise<void> {
-    return browser.wait(ExpectedConditions.textToBePresentInElement(this.getStats().first(), '305'), 20000);
+    return browser.wait(ExpectedConditions.textToBePresentInElement(this.getStats().get(5), '305'), 20000);
   }
 
   public static getScanButton(): ElementFinder {

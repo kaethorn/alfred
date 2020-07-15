@@ -8,14 +8,19 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/scan")
 @RequiredArgsConstructor
 public class ScannerController {
 
   private final ScannerService scannerService;
 
-  @GetMapping("/scan-progress")
-  public Flux<ServerSentEvent<String>> streamScanProgress() {
-    return this.scannerService.scanComics();
+  @GetMapping("/start")
+  public Flux<ServerSentEvent<String>> startScanProgress() {
+    return this.scannerService.scan();
+  }
+
+  @GetMapping("/resume")
+  public Flux<ServerSentEvent<String>> resumeScanProgress() {
+    return this.scannerService.resume();
   }
 }

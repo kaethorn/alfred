@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,6 +17,8 @@ public class Stats {
   private int publishers;
   private int series;
   private int volumes;
+  private Date lastScanFinished;
+  private Date lastScanStarted;
 
   private long users;
 }

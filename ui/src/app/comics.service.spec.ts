@@ -139,17 +139,6 @@ describe('ComicsService', () => {
     });
   });
 
-  describe('#scan', () => {
-
-    it('starts a scan', () => {
-      service.scan().subscribe();
-
-      const req = httpMock.expectOne('/api/scan');
-      expect(req.request.method).toBe('GET');
-      req.flush(ComicHttpMocks.comic);
-    });
-  });
-
   describe('#listLastReadByVolume', () => {
 
     it('lists all bookmarks', () => {

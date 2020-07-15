@@ -86,6 +86,6 @@ export class LibraryPage {
   }
 
   public static waitForVolumes(): promise.Promise<void> {
-    return Page.waitForElement(this.getAllVolumes().first());
+    return Page.waitForElement(this.getAllVolumes().first(), 7000);
   }
 }

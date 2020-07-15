@@ -1,4 +1,5 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import * as moment from 'moment';
 
 import { Comic, ScannerIssue } from '../../comic';
 import { ComicDatabaseService } from '../../comic-database.service';
@@ -11,7 +12,7 @@ import { StatsService } from '../../stats.service';
   styleUrls: [ './scanner.component.sass' ],
   templateUrl: './scanner.component.html'
 })
-export class ScannerComponent {
+export class ScannerComponent implements OnInit {
 
   @Output() public scanned = new EventEmitter<boolean>();
 
@@ -19,9 +20,17 @@ export class ScannerComponent {
   public file: string;
   public counter = 0;
   public issues: ScannerIssue[] = [];
-  public stats: { [key: string]: number } = {};
+  public stats: Stats = {
+    issues: 0,
+    lastScanFinished: null,
+    lastScanStarted: null,
+    publishers: 0,
+    series: 0,
+    users: 0,
+    volumes: 0
+  };
   public cachedComicsCount = 0;
-
+  public lastScanDuration: string;
   public indeterminate: string;
   public scanProgress: EventSource;
 
@@ -35,36 +44,41 @@ export class ScannerComponent {
     this.setCachedComicsCount();
   }
 
-  public scan(): void {
+  public ngOnInit(): void {
+    this.scan('/api/scan/resume');
+  }
+
+  public scan(url = '/api/scan/start'): void {
     this.issues = [];
 
-    this.scanProgress = new EventSource('/api/scan-progress?ngsw-bypass');
+    this.close();
+    this.scanProgress = new EventSource(`${ url }?ngsw-bypass`);
 
-    this.scanProgress.addEventListener('start', () => {
+    this.scanProgress.addEventListener('START', () => {
       this.indeterminate = 'Counting files';
     });
 
-    this.scanProgress.addEventListener('total', (event: any) => {
+    this.scanProgress.addEventListener('TOTAL', (event: any) => {
       this.indeterminate = null;
       this.total = this.total || event.data;
     });
 
-    this.scanProgress.addEventListener('current-file', (event: any) => {
+    this.scanProgress.addEventListener('CURRENT_FILE', (event: any) => {
       this.file = event.data;
       this.counter += 1;
     });
 
-    this.scanProgress.addEventListener('cleanUp', () => {
+    this.scanProgress.addEventListener('CLEAN_UP', () => {
       this.counter = 0;
       this.total = 0;
       this.indeterminate = 'Cleaning up';
     });
 
-    this.scanProgress.addEventListener('association', () => {
+    this.scanProgress.addEventListener('ASSOCIATION', () => {
       this.indeterminate = 'Bundling volumes';
     });
 
-    this.scanProgress.addEventListener('scan-issue', (event: any) => {
+    this.scanProgress.addEventListener('SCAN_ISSUE', (event: any) => {
       if (!event.data) {
         this.close();
         return;
@@ -75,7 +89,7 @@ export class ScannerComponent {
       this.issues.push(issue);
     });
 
-    this.scanProgress.addEventListener('done', () => {
+    this.scanProgress.addEventListener('DONE', () => {
       this.indeterminate = null;
       this.scanned.emit(true);
       this.getStats();
@@ -83,6 +97,10 @@ export class ScannerComponent {
 
       this.close();
     });
+
+    this.scanProgress.onerror = (): void => {
+      this.close();
+    };
   }
 
   public deleteComics(): void {
@@ -124,15 +142,16 @@ export class ScannerComponent {
   private close(): void {
     this.counter = 0;
     this.total = 0;
-    this.scanProgress.close();
+    if (this.scanProgress) {
+      this.scanProgress.close();
+    }
     this.scanProgress = null;
   }
 
   private getStats(): void {
     this.statsService.get().subscribe((stats: Stats) => {
-      Object.keys(stats).forEach(key => {
-        this.stats[key] = stats[key];
-      });
+      this.stats = stats;
+      this.setDuration();
     });
   }
 
@@ -144,5 +163,11 @@ export class ScannerComponent {
           this.issues.push(...comic.errors);
         });
       });
+  }
+
+  private setDuration(): void {
+    this.lastScanDuration = moment.duration(
+      moment(this.stats.lastScanFinished).diff(moment(this.stats.lastScanStarted))
+    ).humanize();
   }
 }
