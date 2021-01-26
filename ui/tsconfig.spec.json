@@ -3,7 +3,10 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
+    "strictNullChecks": false,
     "types": [
+      "gapi",
+      "gapi.auth2",
       "jasmine"
     ]
   },

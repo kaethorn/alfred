@@ -15,7 +15,7 @@ export class AlertControllerMocks {
   }
 
   public static get alertController(): jasmine.SpyObj<AlertController> {
-    delete this.alertElement;
+    this.alertElement = null as any;
     return jasmine.createSpyObj('AlertController', {
       create: Promise.resolve(this.alertElementSpy)
     });

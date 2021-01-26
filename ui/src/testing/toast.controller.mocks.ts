@@ -12,7 +12,7 @@ export class ToastControllerMocks {
   }
 
   public static get toastController(): jasmine.SpyObj<ToastController> {
-    delete this.toastElement;
+    this.toastElement = null as any;
     return jasmine.createSpyObj('ToastController', {
       create: Promise.resolve(this.toastElementSpy)
     });

@@ -16,7 +16,7 @@ export class PopoverControllerMocks {
   }
 
   public static get popoverController(): jasmine.SpyObj<PopoverController> {
-    delete this.popoverElement;
+    this.popoverElement = null as any;
     return jasmine.createSpyObj('PopoverController', {
       create: Promise.resolve(this.popoverElementSpy),
       dismiss: Promise.resolve(true)

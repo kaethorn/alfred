@@ -31,8 +31,8 @@ export class SettingsPage {
   ) {
     this.version = environment.version;
     this.userSettings = userSettingsService.get();
-    this.userService.user.subscribe((user: User) => {
-      this.user = user;
+    this.userService.user.subscribe((user: User | string) => {
+      this.user = user as User;
     });
   }
 

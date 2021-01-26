@@ -14,7 +14,7 @@ let component: LoginPage;
 let fixture: ComponentFixture<LoginPage>;
 let userService: jasmine.SpyObj<UserService>;
 let router: jasmine.SpyObj<Router>;
-let activatedRoute;
+let activatedRoute: any;
 
 describe('LoginPage', () => {
 
@@ -58,7 +58,7 @@ describe('LoginPage', () => {
     describe('with a login error', () => {
 
       beforeEach(() => {
-        userService.user = new BehaviorSubject('Invalid user.');
+        userService.user = new BehaviorSubject('Invalid user.' as any);
         fixture = TestBed.createComponent(LoginPage);
         component = fixture.componentInstance;
         fixture.detectChanges();

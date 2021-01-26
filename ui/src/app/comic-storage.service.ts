@@ -52,7 +52,7 @@ export class ComicStorageService {
    */
   public async saveProgress(comic: Comic): Promise<Event> {
     comic.lastRead = new Date();
-    if (comic.pageCount - 1 <= comic.currentPage) {
+    if (comic.pageCount - 1 <= (comic.currentPage || 0)) {
       comic.read = true;
     }
 
@@ -60,6 +60,7 @@ export class ComicStorageService {
     if (await this.comicDatabaseService.isStored(comic.id)) {
       return this.comicDatabaseService.save(comic);
     }
+    return Promise.resolve(new Event(''));
   }
 
   /**
@@ -137,7 +138,7 @@ export class ComicStorageService {
 
     // Store the previous comic.
     if (comic.previousId !== null) {
-      const previousComic = await this.get(comic.previousId);
+      const previousComic = await this.get(comic.previousId || '');
       await this.comicDatabaseService.store(previousComic);
       cachedIds[previousComic.id] = true;
     }
@@ -150,7 +151,7 @@ export class ComicStorageService {
     let nextComic: Comic = comic;
     for (const {} of new Array(3)) {
       if (nextComic.nextId !== null) {
-        nextComic = await this.get(nextComic.nextId);
+        nextComic = await this.get(nextComic.nextId || '');
         await this.comicDatabaseService.store(nextComic);
         cachedIds[nextComic.id] = true;
       } else {
@@ -193,7 +194,7 @@ export class ComicStorageService {
         }).catch(() => {
           this.thumbnailsService.getFrontCover(comicId)
             .pipe(map(thumbnail => thumbnail.url))
-            .subscribe(resolve, reject);
+            .subscribe(resolve as any, reject);
         });
     });
   }
@@ -207,7 +208,7 @@ export class ComicStorageService {
         }).catch(() => {
           this.thumbnailsService.getBackCover(comicId)
             .pipe(map(thumbnail => thumbnail.url))
-            .subscribe(resolve, reject);
+            .subscribe(resolve as any, reject);
         });
     });
   }

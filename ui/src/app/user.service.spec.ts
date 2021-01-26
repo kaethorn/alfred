@@ -39,9 +39,9 @@ describe('UserService', () => {
         expect(req.request.method).toBe('GET');
         req.flush('');
 
-        service.user.pipe(first()).subscribe((user: User) => {
-          expect(user.email).toEqual('a@b.com');
-          expect(user.token).toEqual('test-token-1');
+        service.user.pipe(first()).subscribe((user: User | string) => {
+          expect((user as User).email).toEqual('a@b.com');
+          expect((user as User).token).toEqual('test-token-1');
           done();
         });
       });
@@ -77,7 +77,7 @@ describe('UserService', () => {
 
   describe('#setupGoogleSignIn', () => {
 
-    let auth2;
+    let auth2: any;
 
     beforeEach(done => {
       service.user.pipe(first()).subscribe(user => {
@@ -98,8 +98,8 @@ describe('UserService', () => {
         expect(req.request.method).toBe('GET');
         req.flush('');
 
-        service.user.pipe(first()).subscribe((user: User) => {
-          expect(user.name).toEqual('B.Wayne');
+        service.user.pipe(first()).subscribe((user: User | string) => {
+          expect((user as User).name).toEqual('B.Wayne');
           done();
         });
       });
@@ -152,9 +152,9 @@ describe('UserService', () => {
         });
 
         it('exchanges the auth token for an app specific JWT', done => {
-          service.user.pipe(first()).subscribe((user: User) => {
-            expect(user.email).toEqual('b@c.com');
-            expect(user.token).toEqual('alfred-token-1');
+          service.user.pipe(first()).subscribe((user: User | string) => {
+            expect((user as User).email).toEqual('b@c.com');
+            expect((user as User).token).toEqual('alfred-token-1');
             done();
           });
         });
@@ -170,7 +170,7 @@ describe('UserService', () => {
         });
 
         it('reports an error', done => {
-          service.user.pipe(first()).subscribe((user: string) => {
+          service.user.pipe(first()).subscribe((user: User | string) => {
             expect(user)
               .toEqual('Login failure: Http failure response for /api/user/sign-in/mock-google-token-1: 403 User not allowed.');
             done();
@@ -190,7 +190,7 @@ describe('UserService', () => {
         });
 
         it('reports an error', done => {
-          service.user.pipe(first()).subscribe((user: string) => {
+          service.user.pipe(first()).subscribe((user: User | string) => {
             expect(user)
               .toEqual('Login failure: Unable to verify user.');
             done();
@@ -218,7 +218,7 @@ describe('UserService', () => {
       });
 
       it('reports an error', done => {
-        service.user.pipe(first()).subscribe((user: string) => {
+        service.user.pipe(first()).subscribe((user: User | string) => {
           expect(user).toEqual('Login failure: Google-SignIn error.');
           done();
         });

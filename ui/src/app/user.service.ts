@@ -9,7 +9,7 @@ import { User } from './user';
 })
 export class UserService {
 
-  public user: BehaviorSubject<User | string> = new BehaviorSubject<User | string>('');
+  public user: BehaviorSubject<User| string> = new BehaviorSubject<User | string>('');
   private auth2: gapi.auth2.GoogleAuth = {} as gapi.auth2.GoogleAuth;
 
   constructor(
@@ -45,7 +45,7 @@ export class UserService {
             const token = googleUser.getAuthResponse().id_token;
             this.http.post<User>(`/api/user/sign-in/${ token }`, null).subscribe((user: User) => {
               this.user.next(user);
-              localStorage.setItem('token', user.token);
+              localStorage.setItem('token', user.token || '');
               localStorage.setItem('user', JSON.stringify(user));
             }, (response: HttpErrorResponse) => {
               const message = response.error.message ? response.error.message : response.message;

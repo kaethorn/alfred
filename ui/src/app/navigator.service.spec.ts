@@ -9,8 +9,8 @@ describe('NavigatorService', () => {
   beforeEach(() => {
     NavigatorService.page = 0;
     NavigatorService.offset = 1;
-    delete NavigatorService.sideBySide;
-    delete NavigatorService.pageCount;
+    NavigatorService.sideBySide = null as any;
+    NavigatorService.pageCount = null as any;
     service = TestBed.inject(NavigatorService);
   });
 
@@ -20,7 +20,7 @@ describe('NavigatorService', () => {
 
   describe('#go', () => {
 
-    let result;
+    let result: any;
 
     describe('navigating backwards', () => {
 

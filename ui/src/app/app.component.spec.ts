@@ -14,7 +14,7 @@ import { LOCATION_TOKEN } from './location.token';
 import { UpdateService } from './update.service';
 import { UserService } from './user.service';
 
-let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
+let statusBarSpy: any, splashScreenSpy: any, platformReadySpy: any, platformSpy: any;
 let component: AppComponent;
 let fixture: ComponentFixture<AppComponent>;
 let userService: jasmine.SpyObj<UserService>;
@@ -88,7 +88,7 @@ describe('AppComponent', () => {
   describe('on route change', () => {
 
     beforeEach(() => {
-      component.hideMenu = null;
+      component.hideMenu = null as any;
     });
 
     describe('with a full screen page', () => {

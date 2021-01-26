@@ -30,8 +30,8 @@ export class AppComponent {
     this.initializeApp();
     this.router.events.pipe(
       filter(event => event instanceof RouterEvent)
-    ).subscribe((event: RouterEvent) => {
-      this.hideMenu = this.fullScreenUrls
+    ).subscribe((event: any) => {
+      this.hideMenu = !!this.fullScreenUrls
         .reduce((result, fullScreenUrl) => result || event.url.startsWith(fullScreenUrl), false);
     });
   }

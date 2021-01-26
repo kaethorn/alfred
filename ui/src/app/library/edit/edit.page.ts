@@ -13,7 +13,7 @@ import { ComicsService } from '../../comics.service';
 })
 export class EditPage {
 
-  public comic: Comic;
+  public comic!: Comic;
   public comicForm = this.formBuilder.group({
     characters: [ '' ],
     colorist: [ '' ],
@@ -53,7 +53,7 @@ export class EditPage {
   public onSubmit(): void {
     this.editInProgress = true;
     Object.keys(this.comicForm.value).forEach(key => {
-      this.comic[key] = this.comicForm.value[key];
+      this.comic[key as keyof Comic] = this.comicForm.value[key] as never;
     });
     this.comicsService.update(this.comic).subscribe(
       () => {
@@ -96,7 +96,7 @@ export class EditPage {
       .subscribe((data: Comic) => {
         this.comic = data;
         Object.keys(this.comicForm.value).forEach(key => {
-          this.comicForm.get(key).setValue(data[key]);
+          this.comicForm.get(key)?.setValue(data[key as keyof Comic]);
         });
       });
   }

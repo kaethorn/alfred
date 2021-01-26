@@ -8,7 +8,7 @@
  * methods used in this project.
  */
 
-const storage = {};
+const storage: { [key: string]: any } = {};
 const flags: IndexedDbMockFlag[] = [];
 
 export enum IndexedDbMockFlag {
@@ -20,15 +20,15 @@ export enum IndexedDbMockFlag {
 
 class Request implements IDBRequest {
 
-  public error: DOMException | null;
+  public error: DOMException | null = null;
   public result: any;
-  public addEventListener: null;
-  public removeEventListener: null;
-  public dispatchEvent: null;
-  public onerror: (event: any) => {};
-  public onsuccess: (event: any) => {};
-  public readyState: null;
-  public source: null;
+  public addEventListener: any;
+  public removeEventListener: any;
+  public dispatchEvent: any;
+  public onerror: (event: any) => {} = (event: any): any => {};
+  public onsuccess: (event: any) => {} = (event: any): any => {};
+  public readyState: any;
+  public source: any;
   public transaction: null;
 
   constructor(result: any) {
@@ -54,12 +54,12 @@ class Request implements IDBRequest {
 class Index implements IDBIndex {
 
   public keyPath: string | string [];
-  public multiEntry: boolean;
+  public multiEntry: boolean = false;
   public name: string;
   public objectStore: IDBObjectStore;
-  public unique: boolean;
+  public unique: boolean = false;
 
-  private options: IDBIndexParameters;
+  private options: IDBIndexParameters | undefined;
 
   constructor(
     objectStore: IDBObjectStore,
@@ -88,10 +88,10 @@ class Index implements IDBIndex {
         if (typeof this.keyPath === 'string') {
           return item[this.keyPath] === query;
         }
-        this.keyPath.reduce((result, key) => result && item[key] === query, true);
+        return !!this.keyPath.reduce((result, key) => result && item[key] === query, true);
       });
 
-      if (this.options.unique) {
+      if (this.options?.unique) {
         return new Request(items.slice(0, 1));
       } else if (count !== undefined && count !== null) {
         return new Request(items.slice(0, count));
@@ -125,11 +125,11 @@ class Index implements IDBIndex {
 
 class ObjectStore implements IDBObjectStore {
 
-  public indexNames: DOMStringList;
-  public autoIncrement: boolean;
-  public keyPath: string;
+  public indexNames!: DOMStringList;
+  public autoIncrement: boolean = false;
+  public keyPath: string = '';
   public name: string;
-  public transaction: IDBTransaction;
+  public transaction!: IDBTransaction;
 
   private store = new Map<string, any>();
   private indices: { [key: string]: IDBIndex } = {};
@@ -238,7 +238,6 @@ class ObjectStore implements IDBObjectStore {
 class SimpleDOMStringList implements DOMStringList {
 
   [index: number]: string;
-
   public length = 0;
 
   constructor(strings: string[]) {
@@ -249,7 +248,7 @@ class SimpleDOMStringList implements DOMStringList {
   }
 
   public contains(string: string): boolean {
-    return !!this[string];
+    return (string in this);
   }
 
   public item(index: number): string | null {
@@ -261,11 +260,11 @@ class Transaction implements IDBTransaction {
 
   public objectStoreNames: DOMStringList;
   public db: IDBDatabase;
-  public error: DOMException;
-  public mode: IDBTransactionMode;
-  public onabort: () => {};
-  public oncomplete: () => {};
-  public onerror: () => {};
+  public error!: DOMException;
+  public mode!: IDBTransactionMode;
+  public onabort!: () => {};
+  public oncomplete!: () => {};
+  public onerror!: () => {};
 
   constructor(db: IDBDatabase, storeNames: string[]) {
     this.db = db;
@@ -294,13 +293,13 @@ class Transaction implements IDBTransaction {
 class Database implements IDBDatabase {
 
   public name: string;
-  public objectStoreNames: DOMStringList;
+  public objectStoreNames!: DOMStringList;
   public version: number;
 
-  public onabort: () => {};
-  public onclose: () => {};
-  public onerror: () => {};
-  public onversionchange: () => {};
+  public onabort!: () => {};
+  public onclose!: () => {};
+  public onerror!: () => {};
+  public onversionchange!: () => {};
 
   constructor(name: string, version: number) {
     this.name = name;
@@ -338,22 +337,22 @@ class VersionChangeEvent implements IDBVersionChangeEvent {
   public target: any;
   public newVersion: number;
   public oldVersion: number;
-  public bubbles: boolean;
-  public cancelBubble: boolean;
-  public cancelable: boolean;
-  public composed: boolean;
+  public bubbles: boolean = false;
+  public cancelBubble: boolean = false;
+  public cancelable: boolean = false;
+  public composed: boolean = false;
   public currentTarget: null;
-  public defaultPrevented: boolean;
-  public eventPhase: number;
-  public isTrusted: boolean;
-  public returnValue: boolean;
+  public defaultPrevented: boolean = false;
+  public eventPhase: number = 0;
+  public isTrusted: boolean = false;
+  public returnValue: boolean = false;
   public srcElement: null;
-  public timeStamp: number;
-  public type: string;
-  public AT_TARGET: number;
-  public BUBBLING_PHASE: number;
-  public CAPTURING_PHASE: number;
-  public NONE: number;
+  public timeStamp: number = 0;
+  public type: string = '';
+  public AT_TARGET: number = 0;
+  public BUBBLING_PHASE: number = 0;
+  public CAPTURING_PHASE: number = 0;
+  public NONE: number = 0;
 
   constructor(
     target: any,
@@ -376,12 +375,12 @@ export class IndexedDbMock {
 
   public static get create(): IDBFactory {
     return {
-      cmp: null,
-      deleteDatabase: null,
+      cmp: null as any,
+      deleteDatabase: null as any,
       open: (name: string, version?: number): IDBOpenDBRequest => {
         storage[name] = {};
         storage[name].$version = version;
-        return this.openRequest(name, version);
+        return this.openRequest(name, version as any);
       }
     };
   }
@@ -403,17 +402,17 @@ export class IndexedDbMock {
 
   private static openRequest(name: string, version: number): IDBOpenDBRequest {
     const request: IDBOpenDBRequest = {
-      addEventListener: null,
-      dispatchEvent: null,
+      addEventListener: null as any,
+      dispatchEvent: null as any,
       error: null,
       onblocked: null,
       onerror: null,
       onsuccess: null,
       onupgradeneeded: null,
-      readyState: null,
-      removeEventListener: null,
-      result: null,
-      source: null,
+      readyState: null as any,
+      removeEventListener: null as any,
+      result: null as any,
+      source: null as any,
       transaction: null
     };
 
