@@ -212,13 +212,9 @@ public class FileMetaDataService {
     try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
       final List<Path> files = ZipReaderUtil.getEntries(fs);
       comic.setPageCount(0);
-      try {
-        comic.setPageCount((int) files.stream()
-            .filter(file -> Files.isRegularFile(file) && file.toString().matches("(?i).*(png|jpg|jpeg)$"))
-            .count());
-      } catch (final IllegalArgumentException exception) {
-        throw new InvalidFileException(exception);
-      }
+      comic.setPageCount((int) files.stream()
+          .filter(file -> Files.isRegularFile(file) && file.toString().matches("(?i).*(png|jpg|jpeg)$"))
+          .count());
       if (comic.getPageCount() <= 0) {
         throw new NoImagesException();
       }
@@ -234,9 +230,11 @@ public class FileMetaDataService {
       }
 
       comic.setFiles(files.stream()
-          .map(entry -> entry.toString())
+          .map(Path::toString)
           .sorted()
           .collect(Collectors.toList()));
+    } catch (final ProviderNotFoundException exception) {
+      throw new InvalidFileException(exception);
     }
   }
 
