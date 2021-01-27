@@ -54,7 +54,7 @@ describe('ComicDatabaseService', () => {
       it('sets the ready flag', async () => {
         try {
           service = TestBed.inject(ComicDatabaseService);
-          await new Promise(resolve => service.ready.subscribe(null, null, resolve));
+          await new Promise(resolve => service.ready.subscribe(null, null, () => resolve(null)));
         } catch (exception) {
         }
         expect(service.ready.hasError).toBeFalse();

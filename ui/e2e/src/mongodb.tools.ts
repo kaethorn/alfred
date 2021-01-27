@@ -11,7 +11,7 @@ export class MongoDBTools {
       reject(error);
     });
     mongoose.connection.once('open', () => {
-      resolve();
+      resolve(null);
     });
   });
 
