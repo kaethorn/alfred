@@ -12,8 +12,8 @@ export class ComicFixtures {
     comic.volume = '1940';
     comic.publisher = 'DC Comics';
     comic.fileName = '401.cbz';
-    comic.nextId = undefined;
-    comic.previousId = undefined;
+    comic.nextId = null;
+    comic.previousId = null;
 
     return comic;
   }

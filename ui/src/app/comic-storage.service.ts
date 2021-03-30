@@ -149,7 +149,7 @@ export class ComicStorageService {
 
     // Store the next three comics.
     let nextComic: Comic = comic;
-    for (const {} of new Array(3)) {
+    for (const {} of Array(3).keys()) {
       if (nextComic.nextId !== null) {
         nextComic = await this.get(nextComic.nextId || '');
         await this.comicDatabaseService.store(nextComic);

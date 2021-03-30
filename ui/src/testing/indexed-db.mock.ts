@@ -25,8 +25,6 @@ class Request implements IDBRequest {
   public addEventListener: any;
   public removeEventListener: any;
   public dispatchEvent: any;
-  public onerror: (event: any) => {} = (event: any): any => {};
-  public onsuccess: (event: any) => {} = (event: any): any => {};
   public readyState: any;
   public source: any;
   public transaction: null;
@@ -39,6 +37,9 @@ class Request implements IDBRequest {
       }
     });
   }
+
+  public onerror: (event: any) => {} = (): any => {};
+  public onsuccess: (event: any) => {} = (): any => {};
 
   private hasRequestErrors(): boolean {
     if (flags.includes(IndexedDbMockFlag.REQUEST_ERROR)) {
@@ -54,10 +55,10 @@ class Request implements IDBRequest {
 class Index implements IDBIndex {
 
   public keyPath: string | string [];
-  public multiEntry: boolean = false;
+  public multiEntry = false;
   public name: string;
   public objectStore: IDBObjectStore;
-  public unique: boolean = false;
+  public unique = false;
 
   private options: IDBIndexParameters | undefined;
 
@@ -126,8 +127,8 @@ class Index implements IDBIndex {
 class ObjectStore implements IDBObjectStore {
 
   public indexNames!: DOMStringList;
-  public autoIncrement: boolean = false;
-  public keyPath: string = '';
+  public autoIncrement = false;
+  public keyPath = '';
   public name: string;
   public transaction!: IDBTransaction;
 
@@ -337,22 +338,22 @@ class VersionChangeEvent implements IDBVersionChangeEvent {
   public target: any;
   public newVersion: number;
   public oldVersion: number;
-  public bubbles: boolean = false;
-  public cancelBubble: boolean = false;
-  public cancelable: boolean = false;
-  public composed: boolean = false;
+  public bubbles = false;
+  public cancelBubble = false;
+  public cancelable = false;
+  public composed = false;
   public currentTarget: null;
-  public defaultPrevented: boolean = false;
-  public eventPhase: number = 0;
-  public isTrusted: boolean = false;
-  public returnValue: boolean = false;
+  public defaultPrevented = false;
+  public eventPhase = 0;
+  public isTrusted = false;
+  public returnValue = false;
   public srcElement: null;
-  public timeStamp: number = 0;
-  public type: string = '';
-  public AT_TARGET: number = 0;
-  public BUBBLING_PHASE: number = 0;
-  public CAPTURING_PHASE: number = 0;
-  public NONE: number = 0;
+  public timeStamp = 0;
+  public type = '';
+  public AT_TARGET = 0;
+  public BUBBLING_PHASE = 0;
+  public CAPTURING_PHASE = 0;
+  public NONE = 0;
 
   constructor(
     target: any,

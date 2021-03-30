@@ -3,29 +3,18 @@
 
 module.exports = function(config) {
   config.set({
+    autoWatch: true,
     basePath  : '',
-    frameworks: [ 'jasmine', '@angular-devkit/build-angular' ],
-    plugins   : [
-      require('karma-chrome-launcher'),
-      require('karma-coverage'),
-      require('karma-jasmine'),
-      require('karma-jasmine-html-reporter'),
-      require('@angular-devkit/build-angular/plugins/karma')
-    ],
+    browsers : [ 'Chrome' ],
     client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
+    colors   : true,
     coverageIstanbulReporter: {
       dir                  : require('path').join(__dirname, '../coverage'),
-      reports              : [ 'json', 'html', 'lcovonly', 'text-summary' ],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+      reports              : [ 'json', 'html', 'lcovonly', 'text-summary' ]
     },
-    reporters: [ 'progress', 'kjhtml' ],
-    port     : 9876,
-    colors   : true,
-    logLevel : config.LOG_INFO,
-    autoWatch: true,
-    browsers : [ 'Chrome' ],
     customLaunchers: {
       ChromeHeadlessDocker: {
         base: 'ChromeHeadless',
@@ -35,9 +24,20 @@ module.exports = function(config) {
         ]
       }
     },
-    singleRun: false,
+    frameworks: [ 'jasmine', '@angular-devkit/build-angular' ],
+    logLevel : config.LOG_INFO,
+    plugins   : [
+      require('karma-chrome-launcher'),
+      require('karma-coverage'),
+      require('karma-jasmine'),
+      require('karma-jasmine-html-reporter'),
+      require('@angular-devkit/build-angular/plugins/karma')
+    ],
+    port     : 9876,
     proxies  : {
       '/api/read/923/0': '/assets/icons/alfred.svg'
-    }
+    },
+    reporters: [ 'progress', 'kjhtml' ],
+    singleRun: false
   });
 };
