@@ -1,7 +1,7 @@
 <ion-card>
   <ion-card-header>Library management</ion-card-header>
   <ion-card-content>
-    <ion-list *ngIf="total" class="progress" lines="none">
+    <ion-list *ngIf="total" class="progress scanning" lines="none">
       <ion-item>
         <ion-progress-bar [value]="counter/total"></ion-progress-bar>
       </ion-item>
@@ -12,7 +12,7 @@
       </ion-item>
     </ion-list>
 
-    <ion-list *ngIf="indeterminate" class="progress" lines="none">
+    <ion-list *ngIf="indeterminate" class="progress intermediate" lines="none">
       <ion-item>
         <ion-progress-bar type="indeterminate"></ion-progress-bar>
       </ion-item>
