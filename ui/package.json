@@ -80,7 +80,7 @@
     "karma-coverage": "^2.0.3",
     "karma-jasmine": "~3.3.1",
     "karma-jasmine-html-reporter": "^1.5.4",
-    "mongoose": "^5.9.20",
+    "mongoose": "^5.12.2",
     "protractor": "~7.0.0",
     "ts-node": "^8.10.2",
     "tslint": "~6.1.2",
