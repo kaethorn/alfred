@@ -68,7 +68,7 @@ export class Page {
           element(by.css('ion-toast')))), timeout);
   }
 
-  public static waitForLoadingGone(timeout = 2000): promise.Promise<void> {
+  public static waitForLoadingGone(timeout = 3000): promise.Promise<void> {
     return browser.wait(
       ExpectedConditions.not(
         ExpectedConditions.presenceOf(

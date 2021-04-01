@@ -18,11 +18,11 @@ export class SettingsPage {
   }
 
   private static get progress(): ElementFinder {
-    return element(by.css('app-scanner .progress'));
+    return element(by.css('app-scanner .progress.scanning'));
   }
 
   public static waitForScanStart(): promise.Promise<void> {
-    return browser.wait(ExpectedConditions.presenceOf(this.progress), 1000);
+    return browser.wait(ExpectedConditions.visibilityOf(this.progress), 1000);
   }
 
   public static waitForScanEnd(): promise.Promise<void> {
