@@ -279,8 +279,8 @@ describe('NavigatorService', () => {
     it('sets static attributes', () => {
       expect(NavigatorService.page).toBe(0);
       expect(NavigatorService.offset).toBe(1);
-      expect(NavigatorService.sideBySide).toBeUndefined();
-      expect(NavigatorService.pageCount).toBeUndefined();
+      expect(NavigatorService.sideBySide).toBeNull();
+      expect(NavigatorService.pageCount).toBeNull();
 
       service.set(10, 1, false);
 

@@ -1,4 +1,5 @@
 import { of } from 'rxjs';
+import { ScannerIssueSeverity, ScannerIssueType } from '../app/comic';
 
 import { ComicsService } from '../app/comics.service';
 
@@ -20,7 +21,7 @@ export class ComicsServiceMocks {
       getPage: of(null),
       list: of(ComicFixtures.volume),
       listByVolume: of(ComicFixtures.volume),
-      listComicsWithErrors: of(ComicFixtures.volume),
+      listComicsWithErrors: of(ComicFixtures.volumeWithErrors),
       listComicsWithoutErrors: of(ComicFixtures.volume),
       listLastReadByVolume: of(ComicFixtures.volume),
       markAsRead: of(ComicFixtures.comic),

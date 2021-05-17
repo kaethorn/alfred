@@ -31,6 +31,13 @@ export class ComicFixtures {
     ];
   }
 
+  public static get volumeWithErrors(): Comic[] {
+    return ComicFixtures.volume.map(comic => {
+      comic.errors = [];
+      return comic;
+    })
+  }
+
   public static get volume2(): Comic[] {
     return [
       Object.assign({}, this.comic, { id: '21', nextId: '22', position: '1.0', series: 'Batgirl', volume: '2018' }),
