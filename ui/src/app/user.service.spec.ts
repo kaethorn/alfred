@@ -78,6 +78,24 @@ describe('UserService', () => {
   describe('#setupGoogleSignIn', () => {
 
     let auth2;
+    const expectClientIdRead = (): Promise<void> => {
+      const promise = service.setupGoogleSignIn();
+      const req = httpMock.expectOne('/api/settings/search/findByKey?key=auth.client.id');
+      expect(req.request.method).toBe('GET');
+      req.flush({
+        _links: {
+          self: {
+            href: 'foo.bar/1'
+          }
+        },
+        comment: 'Google client ID to use for this server',
+        id: '1',
+        key: 'auth.client.id',
+        name: 'Google client ID',
+        value: 'mock-google-id-1'
+      });
+      return promise;
+    };
 
     beforeEach(done => {
       service.user.pipe(first()).subscribe(user => {
@@ -92,8 +110,9 @@ describe('UserService', () => {
         delete (window as any).gapi;
       });
 
-      it('attempts to authenticate a mock user', done => {
-        service.setupGoogleSignIn();
+      it('attempts to authenticate a mock user', async done => {
+        await service.setupGoogleSignIn();
+
         const req = httpMock.expectOne('/api/user/verify/mock-123');
         expect(req.request.method).toBe('GET');
         req.flush('');
@@ -109,7 +128,7 @@ describe('UserService', () => {
 
       let req: TestRequest;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         auth2 = {
           attachClickHandler: jasmine.createSpy().and.callFake((id, options, success) => success({
             getAuthResponse: () => ({
@@ -127,7 +146,8 @@ describe('UserService', () => {
           },
           load: jasmine.createSpy().and.callFake((api, callback) => callback())
         };
-        service.setupGoogleSignIn();
+        await expectClientIdRead();
+
         req = httpMock.expectOne('/api/user/sign-in/mock-google-token-1');
         expect(req.request.method).toBe('POST');
       });
@@ -201,7 +221,7 @@ describe('UserService', () => {
 
     describe('with error in the click handler', () => {
 
-      beforeEach(() => {
+      beforeEach(async () => {
         auth2 = {
           attachClickHandler: jasmine.createSpy().and.callFake((id, options, success, error) => error()),
           isSignedIn: {
@@ -214,7 +234,7 @@ describe('UserService', () => {
           },
           load: jasmine.createSpy().and.callFake((api, callback) => callback())
         };
-        service.setupGoogleSignIn();
+        await expectClientIdRead();
       });
 
       it('reports an error', done => {
