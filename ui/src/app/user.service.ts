@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { SettingsService } from './settings.service';
 import { User } from './user';
 
 @Injectable({
@@ -14,7 +15,8 @@ export class UserService {
 
   constructor(
     private ngZone: NgZone,
-    private http: HttpClient
+    private http: HttpClient,
+    private settingsService: SettingsService
   ) {
     this.verifyCurrentUser();
   }
@@ -34,12 +36,13 @@ export class UserService {
     });
   }
 
-  public setupGoogleSignIn(): void {
+  public async setupGoogleSignIn(): Promise<void> {
     if (typeof gapi === 'object') {
+      const clientId = await this.settingsService.get('auth.client.id').toPromise();
       window.gapi.load('auth2', () => {
         this.ngZone.run(() => {
           this.auth2 = window.gapi.auth2.init({
-            client_id: '401455891931-28afa7q3453j1fsdfnlen5tf46oqeadr.apps.googleusercontent.com'
+            client_id: clientId.value
           });
           this.auth2.attachClickHandler('signin-button', {}, (googleUser: gapi.auth2.GoogleUser) => {
             const token = googleUser.getAuthResponse().id_token;

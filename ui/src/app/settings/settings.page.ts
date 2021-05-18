@@ -17,7 +17,6 @@ import { UserService } from '../user.service';
 export class SettingsPage {
 
   public settings: Setting[] = [];
-  public updateError: any;
   public user: User;
   public userSettings;
   public version: string;
