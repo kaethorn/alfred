@@ -1,5 +1,4 @@
 import { of } from 'rxjs';
-import { ScannerIssueSeverity, ScannerIssueType } from '../app/comic';
 
 import { ComicsService } from '../app/comics.service';
 

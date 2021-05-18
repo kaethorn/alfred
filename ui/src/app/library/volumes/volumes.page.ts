@@ -19,12 +19,12 @@ import { VolumeActionsComponent } from './volume-actions/volume-actions.componen
 })
 export class VolumesPage {
 
-  public volumes: Volume[];
+  public volumes: Volume[] = [];
   public publisher = '';
   public series = '';
   public thumbnails = new Map<string, Promise<SafeUrl>>();
   public stored: StoredState = {};
-  private volumesData: Volume[];
+  private volumesData: Volume[] = [];
 
   constructor(
     private router: Router,
@@ -74,7 +74,7 @@ export class VolumesPage {
     await popover.present();
   }
 
-  public filter(value: string): void {
+  public filter(value = ''): void {
     this.volumes = this.volumesData
       .filter(volume => volume.name.match(value));
   }

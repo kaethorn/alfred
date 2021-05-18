@@ -12,9 +12,9 @@ import { VolumesService } from '../../volumes.service';
 })
 export class SeriesPage {
 
-  public series: Series[];
+  public series: Series[] = [];
   public publisher = '';
-  private seriesData: Series[];
+  private seriesData: Series[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -27,7 +27,7 @@ export class SeriesPage {
     this.list(this.publisher);
   }
 
-  public filter(value: string): void {
+  public filter(value = ''): void {
     this.series = this.seriesData
       .filter(series => series.name.match(value));
   }

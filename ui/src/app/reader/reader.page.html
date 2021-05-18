@@ -17,7 +17,7 @@
       <ion-icon name="close"></ion-icon>
     </ion-button>
     <ion-text color="primary">
-      Page {{ comic.currentPage + 1 }}
+      Page {{ comic.currentPage || 0 + 1 }}
     </ion-text>
     <ion-button color="secondary" (click)="back()">
       <ion-icon name="close"></ion-icon>

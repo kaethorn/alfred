@@ -124,8 +124,8 @@ describe('CoversPage', () => {
         component.deleteFrontCover(ComicFixtures.volume[0]);
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
         await cacheStorageService.resetThumbnailsCache.calls.mostRecent().returnValue;
-        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
-        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
+        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id)?.toPromise();
+        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id)?.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
           duration: 3000,
@@ -172,8 +172,8 @@ describe('CoversPage', () => {
         component.deleteBackCover(ComicFixtures.volume[0]);
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
         await cacheStorageService.resetThumbnailsCache.calls.mostRecent().returnValue;
-        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
-        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
+        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id)?.toPromise();
+        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id)?.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
           duration: 3000,

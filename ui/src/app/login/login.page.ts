@@ -1,7 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { User } from '../user';
 import { UserService } from '../user.service';
 
 @Component({
@@ -11,7 +10,7 @@ import { UserService } from '../user.service';
 })
 export class LoginPage {
 
-  public message: string;
+  public message: string | null = null;
 
   constructor(
     private userService: UserService,
@@ -20,15 +19,19 @@ export class LoginPage {
     private route: ActivatedRoute
   ) {
     this.userService.setupGoogleSignIn();
-    this.userService.user.subscribe((user: User | string) => {
-      this.ngZone.run(() => {
-        this.message = typeof user === 'string' ? user : null;
-        if (this.route.snapshot.queryParams.target) {
-          this.router.navigate([ this.route.snapshot.queryParams.target ]);
-        } else {
-          this.router.navigate([ '/library' ]);
-        }
+    this.userService.user
+      .subscribe(() => {
+        this.ngZone.run(() => {
+          if (this.route.snapshot.queryParams.target) {
+            this.router.navigate([ this.route.snapshot.queryParams.target ]);
+          } else {
+            this.router.navigate([ '/library' ]);
+          }
+        });
+      }, (error: string) => {
+        this.ngZone.run(() => {
+          this.message = error;
+        });
       });
-    });
   }
 }

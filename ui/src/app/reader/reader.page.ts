@@ -69,9 +69,7 @@ export class ReaderPage {
 
   public go(direction: number, event?: MouseEvent): void {
     this.navigate(this.navigator.go(direction));
-    if (event) {
-      event.stopPropagation();
-    }
+    event?.stopPropagation();
   }
 
   public openNext(options: IOpenOptions = {}): void {
@@ -216,7 +214,7 @@ export class ReaderPage {
   }
 
   private open(adjacentAttr: keyof Comic, options?: IOpenOptions): void {
-    if (adjacentAttr in this.comic) {
+    if (this.comic[adjacentAttr]) {
       this.comicStorageService.storeSurrounding(this.comic[adjacentAttr] as string);
       this.router.navigate([ '/read', this.comic[adjacentAttr] ], {
         queryParamsHandling: 'merge',

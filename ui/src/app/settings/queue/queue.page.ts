@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ToastController, LoadingController } from '@ionic/angular';
 
-import { Comic, ScannerIssue } from '../../comic';
+import { Comic, ScannerIssue, ScannerIssueSeverity } from '../../comic';
 import { ComicsService } from '../../comics.service';
 
 @Component({
@@ -12,7 +12,11 @@ import { ComicsService } from '../../comics.service';
 export class QueuePage {
 
   public comics: Array<Comic> = [];
-  public issueSeverityToColor = { ERROR: 'danger', INFO: 'secondary', WARNING: 'warning' };
+  public issueSeverityToColor: Record<ScannerIssueSeverity, string> = {
+    [ScannerIssueSeverity.ERROR]: 'danger',
+    [ScannerIssueSeverity.INFO]: 'secondary',
+    [ScannerIssueSeverity.WARNING]: 'warning'
+  };
 
   constructor(
     private comicsService: ComicsService,

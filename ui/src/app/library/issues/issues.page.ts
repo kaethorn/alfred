@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { PopoverController, ToastController, LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
@@ -8,6 +7,7 @@ import { Comic } from '../../comic';
 import { ComicDatabaseService } from '../../comic-database.service';
 import { ComicStorageService, StoredState } from '../../comic-storage.service';
 import { ComicsService } from '../../comics.service';
+import { Thumbnail } from '../../thumbnail';
 import { ThumbnailsService } from '../../thumbnails.service';
 import { VolumesService } from '../../volumes.service';
 
@@ -20,13 +20,14 @@ import { IssueActionsComponent } from './issue-actions/issue-actions.component';
 })
 export class IssuesPage {
 
-  public currentRoute: string;
-  public thumbnails = new Map<string, Observable<SafeUrl>>();
+  public summaryToggles: boolean[] = [];
+  public currentRoute = '';
+  public thumbnails = new Map<string, Observable<Thumbnail>>();
   public comics: Array<Comic> = [];
   public stored: StoredState = {};
-  private publisher: string;
-  private series: string;
-  private volume: string;
+  private publisher = '';
+  private series = '';
+  private volume = '';
 
   constructor(
     private comicDatabaseService: ComicDatabaseService,
@@ -99,6 +100,7 @@ export class IssuesPage {
       .subscribe((data: Comic[]) => {
         loading.dismiss();
         this.comics = data;
+        this.summaryToggles = new Array(data.length);
         this.comics.forEach((comic: Comic) => {
           this.thumbnails.set(comic.id, this.thumbnailsService.getFrontCover(comic.id));
           this.updateStoredState(comic.id);
@@ -124,7 +126,7 @@ export class IssuesPage {
     toast.present();
   }
 
-  private storeSurrounding(comicId: string): void {
+  private storeSurrounding(comicId: string | null | undefined): void {
     if (!comicId) {
       return;
     }

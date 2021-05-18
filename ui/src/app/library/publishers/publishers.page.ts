@@ -12,8 +12,8 @@ import { VolumesService } from '../../volumes.service';
 })
 export class PublishersPage {
 
-  public publishers: Publisher[];
-  private publishersData: Publisher[];
+  public publishers: Publisher[] = [];
+  private publishersData: Publisher[] = [];
 
   constructor(
     private volumesService: VolumesService,
@@ -24,11 +24,11 @@ export class PublishersPage {
     this.list();
   }
 
-  public filter(value: string): void {
+  public filter(value = ''): void {
     this.publishers = this.publishersData
       .reduce((result: Publisher[], publisher: Publisher): Publisher[] => {
-        const series = publisher.series.filter((serie: Series) => serie.name.match(value));
-        if (series.length) {
+        const series = publisher.series?.filter((serie: Series) => serie.name.match(value));
+        if (series?.length) {
           result.push({
             name: publisher.name,
             series,

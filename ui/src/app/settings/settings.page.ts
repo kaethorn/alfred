@@ -17,7 +17,7 @@ import { UserService } from '../user.service';
 export class SettingsPage {
 
   public settings: Setting[] = [];
-  public user: User;
+  public user: User = {} as User;
   public userSettings;
   public version: string;
 
@@ -30,8 +30,8 @@ export class SettingsPage {
   ) {
     this.version = environment.version;
     this.userSettings = userSettingsService.get();
-    this.userService.user.subscribe((user: User | string) => {
-      this.user = user as User;
+    this.userService.user.subscribe(user => {
+      this.user = user;
     });
   }
 

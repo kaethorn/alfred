@@ -15,7 +15,7 @@ import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.co
 })
 export class BookmarksPage {
 
-  public comics: Comic[];
+  public comics: Comic[] = [];
   public thumbnails = new Map<string, Promise<SafeUrl>>();
   public syncing = false;
   public stored: StoredState = {};

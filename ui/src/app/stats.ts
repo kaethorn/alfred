@@ -1,6 +1,6 @@
 export interface Stats {
-  lastScanFinished: Date;
-  lastScanStarted: Date;
+  lastScanFinished: Date | null;
+  lastScanStarted: Date | null;
   issues: number;
   publishers: number;
   series: number;

@@ -245,7 +245,7 @@ describe('ReaderPage', () => {
         });
       });
 
-      describe('to the end of the comic', () => {
+      describe('at the end of the comic', () => {
 
         beforeEach(async () => {
           await clickRightSide();
@@ -306,7 +306,7 @@ describe('ReaderPage', () => {
         });
       });
 
-      describe('to the end of the comic', () => {
+      describe('at the end of the comic', () => {
 
         beforeEach(async () => {
           await clickRightSide();

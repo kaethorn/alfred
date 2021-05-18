@@ -35,7 +35,7 @@ export class ComicFixtures {
     return ComicFixtures.volume.map(comic => {
       comic.errors = [];
       return comic;
-    })
+    });
   }
 
   public static get volume2(): Comic[] {
