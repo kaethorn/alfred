@@ -213,7 +213,7 @@ export class ReaderPage {
     }
   }
 
-  private open(adjacentAttr: keyof Comic, options?: IOpenOptions): void {
+  private open(adjacentAttr: keyof Comic, options: IOpenOptions): void {
     if (this.comic[adjacentAttr]) {
       this.comicStorageService.storeSurrounding(this.comic[adjacentAttr] as string);
       this.router.navigate([ '/read', this.comic[adjacentAttr] ], {
@@ -221,7 +221,7 @@ export class ReaderPage {
         relativeTo: this.route,
         replaceUrl: true
       });
-      if (options?.showToast) {
+      if (options.showToast) {
         if (adjacentAttr === 'nextId') {
           this.showToast(`Opening next issue of ${ this.comic.series } (${ this.comic.volume }).`);
         } else {

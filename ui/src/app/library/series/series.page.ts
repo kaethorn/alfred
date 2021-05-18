@@ -27,7 +27,7 @@ export class SeriesPage {
     this.list(this.publisher);
   }
 
-  public filter(value = ''): void {
+  public filter(value: string): void {
     this.series = this.seriesData
       .filter(series => series.name.match(value));
   }

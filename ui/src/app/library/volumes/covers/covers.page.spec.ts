@@ -118,6 +118,15 @@ describe('CoversPage', () => {
       expect(comicsService.deletePage).toHaveBeenCalledWith(ComicFixtures.volume[0], '/1.png');
     });
 
+    describe('without a front cover', () => {
+
+      it('does nothing', () => {
+        component.frontCoverThumbnails.clear();
+        component.deleteFrontCover(ComicFixtures.volume[0]);
+        expect(comicsService.deletePage).not.toHaveBeenCalled();
+      });
+    });
+
     describe('on success', () => {
 
       it('shows a success toast', async () => {
@@ -164,6 +173,15 @@ describe('CoversPage', () => {
 
       expect(loadingElement.present).toHaveBeenCalled();
       expect(comicsService.deletePage).toHaveBeenCalledWith(ComicFixtures.volume[0], '/1.png');
+    });
+
+    describe('without a front cover', () => {
+
+      it('does nothing', () => {
+        component.backCoverThumbnails.clear();
+        component.deleteBackCover(ComicFixtures.volume[0]);
+        expect(comicsService.deletePage).not.toHaveBeenCalled();
+      });
     });
 
     describe('on success', () => {

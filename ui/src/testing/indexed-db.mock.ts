@@ -374,7 +374,7 @@ class VersionChangeEvent implements IDBVersionChangeEvent {
 
 export class IndexedDbMock {
 
-  public static get create(): IDBFactory {
+  public static get get(): IDBFactory {
     return {
       cmp: null as any,
       deleteDatabase: null as any,

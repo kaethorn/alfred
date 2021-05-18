@@ -32,8 +32,10 @@ export class ComicFixtures {
   }
 
   public static get volumeWithErrors(): Comic[] {
-    return ComicFixtures.volume.map(comic => {
-      comic.errors = [];
+    return ComicFixtures.volume.map((comic, index) => {
+      if (index % 2) {
+        comic.errors = [];
+      }
       return comic;
     });
   }

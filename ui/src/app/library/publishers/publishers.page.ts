@@ -24,11 +24,11 @@ export class PublishersPage {
     this.list();
   }
 
-  public filter(value = ''): void {
+  public filter(value: string): void {
     this.publishers = this.publishersData
       .reduce((result: Publisher[], publisher: Publisher): Publisher[] => {
-        const series = publisher.series?.filter((serie: Series) => serie.name.match(value));
-        if (series?.length) {
+        const series = publisher.series.filter((serie: Series) => serie.name.match(value));
+        if (series.length) {
           result.push({
             name: publisher.name,
             series,

@@ -74,7 +74,7 @@ export class VolumesPage {
     await popover.present();
   }
 
-  public filter(value = ''): void {
+  public filter(value: string): void {
     this.volumes = this.volumesData
       .filter(volume => volume.name.match(value));
   }

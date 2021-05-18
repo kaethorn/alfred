@@ -95,8 +95,8 @@ export class EditPage {
       .get(id)
       .subscribe((data: Comic) => {
         this.comic = data;
-        Object.keys(this.comicForm.value).forEach(key => {
-          this.comicForm.get(key)?.setValue(data[key as keyof Comic]);
+        Object.entries(this.comicForm.controls).forEach(entry => {
+          entry[1].setValue(data[entry[0] as keyof Comic]);
         });
       });
   }

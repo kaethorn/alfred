@@ -4,9 +4,21 @@ import { AsyncSubject } from 'rxjs';
 import { ComicFixtures } from '../testing/comic.fixtures';
 import { IndexedDbMock, IndexedDbMockFlag } from '../testing/indexed-db.mock';
 
-import { IndexedDbService } from './indexed-db.service';
+import { IndexedDbService, Store } from './indexed-db.service';
 
 let service: IndexedDbService;
+
+const indexedDbStores = [{
+  name: 'Images',
+  options: { autoIncrement: true }
+}, {
+  indices: [
+    [ 'id', 'id', { unique: true }],
+    [ 'dirty', 'dirty', { unique: false }]
+  ],
+  name: 'Comics',
+  options: { keyPath: 'id' }
+}] as Store[];
 
 describe('IndexedDb', () => {
 
@@ -14,17 +26,7 @@ describe('IndexedDb', () => {
     TestBed.configureTestingModule({ });
     service = TestBed.inject(IndexedDbService);
 
-    service.open('Comics', 1, [{
-      name: 'Images',
-      options: { autoIncrement: true }
-    }, {
-      indices: [
-        [ 'id', 'id', { unique: true }],
-        [ 'dirty', 'dirty', { unique: false }]
-      ],
-      name: 'Comics',
-      options: { keyPath: 'id' }
-    }], IndexedDbMock.create);
+    service.open('Comics', 1, indexedDbStores, IndexedDbMock.get);
 
     await service.ready.toPromise();
   });
@@ -45,7 +47,7 @@ describe('IndexedDb', () => {
 
       it('does not initialize', async () => {
         try {
-          service.open('Comics', 1, [], IndexedDbMock.create);
+          service.open('Comics', 1, [], IndexedDbMock.get);
           await service.ready.toPromise();
           expect(false).toBeTrue();
         } catch (exception) {
@@ -62,17 +64,7 @@ describe('IndexedDb', () => {
     describe('without a db', () => {
 
       beforeEach(() => {
-        service.open('Comics', 1, [{
-          name: 'Images',
-          options: { autoIncrement: true }
-        }, {
-          indices: [
-            [ 'id', 'id', { unique: true }],
-            [ 'dirty', 'dirty', { unique: false }]
-          ],
-          name: 'Comics',
-          options: { keyPath: 'id' }
-        }]);
+        service = new IndexedDbService();
       });
 
       it('resolves to `false`', async () => {
@@ -139,6 +131,22 @@ describe('IndexedDb', () => {
   });
 
   describe('#get', () => {
+
+    describe('without a db', () => {
+
+      beforeEach(() => {
+        service = new IndexedDbService();
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.get('Comics', ComicFixtures.comic.id);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
 
     describe('without a matching item', () => {
 
@@ -226,6 +234,22 @@ describe('IndexedDb', () => {
       expect(Object.keys(result).length).toBe(8);
     });
 
+    describe('without a db', () => {
+
+      beforeEach(() => {
+        service = new IndexedDbService();
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.getAll('Comics');
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
     describe('on transaction error', () => {
 
       beforeEach(() => {
@@ -292,6 +316,22 @@ describe('IndexedDb', () => {
       expect(result.length).toBe(2);
     });
 
+    describe('without a db', () => {
+
+      beforeEach(() => {
+        service = new IndexedDbService();
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.getAllBy('Comics', 'dirty', true);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
+    });
+
     describe('on transaction error', () => {
 
       beforeEach(() => {
@@ -339,6 +379,22 @@ describe('IndexedDb', () => {
       await service.save('Comics', ComicFixtures.comic);
       const result = await service.get('Comics', ComicFixtures.comic.id);
       expect(result).toEqual(ComicFixtures.comic);
+    });
+
+    describe('without a db', () => {
+
+      beforeEach(() => {
+        service = new IndexedDbService();
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.save('Comics', ComicFixtures.comic);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
     });
 
     describe('on transaction error', () => {
@@ -395,6 +451,22 @@ describe('IndexedDb', () => {
     it('resolves after the item has been deleted', async () => {
       await service.delete('Comics', ComicFixtures.comic.id);
       expect(await service.hasKey('Comics', ComicFixtures.comic.id)).toBeFalse();
+    });
+
+    describe('without a db', () => {
+
+      beforeEach(() => {
+        service = new IndexedDbService();
+      });
+
+      it('rejects', async () => {
+        try {
+          await service.delete('Comics', ComicFixtures.comic.id);
+          expect(false).toBeTrue();
+        } catch (exception) {
+          expect(true).toBeTrue();
+        }
+      });
     });
 
     describe('on transaction error', () => {
