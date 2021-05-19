@@ -40,7 +40,7 @@ module.exports = {
           delete req.headers[''];
         }
       },
-      target: 'http://localhost:8082'
+      target: 'http://localhost:8080'
     }));
 
     return new Promise((resolve, reject) => {
