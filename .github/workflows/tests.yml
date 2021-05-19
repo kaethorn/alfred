@@ -56,15 +56,8 @@ jobs:
         echo -n "Waiting for boot to complete "
         seconds=0
         while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
-          if [ $seconds -gt 320 ]; then
-            echo " timeout reached!"
-            echo -e "\n\n---- Output ----\n\n"
-            cat output
-            echo -e "\n\n---- Last ping ----\n\n"
-            curl --head --fail http://localhost:8080
-            exit 1
-          fi
-          ((seconds++)) && echo -n "." && sleep 1
+          if [ $seconds -gt 160 ]; then echo -e " timeout reached!\n\n" && cat output && exit 1; fi
+          ((seconds++)) && echo -n "." && sleep 2
         done
         echo " done!"
       env:
