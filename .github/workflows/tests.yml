@@ -59,12 +59,13 @@ jobs:
         ./gradlew --build-cache bootRun &> output &
         echo -n "Waiting for boot to complete "
         seconds=0
-        while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
+        while ! curl --output /dev/null --silent --head --fail http://localhost:8082; do
           if [ $seconds -gt 240 ]; then echo -e " timeout reached\n\n" && cat output && exit 1; fi
           ((seconds++)) && echo -n "." && sleep 1
         done
         echo " done!"
       env:
+        SERVER_PORT: 8082
         SPRING_PROFILES_ACTIVE: test
         COMICS_COMICVINE_APIKEY: foo
         SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred

@@ -47,6 +47,6 @@ export class ReaderPage {
     if (parts && parts.length > 1) {
       return parts[1];
     }
-    return null;
+    return '';
   }
 }

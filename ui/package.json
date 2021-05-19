@@ -13,7 +13,7 @@
     "testHeadless": "ng test --progress=false --watch=false --code-coverage=true --browsers=ChromeHeadlessDocker",
     "lint": "ng lint && eslint e2e/**/*js *.js",
     "e2e": "ng e2e",
-    "e2eHeadless": "ng e2e -c ci",
+    "e2eHeadless": "ng e2e --devServerTarget='' --protractorConfig=e2e/protractor.headless.conf.js",
     "protractor": "protractor e2e/protractor.conf.js",
     "protractorHeadless": "protractor e2e/protractor.headless.conf.js"
   },

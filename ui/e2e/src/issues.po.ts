@@ -15,7 +15,7 @@ export class IssuesPage {
   }
 
   public static getUnreadIssuesCount(): promise.Promise<number> {
-    return this.getIssues().reduce(async (result, issue) => {
+    return this.getIssues().reduce(async (result: number, issue: ElementArrayFinder) => {
       const read = await issue.element(by.css('.read-badge')).isPresent();
       return read ? result : result + 1;
     }, 0);
@@ -29,8 +29,9 @@ export class IssuesPage {
 
   public static getSyncedIssueNumbers(): promise.Promise<string[]> {
     return this.getSyncedIssues().map(async issue => {
-      const title = await issue.element(by.css('ion-card-title')).getText();
-      return title.match(/#(\d+)/)[1];
+      const title = await issue?.element(by.css('ion-card-title')).getText();
+      const match = title?.match(/#(\d+)/);
+      return match ? match[1] : null;
     });
   }
 
@@ -39,7 +40,7 @@ export class IssuesPage {
   }
 
   public static async toggleMarkAsRead(issueNumber: number): Promise<boolean> {
-    const issue = await this.getIssues().get(issueNumber);
+    const issue = this.getIssues().get(issueNumber);
     await Page.scrollIntoView(issue);
 
     const previousState = await issue.element(by.css('.read-badge')).isPresent();
@@ -66,7 +67,7 @@ export class IssuesPage {
     return element(by.partialButtonText('Mark read until here'));
   }
 
-  public static async clickButtonByLabel(issue: number, label: string): promise.Promise<void> {
+  public static async clickButtonByLabel(issue: number, label: string): Promise<void> {
     await Page.scrollIntoView(this.getIssues().get(issue));
     return this.getIssues().get(issue)
       .element(by.cssContainingText('ion-button', label)).click();
