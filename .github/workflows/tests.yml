@@ -59,8 +59,8 @@ jobs:
         ./gradlew --build-cache bootRun &> output &
         echo -n "Waiting for boot to complete "
         seconds=0
-        while ! curl --output /dev/null --silent --head --fail http://localhost:8081; do
-          if [ $seconds -gt 180 ]; then echo -e " timeout reached\n\n" && cat output && exit 1; fi
+        while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
+          if [ $seconds -gt 240 ]; then echo -e " timeout reached\n\n" && cat output && exit 1; fi
           ((seconds++)) && echo -n "." && sleep 1
         done
         echo " done!"

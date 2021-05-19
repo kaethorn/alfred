@@ -62,12 +62,13 @@ export class CoversPage {
     });
   }
 
-  private async updateThumbnails(comic: Comic): Promise<void> {
+  private async updateThumbnails(comic: Comic): Promise<[Thumbnail, Thumbnail]> {
     await this.cacheStorageService.resetThumbnailsCache(comic.id);
-    this.frontCoverThumbnails.set(comic.id, this.thumbnailsService.getFrontCover(comic.id));
-    this.backCoverThumbnails.set(comic.id, this.thumbnailsService.getBackCover(comic.id));
-    await this.frontCoverThumbnails.get(comic.id)?.toPromise();
-    await this.backCoverThumbnails.get(comic.id)?.toPromise();
+    const frontCover = this.thumbnailsService.getFrontCover(comic.id);
+    const backCover = this.thumbnailsService.getBackCover(comic.id);
+    this.frontCoverThumbnails.set(comic.id, frontCover);
+    this.backCoverThumbnails.set(comic.id, backCover);
+    return Promise.all([ frontCover.toPromise(), backCover.toPromise() ]);
   }
 
   private async showToast(message: string, duration = 3000): Promise<void> {

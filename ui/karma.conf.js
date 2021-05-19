@@ -11,6 +11,20 @@ module.exports = function(config) {
     },
     colors   : true,
     coverageReporter: {
+      check: {
+        each: {
+          branches: 100,
+          functions: 100,
+          lines: 100,
+          statements: 100
+        },
+        global: {
+          branches: 100,
+          functions: 100,
+          lines: 100,
+          statements: 100
+        }
+      },
       reporters: [
         { subdir: '.', type:'lcovonly' },
         { subdir: '.', type:'html' },
@@ -38,7 +52,9 @@ module.exports = function(config) {
     ],
     port     : 9876,
     proxies  : {
-      '/api/read/923/0': '/assets/icons/alfred.svg'
+      '/api/read/923/0': '/assets/icons/alfred.svg',
+      '/api/scan/resume': 'http://localhost:9876',
+      '/api/scan/start': 'http://localhost:9876'
     },
     reporters: [ 'progress', 'kjhtml' ],
     singleRun: false

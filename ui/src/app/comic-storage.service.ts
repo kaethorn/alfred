@@ -138,7 +138,7 @@ export class ComicStorageService {
 
     // Store the previous comic.
     if (comic.previousId !== null) {
-      const previousComic = await this.get(comic.previousId || '');
+      const previousComic = await this.get(comic.previousId);
       await this.comicDatabaseService.store(previousComic);
       cachedIds[previousComic.id] = true;
     }
@@ -151,7 +151,7 @@ export class ComicStorageService {
     let nextComic: Comic = comic;
     for (const {} of Array(3).keys()) {
       if (nextComic.nextId !== null) {
-        nextComic = await this.get(nextComic.nextId || '');
+        nextComic = await this.get(nextComic.nextId);
         await this.comicDatabaseService.store(nextComic);
         cachedIds[nextComic.id] = true;
       } else {
