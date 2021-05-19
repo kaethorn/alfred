@@ -42,9 +42,12 @@ jobs:
         npm run testHeadless
 
     - name: Upload frontend coverage to Codecov
+      working-directory: ui
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         npm install codecov
-        ./node_modules/.bin/codecov --token=eb122bec-04ed-41b9-ac86-74c3276a7d05 --file=ui/coverage/coverage-final.json
+        ./node_modules/.bin/codecov --file=coverage/coverage-final.json
 
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.1.0
@@ -53,9 +56,13 @@ jobs:
 
     - name: Start Alfred
       run: |
-        ./gradlew --build-cache bootRun &> /dev/null &
+        ./gradlew --build-cache bootRun &> output &
         echo -n "Waiting for boot to complete "
-        while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do echo -n "." && sleep 1; done
+        seconds=0
+        while ! curl --output /dev/null --silent --head --fail http://localhost:8081; do
+          if [ $seconds -gt 180 ]; then echo -e " timeout reached\n\n" && cat output && exit 1; fi
+          ((seconds++)) && echo -n "." && sleep 1
+        done
         echo " done!"
       env:
         SPRING_PROFILES_ACTIVE: test

@@ -10,10 +10,13 @@ module.exports = function(config) {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
     colors   : true,
-    coverageIstanbulReporter: {
-      dir                  : require('path').join(__dirname, '../coverage'),
-      fixWebpackSourcePaths: true,
-      reports              : [ 'json', 'html', 'lcovonly', 'text-summary' ]
+    coverageReporter: {
+      reporters: [
+        { subdir: '.', type:'lcovonly' },
+        { subdir: '.', type:'html' },
+        { subdir: '.', type:'text-summary' },
+        { subdir: '.', type:'json' }
+      ]
     },
     customLaunchers: {
       ChromeHeadlessDocker: {
