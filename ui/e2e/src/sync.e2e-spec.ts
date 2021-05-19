@@ -1,11 +1,11 @@
-import { AppPage } from './app.po';
-import { BookmarksPage } from './bookmarks.po';
-import { IssuesPage } from './issues.po';
-import { LibraryPage } from './library.po';
-import { MongoDBTools } from './mongodb.tools';
-import { Page } from './page.po';
-import { ProxySettings } from './proxy-settings';
-import { SettingsPage } from './settings.po';
+import { AppPage } from 'e2e/src/app.po';
+import { BookmarksPage } from 'e2e/src/bookmarks.po';
+import { IssuesPage } from 'e2e/src/issues.po';
+import { LibraryPage } from 'e2e/src/library.po';
+import { MongoDBTools } from 'e2e/src/mongodb.tools';
+import { Page } from 'e2e/src/page.po';
+import { ProxySettings } from 'e2e/src/proxy-settings';
+import { SettingsPage } from 'e2e/src/settings.po';
 
 describe('Sync', () => {
 

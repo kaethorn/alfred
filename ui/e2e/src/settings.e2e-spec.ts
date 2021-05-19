@@ -1,6 +1,6 @@
-import { MongoDBTools } from './mongodb.tools';
-import { Page } from './page.po';
-import { SettingsPage } from './settings.po';
+import { MongoDBTools } from 'e2e/src/mongodb.tools';
+import { Page } from 'e2e/src/page.po';
+import { SettingsPage } from 'e2e/src/settings.po';
 
 describe('SettingsPage', () => {
 
