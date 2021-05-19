@@ -43,11 +43,11 @@ jobs:
 
     - name: Upload frontend coverage to Codecov
       working-directory: ui
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         npm install codecov
         ./node_modules/.bin/codecov --file=coverage/coverage-final.json
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.1.0
@@ -60,7 +60,7 @@ jobs:
         echo -n "Waiting for boot to complete "
         seconds=0
         while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
-          if [ $seconds -gt 240 ]; then
+          if [ $seconds -gt 320 ]; then
             echo " timeout reached!"
             echo -e "\n\n---- Output ----\n\n"
             cat output
@@ -79,4 +79,3 @@ jobs:
     - name: Run end-to-end tests
       working-directory: ui
       run: npm run e2eHeadless
-
