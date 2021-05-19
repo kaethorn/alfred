@@ -135,7 +135,7 @@ module.exports = {
             hoist: 'all'
           }
         ],
-        'no-undef': 'error',
+        'no-undef': 'error'
       })
     }
   ]
