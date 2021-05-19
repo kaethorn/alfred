@@ -372,7 +372,7 @@ class VersionChangeEvent implements IDBVersionChangeEvent {
   public stopPropagation(): any {}
 }
 
-export class IndexedDbMock {
+export class IndexedDbMocks {
 
   public static get get(): IDBFactory {
     return {

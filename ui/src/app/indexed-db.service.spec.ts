@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AsyncSubject } from 'rxjs';
 
 import { ComicFixtures } from '../testing/comic.fixtures';
-import { IndexedDbMock, IndexedDbMockFlag } from '../testing/indexed-db.mock';
+import { IndexedDbMocks, IndexedDbMockFlag } from '../testing/indexed-db.mock';
 
 import { IndexedDbService, Store } from './indexed-db.service';
 
@@ -26,13 +26,13 @@ describe('IndexedDb', () => {
     TestBed.configureTestingModule({ });
     service = TestBed.inject(IndexedDbService);
 
-    service.open('Comics', 1, indexedDbStores, IndexedDbMock.get);
+    service.open('Comics', 1, indexedDbStores, IndexedDbMocks.get);
 
     await service.ready.toPromise();
   });
 
   afterEach(() => {
-    IndexedDbMock.reset();
+    IndexedDbMocks.reset();
   });
 
   describe('#open', () => {
@@ -42,12 +42,12 @@ describe('IndexedDb', () => {
       beforeEach(() => {
         service.ready = new AsyncSubject<void>();
         spyOn(console, 'error');
-        IndexedDbMock.setFlag(IndexedDbMockFlag.OPEN_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.OPEN_ERROR);
       });
 
       it('does not initialize', async () => {
         try {
-          service.open('Comics', 1, [], IndexedDbMock.get);
+          service.open('Comics', 1, [], IndexedDbMocks.get);
           await service.ready.toPromise();
           expect(false).toBeTrue();
         } catch (exception) {
@@ -84,7 +84,7 @@ describe('IndexedDb', () => {
     describe('on transaction error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
       });
 
       it('resolves to `false`', async () => {
@@ -96,7 +96,7 @@ describe('IndexedDb', () => {
     describe('on transaction abort', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
       });
 
       it('resolves to `false`', async () => {
@@ -108,7 +108,7 @@ describe('IndexedDb', () => {
     describe('on request error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
       });
 
       it('resolves to `false`', async () => {
@@ -163,7 +163,7 @@ describe('IndexedDb', () => {
     describe('on transaction error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
       });
 
       it('rejects', async () => {
@@ -179,7 +179,7 @@ describe('IndexedDb', () => {
     describe('on transaction abort', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
       });
 
       it('rejects', async () => {
@@ -195,7 +195,7 @@ describe('IndexedDb', () => {
     describe('on request error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
       });
 
       it('rejects', async () => {
@@ -253,7 +253,7 @@ describe('IndexedDb', () => {
     describe('on transaction error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
       });
 
       it('rejects', async () => {
@@ -269,7 +269,7 @@ describe('IndexedDb', () => {
     describe('on transaction abort', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
       });
 
       it('rejects', async () => {
@@ -285,7 +285,7 @@ describe('IndexedDb', () => {
     describe('on request error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
       });
 
       it('rejects', async () => {
@@ -335,7 +335,7 @@ describe('IndexedDb', () => {
     describe('on transaction error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
       });
 
       it('resolves with no items', async () => {
@@ -347,7 +347,7 @@ describe('IndexedDb', () => {
     describe('on transaction abort', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
       });
 
       it('rejects', async () => {
@@ -363,7 +363,7 @@ describe('IndexedDb', () => {
     describe('on request error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
       });
 
       it('resolves with no items', async () => {
@@ -400,7 +400,7 @@ describe('IndexedDb', () => {
     describe('on transaction error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
       });
 
       it('rejects', async () => {
@@ -416,7 +416,7 @@ describe('IndexedDb', () => {
     describe('on transaction abort', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
       });
 
       it('rejects', async () => {
@@ -432,7 +432,7 @@ describe('IndexedDb', () => {
     describe('on request error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
       });
 
       it('rejects', async () => {
@@ -472,7 +472,7 @@ describe('IndexedDb', () => {
     describe('on transaction error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ERROR);
       });
 
       it('rejects', async () => {
@@ -488,7 +488,7 @@ describe('IndexedDb', () => {
     describe('on transaction abort', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.TRANSACTION_ABORT);
       });
 
       it('rejects', async () => {
@@ -504,7 +504,7 @@ describe('IndexedDb', () => {
     describe('on request error', () => {
 
       beforeEach(() => {
-        IndexedDbMock.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
+        IndexedDbMocks.setFlag(IndexedDbMockFlag.REQUEST_ERROR);
       });
 
       it('rejects', async () => {
