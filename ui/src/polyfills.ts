@@ -52,7 +52,8 @@
  *
  */
 
-import 'zone-flags';
+// eslint-disable-next-line no-restricted-imports
+import './zone-flags';
 
 /**
  * Zone JS is required by default for Angular itself.
