@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
 import { UserService } from '../app/user.service';
 
@@ -11,7 +11,7 @@ export class UserServiceMocks {
       logout: of(null),
       setupGoogleSignIn: null
     });
-    userService.user = of(UserFixtures.user);
+    userService.user = new BehaviorSubject(UserFixtures.user);
     return userService;
   }
 }

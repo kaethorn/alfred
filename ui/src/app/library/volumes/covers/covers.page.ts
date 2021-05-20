@@ -19,9 +19,9 @@ export class CoversPage {
   public comics: Array<Comic> = [];
   public frontCoverThumbnails = new Map<string, Observable<Thumbnail>>();
   public backCoverThumbnails = new Map<string, Observable<Thumbnail>>();
-  private publisher: string;
-  private series: string;
-  private volume: string;
+  private publisher = '';
+  private series = '';
+  private volume = '';
 
   constructor(
     private cacheStorageService: CacheStorageService,
@@ -41,7 +41,7 @@ export class CoversPage {
   }
 
   public deleteFrontCover(comic: Comic): void {
-    this.frontCoverThumbnails.get(comic.id).subscribe(thumbail => {
+    this.frontCoverThumbnails.get(comic.id)?.subscribe(thumbail => {
       this.comicsService.deletePage(comic, thumbail.path).subscribe(async () => {
         await this.updateThumbnails(comic);
         this.showToast(`Front cover of "${ comic.fileName }" deleted.`);
@@ -52,7 +52,7 @@ export class CoversPage {
   }
 
   public deleteBackCover(comic: Comic): void {
-    this.backCoverThumbnails.get(comic.id).subscribe(thumbail => {
+    this.backCoverThumbnails.get(comic.id)?.subscribe(thumbail => {
       this.comicsService.deletePage(comic, thumbail.path).subscribe(async () => {
         await this.updateThumbnails(comic);
         this.showToast(`Back cover of "${ comic.fileName }" deleted.`);
@@ -62,12 +62,13 @@ export class CoversPage {
     });
   }
 
-  private async updateThumbnails(comic: Comic): Promise<void> {
+  private async updateThumbnails(comic: Comic): Promise<[Thumbnail, Thumbnail]> {
     await this.cacheStorageService.resetThumbnailsCache(comic.id);
-    this.frontCoverThumbnails.set(comic.id, this.thumbnailsService.getFrontCover(comic.id));
-    this.backCoverThumbnails.set(comic.id, this.thumbnailsService.getBackCover(comic.id));
-    await this.frontCoverThumbnails.get(comic.id).toPromise();
-    await this.backCoverThumbnails.get(comic.id).toPromise();
+    const frontCover = this.thumbnailsService.getFrontCover(comic.id);
+    const backCover = this.thumbnailsService.getBackCover(comic.id);
+    this.frontCoverThumbnails.set(comic.id, frontCover);
+    this.backCoverThumbnails.set(comic.id, backCover);
+    return Promise.all([ frontCover.toPromise(), backCover.toPromise() ]);
   }
 
   private async showToast(message: string, duration = 3000): Promise<void> {

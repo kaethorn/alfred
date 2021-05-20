@@ -16,7 +16,7 @@ export interface Store {
 export class IndexedDbService {
 
   public ready: AsyncSubject<void> = new AsyncSubject<void>();
-  private db: IDBDatabase;
+  private db: IDBDatabase | null = null;
 
   public hasKey(storeName: string, key: IDBValidKey): Promise<boolean> {
     return new Promise(resolve => {
@@ -36,6 +36,9 @@ export class IndexedDbService {
 
   public get(storeName: string, key: IDBValidKey): Promise<any> {
     return new Promise((resolve, reject) => {
+      if (!this.db) {
+        return reject();
+      }
       const transaction: IDBTransaction = this.db.transaction([ storeName ], 'readonly');
       transaction.onerror = (): void => reject();
       transaction.onabort = (error): void => reject(error);
@@ -53,6 +56,9 @@ export class IndexedDbService {
 
   public getAll(storeName: string): Promise<any> {
     return new Promise((resolve, reject) => {
+      if (!this.db) {
+        return reject();
+      }
       const transaction: IDBTransaction = this.db.transaction([ storeName ], 'readonly');
       transaction.onerror = (): void => reject();
       transaction.onabort = (error): void => reject(error);
@@ -64,6 +70,9 @@ export class IndexedDbService {
 
   public getAllBy(storeName: string, key: string, value: any): Promise<any> {
     return new Promise((resolve, reject) => {
+      if (!this.db) {
+        return reject();
+      }
       const transaction: IDBTransaction = this.db.transaction([ storeName ], 'readonly');
       transaction.onerror = (): void => resolve([]);
       transaction.onabort = (error): void => reject(error);
@@ -76,6 +85,9 @@ export class IndexedDbService {
 
   public save(storeName: string, item: any, key?: IDBValidKey): Promise<Event> {
     return new Promise((resolve, reject) => {
+      if (!this.db) {
+        return reject();
+      }
       const transaction: IDBTransaction = this.db.transaction([ storeName ], 'readwrite');
       transaction.oncomplete = resolve;
       transaction.onabort = (error): void => reject(error);
@@ -87,6 +99,9 @@ export class IndexedDbService {
 
   public delete(storeName: string, key: string): Promise<Event> {
     return new Promise((resolve, reject) => {
+      if (!this.db) {
+        return reject();
+      }
       const transaction: IDBTransaction = this.db.transaction([ storeName ], 'readwrite');
       transaction.oncomplete = resolve;
       transaction.onerror = (error): void => reject(error);

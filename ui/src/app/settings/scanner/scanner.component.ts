@@ -17,22 +17,22 @@ export class ScannerComponent implements OnInit {
   @Output() public scanned = new EventEmitter<boolean>();
 
   public total = 0;
-  public file: string;
+  public file: string | null = null;
   public counter = 0;
   public issues: ScannerIssue[] = [];
   public stats: Stats = {
     issues: 0,
-    lastScanFinished: null,
-    lastScanStarted: null,
+    lastScanFinished: new Date(),
+    lastScanStarted: new Date(),
     publishers: 0,
     series: 0,
     users: 0,
     volumes: 0
   };
   public cachedComicsCount = 0;
-  public lastScanDuration: string;
-  public indeterminate: string;
-  public scanProgress: EventSource;
+  public lastScanDuration: string | null = null;
+  public indeterminate: string | null = null;
+  public scanProgress: EventSource | null = null;
 
   constructor(
     private statsService: StatsService,
@@ -160,7 +160,7 @@ export class ScannerComponent implements OnInit {
     this.comicsService.listComicsWithErrors()
       .subscribe((data: Comic[]) => {
         data.forEach((comic: Comic) => {
-          this.issues.push(...comic.errors);
+          this.issues.push(...(comic.errors || []));
         });
       });
   }

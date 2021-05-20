@@ -12,7 +12,7 @@
 <ion-toolbar>
   <ion-searchbar placeholder="Search volumes"
     #libraryFilter
-    (ionInput)="filter(libraryFilter.value)">
+    (ionInput)="filter(libraryFilter.value || '')">
   </ion-searchbar>
 </ion-toolbar>
 

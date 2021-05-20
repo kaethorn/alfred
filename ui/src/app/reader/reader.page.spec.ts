@@ -17,7 +17,7 @@ let component: ReaderPage;
 let fixture: ComponentFixture<ReaderPage>;
 let router: jasmine.SpyObj<Router>;
 let comicStorageService: jasmine.SpyObj<ComicStorageService>;
-let activatedRoute;
+let activatedRoute: any;
 let toastElement: jasmine.SpyObj<HTMLIonToastElement>;
 let toastController: jasmine.SpyObj<ToastController>;
 let loadingController: jasmine.SpyObj<LoadingController>;
@@ -169,7 +169,7 @@ describe('ReaderPage', () => {
 
     it('starts off on the first page', () => {
       expect(component.comic.id).toBe('923');
-      expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);
+      expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(0);
     });
 
     describe('when pressing ESC', () => {
@@ -189,11 +189,11 @@ describe('ReaderPage', () => {
       it('opens the next and the previous page respectively', async () => {
         component.handleRight();
         await fixture.whenStable();
-        expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
+        expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(1);
 
         component.handleLeft();
         await fixture.whenStable();
-        expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);
+        expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(0);
       });
     });
 
@@ -241,11 +241,11 @@ describe('ReaderPage', () => {
         });
 
         it('sets the current page and updates the route', () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
+          expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(1);
         });
       });
 
-      describe('to the end of the comic', () => {
+      describe('at the end of the comic', () => {
 
         beforeEach(async () => {
           await clickRightSide();
@@ -254,11 +254,11 @@ describe('ReaderPage', () => {
         });
 
         it('does not exceed the last page', async () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(3);
+          expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(3);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
+          expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(4);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
+          expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(4);
         });
       });
     });
@@ -291,7 +291,7 @@ describe('ReaderPage', () => {
         });
 
         it('updates the route', () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(2);
+          expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(2);
         });
 
         it('displays two pages', () => {
@@ -306,7 +306,7 @@ describe('ReaderPage', () => {
         });
       });
 
-      describe('to the end of the comic', () => {
+      describe('at the end of the comic', () => {
 
         beforeEach(async () => {
           await clickRightSide();
@@ -314,9 +314,9 @@ describe('ReaderPage', () => {
         });
 
         it('does not exceed the last page', async () => {
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
+          expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(4);
           await clickRightSide();
-          expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(4);
+          expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(4);
         });
       });
     });
@@ -434,11 +434,11 @@ describe('ReaderPage', () => {
     it('navigates accordingly', async () => {
       component.onSwipe(1);
       await fixture.whenStable();
-      expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(1);
+      expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(1);
 
       component.onSwipe(-1);
       await fixture.whenStable();
-      expect(router.navigate.calls.mostRecent().args[1].queryParams.page).toEqual(0);
+      expect(router.navigate.calls.mostRecent().args[1]?.queryParams?.page).toEqual(0);
     });
   });
 });

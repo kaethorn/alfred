@@ -13,6 +13,7 @@ import { ComicsService } from '../comics.service';
 import { LOCATION_TOKEN } from '../location.token';
 import { SettingsService } from '../settings.service';
 import { StatsService } from '../stats.service';
+import { User } from '../user';
 import { UserSettingsService } from '../user-settings.service';
 import { UserService } from '../user.service';
 
@@ -65,7 +66,7 @@ describe('SettingsPage', () => {
   });
 
   it('retrieves user info on startup', () => {
-    expect(component.user.email).toEqual('foo@bar.com');
+    expect((component.user as User).email).toEqual('foo@bar.com');
   });
 
   describe('#onSubmit', () => {

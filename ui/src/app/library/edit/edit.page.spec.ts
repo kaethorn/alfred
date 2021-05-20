@@ -44,6 +44,15 @@ describe('EditPage', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('#ionViewDidEnter', () => {
+
+    it('loads the given comic', async () => {
+      component.ionViewDidEnter();
+      await comicsService.get.calls.mostRecent().returnValue.toPromise();
+      expect(component.comicForm.value.publisher).toEqual('DC Comics');
+    });
+  });
+
   describe('#onSubmit', () => {
 
     beforeEach(() => {

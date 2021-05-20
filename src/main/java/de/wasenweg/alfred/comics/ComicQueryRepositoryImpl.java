@@ -179,8 +179,7 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
             .last("_id.series").as(NAME)
             .last(PUBLISHER).as(PUBLISHER)
             .count().as("volumesCount"),
-        sort(Sort.Direction.ASC, NAME),
-        sort(Sort.Direction.ASC, PUBLISHER)
+        sort(Sort.Direction.ASC, NAME)
     ), Comic.class, Series.class).getMappedResults();
   }
 

@@ -45,6 +45,7 @@ export class ComicDatabaseService {
         result.then(() => this.saveImage(comic.id, page))
       , Promise.resolve()).then(() => this.indexedDbService.save('Comics', comic));
     }
+    return Promise.resolve(new Event(''));
   }
 
   public isStored(comicId: string): Promise<boolean> {

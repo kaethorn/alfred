@@ -17,14 +17,14 @@ interface IOpenOptions {
 })
 export class ReaderPage {
 
-  @ViewChild('pagesLayer', { static: true }) public pagesLayer: ElementRef;
+  @ViewChild('pagesLayer', { static: true }) public pagesLayer!: ElementRef;
   public comic: Comic = {} as Comic;
-  public imageSets: PageSource[][];
+  public imageSets!: PageSource[][];
   public showControls = false;
   public transformation = {};
-  private parent: string;
+  private parent!: string;
   private initialNavigation = true;
-  private loading: HTMLIonLoadingElement;
+  private loading!: HTMLIonLoadingElement;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,9 +69,7 @@ export class ReaderPage {
 
   public go(direction: number, event?: MouseEvent): void {
     this.navigate(this.navigator.go(direction));
-    if (event) {
-      event.stopPropagation();
-    }
+    event?.stopPropagation();
   }
 
   public openNext(options: IOpenOptions = {}): void {
@@ -164,7 +162,7 @@ export class ReaderPage {
 
     // Determine when the current set is loaded
     const currentSet = this.navigator.getSet();
-    const pagesToLoad: Promise<void>[] = this.imageSets[currentSet].map(image => image.loader);
+    const pagesToLoad: (Promise<void> | undefined)[] = this.imageSets[currentSet].map(image => image.loader);
     return Promise.all(pagesToLoad);
   }
 
@@ -215,9 +213,9 @@ export class ReaderPage {
     }
   }
 
-  private open(adjacentAttr: string, options?: IOpenOptions): void {
+  private open(adjacentAttr: keyof Comic, options: IOpenOptions): void {
     if (this.comic[adjacentAttr]) {
-      this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
+      this.comicStorageService.storeSurrounding(this.comic[adjacentAttr] as string);
       this.router.navigate([ '/read', this.comic[adjacentAttr] ], {
         queryParamsHandling: 'merge',
         relativeTo: this.route,

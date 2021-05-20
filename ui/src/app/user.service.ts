@@ -10,21 +10,19 @@ import { User } from './user';
 })
 export class UserService {
 
-  public user: BehaviorSubject<User | string> = new BehaviorSubject<User | string>(null);
-  private auth2: gapi.auth2.GoogleAuth;
+  public user: BehaviorSubject<User> = new BehaviorSubject<User>({} as User);
+  private auth2: gapi.auth2.GoogleAuth = {} as gapi.auth2.GoogleAuth;
 
   constructor(
     private ngZone: NgZone,
     private http: HttpClient,
     private settingsService: SettingsService
-  ) {
-    this.verifyCurrentUser();
-  }
+  ) { }
 
   public verifyCurrentUser(): void {
     const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
     if (!currentUser.token) {
-      this.user.next('You\'ve been logged out.');
+      this.user.error('You\'ve been logged out.');
       return;
     }
 
@@ -32,7 +30,7 @@ export class UserService {
       this.user.next(currentUser);
     }, () => {
       this.logout();
-      this.user.next('You\'ve been logged out.');
+      this.user.error('You\'ve been logged out.');
     });
   }
 
@@ -52,10 +50,10 @@ export class UserService {
               localStorage.setItem('user', JSON.stringify(user));
             }, (response: HttpErrorResponse) => {
               const message = response.error.message ? response.error.message : response.message;
-              this.user.next(`Login failure: ${ message }`);
+              this.user.error(`Login failure: ${ message }`);
             });
           }, () => {
-            this.user.next('Login failure: Google-SignIn error.');
+            this.user.error('Login failure: Google-SignIn error.');
           });
 
           if (this.auth2.isSignedIn.get() === true) {

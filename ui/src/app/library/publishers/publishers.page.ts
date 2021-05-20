@@ -12,8 +12,8 @@ import { VolumesService } from '../../volumes.service';
 })
 export class PublishersPage {
 
-  public publishers: Publisher[];
-  private publishersData: Publisher[];
+  public publishers: Publisher[] = [];
+  private publishersData: Publisher[] = [];
 
   constructor(
     private volumesService: VolumesService,

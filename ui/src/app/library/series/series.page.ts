@@ -12,9 +12,9 @@ import { VolumesService } from '../../volumes.service';
 })
 export class SeriesPage {
 
-  public series: Series[];
+  public series: Series[] = [];
   public publisher = '';
-  private seriesData: Series[];
+  private seriesData: Series[] = [];
 
   constructor(
     private route: ActivatedRoute,

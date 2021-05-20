@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let comic of comics">
+  <ion-card *ngFor="let comic of comics; index as comicIndex">
     <ion-card-header>
       <ion-card-title>#{{ comic.number }} {{ comic.title }}</ion-card-title>
       <ion-card-subtitle>{{ comic.year }}/{{ comic.month }}</ion-card-subtitle>
@@ -38,7 +38,11 @@
 
           <ion-col size="12" size-md>
             <ion-item lines="none">
-              <div [ngClass]="{'expanded': comic.summaryExpanded}" class="comic-summary" (click)="comic.summaryExpanded = !comic.summaryExpanded">
+              <div
+                [ngClass]="{'expanded': summaryToggles[comicIndex]}"
+                class="comic-summary"
+                (click)="summaryToggles[comicIndex] = !summaryToggles[comicIndex]"
+              >
                 {{ comic.summary }}
               </div>
             </ion-item>

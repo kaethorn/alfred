@@ -49,8 +49,8 @@ export interface Comic {
   characters?: string;
   teams?: string;
   locations?: string;
-  nextId?: string;
-  previousId?: string;
+  nextId: string | null;
+  previousId: string | null;
   read?: boolean;
   currentPage?: number;
   lastRead?: Date;

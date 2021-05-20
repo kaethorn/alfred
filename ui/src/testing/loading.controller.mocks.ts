@@ -15,7 +15,7 @@ export class LoadingControllerMocks {
   }
 
   public static get loadingController(): jasmine.SpyObj<LoadingController> {
-    delete this.loadingElement;
+    this.loadingElement = null as any;
     return jasmine.createSpyObj('LoadingController', {
       create: Promise.resolve(this.loadingElementSpy)
     });

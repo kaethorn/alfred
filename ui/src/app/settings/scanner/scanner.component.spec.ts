@@ -58,7 +58,7 @@ describe('ScannerComponent', () => {
     describe('on the `start` event', () => {
 
       beforeEach(() => {
-        component.scanProgress.dispatchEvent(new MessageEvent('START'));
+        component.scanProgress?.dispatchEvent(new MessageEvent('START'));
       });
 
       it('reports counting files', () => {
@@ -69,7 +69,7 @@ describe('ScannerComponent', () => {
     describe('on the `total` event', () => {
 
       beforeEach(() => {
-        component.scanProgress.dispatchEvent(new MessageEvent('TOTAL', { data: 59 }));
+        component.scanProgress?.dispatchEvent(new MessageEvent('TOTAL', { data: 59 }));
       });
 
       it('updates the amount of files to scan', () => {
@@ -81,7 +81,7 @@ describe('ScannerComponent', () => {
     describe('on the `current-file` event', () => {
 
       beforeEach(() => {
-        component.scanProgress.dispatchEvent(new MessageEvent('CURRENT_FILE', {
+        component.scanProgress?.dispatchEvent(new MessageEvent('CURRENT_FILE', {
           data: '5.cbz'
         }));
       });
@@ -95,7 +95,7 @@ describe('ScannerComponent', () => {
     describe('on the `cleanUp` event', () => {
 
       beforeEach(() => {
-        component.scanProgress.dispatchEvent(new MessageEvent('CLEAN_UP'));
+        component.scanProgress?.dispatchEvent(new MessageEvent('CLEAN_UP'));
       });
 
       it('resets counters and reports cleaning up', () => {
@@ -108,7 +108,7 @@ describe('ScannerComponent', () => {
     describe('on the `association` event', () => {
 
       beforeEach(() => {
-        component.scanProgress.dispatchEvent(new MessageEvent('ASSOCIATION'));
+        component.scanProgress?.dispatchEvent(new MessageEvent('ASSOCIATION'));
       });
 
       it('reports associating files', () => {
@@ -123,7 +123,7 @@ describe('ScannerComponent', () => {
       });
 
       it('receives a scanning issue', () => {
-        component.scanProgress.dispatchEvent(new MessageEvent('SCAN_ISSUE', {
+        component.scanProgress?.dispatchEvent(new MessageEvent('SCAN_ISSUE', {
           data: JSON.stringify(ComicFixtures.scannerIssueFixable)
         }));
         expect(EventSource.prototype.close).not.toHaveBeenCalled();
@@ -132,7 +132,7 @@ describe('ScannerComponent', () => {
       });
 
       it('closes the source when no data was received', () => {
-        component.scanProgress.dispatchEvent(new MessageEvent('SCAN_ISSUE'));
+        component.scanProgress?.dispatchEvent(new MessageEvent('SCAN_ISSUE'));
         expect(EventSource.prototype.close).toHaveBeenCalled();
         expect(component.issues.length).toBe(0);
       });
@@ -141,7 +141,7 @@ describe('ScannerComponent', () => {
     describe('on the `done` event', () => {
 
       beforeEach(() => {
-        component.scanProgress.dispatchEvent(new MessageEvent('DONE'));
+        component.scanProgress?.dispatchEvent(new MessageEvent('DONE'));
       });
 
       it('wraps up the scan', () => {

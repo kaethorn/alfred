@@ -118,14 +118,23 @@ describe('CoversPage', () => {
       expect(comicsService.deletePage).toHaveBeenCalledWith(ComicFixtures.volume[0], '/1.png');
     });
 
+    describe('without a front cover', () => {
+
+      it('does nothing', () => {
+        component.frontCoverThumbnails.clear();
+        component.deleteFrontCover(ComicFixtures.volume[0]);
+        expect(comicsService.deletePage).not.toHaveBeenCalled();
+      });
+    });
+
     describe('on success', () => {
 
       it('shows a success toast', async () => {
         component.deleteFrontCover(ComicFixtures.volume[0]);
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
         await cacheStorageService.resetThumbnailsCache.calls.mostRecent().returnValue;
-        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
-        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
+        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id)?.toPromise();
+        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id)?.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
           duration: 3000,
@@ -166,14 +175,23 @@ describe('CoversPage', () => {
       expect(comicsService.deletePage).toHaveBeenCalledWith(ComicFixtures.volume[0], '/1.png');
     });
 
+    describe('without a front cover', () => {
+
+      it('does nothing', () => {
+        component.backCoverThumbnails.clear();
+        component.deleteBackCover(ComicFixtures.volume[0]);
+        expect(comicsService.deletePage).not.toHaveBeenCalled();
+      });
+    });
+
     describe('on success', () => {
 
       it('shows a success toast', async () => {
         component.deleteBackCover(ComicFixtures.volume[0]);
         await comicsService.deletePage.calls.mostRecent().returnValue.toPromise();
         await cacheStorageService.resetThumbnailsCache.calls.mostRecent().returnValue;
-        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
-        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id).toPromise();
+        await component.frontCoverThumbnails.get(ComicFixtures.volume[0].id)?.toPromise();
+        await component.backCoverThumbnails.get(ComicFixtures.volume[0].id)?.toPromise();
 
         expect(toastController.create).toHaveBeenCalledWith({
           duration: 3000,
