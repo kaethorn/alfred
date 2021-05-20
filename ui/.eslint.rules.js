@@ -88,7 +88,7 @@ module.exports = {
   'no-redeclare': 'error',
   'no-regex-spaces': 'error',
   'no-restricted-globals': [ 'error', 'fit', 'fdescribe' ],
-  'no-restricted-imports': [ 'error', { patterns: [ '../*', './*' ] }],
+  'no-restricted-imports': [ 'error', { patterns: [ '../*' ] }],
   'no-return-await': 'error',
   'no-self-assign': 'error',
   'no-shadow-restricted-names': 'error',

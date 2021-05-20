@@ -1,8 +1,8 @@
 import { browser } from 'protractor';
 
-import { AppPage } from 'e2e/src/app.po';
-import { MongoDBTools } from 'e2e/src/mongodb.tools';
-import { Page } from 'e2e/src/page.po';
+import { AppPage } from './app.po';
+import { MongoDBTools } from './mongodb.tools';
+import { Page } from './page.po';
 
 describe('AppComponent', () => {
 

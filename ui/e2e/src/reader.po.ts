@@ -1,6 +1,6 @@
 import { by, element, protractor, browser, ElementFinder, ElementArrayFinder } from 'protractor';
 
-import { Page } from 'e2e/src/page.po';
+import { Page } from './page.po';
 
 export class ReaderPage {
 

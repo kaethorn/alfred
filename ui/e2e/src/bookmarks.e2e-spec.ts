@@ -1,8 +1,8 @@
-import { BookmarksPage } from 'e2e/src/bookmarks.po';
-import { IssuesPage } from 'e2e/src/issues.po';
-import { LibraryPage } from 'e2e/src/library.po';
-import { MongoDBTools } from 'e2e/src/mongodb.tools';
-import { SettingsPage } from 'e2e/src/settings.po';
+import { BookmarksPage } from './bookmarks.po';
+import { IssuesPage } from './issues.po';
+import { LibraryPage } from './library.po';
+import { MongoDBTools } from './mongodb.tools';
+import { SettingsPage } from './settings.po';
 
 describe('BookmarksComponent', () => {
 

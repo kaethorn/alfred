@@ -140,6 +140,6 @@ module.exports = {
     }
   ],
   settings: {
-    'import/internal-regex': '^(src|e2e/src)/'
+    'import/internal-regex': '^src/'
   }
 };

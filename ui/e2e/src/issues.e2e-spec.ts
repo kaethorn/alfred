@@ -1,10 +1,10 @@
 import { browser } from 'protractor';
 
-import { IssuesPage } from 'e2e/src/issues.po';
-import { LibraryPage } from 'e2e/src/library.po';
-import { MongoDBTools } from 'e2e/src/mongodb.tools';
-import { Page } from 'e2e/src/page.po';
-import { SettingsPage } from 'e2e/src/settings.po';
+import { IssuesPage } from './issues.po';
+import { LibraryPage } from './library.po';
+import { MongoDBTools } from './mongodb.tools';
+import { Page } from './page.po';
+import { SettingsPage } from './settings.po';
 
 describe('IssuesComponent', () => {
 
