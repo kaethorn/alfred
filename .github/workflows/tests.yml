@@ -61,7 +61,6 @@ jobs:
         done
         echo " done!"
       env:
-        SERVER_PORT: 8082
         SPRING_PROFILES_ACTIVE: test
         COMICS_COMICVINE_APIKEY: foo
         SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
