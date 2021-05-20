@@ -12,7 +12,7 @@ jobs:
     - name: Install Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: 12.x
+        node-version: 14.x
 
     - name: Install Java
       uses: actions/setup-java@v1
@@ -20,11 +20,7 @@ jobs:
         java-version: 11
 
     - name: Install Chrome
-      run: |
-        curl -sSL https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        echo 'deb https://dl.google.com/linux/chrome/deb/ stable main' | sudo tee -a /etc/apt/sources.list.d/google-chrome.list
-        sudo apt-get update
-        sudo apt-get install -y --no-install-recommends google-chrome-stable fontconfig fonts-ipafont-gothic fonts-freefont-ttf
+      uses: browser-actions/setup-chrome@latest
 
     - name: Check backend
       run: ./gradlew --build-cache check jacocoTestReport -x :ui:jar
@@ -43,11 +39,11 @@ jobs:
 
     - name: Upload frontend coverage to Codecov
       working-directory: ui
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         npm install codecov
         ./node_modules/.bin/codecov --file=coverage/coverage-final.json
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.1.0
@@ -59,9 +55,9 @@ jobs:
         ./gradlew --build-cache bootRun &> output &
         echo -n "Waiting for boot to complete "
         seconds=0
-        while ! curl --output /dev/null --silent --head --fail http://localhost:8082; do
-          if [ $seconds -gt 240 ]; then echo -e " timeout reached\n\n" && cat output && exit 1; fi
-          ((seconds++)) && echo -n "." && sleep 1
+        while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
+          if [ $seconds -gt 160 ]; then echo -e " timeout reached!\n\n" && cat output && exit 1; fi
+          ((seconds++)) && echo -n "." && sleep 2
         done
         echo " done!"
       env:
@@ -73,4 +69,3 @@ jobs:
     - name: Run end-to-end tests
       working-directory: ui
       run: npm run e2eHeadless
-

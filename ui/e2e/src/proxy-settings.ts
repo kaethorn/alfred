@@ -19,7 +19,7 @@ export class ProxySettings {
         port   : '8090'
       }, res => {
         try {
-          if (res.statusCode || 0 > 399) {
+          if ((res.statusCode || 0) > 399) {
             reject(res.statusCode);
           } else {
             res.setEncoding('utf8');

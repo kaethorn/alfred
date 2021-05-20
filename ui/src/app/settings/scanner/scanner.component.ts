@@ -22,8 +22,8 @@ export class ScannerComponent implements OnInit {
   public issues: ScannerIssue[] = [];
   public stats: Stats = {
     issues: 0,
-    lastScanFinished: null,
-    lastScanStarted: null,
+    lastScanFinished: new Date(),
+    lastScanStarted: new Date(),
     publishers: 0,
     series: 0,
     users: 0,
