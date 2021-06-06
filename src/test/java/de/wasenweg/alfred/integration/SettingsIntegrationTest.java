@@ -48,7 +48,7 @@ public class SettingsIntegrationTest {
     this.settingsService.setup();
 
     final List<Setting> settings = this.settingRepository.findAll();
-    assertThat(settings.size()).isEqualTo(4);
+    assertThat(settings.size()).isEqualTo(5);
     assertThat(settings.get(0).getKey()).isEqualTo("comics.path");
     assertThat(settings.get(0).getValue()).isEqualTo("/comics");
   }
@@ -67,7 +67,7 @@ public class SettingsIntegrationTest {
     this.settingsService.setup();
 
     final List<Setting> settings = this.settingRepository.findAll();
-    assertThat(settings.size()).isEqualTo(4);
+    assertThat(settings.size()).isEqualTo(5);
     assertThat(settings.get(0).getKey()).isEqualTo("comics.path");
     assertThat(settings.get(0).getValue()).isEqualTo("/existing/comics");
   }
@@ -79,7 +79,7 @@ public class SettingsIntegrationTest {
     this.settingsService.setup();
 
     final List<Setting> settings = this.settingRepository.findAll();
-    assertThat(settings.size()).isEqualTo(4);
+    assertThat(settings.size()).isEqualTo(5);
     assertThat(settings.get(0).getKey()).isEqualTo("comics.path");
     assertThat(settings.get(0).getValue()).isEqualTo("/environment/comics");
   }
@@ -98,7 +98,7 @@ public class SettingsIntegrationTest {
     this.settingsService.setup();
 
     final List<Setting> settings = this.settingRepository.findAll();
-    assertThat(settings.size()).isEqualTo(4);
+    assertThat(settings.size()).isEqualTo(5);
     assertThat(settings.get(0).getKey()).isEqualTo("comics.path");
     assertThat(settings.get(0).getValue()).isEqualTo("/environment/comics");
   }

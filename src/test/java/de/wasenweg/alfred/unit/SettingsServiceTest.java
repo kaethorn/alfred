@@ -41,7 +41,7 @@ public class SettingsServiceTest {
 
     this.settingsService.setup();
 
-    verify(this.settingRepository, times(4)).save(this.settingCaptor.capture());
+    verify(this.settingRepository, times(5)).save(this.settingCaptor.capture());
     assertThat(this.settingCaptor.getAllValues().get(0).getKey()).isEqualTo("comics.path");
     assertThat(this.settingCaptor.getAllValues().get(0).getValue()).isEqualTo("/comics");
   }
@@ -58,7 +58,7 @@ public class SettingsServiceTest {
 
     this.settingsService.setup();
 
-    verify(this.settingRepository, times(4)).save(this.settingCaptor.capture());
+    verify(this.settingRepository, times(5)).save(this.settingCaptor.capture());
     assertThat(this.settingCaptor.getAllValues().get(0).getKey()).isEqualTo("comics.path");
     assertThat(this.settingCaptor.getAllValues().get(0).getValue()).isEqualTo("/existing/comics");
   }
@@ -70,7 +70,7 @@ public class SettingsServiceTest {
 
     this.settingsService.setup();
 
-    verify(this.settingRepository, times(4)).save(this.settingCaptor.capture());
+    verify(this.settingRepository, times(5)).save(this.settingCaptor.capture());
     assertThat(this.settingCaptor.getAllValues().get(0).getKey()).isEqualTo("comics.path");
     assertThat(this.settingCaptor.getAllValues().get(0).getValue()).isEqualTo("/environment/comics");
   }
@@ -88,7 +88,7 @@ public class SettingsServiceTest {
 
     this.settingsService.setup();
 
-    verify(this.settingRepository, times(4)).save(this.settingCaptor.capture());
+    verify(this.settingRepository, times(5)).save(this.settingCaptor.capture());
     assertThat(this.settingCaptor.getAllValues().get(0).getKey()).isEqualTo("comics.path");
     assertThat(this.settingCaptor.getAllValues().get(0).getValue()).isEqualTo("/environment/comics");
   }
