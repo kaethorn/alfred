@@ -40,7 +40,7 @@ public class UserService {
           .token(token)
           .build());
     }
-    return Optional.ofNullable(null);
+    return Optional.empty();
   }
 
   public Optional<User> signIn(final String token) throws GeneralSecurityException, IOException {
@@ -63,11 +63,11 @@ public class UserService {
         claims.add("API_ALLOWED");
       } else {
         log.debug(format("User %s is not present in the white list. Rejecting.", email));
-        return Optional.ofNullable(null);
+        return Optional.empty();
       }
 
       final String userId = payload.getSubject();
-      final String apiToken = this.tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
+      final String apiToken = this.tokenCreator.issueToken(claims.toArray(String[]::new), userId, this.jwtSecret);
       final String name = this.getKey(payload, "name");
       final String picture = this.getKey(payload, "picture");
 
@@ -87,26 +87,27 @@ public class UserService {
     final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","));
     final List<String> passwords = Arrays.asList(this.settingsService.get("auth.passwords").split(","));
     final int userIndex = users.indexOf(username);
-    if (users.size() < 1 || passwords.size() < 1) {
+    if (users.isEmpty() || passwords.isEmpty()) {
       log.info("No users have been set up.");
+      throw new GeneralSecurityException("Unable to login user.");
     } else if (userIndex < 0) {
       log.info(format("Invalid user ID : %s.", username));
+      throw new GeneralSecurityException("Unable to login user.");
     } else if (!passwords.get(userIndex).equals(password)) {
       log.info(format("Password does not match for user ID : %s.", username));
-    } else {
-      final List<String> claims = new ArrayList<>();
-      claims.add("ANONYMOUS");
-      claims.add("API_ALLOWED");
-      final String apiToken = this.tokenCreator.issueToken(claims.stream().toArray(String[]::new), username, this.jwtSecret);
-
-      return Optional.of(User.builder()
-          .id(username)
-          .email(username)
-          .token(apiToken)
-          .build());
+      throw new GeneralSecurityException("Unable to login user.");
     }
 
-    throw new GeneralSecurityException("Unable to login user.");
+    final List<String> claims = new ArrayList<>();
+    claims.add("ANONYMOUS");
+    claims.add("API_ALLOWED");
+    final String apiToken = this.tokenCreator.issueToken(claims.toArray(String[]::new), username, this.jwtSecret);
+
+    return Optional.of(User.builder()
+        .id(username)
+        .email(username)
+        .token(apiToken)
+        .build());
   }
 
   private String getKey(final Payload payload, final String key) {
