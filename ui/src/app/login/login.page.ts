@@ -2,7 +2,6 @@ import { Component, NgZone, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 import { UserService } from '../user.service';
 
@@ -29,23 +28,19 @@ export class LoginPage implements OnDestroy {
     private formBuilder: FormBuilder
   ) {
     this.userService.setupGoogleSignIn();
-    this.subscription = this.userService.user
-      .pipe(filter(user => !!user.id))
-      .subscribe(() => {
-        this.ngZone.run(() => {
-          this.loginInProgress = false;
+    this.subscription = this.userService.user.subscribe(user => {
+      this.loginInProgress = false;
+      this.ngZone.run(() => {
+        this.message = user.error;
+        if (!user.error && user.id) {
           if (this.route.snapshot.queryParams.target) {
             this.router.navigate([ this.route.snapshot.queryParams.target ]);
           } else {
             this.router.navigate([ '/library' ]);
           }
-        });
-      }, (error: string) => {
-        this.ngZone.run(() => {
-          this.loginInProgress = false;
-          this.message = error;
-        });
+        }
       });
+    });
   }
 
   public ngOnDestroy(): void {

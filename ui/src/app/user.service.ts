@@ -22,7 +22,7 @@ export class UserService {
   public verifyCurrentUser(): void {
     const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
     if (!currentUser.token) {
-      this.user.error('You\'ve been logged out.');
+      this.user.error({ error: 'You\'ve been logged out.' } as User);
       return;
     }
 
@@ -30,7 +30,7 @@ export class UserService {
       this.user.next(currentUser);
     }, () => {
       this.logout();
-      this.user.error('You\'ve been logged out.');
+      this.user.error({ error: 'You\'ve been logged out.' } as User);
     });
   }
 
@@ -50,10 +50,10 @@ export class UserService {
               localStorage.setItem('user', JSON.stringify(user));
             }, (response: HttpErrorResponse) => {
               const message = response.error.message ? response.error.message : response.message;
-              this.user.error(`Login failure: ${ message }`);
+              this.user.error({ error: `Login failure: ${ message }` } as User);
             });
           }, () => {
-            this.user.error('Login failure: Google-SignIn error.');
+            this.user.error({ error: 'Login failure: Google-SignIn error.' } as User);
           });
 
           if (this.auth2.isSignedIn.get() === true) {
@@ -64,6 +64,7 @@ export class UserService {
     } else {
       const mockUser: User = {
         email: 'b.wayne@waynecorp.com',
+        error: null,
         id: 'b.wayne@waynecorp.com',
         name: 'B.Wayne',
         picture: 'https://img.icons8.com/office/80/000000/batman-old.png',
@@ -82,7 +83,7 @@ export class UserService {
       localStorage.setItem('user', JSON.stringify(user));
     }, (response: HttpErrorResponse) => {
       const message = response.error.message ? response.error.message : response.message;
-      this.user.error(`Login failure: ${ message }`);
+      this.user.next({ error: `Login failure: ${ message }` } as User);
     });
   }
 
