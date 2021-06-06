@@ -64,6 +64,7 @@ export class UserService {
     } else {
       const mockUser: User = {
         email: 'b.wayne@waynecorp.com',
+        id: 'b.wayne@waynecorp.com',
         name: 'B.Wayne',
         picture: 'https://img.icons8.com/office/80/000000/batman-old.png',
         token: 'mock-123'
