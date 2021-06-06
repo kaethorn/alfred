@@ -86,11 +86,13 @@ public class UserService {
   public Optional<User> login(final String username, final String password) throws GeneralSecurityException, IOException {
     final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","));
     final List<String> passwords = Arrays.asList(this.settingsService.get("auth.passwords").split(","));
-    final int userIndex = users.indexOf(username);
     if (users.isEmpty() || passwords.isEmpty()) {
       log.info("No users have been set up.");
       throw new GeneralSecurityException("Unable to login user.");
-    } else if (userIndex < 0) {
+    }
+
+    final int userIndex = users.indexOf(username);
+    if (userIndex < 0) {
       log.info(format("Invalid user ID : %s.", username));
       throw new GeneralSecurityException("Unable to login user.");
     } else if (!passwords.get(userIndex).equals(password)) {
