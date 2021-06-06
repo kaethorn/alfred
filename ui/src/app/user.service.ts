@@ -20,7 +20,7 @@ export class UserService {
   public verifyCurrentUser(): void {
     const currentUser: User = JSON.parse(localStorage.getItem('user') || '{}');
     if (!currentUser.token) {
-      this.user.error({ error: 'You\'ve been logged out.' } as User);
+      this.user.next({ error: 'You\'ve been logged out.' } as User);
       return;
     }
 
@@ -28,7 +28,7 @@ export class UserService {
       this.user.next(currentUser);
     }, () => {
       this.logout();
-      this.user.error({ error: 'You\'ve been logged out.' } as User);
+      this.user.next({ error: 'You\'ve been logged out.' } as User);
     });
   }
 
@@ -48,10 +48,10 @@ export class UserService {
               localStorage.setItem('user', JSON.stringify(user));
             }, (response: HttpErrorResponse) => {
               const message = response.error.message ? response.error.message : response.message;
-              this.user.error({ error: `Login failure: ${ message }` } as User);
+              this.user.next({ error: `Login failure: ${ message }` } as User);
             });
           }, () => {
-            this.user.error({ error: 'Login failure: Google-SignIn error.' } as User);
+            this.user.next({ error: 'Login failure: Google-SignIn error.' } as User);
           });
 
           if (this.auth2.isSignedIn.get() === true) {

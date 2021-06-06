@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { MockComponent } from '../..//testing/mock.component';
+import { MockComponent } from '../../testing/mock.component';
 import { UserServiceMocks } from '../../testing/user.service.mocks';
+import { User } from '../user';
 import { UserService } from '../user.service';
 
 import { LoginPageModule } from './login.module';
@@ -49,7 +50,7 @@ describe('LoginPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(component.message).toBeNull();
+    expect(component.message).toBeUndefined();
   });
 
   describe('when logging in', () => {
@@ -57,7 +58,7 @@ describe('LoginPage', () => {
     describe('with a login error', () => {
 
       beforeEach(() => {
-        userService.user.error('Invalid user.');
+        userService.user.next({ error: 'Invalid user.' } as User);
         fixture = TestBed.createComponent(LoginPage);
         component = fixture.componentInstance;
         fixture.detectChanges();
