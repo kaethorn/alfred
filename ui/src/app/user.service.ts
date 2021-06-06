@@ -2,7 +2,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { SettingsService } from './settings.service';
 import { User } from './user';
 
 @Injectable({
@@ -15,8 +14,7 @@ export class UserService {
 
   constructor(
     private ngZone: NgZone,
-    private http: HttpClient,
-    private settingsService: SettingsService
+    private http: HttpClient
   ) { }
 
   public verifyCurrentUser(): void {
@@ -36,11 +34,11 @@ export class UserService {
 
   public async setupGoogleSignIn(): Promise<void> {
     if (typeof gapi === 'object') {
-      const clientId = await this.settingsService.get('auth.client.id').toPromise();
+      const clientId = await this.getClientId();
       window.gapi.load('auth2', () => {
         this.ngZone.run(() => {
           this.auth2 = window.gapi.auth2.init({
-            client_id: clientId.value
+            client_id: clientId
           });
           this.auth2.attachClickHandler('signin-button', {}, (googleUser: gapi.auth2.GoogleUser) => {
             const token = googleUser.getAuthResponse().id_token;
@@ -77,7 +75,7 @@ export class UserService {
   }
 
   public login(username: string, password: string): void {
-    this.http.post<User>(`/api/user/sign-in/${ username }/${ password }`, null).subscribe((user: User) => {
+    this.http.post<User>('/api/user/login', { password, username }).subscribe((user: User) => {
       this.user.next(user);
       localStorage.setItem('token', user.token);
       localStorage.setItem('user', JSON.stringify(user));
@@ -90,5 +88,9 @@ export class UserService {
   public logout(): void {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+  }
+
+  private getClientId(): Promise<string> {
+    return this.http.get('/api/user/client-id', { responseType: 'text' }).toPromise();
   }
 }

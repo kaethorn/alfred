@@ -1,13 +1,17 @@
 package de.wasenweg.alfred.user;
 
+import de.wasenweg.alfred.settings.SettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -19,6 +23,12 @@ import java.util.Optional;
 public class UserController {
 
   private final UserService userService;
+  private final SettingsService settingsService;
+
+  @GetMapping("/client-id")
+  public ResponseEntity<?> clientId() {
+    return new ResponseEntity<>(this.settingsService.get("auth.client.id"), HttpStatus.OK);
+  }
 
   @GetMapping("/verify/{token}")
   public ResponseEntity<?> verify(@PathVariable("token") final String token) {
@@ -42,13 +52,10 @@ public class UserController {
     }
   }
 
-  @PostMapping("/sign-in/{username}/{password}")
-  public ResponseEntity<?> signIn(
-      @PathVariable("username") final String username,
-      @PathVariable("password") final String password
-  ) {
+  @PostMapping("/login")
+  public ResponseEntity<?> signIn(@Valid @RequestBody final Login login) {
     try {
-      final Optional<User> maybeUser = this.userService.login(username, password);
+      final Optional<User> maybeUser = this.userService.login(login.getUsername(), login.getPassword());
       if (maybeUser.isPresent()) {
         return new ResponseEntity<>(maybeUser.get(), HttpStatus.OK);
       }
