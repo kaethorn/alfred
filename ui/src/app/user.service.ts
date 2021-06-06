@@ -74,6 +74,17 @@ export class UserService {
     }
   }
 
+  public login(username: string, password: string): void {
+    this.http.post<User>(`/api/user/sign-in/${ username }/${ password }`, null).subscribe((user: User) => {
+      this.user.next(user);
+      localStorage.setItem('token', user.token);
+      localStorage.setItem('user', JSON.stringify(user));
+    }, (response: HttpErrorResponse) => {
+      const message = response.error.message ? response.error.message : response.message;
+      this.user.error(`Login failure: ${ message }`);
+    });
+  }
+
   public logout(): void {
     localStorage.removeItem('user');
     localStorage.removeItem('token');

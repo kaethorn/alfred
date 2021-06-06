@@ -83,6 +83,32 @@ public class UserService {
     throw new GeneralSecurityException("Unable to verify user.");
   }
 
+  public Optional<User> login(final String username, final String password) throws GeneralSecurityException, IOException {
+    final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","));
+    final List<String> passwords = Arrays.asList(this.settingsService.get("auth.passwords").split(","));
+    final int userIndex = users.indexOf(username);
+    if (users.size() < 1 || passwords.size() < 1) {
+      log.info("No users have been set up.");
+    } else if (userIndex < 0) {
+      log.info(format("Invalid user ID : %s.", username));
+    } else if (!passwords.get(userIndex).equals(password)) {
+      log.info(format("Password does not match for user ID : %s.", username));
+    } else {
+      final List<String> claims = new ArrayList<>();
+      claims.add("ANONYMOUS");
+      claims.add("API_ALLOWED");
+      final String apiToken = this.tokenCreator.issueToken(claims.stream().toArray(String[]::new), username, this.jwtSecret);
+
+      return Optional.of(User.builder()
+          .id(username)
+          .email(username)
+          .token(apiToken)
+          .build());
+    }
+
+    throw new GeneralSecurityException("Unable to login user.");
+  }
+
   private String getKey(final Payload payload, final String key) {
     if (payload.containsKey(key)) {
       return (String) payload.get(key);

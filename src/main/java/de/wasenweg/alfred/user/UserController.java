@@ -41,4 +41,20 @@ public class UserController {
       return new ResponseEntity<>(new Error(exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
     }
   }
+
+  @PostMapping("/sign-in/{username}/{password}")
+  public ResponseEntity<?> signIn(
+      @PathVariable("username") final String username,
+      @PathVariable("password") final String password
+  ) {
+    try {
+      final Optional<User> maybeUser = this.userService.login(username, password);
+      if (maybeUser.isPresent()) {
+        return new ResponseEntity<>(maybeUser.get(), HttpStatus.OK);
+      }
+      return new ResponseEntity<>(new Error("User not allowed."), HttpStatus.FORBIDDEN);
+    } catch (final GeneralSecurityException | IOException exception) {
+      return new ResponseEntity<>(new Error(exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
+    }
+  }
 }

@@ -15,7 +15,7 @@
           <ion-row>
             <ion-col>
               <ion-item>
-                <ion-avatar slot="start">
+                <ion-avatar slot="start" *ngIf="user?.picture">
                   <ion-img class="avatar" [src]="user?.picture"></ion-img>
                 </ion-avatar>
                 <ion-label>
