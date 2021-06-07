@@ -49,6 +49,6 @@ export class LoginPage implements OnDestroy {
 
   public onSubmit(): void {
     this.loginInProgress = true;
-    this.userService.login(this.loginForm.get('username')?.value, this.loginForm.get('password')?.value);
+    this.userService.login(this.loginForm.value.username, this.loginForm.value.password);
   }
 }

@@ -233,6 +233,65 @@ describe('UserService', () => {
     });
   });
 
+  describe('#login', () => {
+
+    it('logs in a valid users', done => {
+      service.login('foo@bar.com', 'foo');
+
+      const req = httpMock.expectOne('/api/user/login');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ password: 'foo', username: 'foo@bar.com' });
+      req.flush({
+        email: 'a@b.com',
+        token: 'alfred-token-1'
+      });
+
+      service.user.pipe(first()).subscribe(user => {
+        expect(user.email).toEqual('a@b.com');
+        expect(user.token).toEqual('alfred-token-1');
+        done();
+      });
+    });
+
+    it('rejects inexistant users', done => {
+      service.login('foo@bar.com', 'foo');
+
+      const req = httpMock.expectOne('/api/user/login');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ password: 'foo', username: 'foo@bar.com' });
+      req.flush({}, {
+        status: 403,
+        statusText: 'User not allowed.'
+      });
+
+      service.user.subscribe(user => {
+        expect(user.error)
+          .toEqual('Login failure: Http failure response for /api/user/login: 403 User not allowed.');
+        done();
+      });
+    });
+
+    it('rejects invalid username/password combination', done => {
+      service.login('foo@bar.com', 'foo');
+
+      const req = httpMock.expectOne('/api/user/login');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ password: 'foo', username: 'foo@bar.com' });
+      req.flush({
+        message: 'Unable to verify user.'
+      }, {
+        status: 401,
+        statusText: 'Unauthorized'
+      });
+
+      service.user.subscribe(user => {
+        expect(user.error)
+          .toEqual('Login failure: Unable to verify user.');
+        done();
+      });
+    });
+  });
+
   describe('#logout', () => {
 
     beforeEach(() => {

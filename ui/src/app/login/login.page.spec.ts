@@ -97,4 +97,34 @@ describe('LoginPage', () => {
       });
     });
   });
+
+  describe('on destroy', () => {
+
+    it('unsubscribes', () => {
+      const spy = spyOn(component['subscription'], 'unsubscribe' as never);
+      component.ngOnDestroy();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('handles missing subscription gracefully', () => {
+      component['subscription'] = null;
+      component.ngOnDestroy();
+      expect(component['subscription']).toBeNull();
+    });
+  });
+
+  describe('#onSubmit', () => {
+
+    it('flags login progress', () => {
+      expect(component.loginInProgress).toBe(false);
+      component.onSubmit();
+      expect(component.loginInProgress).toBe(true);
+    });
+
+    it('triggers the login', () => {
+      component.loginForm.patchValue({ password: 'foo', username: 'foo@bar.com' });
+      component.onSubmit();
+      expect(userService.login).toHaveBeenCalledWith('foo@bar.com', 'foo');
+    });
+  });
 });
