@@ -3,6 +3,8 @@ package de.wasenweg.alfred.integration;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import de.wasenweg.alfred.EnableEmbeddedMongo;
+import de.wasenweg.alfred.TestUtil;
+import de.wasenweg.alfred.fixtures.LoginFixtures;
 import de.wasenweg.alfred.fixtures.SecurityFixtures;
 import de.wasenweg.alfred.security.JwtCreator;
 import de.wasenweg.alfred.settings.SettingsService;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -110,5 +113,63 @@ public class UserIntegrationTest {
         .andExpect(status().isUnauthorized())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(jsonPath("$.message").value("Unable to verify user."));
+  }
+
+  @Test
+  public void clientId() throws Exception {
+    when(this.settingsService.get("auth.client.id")).thenReturn("mock-client-id-123");
+
+    this.mockMvc.perform(get("/api/user/client-id"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
+        .andExpect(content().string("mock-client-id-123"));
+  }
+
+  @Test
+  public void login() throws Exception {
+    when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
+    when(this.settingsService.get("auth.passwords")).thenReturn("foo,bar");
+    when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-token-123");
+
+    this.mockMvc.perform(post("/api/user/login")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.toJson(LoginFixtures.LOGIN_1)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
+        .andExpect(jsonPath("$.token").value("mock-token-123"))
+        .andExpect(jsonPath("$.email").value("foo@bar.com"))
+        .andExpect(jsonPath("$.id").value("foo@bar.com"))
+        .andExpect(jsonPath("$.picture").doesNotExist());
+  }
+
+  @Test
+  public void loginWithInvalidUser() throws Exception {
+    when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
+    when(this.settingsService.get("auth.passwords")).thenReturn("foo,bar");
+    when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-token-123");
+
+    this.mockMvc.perform(post("/api/user/login")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.toJson(LoginFixtures.LOGIN_NONEXISTENT)))
+        .andExpect(status().isForbidden())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON))
+        .andExpect(jsonPath("$.message").value("User not allowed."));
+  }
+
+  @Test
+  public void loginWithoutMatch() throws Exception {
+    when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
+    when(this.settingsService.get("auth.passwords")).thenReturn("foo,bar");
+    when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-token-123");
+
+    this.mockMvc.perform(post("/api/user/login")
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaTypes.HAL_JSON_VALUE)
+        .content(TestUtil.toJson(LoginFixtures.LOGIN_MISMATCH)))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().contentType(MediaTypes.HAL_JSON))
+        .andExpect(jsonPath("$.message").value("Unable to login user."));
   }
 }

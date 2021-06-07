@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -84,8 +85,10 @@ public class UserService {
   }
 
   public Optional<User> login(final String username, final String password) throws GeneralSecurityException, IOException {
-    final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","));
-    final List<String> passwords = Arrays.asList(this.settingsService.get("auth.passwords").split(","));
+    final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","))
+        .stream().filter(e -> e.length() > 0).collect(Collectors.toList());
+    final List<String> passwords = Arrays.asList(this.settingsService.get("auth.passwords").split(","))
+        .stream().filter(e -> e.length() > 0).collect(Collectors.toList());
     if (users.isEmpty() || passwords.isEmpty()) {
       log.info("No users have been set up.");
       throw new GeneralSecurityException("Unable to login user.");
@@ -93,8 +96,8 @@ public class UserService {
 
     final int userIndex = users.indexOf(username);
     if (userIndex < 0) {
-      log.info(format("Invalid user ID : %s.", username));
-      throw new GeneralSecurityException("Unable to login user.");
+      log.debug(format("User %s is not present in the white list. Rejecting.", username));
+      return Optional.empty();
     } else if (!passwords.get(userIndex).equals(password)) {
       log.info(format("Password does not match for user ID : %s.", username));
       throw new GeneralSecurityException("Unable to login user.");

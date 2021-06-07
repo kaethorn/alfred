@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class UserServiceOAuthTest {
 
   @Mock
   private transient SettingsService settingsService;
@@ -61,7 +61,7 @@ public class UserServiceTest {
     when(this.googleIdToken.getPayload()).thenReturn(SecurityFixtures.getMockPayload());
     when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-api-token");
 
-    assertThat(this.userService.signIn("mock-123").isPresent()).isTrue();
+    assertThat(this.userService.signIn("mock-123")).isPresent();
     final User user = this.userService.signIn("mock-123").get();
     assertThat(user.getEmail()).isEqualTo("foo@bar.com");
     assertThat(user.getName()).isEqualTo("Foo Bar");
@@ -79,9 +79,9 @@ public class UserServiceTest {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
     when(this.payload.getEmail()).thenReturn("foo@bar.com");
     when(this.googleIdToken.getPayload()).thenReturn(this.payload);
-    assertThat(this.userService.signIn("mock-123").isPresent()).isTrue();
+    assertThat(this.userService.signIn("mock-123")).isPresent();
 
     when(this.payload.getEmail()).thenReturn("invalid@user.com");
-    assertThat(this.userService.signIn("mock-123").isPresent()).isFalse();
+    assertThat(this.userService.signIn("mock-123")).isNotPresent();
   }
 }
