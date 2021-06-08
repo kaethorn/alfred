@@ -41,7 +41,7 @@
     <ion-card-content>
       <form (ngSubmit)="onSubmit()" #settingsForm="ngForm">
         <ion-list>
-          <ion-item *ngFor="let setting of settings">
+          <ion-item *ngFor="let setting of settings" class="setting" id="{{ setting.name }}">
             <ion-label position="floating">
               <p>{{ setting.comment }}</p>
             </ion-label>
