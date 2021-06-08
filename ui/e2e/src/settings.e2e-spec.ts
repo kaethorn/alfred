@@ -10,7 +10,7 @@ describe('SettingsPage', () => {
 
   it('has default settings', async () => {
     await SettingsPage.navigateTo();
-    const setting: string = await SettingsPage.getComicsPathInput().getAttribute('value');
+    const setting: string = await SettingsPage.getComicsPath();
     expect(setting.length).toBeGreaterThan(0);
   });
 

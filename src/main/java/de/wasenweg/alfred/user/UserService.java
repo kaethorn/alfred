@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -40,7 +41,7 @@ public class UserService {
           .token(token)
           .build());
     }
-    return Optional.ofNullable(null);
+    return Optional.empty();
   }
 
   public Optional<User> signIn(final String token) throws GeneralSecurityException, IOException {
@@ -63,11 +64,11 @@ public class UserService {
         claims.add("API_ALLOWED");
       } else {
         log.debug(format("User %s is not present in the white list. Rejecting.", email));
-        return Optional.ofNullable(null);
+        return Optional.empty();
       }
 
       final String userId = payload.getSubject();
-      final String apiToken = this.tokenCreator.issueToken(claims.stream().toArray(String[]::new), userId, this.jwtSecret);
+      final String apiToken = this.tokenCreator.issueToken(claims.toArray(String[]::new), userId, this.jwtSecret);
       final String name = this.getKey(payload, "name");
       final String picture = this.getKey(payload, "picture");
 
@@ -81,6 +82,37 @@ public class UserService {
     }
 
     throw new GeneralSecurityException("Unable to verify user.");
+  }
+
+  public Optional<User> login(final String username, final String password) throws GeneralSecurityException, IOException {
+    final List<String> users = Arrays.asList(this.settingsService.get("auth.users").split(","))
+        .stream().filter(e -> e.length() > 0).collect(Collectors.toList());
+    final List<String> passwords = Arrays.asList(this.settingsService.get("auth.passwords").split(","))
+        .stream().filter(e -> e.length() > 0).collect(Collectors.toList());
+    if (users.isEmpty() || passwords.isEmpty()) {
+      log.info("No users have been set up.");
+      throw new GeneralSecurityException("Unable to login user.");
+    }
+
+    final int userIndex = users.indexOf(username);
+    if (userIndex < 0) {
+      log.debug(format("User %s is not present in the white list. Rejecting.", username));
+      return Optional.empty();
+    } else if (!passwords.get(userIndex).equals(password)) {
+      log.info(format("Password does not match for user ID : %s.", username));
+      throw new GeneralSecurityException("Unable to login user.");
+    }
+
+    final List<String> claims = new ArrayList<>();
+    claims.add("ANONYMOUS");
+    claims.add("API_ALLOWED");
+    final String apiToken = this.tokenCreator.issueToken(claims.toArray(String[]::new), username, this.jwtSecret);
+
+    return Optional.of(User.builder()
+        .id(username)
+        .email(username)
+        .token(apiToken)
+        .build());
   }
 
   private String getKey(final Payload payload, final String key) {

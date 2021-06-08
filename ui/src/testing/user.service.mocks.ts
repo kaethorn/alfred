@@ -8,6 +8,7 @@ export class UserServiceMocks {
 
   public static get userService(): jasmine.SpyObj<UserService> {
     const userService = jasmine.createSpyObj('UserService', {
+      login: null,
       logout: of(null),
       setupGoogleSignIn: null
     });

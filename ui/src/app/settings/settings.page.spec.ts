@@ -130,12 +130,12 @@ describe('SettingsPage', () => {
 
     it('saves user settings', () => {
       component.saveUserSettings();
-      expect(JSON.parse(localStorage.getItem('userSettings'))).toEqual({});
+      expect(JSON.parse(localStorage.getItem('userSettings') || '{}')).toEqual({});
 
       component.userSettings.darkMode = true;
       component.saveUserSettings();
 
-      expect(JSON.parse(localStorage.getItem('userSettings'))).toEqual({
+      expect(JSON.parse(localStorage.getItem('userSettings') || '{}')).toEqual({
         darkMode: true
       });
     });

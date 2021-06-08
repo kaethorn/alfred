@@ -33,7 +33,8 @@ public class SettingsService {
     // Built in defaults:
     this.defaults.add(new Setting("comics.path", "Path", "/comics", "Path to your comic library"));
     this.defaults.add(new Setting("comics.comicVine.ApiKey", "Comi Vine API key", "", "Comic Vine API key from https://comicvine.gamespot.com/api/"));
-    this.defaults.add(new Setting("auth.users", "Users", "", "Users authorized to access this server"));
+    this.defaults.add(new Setting("auth.users", "Users", "", "Users authorized to access this server (comma separated)"));
+    this.defaults.add(new Setting("auth.passwords", "Passwords", "", "Passwords for users defined in auth.users (comma separated)"));
     this.defaults.add(new Setting("auth.client.id", "Google client ID", "", "Google client ID to use for this server"));
 
     this.defaults.forEach((settingDefault) -> {

@@ -13,7 +13,7 @@ A web based comic book reader and library manager.
 
 * Scan & manage comic books.
 * Read your comic books anywhere.
-* Log in with your Google account.
+* Log in with your Google account or username & password.
 * Continue reading while offline.
 * Automatically sync progress when connectivity is restored.
 * Make use of embedded metadata from [ComicRack](http://comicrack.cyolito.com/).
@@ -25,7 +25,7 @@ A web based comic book reader and library manager.
 
 * Spring Boot 2 back end.
 * MongoDB.
-* Google Sign-In.
+* Google Sign-In or username/password authentication.
 * Ionic v5 / Angular 9 PWA.
 
 
@@ -33,7 +33,9 @@ A web based comic book reader and library manager.
 
 **Building** requires either **Java 11 SDK** or **Docker**.
 
-**Running** the application requires a **Java 11 JRE** or **Docker** and a Client ID for **Google Sign-In**.
+**Running** the application requires a **Java 11 JRE** or **Docker**
+
+Recommended: a Client ID for **Google Sign-In**.
 
 
 ## Usage
@@ -57,7 +59,7 @@ docker run --dns 8.8.8.8 -p 5000:8080 --net=alfred-net --rm \
   -e COMICS_COMICVINE_APIKEY=<Your Comic Vine API key> \
   -e LOGGING_FILE=/logs/alfred.log \
   -e AUTH_CLIENT_ID=<Your Google Client ID, ends in .apps.googleusercontent.com> \
-  -e AUTH_USERS=<List of allowed user IDs, e.g. email addresses> \
+  -e AUTH_USERS=<Comma separated list of allowed user IDs, e.g. email addresses> \
   -e AUTH_JWT_SECRET=<Your own generated or custom JWT secret> \
   --name alfred \
   de.wasenweg/alfred
@@ -65,7 +67,7 @@ docker run --dns 8.8.8.8 -p 5000:8080 --net=alfred-net --rm \
 
 Configuration options are explained [here](#configuration).
 
-For a detailed explanation of, please continue:
+For a detailed explanation, please continue reading:
 
 #### 1. Network
 
@@ -136,11 +138,15 @@ The default comics path is `/comics` which allows you to associate it via a Dock
 
 ### Client ID (`auth.client.id`)
 
-Create a set of client credentials in the [Google API console](https://console.developers.google.com/apis/credentials). Configure the `Authorized JavaScript origins` as well as `Authorized redirect URIs` to reflect the host name of your Alfred instance. The Client ID format should be `000000.apps.googleusercontent.com`.
+Required when using Google Sign-In. Create a set of client credentials in the [Google API console](https://console.developers.google.com/apis/credentials). Configure the `Authorized JavaScript origins` as well as `Authorized redirect URIs` to reflect the host name of your Alfred instance. The Client ID format should be `000000.apps.googleusercontent.com`.
 
 ### Allowed users (`auth.users`)
 
-Users are identified through their email addresses and the initial set of allowed users must be passed to the application on the inital run. They're a comma separated list of email addresses associated with a Google ID. Only users with the email addresses specified in this property will be allowed to use the application and its API.
+The initial set of allowed users must be passed to the application on the first run. They're a comma separated list of email addresses associated with a Google ID when using Google Sign-In, otherwise they can have any format. Only matching users will be allowed to use the application and its API.
+
+### Passwords (`auth.passwords`)
+
+Required only when not using Google Sign-In. When using username & password authentication, a comma separated list of passwords must be specified here matching the users in `auth.users`.
 
 ### JWT secret (`auth.jwt.secret`)
 

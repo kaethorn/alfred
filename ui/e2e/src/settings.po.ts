@@ -9,6 +9,11 @@ export class SettingsPage {
     return Page.waitForElement(this.getComicsPathInput());
   }
 
+  public static async getComicsPath(): Promise<string> {
+    const path = await element(by.css('.setting#Path')).getText();
+    return path;
+  }
+
   public static getComicsPathInput(): ElementFinder {
     return element(by.css('input[Placeholder="Path"]'));
   }

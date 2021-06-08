@@ -36,7 +36,7 @@ public class JwtFilter implements Filter {
 
     final Optional<String> token = Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION));
 
-    if (!token.isPresent() || !token.get().startsWith(HEADER_PREFIX)) {
+    if (token.isEmpty() || !token.get().startsWith(HEADER_PREFIX)) {
       log.debug("No token found in header.");
       res.reset();
       final HttpServletResponse response = (HttpServletResponse) res;
