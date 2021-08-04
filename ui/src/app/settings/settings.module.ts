@@ -1,39 +1,37 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { MomentModule } from 'ngx-moment';
 
-import { CoversComponent } from './covers/covers.component';
-import { QueueComponent } from './queue/queue.component';
+import { EditPage } from '../library/edit/edit.page';
+
+import { QueuePage } from './queue/queue.page';
 import { ScannerComponent } from './scanner/scanner.component';
 import { SettingsPage } from './settings.page';
 
 @NgModule({
+  declarations: [
+    QueuePage,
+    SettingsPage,
+    ScannerComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     HttpClientModule,
     MomentModule,
+    ReactiveFormsModule,
     RouterModule.forChild([{
-      path: '',
-      component: SettingsPage
+      component: SettingsPage, path: ''
     }, {
-      path: 'queue',
-      component: QueueComponent
+      component: QueuePage, path: 'queue'
     }, {
-      path: 'covers',
-      component: CoversComponent
+      component: EditPage, path: 'queue/edit/:id'
     }])
-  ],
-  declarations: [
-    SettingsPage,
-    ScannerComponent,
-    QueueComponent,
-    CoversComponent
   ]
 })
 export class SettingsPageModule {}

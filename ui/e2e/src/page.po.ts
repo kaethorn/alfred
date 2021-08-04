@@ -40,31 +40,31 @@ export class Page {
     return browser.sleep(200);
   }
 
-  // Work around broken by.deepCss
-  public static getShadowRoot(parentSelector: string, childSelector: string): promise.Promise<WebElement> {
-    return browser.executeScript(
-      'return document.querySelector(arguments[0]).shadowRoot.querySelector(arguments[1]);',
-      parentSelector, childSelector);
-  }
-
   public static waitForToast(timeout = 1000): promise.Promise<void> {
     return browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-toast'))), timeout);
   }
 
   public static async getToastMessage(timeout = 4000): Promise<string> {
     await this.waitForToast(timeout);
-    return (await Page.getShadowRoot('ion-toast', '.toast-message')).getText();
+    return element(by.css('ion-toast')).getText();
   }
 
   public static async expectToastMessage(message: string): Promise<void> {
     expect(await Page.getToastMessage()).toEqual(message);
-    return Page.waitForToastMessageGone();
+    return Page.waitForToastGone();
   }
 
-  public static waitForToastMessageGone(timeout = 6000): promise.Promise<void> {
+  public static waitForToastGone(timeout = 6000): promise.Promise<void> {
     return browser.wait(
       ExpectedConditions.not(
         ExpectedConditions.presenceOf(
           element(by.css('ion-toast')))), timeout);
+  }
+
+  public static waitForLoadingGone(timeout = 3000): promise.Promise<void> {
+    return browser.wait(
+      ExpectedConditions.not(
+        ExpectedConditions.presenceOf(
+          element(by.css('ion-loading')))), timeout);
   }
 }

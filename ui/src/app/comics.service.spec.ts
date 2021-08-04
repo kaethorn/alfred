@@ -64,11 +64,12 @@ describe('ComicsService', () => {
   describe('#listComicsWithoutErrors', () => {
 
     it('fetches all comics not containing scan errors', () => {
-      service.listComicsWithoutErrors().subscribe(comics => {
+      service.listComicsWithoutErrors('DC Comics', 'Batman', '1940').subscribe(comics => {
         expect(comics.length).toBe(2);
       });
 
-      const req = httpMock.expectOne('/api/queue/valid');
+      const req = httpMock.expectOne('/api/queue/valid?'
+            + 'publisher=DC%20Comics&series=Batman&volume=1940');
       expect(req.request.method).toBe('GET');
       req.flush(ComicHttpMocks.comics);
     });
@@ -133,17 +134,6 @@ describe('ComicsService', () => {
       const req = httpMock
         .expectOne('/api/comics/search/findFirstByPublisherAndSeriesAndVolumeOrderByPosition?'
             + 'publisher=DC%20Comics&series=Batman&volume=1940');
-      expect(req.request.method).toBe('GET');
-      req.flush(ComicHttpMocks.comic);
-    });
-  });
-
-  describe('#scan', () => {
-
-    it('starts a scan', () => {
-      service.scan().subscribe();
-
-      const req = httpMock.expectOne('/api/scan');
       expect(req.request.method).toBe('GET');
       req.flush(ComicHttpMocks.comic);
     });
@@ -296,7 +286,7 @@ describe('ComicsService', () => {
         expect(blob.size).toBe(0);
       });
 
-      const req = httpMock.expectOne(`/api/download/${ ComicFixtures.comic.id }/4`);
+      const req = httpMock.expectOne(`/api/read/${ ComicFixtures.comic.id }/4`);
       expect(req.request.method).toBe('GET');
       req.flush(new Blob());
     });

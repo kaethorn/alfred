@@ -1,40 +1,18 @@
 <ion-app>
-  <ion-split-pane contentId="main" when="(min-width: {{ hideMenu ? '1000000' : '992' }}px)">
-    <ion-menu type="overlay" contentId="main">
-      <ion-header>
-        <ion-toolbar>
-          <ion-menu-toggle auto-hide="false">
-            <ion-item lines="none">
-              <ion-avatar slot="start">
-                <ion-img class="avatar" [src]="user?.picture"></ion-img>
-              </ion-avatar>
-              <ion-label>
-                <h3>{{ user?.name }}</h3>
-                <p>{{ user?.email }}</p>
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-          <ion-buttons slot="end">
-            <ion-button (click)="logout()">
-              <ion-icon slot="start" name="log-out"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <ion-list lines="none">
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-            <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
-              <ion-icon slot="start" [name]="p.icon"></ion-icon>
-              <ion-label>
-                {{p.title}}
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
-      </ion-content>
-    </ion-menu>
-
-    <ion-router-outlet id="main"></ion-router-outlet>
-  </ion-split-pane>
+  <ion-tabs>
+    <ion-tab-bar slot="bottom" [hidden]="hideMenu">
+      <ion-tab-button tab="bookmarks">
+        <ion-icon name="bookmarks"></ion-icon>
+        <ion-label>Bookmarks</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="library">
+        <ion-icon name="book"></ion-icon>
+        <ion-label>Library</ion-label>
+      </ion-tab-button>
+      <ion-tab-button tab="settings">
+        <ion-icon name="settings"></ion-icon>
+        <ion-label>Settings</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
 </ion-app>

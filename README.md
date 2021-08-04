@@ -1,5 +1,5 @@
 ![](https://github.com/kaethorn/alfred/workflows/Tests/badge.svg?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7706ef5f5dfd4f8493de96965e0c14b9)](https://www.codacy.com/manual/scf/komix?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kaethorn/komix&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8ab5143d9e064338aa8c4d616218049f)](https://www.codacy.com/gh/kaethorn/alfred/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kaethorn/alfred&amp;utm_campaign=Badge_Grade)
 [![CodeFactor](https://www.codefactor.io/repository/github/kaethorn/alfred/badge)](https://www.codefactor.io/repository/github/kaethorn/alfred)
 [![codecov](https://codecov.io/gh/kaethorn/alfred/branch/master/graph/badge.svg)](https://codecov.io/gh/kaethorn/alfred)
 
@@ -11,7 +11,7 @@ Alfred allows you to read your digital comic books. It achieves this by collecti
 
 * Scan & manage comic books.
 * Read your comic books anywhere.
-* Log in with your Google account.
+* Log in with your Google account or username & password.
 * Continue reading while offline.
 * Automatically sync progress when connectivity is restored.
 * Make use of embedded metadata from [ComicRack](http://comicrack.cyolito.com/).

@@ -2,5 +2,7 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="reactor.Flux.EmitterProcessor" level="WARN"/>
+    <logger name="reactor.Flux.ReplayProcessor" level="WARN"/>
     <logger name="de.wasenweg.alfred" level="DEBUG"/>
+    <logger name="de.wasenweg.alfred.security" level="INFO"/>
 </configuration>

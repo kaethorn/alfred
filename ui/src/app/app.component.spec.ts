@@ -11,9 +11,10 @@ import { UserServiceMocks } from '../testing/user.service.mocks';
 
 import { AppComponent } from './app.component';
 import { LOCATION_TOKEN } from './location.token';
+import { UpdateService } from './update.service';
 import { UserService } from './user.service';
 
-let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
+let statusBarSpy: any, splashScreenSpy: any, platformReadySpy: any, platformSpy: any;
 let component: AppComponent;
 let fixture: ComponentFixture<AppComponent>;
 let userService: jasmine.SpyObj<UserService>;
@@ -23,18 +24,21 @@ let routerEvents: ReplaySubject<RouterEvent>;
 describe('AppComponent', () => {
 
   beforeEach(() => {
-    statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
-    splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
+    statusBarSpy = jasmine.createSpyObj('StatusBar', [ 'styleDefault' ]);
+    splashScreenSpy = jasmine.createSpyObj('SplashScreen', [ 'hide' ]);
     platformReadySpy = Promise.resolve();
     platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
     userService = UserServiceMocks.userService;
-    location = jasmine.createSpyObj('Location', ['reload']);
+    location = jasmine.createSpyObj('Location', [ 'reload' ]);
     routerEvents = new ReplaySubject<RouterEvent>(1);
 
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ AppComponent ],
+      imports: [
+        RouterTestingModule.withRoutes([])
+      ],
       providers: [
+        { provide: UpdateService, useValue: { start: jasmine.createSpy() } },
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
@@ -45,7 +49,7 @@ describe('AppComponent', () => {
           routerState: {}
         } }
       ],
-      imports: [ RouterTestingModule.withRoutes([])]
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     });
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
@@ -63,34 +67,28 @@ describe('AppComponent', () => {
     expect(splashScreenSpy.hide).toHaveBeenCalled();
   });
 
-  it('should have menu labels', () => {
+  it('should have tab labels', () => {
     const app = fixture.nativeElement;
-    const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(4);
-    expect(menuItems[0].textContent).toContain('Foo Barfoo@bar.com');
-    expect(menuItems[1].textContent).toContain('Bookmarks');
-    expect(menuItems[2].textContent).toContain('Library');
-    expect(menuItems[3].textContent).toContain('Settings');
+    const tabs = app.querySelectorAll('ion-tab-button');
+    expect(tabs.length).toEqual(3);
+    expect(tabs[0].textContent).toContain('Bookmarks');
+    expect(tabs[1].textContent).toContain('Library');
+    expect(tabs[2].textContent).toContain('Settings');
   });
 
-  it('should have URLs', () => {
+  it('should have links', () => {
     const app = fixture.nativeElement;
-    const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(4);
-    expect(menuItems[0].getAttribute('ng-reflect-router-link')).toBe(null);
-    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual('/bookmarks');
-    expect(menuItems[2].getAttribute('ng-reflect-router-link')).toEqual('/library/publishers');
-    expect(menuItems[3].getAttribute('ng-reflect-router-link')).toEqual('/settings');
-  });
-
-  it('retrieves user info on startup', () => {
-    expect(component.user.email).toEqual('foo@bar.com');
+    const tabs = app.querySelectorAll('ion-tab-button');
+    expect(tabs.length).toEqual(3);
+    expect(tabs[0].getAttribute('tab')).toEqual('bookmarks');
+    expect(tabs[1].getAttribute('tab')).toEqual('library');
+    expect(tabs[2].getAttribute('tab')).toEqual('settings');
   });
 
   describe('on route change', () => {
 
     beforeEach(() => {
-      component.hideMenu = null;
+      component.hideMenu = null as any;
     });
 
     describe('with a full screen page', () => {
@@ -113,15 +111,6 @@ describe('AppComponent', () => {
       it('shows the menu', () => {
         expect(component.hideMenu).toBeFalse();
       });
-    });
-  });
-
-  describe('#logout', () => {
-
-    it('logs out the user and reloads', () => {
-      component.logout();
-      expect(userService.logout).toHaveBeenCalled();
-      expect(location.reload).toHaveBeenCalled();
     });
   });
 });

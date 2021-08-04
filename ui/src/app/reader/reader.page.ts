@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 
 import { Comic } from '../comic';
 import { ComicStorageService } from '../comic-storage.service';
@@ -12,55 +12,50 @@ interface IOpenOptions {
 
 @Component({
   selector: 'app-reader',
-  templateUrl: './reader.page.html',
-  styleUrls: ['./reader.page.sass']
+  styleUrls: [ './reader.page.sass' ],
+  templateUrl: './reader.page.html'
 })
 export class ReaderPage {
 
-  @ViewChild('pagesLayer', { static: true }) public pagesLayer: ElementRef;
+  @ViewChild('pagesLayer', { static: true }) public pagesLayer!: ElementRef;
   public comic: Comic = {} as Comic;
-  public imageSets: PageSource[][];
+  public imageSets!: PageSource[][];
   public showControls = false;
   public transformation = {};
-  private parent: string;
+  private parent!: string;
   private initialNavigation = true;
+  private loading!: HTMLIonLoadingElement;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private navigator: NavigatorService,
     private toastController: ToastController,
+    private loadingController: LoadingController,
     private comicStorageService: ComicStorageService
   ) { }
 
-  @HostListener('document:keyup.esc', ['$event'])
+  @HostListener('document:keyup.esc', [ '$event' ])
   public handleEscape(): void {
     this.back();
   }
 
-  @HostListener('document:keyup.arrowleft', ['$event'])
+  @HostListener('document:keyup.arrowleft', [ '$event' ])
   public handleLeft(): void {
     this.go(-1);
   }
-  @HostListener('document:keyup.arrowright', ['$event'])
+  @HostListener('document:keyup.arrowright', [ '$event' ])
   public handleRight(): void {
     this.go(1);
   }
 
   public ionViewDidEnter(): void {
-    const comicId = this.route.snapshot.params.id;
     this.parent = this.route.snapshot.queryParams.parent || '/library/publishers';
-    this.comicStorageService.get(comicId)
-      .then(comic => {
-        this.comic = comic;
-        this.setup(this.comic);
-        this.comicStorageService.storeSurrounding(comicId).then(() => {
-          this.showToast('Volume cached.');
-        });
-      }).catch(() => {
-        this.showToast('Comic book not available, please try again later.', 4000);
-        this.back();
-      });
+    this.loadComic(this.route.snapshot.params.id);
+  }
+
+  public ionViewDidLeave(): void {
+    this.loading.dismiss();
   }
 
   public onClick(event: MouseEvent): void {
@@ -74,9 +69,7 @@ export class ReaderPage {
 
   public go(direction: number, event?: MouseEvent): void {
     this.navigate(this.navigator.go(direction));
-    if (event) {
-      event.stopPropagation();
-    }
+    event?.stopPropagation();
   }
 
   public openNext(options: IOpenOptions = {}): void {
@@ -96,42 +89,65 @@ export class ReaderPage {
   }
 
   public back(): void {
-    this.router.navigate([this.parent]);
+    this.router.navigate([ this.parent ]);
   }
 
   public imageLoaded(image: PageSource): void {
     image.loaded = true;
   }
 
+  private async loadComic(comicId: string): Promise<void> {
+    await this.presentLoading();
+    this.comicStorageService.get(comicId)
+      .then(async comic => {
+        this.comic = comic;
+        await this.comicStorageService.store(comic);
+        this.setup().then(() => this.loading.dismiss());
+        this.comicStorageService.storeSurrounding(comicId).then(() => {
+          this.showToast('Volume cached.');
+        });
+      }).catch(() => {
+        this.loading.dismiss();
+        this.showToast('Comic book not available, please try again later.', 4000);
+        this.back();
+      });
+  }
+
   private navigate(instruction: NavigationInstruction): void {
     switch (instruction.adjacent) {
-      case AdjacentComic.same:
+      case AdjacentComic.SAME:
         this.comic.currentPage = NavigatorService.page;
         this.router.navigate([], {
-          relativeTo: this.route,
           queryParams: { page: NavigatorService.page },
-          queryParamsHandling: 'merge'
+          queryParamsHandling: 'merge',
+          relativeTo: this.route,
+          replaceUrl: true
         });
         this.setTransformation();
         this.comicStorageService.saveProgress(this.comic);
         break;
-      case AdjacentComic.next:
+      case AdjacentComic.NEXT:
         this.openNext({ showToast: true });
         break;
-      case AdjacentComic.previous:
+      case AdjacentComic.PREVIOUS:
         this.openPrevious({ showToast: true });
         break;
     }
   }
 
   private setImage(image: PageSource): void {
-    this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
+    image.loader = this.comicStorageService.getPageUrl(this.comic.id, image.page).then(url => {
       image.src = url;
     });
   }
 
-  private setup(comic: Comic): void {
-    this.comic = comic;
+  /**
+   * Partitions the comic pages, triggers loading of images and starts navigation.
+   *
+   * @param comic The comic to load
+   * @returns A promise that resolves once the current set of pages are loaded.
+   */
+  private setup(): Promise<void[]> {
     this.imageSets = this.navigator.set(
       this.comic.pageCount,
       this.getPage(this.comic),
@@ -143,6 +159,11 @@ export class ReaderPage {
       }
     }
     this.navigate(this.navigator.go());
+
+    // Determine when the current set is loaded
+    const currentSet = this.navigator.getSet();
+    const pagesToLoad: (Promise<void> | undefined)[] = this.imageSets[currentSet].map(image => image.loader);
+    return Promise.all(pagesToLoad);
   }
 
   private isSideBySide(): boolean {
@@ -192,13 +213,13 @@ export class ReaderPage {
     }
   }
 
-  private open(adjacentAttr: string, options?: IOpenOptions): void {
+  private open(adjacentAttr: keyof Comic, options: IOpenOptions): void {
     if (this.comic[adjacentAttr]) {
-      this.comicStorageService.storeSurrounding(this.comic[adjacentAttr]);
-      this.router.navigate(['/read', this.comic[adjacentAttr]], {
-        replaceUrl: true,
+      this.comicStorageService.storeSurrounding(this.comic[adjacentAttr] as string);
+      this.router.navigate([ '/read', this.comic[adjacentAttr] ], {
+        queryParamsHandling: 'merge',
         relativeTo: this.route,
-        queryParamsHandling: 'merge'
+        replaceUrl: true
       });
       if (options.showToast) {
         if (adjacentAttr === 'nextId') {
@@ -212,9 +233,17 @@ export class ReaderPage {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
+  }
+
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    this.loading = await this.loadingController.create({
+      message: 'Opening comic...'
+    });
+    await this.loading.present();
+    return this.loading;
   }
 }

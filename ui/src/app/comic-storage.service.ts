@@ -52,7 +52,7 @@ export class ComicStorageService {
    */
   public async saveProgress(comic: Comic): Promise<Event> {
     comic.lastRead = new Date();
-    if (comic.pageCount - 1 <= comic.currentPage) {
+    if (comic.pageCount - 1 <= (comic.currentPage || 0)) {
       comic.read = true;
     }
 
@@ -60,6 +60,7 @@ export class ComicStorageService {
     if (await this.comicDatabaseService.isStored(comic.id)) {
       return this.comicDatabaseService.save(comic);
     }
+    return Promise.resolve(new Event(''));
   }
 
   /**
@@ -118,8 +119,18 @@ export class ComicStorageService {
   }
 
   /**
+   * Caches the current comic book.
+   * @param comic The reference comic.
+   * @returns A promise that resolves when the comic is cached.
+   */
+  public store(comic: Comic): Promise<Event> {
+    return this.comicDatabaseService.store(comic);
+  }
+
+  /**
    * Caches the previous, the current and the three next comic books.
    * @param comicId The reference comic ID.
+   * @returns A promise that resolves when all surrounding comics are cached.
    */
   public async storeSurrounding(comicId: string): Promise<StoredState> {
     const cachedIds: StoredState = {};
@@ -138,7 +149,7 @@ export class ComicStorageService {
 
     // Store the next three comics.
     let nextComic: Comic = comic;
-    for (const {} of new Array(3)) {
+    for (const {} of Array(3).keys()) {
       if (nextComic.nextId !== null) {
         nextComic = await this.get(nextComic.nextId);
         await this.comicDatabaseService.store(nextComic);
@@ -183,7 +194,7 @@ export class ComicStorageService {
         }).catch(() => {
           this.thumbnailsService.getFrontCover(comicId)
             .pipe(map(thumbnail => thumbnail.url))
-            .subscribe(resolve, reject);
+            .subscribe(resolve as any, reject);
         });
     });
   }
@@ -197,7 +208,7 @@ export class ComicStorageService {
         }).catch(() => {
           this.thumbnailsService.getBackCover(comicId)
             .pipe(map(thumbnail => thumbnail.url))
-            .subscribe(resolve, reject);
+            .subscribe(resolve as any, reject);
         });
     });
   }

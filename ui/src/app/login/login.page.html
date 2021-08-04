@@ -8,6 +8,23 @@
       </g>
     </svg>
   </div>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="floating">
+        <p>Username</p>
+      </ion-label>
+      <ion-input formControlName="username" type="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">
+        <p>Password</p>
+      </ion-label>
+      <ion-input formControlName="password" type="password"></ion-input>
+    </ion-item>
+    <ion-button expand="block" type="submit" color="primary" [disabled]="!loginForm.valid || loginInProgress">
+      LOGIN
+    </ion-button>
+  </form>
   <ion-item *ngIf="message" lines="none">
     <p class="message">
       {{ message }}

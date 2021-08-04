@@ -17,7 +17,7 @@ export class SettingsService {
   public list(): Observable<Setting[]> {
     return this.http.get('/api/settings').pipe(
       this.consumeHateoas(),
-      map((data: any) => data.map(item => this.addId(item)))
+      map((data: any) => data.map((item: any) => this.addId(item)))
     );
   }
 

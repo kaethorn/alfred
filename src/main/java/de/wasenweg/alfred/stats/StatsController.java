@@ -14,7 +14,7 @@ public class StatsController extends BaseController<Stats> {
 
   private final StatsService service;
 
-  @GetMapping()
+  @GetMapping
   public EntityModel<Stats> getStats() {
     return this.wrapRoot(this.service.getStats());
   }

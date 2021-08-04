@@ -7,15 +7,15 @@ export class LoadingControllerMocks {
   public static get loadingElementSpy(): jasmine.SpyObj<HTMLIonLoadingElement> {
     if (!this.loadingElement) {
       this.loadingElement = jasmine.createSpyObj('HTMLIonLoadingElement', {
-        present: Promise.resolve(),
-        dismiss: Promise.resolve()
+        dismiss: Promise.resolve(),
+        present: Promise.resolve()
       });
     }
     return this.loadingElement;
   }
 
   public static get loadingController(): jasmine.SpyObj<LoadingController> {
-    delete this.loadingElement;
+    this.loadingElement = null as any;
     return jasmine.createSpyObj('LoadingController', {
       create: Promise.resolve(this.loadingElementSpy)
     });

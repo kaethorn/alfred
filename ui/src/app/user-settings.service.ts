@@ -19,7 +19,7 @@ export class UserSettingsService {
   }
 
   public load(): void {
-    this.userSettings = JSON.parse(localStorage.getItem('userSettings')) || {};
+    this.userSettings = JSON.parse(localStorage.getItem('userSettings') || '{}');
     this.handleColorScheme();
   }
 

@@ -22,8 +22,10 @@ import java.util.Map.Entry;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -96,7 +98,7 @@ public class ApiMetaDataReaderTest {
 
     this.apiMetaDataService.applyIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/", comic);
     assertThat(comic.getTitle()).isEqualTo("R.I.P. The Missing Chapter, Part 1: The Hole In Things");
-    assertThat(comic.getSummary().length()).isEqualTo(391);
+    assertThat(comic.getSummary().length()).isEqualTo(377);
     assertThat(comic.getYear()).isEqualTo(2010);
     assertThat(comic.getMonth()).isEqualTo(9);
     assertThat(comic.getCharacters())
@@ -130,12 +132,12 @@ public class ApiMetaDataReaderTest {
 
   @Test
   public void parseWithMissingAttributes() throws Exception {
-    doReturn("").when(this.apiMetaDataService).findVolumeId(null, null, null);
     final Comic comic = new Comic();
     comic.setPath("/c/Batman 3 (1940).cbz");
 
     final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
 
+    verify(this.apiMetaDataService, never()).findVolumeId(any(), any(), any());
     assertThat(scannerIssues.size()).isEqualTo(1);
     assertThat(scannerIssues.get(0).getMessage()).isEqualTo("Missing meta data: publisher, series, volume, number");
   }
@@ -155,6 +157,80 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
+  public void findIssueDetailsUrlWithEquivalentPaddedNumbers() throws Exception {
+    when(this.comicVineService.getIssueDetails("http://foo2"))
+        .thenReturn(TestHelper.parseJson("batman-701.json"));
+    doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
+    final List<JsonNode> issues = Arrays.asList(
+        this.createJsonObject(Map.of("issue_number", "001")),
+        this.createJsonObject(Map.of("issue_number", "002", "api_detail_url", "http://foo2")),
+        this.createJsonObject(Map.of("issue_number", "003")));
+    doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
+    final Comic comic = new Comic();
+    comic.setPath("/c/DC Comics/Batman (1940)/Batman 2 (1940).cbz");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+
+    verify(this.apiMetaDataService).applyIssueDetails(eq("http://foo2"), any());
+    assertThat(scannerIssues.size()).isEqualTo(0);
+  }
+
+  @Test
+  public void findIssueDetailsUrlWithEquivalentRegularNumbers() throws Exception {
+    when(this.comicVineService.getIssueDetails("http://foo2"))
+        .thenReturn(TestHelper.parseJson("batman-701.json"));
+    doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
+    final List<JsonNode> issues = Arrays.asList(
+        this.createJsonObject(Map.of("issue_number", "1")),
+        this.createJsonObject(Map.of("issue_number", "2", "api_detail_url", "http://foo2")),
+        this.createJsonObject(Map.of("issue_number", "3")));
+    doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
+    final Comic comic = new Comic();
+    comic.setPath("/c/DC Comics/Batman (1940)/Batman 002 (1940).cbz");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+
+    verify(this.apiMetaDataService).applyIssueDetails(eq("http://foo2"), any());
+    assertThat(scannerIssues.size()).isEqualTo(0);
+  }
+
+  @Test
+  public void findIssueDetailsUrlWithEmptyUrls() throws Exception {
+    doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
+    final List<JsonNode> issues = Arrays.asList(
+        this.createJsonObject(Map.of("issue_number", "1", "api_detail_url", "")),
+        this.createJsonObject(Map.of("issue_number", "2", "api_detail_url", "")),
+        this.createJsonObject(Map.of("issue_number", "3", "api_detail_url", "")));
+    doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
+    final Comic comic = new Comic();
+    comic.setPath("/c/DC Comics/Batman (1940)/Batman 2 (1940).cbz");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+
+    verify(this.apiMetaDataService, never()).applyIssueDetails(any(), any());
+    assertThat(scannerIssues.size()).isEqualTo(1);
+    assertThat(scannerIssues.get(0).getMessage()).isEqualTo("No issue detail URL found");
+  }
+
+  @Test
+  public void findIssueDetailsUrlWithoutUrls() throws Exception {
+    doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
+    final List<JsonNode> issues = Arrays.asList(
+        this.createJsonObject(Map.of("issue_number", "1")),
+        this.createJsonObject(Map.of("issue_number", "2")),
+        this.createJsonObject(Map.of("issue_number", "3")));
+    doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
+    final Comic comic = new Comic();
+    comic.setPath("/c/DC Comics/Batman (1940)/Batman 2 (1940).cbz");
+
+    final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
+
+    verify(this.apiMetaDataService, never()).applyIssueDetails(any(), any());
+    assertThat(scannerIssues.size()).isEqualTo(1);
+    assertThat(scannerIssues.get(0).getMessage()).isEqualTo("No issue detail URL found");
+  }
+
+  @Test
   public void findIssueDetailsUrlWithoutMatches() throws Exception {
     doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
     final List<JsonNode> issues = Arrays.asList(
@@ -162,12 +238,12 @@ public class ApiMetaDataReaderTest {
         this.createJsonObject(Map.of("issue_number", "2")),
         this.createJsonObject(Map.of("issue_number", "3")));
     doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
-    doNothing().when(this.apiMetaDataService).applyIssueDetails(any(), any());
     final Comic comic = new Comic();
     comic.setPath("/c/DC Comics/Batman (1940)/Batman 4 (1940).cbz");
 
     final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
 
+    verify(this.apiMetaDataService, never()).applyIssueDetails(any(), any());
     assertThat(scannerIssues.size()).isEqualTo(1);
     assertThat(scannerIssues.get(0).getMessage()).isEqualTo("No matching issue found");
   }
@@ -180,12 +256,12 @@ public class ApiMetaDataReaderTest {
         this.createJsonObject(Map.of("issue_number", "3")),
         this.createJsonObject(Map.of("issue_number", "4")));
     doReturn(issues).when(this.apiMetaDataService).findVolumeIssues("111");
-    doNothing().when(this.apiMetaDataService).applyIssueDetails(any(), any());
     final Comic comic = new Comic();
     comic.setPath("/c/DC Comics/Batman (1940)/Batman 4 (1940).cbz");
 
     final List<ScannerIssue> scannerIssues = this.apiMetaDataService.set(comic);
 
+    verify(this.apiMetaDataService, never()).applyIssueDetails(any(), any());
     assertThat(scannerIssues.size()).isEqualTo(1);
     assertThat(scannerIssues.get(0).getMessage()).isEqualTo("No unique issue found");
   }

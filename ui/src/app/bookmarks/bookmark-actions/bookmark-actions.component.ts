@@ -6,8 +6,8 @@ import { Comic } from '../../comic';
 
 @Component({
   selector: 'app-bookmark-actions',
-  templateUrl: './bookmark-actions.component.html',
-  styleUrls: ['./bookmark-actions.component.sass']
+  styleUrls: [ './bookmark-actions.component.sass' ],
+  templateUrl: './bookmark-actions.component.html'
 })
 export class BookmarkActionsComponent {
 
@@ -22,12 +22,12 @@ export class BookmarkActionsComponent {
   }
 
   public goToVolume(comic: Comic): void {
-    this.router.navigate(['/issues', comic.publisher, comic.series, comic.volume]);
+    this.router.navigate([ '/library/publishers', comic.publisher, 'series', comic.series, 'volumes', comic.volume, 'issues' ]);
     this.popoverCtrl.dismiss();
   }
 
   public goToLibrary(comic: Comic): void {
-    this.router.navigate(['/library/publishers', comic.publisher, 'series', comic.series, 'volumes']);
+    this.router.navigate([ '/library/publishers', comic.publisher, 'series', comic.series, 'volumes' ]);
     this.popoverCtrl.dismiss();
   }
 }

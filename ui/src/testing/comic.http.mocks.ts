@@ -51,37 +51,37 @@ export class ComicHttpMocks {
     return {
       _embedded: {
         comics: [{
-          path: '/batman 1.cbz',
-          title: 'Batman One',
-          series: 'Batman',
-          number: 1,
-          position: '1',
-          volume: '1940',
-          year: 1940,
-          month: 4,
-          publisher: 'DC Comics',
-          pageCount: 20,
           _links: {
             self: {
               href: 'foo.bar/1'
             }
-          }
-        }, {
-          path: '/batman 2.cbz',
-          title: 'Batman Two',
-          series: 'Batman',
-          number: 2,
-          position: '2',
-          volume: '1940',
-          year: 1940,
-          month: 5,
-          publisher: 'DC Comics',
+          },
+          month: 4,
+          number: 1,
           pageCount: 20,
+          path: '/batman 1.cbz',
+          position: '1',
+          publisher: 'DC Comics',
+          series: 'Batman',
+          title: 'Batman One',
+          volume: '1940',
+          year: 1940
+        }, {
           _links: {
             self: {
               href: 'foo.bar/2'
             }
-          }
+          },
+          month: 5,
+          number: 2,
+          pageCount: 20,
+          path: '/batman 2.cbz',
+          position: '2',
+          publisher: 'DC Comics',
+          series: 'Batman',
+          title: 'Batman Two',
+          volume: '1940',
+          year: 1940
         }]
       }
     };

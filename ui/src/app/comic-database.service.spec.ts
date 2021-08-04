@@ -17,7 +17,7 @@ describe('ComicDatabaseService', () => {
 
   beforeEach(() => {
     comicsService = ComicsServiceMocks.comicsService;
-    indexedDbService = IndexedDbServiceMocks.IndexedDbService;
+    indexedDbService = IndexedDbServiceMocks.indexedDbService;
 
     TestBed.configureTestingModule({
       providers: [{
@@ -33,7 +33,7 @@ describe('ComicDatabaseService', () => {
 
     beforeEach(() => {
       TestBed.resetTestingModule();
-      indexedDbService = IndexedDbServiceMocks.IndexedDbService;
+      indexedDbService = IndexedDbServiceMocks.indexedDbService;
       TestBed.configureTestingModule({
         providers: [{
           provide: ComicsService, useValue: comicsService
@@ -46,7 +46,7 @@ describe('ComicDatabaseService', () => {
     it('opens the DB', () => {
       service = TestBed.inject(ComicDatabaseService);
       expect(indexedDbService.open)
-        .toHaveBeenCalledWith('Comics', 1, jasmine.any(Array));
+        .toHaveBeenCalledWith('Comics', 2, jasmine.any(Array));
     });
 
     describe('on success', () => {
@@ -54,7 +54,7 @@ describe('ComicDatabaseService', () => {
       it('sets the ready flag', async () => {
         try {
           service = TestBed.inject(ComicDatabaseService);
-          await new Promise(resolve => service.ready.subscribe(null, null, resolve));
+          await new Promise(resolve => service.ready.subscribe(undefined, undefined, resolve as any));
         } catch (exception) {
         }
         expect(service.ready.hasError).toBeFalse();
@@ -72,7 +72,7 @@ describe('ComicDatabaseService', () => {
       it('does not set the ready flag', async () => {
         try {
           service = TestBed.inject(ComicDatabaseService);
-          await new Promise(resolve => service.ready.subscribe(null, resolve, null));
+          await new Promise(resolve => service.ready.subscribe(undefined, resolve, undefined));
           await new Promise(resolve => setTimeout(resolve));
         } catch (exception) {
         }
@@ -176,7 +176,7 @@ describe('ComicDatabaseService', () => {
   describe('#getImageUrl', () => {
 
     beforeEach(() => {
-      indexedDbService.get.and.resolveTo(new Blob([''], { type: 'image/png' }));
+      indexedDbService.get.and.resolveTo(new Blob([ '' ], { type: 'image/png' }));
     });
 
     it('returns a URL of the given BLOB', async () => {

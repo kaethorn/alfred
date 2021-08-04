@@ -17,7 +17,7 @@ describe('LibraryComponent', () => {
     await LibraryPage.navigateTo();
     expect(await Page.getTitleText()).toContain('Series');
     expect(await LibraryPage.getAllPublishers().getText())
-      .toEqual(['DC COMICS', 'F5 ENTERATINMENT', 'TOP COW']);
+      .toEqual([ 'DC COMICS', 'F5 ENTERATINMENT', 'TOP COW' ]);
   });
 
   it('sorts nested series alphabetically', async () => {
@@ -38,12 +38,12 @@ describe('LibraryComponent', () => {
     await LibraryPage.waitForVolumes();
     expect(await Page.getTitleText()).toContain('Batgirl volumes');
     expect(await LibraryPage.getVolumeTitles().getText())
-      .toEqual(['Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016']);
+      .toEqual([ 'Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016' ]);
   });
 
   it('shows the read issue counter', async () => {
     await LibraryPage.expectVolumeStats(
-      [ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
+      [ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read' ]);
   });
 
   it('shows no read icon', async () => {
@@ -54,11 +54,12 @@ describe('LibraryComponent', () => {
 
     beforeAll(async () => {
       await LibraryPage.clickVolumeMenuItem('Vol. 2000', 'Mark volume as read');
+      await Page.waitForLoadingGone();
     });
 
     it('updates its read issue counter', async () => {
       expect(await LibraryPage.getVolumeStats())
-        .toEqual([ '73 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
+        .toEqual([ '73 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read' ]);
     });
 
     it('shows a read icon', async () => {
@@ -70,11 +71,12 @@ describe('LibraryComponent', () => {
 
     beforeAll(async () => {
       await LibraryPage.clickVolumeMenuItem('Vol. 2000', 'Mark volume as not read');
+      await Page.waitForLoadingGone();
     });
 
     it('updates its read issue counter', async () => {
       expect(await LibraryPage.getVolumeStats())
-        .toEqual([ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read']);
+        .toEqual([ '0 of 73 issues read', '0 of 6 issues read', '0 of 24 issues read', '0 of 53 issues read', '0 of 6 issues read' ]);
     });
 
     it('removes the read icon', async () => {

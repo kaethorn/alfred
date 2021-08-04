@@ -11,6 +11,6 @@ export class AppPage {
   }
 
   public static clickMenuItem(item: string): promise.Promise<void> {
-    return element(by.cssContainingText('ion-menu ion-item ion-label', item)).click();
+    return element(by.cssContainingText('ion-tabs ion-tab-button ion-label', item)).click();
   }
 }

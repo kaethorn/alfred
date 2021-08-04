@@ -38,15 +38,15 @@ describe('VolumesService', () => {
       service.listPublishers().subscribe(publishers => {
         expect(publishers.length).toBe(3);
         expect(publishers[0].name).toEqual('DC Comics');
-        expect(publishers[0].series.length).toBe(2);
+        expect(publishers[0].series?.length).toBe(2);
         expect(publishers[0].series[0].name).toEqual('Batgirl');
         expect(publishers[0].series[1].name).toEqual('Batman');
         expect(publishers[1].name).toEqual('F5 Enteratinment');
-        expect(publishers[1].series.length).toBe(2);
+        expect(publishers[1].series?.length).toBe(2);
         expect(publishers[1].series[0].name).toEqual('The Tenth');
         expect(publishers[1].series[1].name).toEqual('The Tenth: Resurrected');
         expect(publishers[2].name).toEqual('Top Cow');
-        expect(publishers[2].series.length).toBe(1);
+        expect(publishers[2].series?.length).toBe(1);
         expect(publishers[2].series[0].name).toEqual('Rising Stars');
       });
 
@@ -65,7 +65,7 @@ describe('VolumesService', () => {
         expect(series[1].name).toEqual('Batman');
       });
 
-      const req = httpMock.expectOne('/api/publishers/DC Comics/series');
+      const req = httpMock.expectOne('/api/series?publisher=DC%20Comics');
       expect(req.request.method).toBe('GET');
       req.flush(VolumeHttpMocks.series);
     });
@@ -83,7 +83,7 @@ describe('VolumesService', () => {
         expect(volumes[4].name).toEqual('2016');
       });
 
-      const req = httpMock.expectOne('/api/publishers/DC Comics/series/Batgirl/volumes');
+      const req = httpMock.expectOne('/api/volumes?publisher=DC%20Comics&series=Batgirl');
       expect(req.request.method).toBe('GET');
       req.flush(VolumeHttpMocks.volumes);
     });

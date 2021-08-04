@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
-import { PopoverController, ToastController } from '@ionic/angular';
+import { PopoverController, ToastController, LoadingController } from '@ionic/angular';
 
 import { Comic } from '../comic';
 import { ComicDatabaseService } from '../comic-database.service';
@@ -10,12 +10,12 @@ import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.co
 
 @Component({
   selector: 'app-bookmarks',
-  templateUrl: './bookmarks.page.html',
-  styleUrls: ['./bookmarks.page.sass']
+  styleUrls: [ './bookmarks.page.sass' ],
+  templateUrl: './bookmarks.page.html'
 })
 export class BookmarksPage {
 
-  public comics: Comic[];
+  public comics: Comic[] = [];
   public thumbnails = new Map<string, Promise<SafeUrl>>();
   public syncing = false;
   public stored: StoredState = {};
@@ -24,7 +24,8 @@ export class BookmarksPage {
     private comicDatabaseService: ComicDatabaseService,
     private popoverController: PopoverController,
     private comicStorageService: ComicStorageService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingController: LoadingController
   ) { }
 
   public ionViewDidEnter(): void {
@@ -66,19 +67,29 @@ export class BookmarksPage {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }
 
-  private list(): void {
+  private async presentLoading(): Promise<HTMLIonLoadingElement> {
+    const loading = await this.loadingController.create({
+      message: 'Loading bookmarks...'
+    });
+    await loading.present();
+    return loading;
+  }
+
+  private async list(): Promise<void> {
+    const loading = await this.presentLoading();
     this.comicStorageService.getBookmarks().then((comics: Comic[]) => {
+      loading.dismiss();
       this.comics = comics;
       this.comics.forEach((comic: Comic) => {
         this.thumbnails.set(comic.id, this.comicStorageService.getFrontCoverThumbnail(comic.id));
         this.updateStoredState(comic.id);
       });
-    });
+    }, () => loading.dismiss());
   }
 }

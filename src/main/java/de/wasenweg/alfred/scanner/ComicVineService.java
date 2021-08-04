@@ -56,7 +56,7 @@ public class ComicVineService {
     requestParams.put("api_key", this.apiKey);
     requestParams.put("format", "json");
     requestParams.put("field_list",
-        "character_credits,cover_date,location_credits,team_credits,person_credits,description,site_detail_url");
+        "name,character_credits,cover_date,location_credits,team_credits,person_credits,description,site_detail_url");
 
     final String url = requestParams.keySet().stream()
         .map(key -> key + "=" + requestParams.get(key))

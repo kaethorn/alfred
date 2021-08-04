@@ -6,7 +6,8 @@ export class BookmarksPage {
 
   public static async navigateTo(): Promise<void> {
     await browser.get('/bookmarks');
-    return Page.waitForElement(this.getBookmarks());
+    await Page.waitForElement(this.getBookmarks());
+    return Page.waitForLoadingGone();
   }
 
   public static getBookmarks(): ElementFinder {

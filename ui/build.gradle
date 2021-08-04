@@ -15,6 +15,6 @@ npmInstall {
 jar.dependsOn 'npm_run_buildProd'
 
 jar {
-  from 'www' into 'static'
+  from 'dist/alfred' into 'static'
 }
 

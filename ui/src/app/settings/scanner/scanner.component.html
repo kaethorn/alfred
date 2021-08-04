@@ -1,7 +1,7 @@
 <ion-card>
   <ion-card-header>Library management</ion-card-header>
   <ion-card-content>
-    <ion-list *ngIf="total" class="progress" lines="none">
+    <ion-list *ngIf="total" class="progress scanning" lines="none">
       <ion-item>
         <ion-progress-bar [value]="counter/total"></ion-progress-bar>
       </ion-item>
@@ -12,7 +12,7 @@
       </ion-item>
     </ion-list>
 
-    <ion-list *ngIf="indeterminate" class="progress" lines="none">
+    <ion-list *ngIf="indeterminate" class="progress intermediate" lines="none">
       <ion-item>
         <ion-progress-bar type="indeterminate"></ion-progress-bar>
       </ion-item>
@@ -25,26 +25,36 @@
 
     <ion-list>
       <ion-item>
-        Scan the library folder for new comic books.
-        <ion-button slot="end" (click)="scan()" [disabled]="scanProgress" color="primary">
-          <ion-icon name="search"></ion-icon>
-          Scan
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Scan the library folder for new comic books.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" size="small" (click)="scan()" [disabled]="scanProgress">
+                <ion-icon name="search"></ion-icon>
+                Scan
+              </ion-button>
+            </ion-col>
+            </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item *ngIf="issues.length">
-        <ion-icon slot="start" color="danger" name="alert"></ion-icon>
-          Found {{ issues.length }} errors in the comic book library.
-        <ion-button slot="end" [routerLink]="['queue']">
-          <ion-icon slot="start" name="list"></ion-icon>
-          View 
-        </ion-button>
-      </ion-item>
-      <ion-item>
-        View front- and back covers.
-        <ion-button slot="end" [routerLink]="['covers']" color="primary">
-          <ion-icon name="search"></ion-icon>
-          Inspect
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-text color="danger">
+                Found {{ issues.length }} errors in the comic book library.
+              </ion-text>
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" [routerLink]="['queue']">
+                <ion-icon slot="start" name="list"></ion-icon>
+                View
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-list>
   </ion-card-content>
@@ -54,9 +64,33 @@
   <ion-card-header>Statistics</ion-card-header>
   <ion-card-content>
     <ion-list class="stats">
-      <ion-item *ngFor="let stat of stats | keyvalue">
-        <ion-label>{{ stat.key }}</ion-label>
-        <ion-badge slot="end" color="secondary">{{ stat.value }}</ion-badge>
+      <ion-item>
+        <ion-label>Last scan finished</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.lastScanFinished | amTimeAgo }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Last scan duration</ion-label>
+        <ion-badge slot="end" color="secondary">{{ lastScanDuration }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Publishers</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.publishers }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Series</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.series }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Volumes</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.volumes }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Issues</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.issues }}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Users</ion-label>
+        <ion-badge slot="end" color="secondary">{{ stats.users }}</ion-badge>
       </ion-item>
     </ion-list>
   </ion-card-content>
@@ -67,18 +101,34 @@
   <ion-card-content>
     <ion-list>
       <ion-item>
-        Clear {{ cachedComicsCount }} cached comics in the current browser
-        <ion-button slot="end" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount == 0" color="warning">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Clear
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Clear {{ cachedComicsCount }} cached comics in the current browser.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount == 0" color="warning">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Clear
+              </ion-button>
+            </ion-col>
+            </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item>
-        Remove progress information and bookmarks of the current user.
-        <ion-button slot="end" (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Delete
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Remove progress information and bookmarks of the current user.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="deleteProgressForCurrentUser()" size="small" [disabled]="scanProgress" color="warning">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Delete
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-list>
   </ion-card-content>
@@ -89,25 +139,49 @@
   <ion-card-content>
     <ion-list>
       <ion-item>
-        Remove scanned comic book information. Does not delete files from disk.
-        <ion-button slot="end" (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Delete
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Remove scanned comic book information. Does not delete files from disk.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="deleteComics()" size="small" [disabled]="scanProgress" color="danger">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Delete
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item>
-        Remove progress information and bookmarks of all users. Does not affect comic information.
-        <ion-button slot="end" (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
-          <ion-icon slot="start" name="trash"></ion-icon>
-          Delete
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Remove progress information and bookmarks of all users. Does not affect comic information.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="deleteProgress()" size="small" [disabled]="scanProgress" color="danger">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Delete
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item>
-        Associate comics in a volume. Automatically done after scanning.
-        <ion-button slot="end" (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
-          <ion-icon slot="start" name="newspaper"></ion-icon>
-          Bundle
-        </ion-button>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              Associate comics in a volume. Automatically done after scanning.
+            </ion-col>
+            <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
+              <ion-button expand="block" (click)="bundleVolumes()" size="small" [disabled]="scanProgress" color="secondary">
+                <ion-icon slot="start" name="newspaper"></ion-icon>
+                Bundle
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-list>
   </ion-card-content>

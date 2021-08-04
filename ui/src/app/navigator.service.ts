@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 export enum AdjacentComic {
-  previous,
-  next,
-  same
+  PREVIOUS,
+  NEXT,
+  SAME
 }
 
 export interface NavigationInstruction {
@@ -15,6 +15,7 @@ export interface PageSource {
   src?: string;
   page: number;
   loaded: boolean;
+  loader?: Promise<void>;
 }
 
 @Injectable({
@@ -39,14 +40,14 @@ export class NavigatorService {
    * Returns navigation instructions.
    */
   public go(offset = 0): NavigationInstruction {
-    let direction: AdjacentComic = AdjacentComic.same;
+    let direction: AdjacentComic = AdjacentComic.SAME;
     NavigatorService.offset = offset;
 
     if (offset < 0) {
       if (NavigatorService.page > 0) {
         NavigatorService.page -= 1;
       } else {
-        direction = AdjacentComic.previous;
+        direction = AdjacentComic.PREVIOUS;
       }
       NavigatorService.page -= (NavigatorService.sideBySide && NavigatorService.page > 0) ? 1 : 0;
     } else if (offset > 0) {
@@ -54,7 +55,7 @@ export class NavigatorService {
       if ((NavigatorService.page + increment) < NavigatorService.pageCount) {
         NavigatorService.page += increment;
       } else {
-        direction = AdjacentComic.next;
+        direction = AdjacentComic.NEXT;
       }
     }
 
@@ -68,8 +69,8 @@ export class NavigatorService {
     }
 
     return {
-      sideBySide: NavigatorService.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (NavigatorService.pageCount - 1),
-      adjacent: direction
+      adjacent: direction,
+      sideBySide: NavigatorService.sideBySide && NavigatorService.page > 0 && NavigatorService.page < (NavigatorService.pageCount - 1)
     };
   }
 
@@ -84,8 +85,8 @@ export class NavigatorService {
 
     return Array.from(Array(setCount).keys())
       .map(set => NavigatorService.sideBySide ?
-        set === 0 ? [set] : (2 * set < NavigatorService.pageCount) ? [2 * set - 1, 2 * set] : [2 * set - 1] :
-        [set])
-      .map(set => set.map(index => ({ page: index, loaded: false })));
+        set === 0 ? [ set ] : (2 * set < NavigatorService.pageCount) ? [ 2 * set - 1, 2 * set ] : [ 2 * set - 1 ] :
+        [ set ])
+      .map(set => set.map(index => ({ loaded: false, page: index })));
   }
 }

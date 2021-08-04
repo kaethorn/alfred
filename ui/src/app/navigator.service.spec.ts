@@ -9,8 +9,8 @@ describe('NavigatorService', () => {
   beforeEach(() => {
     NavigatorService.page = 0;
     NavigatorService.offset = 1;
-    delete NavigatorService.sideBySide;
-    delete NavigatorService.pageCount;
+    NavigatorService.sideBySide = null as any;
+    NavigatorService.pageCount = null as any;
     service = TestBed.inject(NavigatorService);
   });
 
@@ -20,7 +20,7 @@ describe('NavigatorService', () => {
 
   describe('#go', () => {
 
-    let result;
+    let result: any;
 
     describe('navigating backwards', () => {
 
@@ -34,7 +34,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to stay on the current issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.same);
+            expect(result.adjacent).toBe(AdjacentComic.SAME);
           });
 
           it('keeps side by side mode', () => {
@@ -54,7 +54,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to open the previous issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.previous);
+            expect(result.adjacent).toBe(AdjacentComic.PREVIOUS);
           });
 
           it('exits side by side mode', () => {
@@ -77,7 +77,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to stay on the current issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.same);
+            expect(result.adjacent).toBe(AdjacentComic.SAME);
           });
 
           it('keeps single pagemode', () => {
@@ -97,7 +97,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to open the previous issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.previous);
+            expect(result.adjacent).toBe(AdjacentComic.PREVIOUS);
           });
 
           it('keeps single page mode', () => {
@@ -123,7 +123,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to stay on the current issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.same);
+            expect(result.adjacent).toBe(AdjacentComic.SAME);
           });
 
           it('keeps side by side mode', () => {
@@ -143,7 +143,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to open the next issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.next);
+            expect(result.adjacent).toBe(AdjacentComic.NEXT);
           });
 
           it('exits side by side mode', () => {
@@ -166,7 +166,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to stay on the current issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.same);
+            expect(result.adjacent).toBe(AdjacentComic.SAME);
           });
 
           it('keeps single pagemode', () => {
@@ -186,7 +186,7 @@ describe('NavigatorService', () => {
           });
 
           it('suggests to open the next issue', () => {
-            expect(result.adjacent).toBe(AdjacentComic.next);
+            expect(result.adjacent).toBe(AdjacentComic.NEXT);
           });
 
           it('keeps single page mode', () => {
@@ -279,8 +279,8 @@ describe('NavigatorService', () => {
     it('sets static attributes', () => {
       expect(NavigatorService.page).toBe(0);
       expect(NavigatorService.offset).toBe(1);
-      expect(NavigatorService.sideBySide).toBeUndefined();
-      expect(NavigatorService.pageCount).toBeUndefined();
+      expect(NavigatorService.sideBySide).toBeNull();
+      expect(NavigatorService.pageCount).toBeNull();
 
       service.set(10, 1, false);
 
@@ -296,35 +296,35 @@ describe('NavigatorService', () => {
         expect(service.set(0, 0, true)).toEqual([]);
         expect(service.set(1, 0, true)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }]
         ]);
         expect(service.set(4, 0, true)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }],
           [{
-            page: 1, loaded: false
+            loaded: false, page: 1
           }, {
-            page: 2, loaded: false
+            loaded: false, page: 2
           }],
           [{
-            page: 3, loaded: false
+            loaded: false, page: 3
           }]
         ]);
         expect(service.set(5, 0, true)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }],
           [{
-            page: 1, loaded: false
+            loaded: false, page: 1
           }, {
-            page: 2, loaded: false
+            loaded: false, page: 2
           }],
           [{
-            page: 3, loaded: false
+            loaded: false, page: 3
           }, {
-            page: 4, loaded: false
+            loaded: false, page: 4
           }]
         ]);
       });
@@ -336,21 +336,21 @@ describe('NavigatorService', () => {
         expect(service.set(0, 0, false)).toEqual([]);
         expect(service.set(1, 0, false)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }]
         ]);
         expect(service.set(4, 0, false)).toEqual([
           [{
-            page: 0, loaded: false
+            loaded: false, page: 0
           }],
           [{
-            page: 1, loaded: false
+            loaded: false, page: 1
           }],
           [{
-            page: 2, loaded: false
+            loaded: false, page: 2
           }],
           [{
-            page: 3, loaded: false
+            loaded: false, page: 3
           }]
         ]);
       });

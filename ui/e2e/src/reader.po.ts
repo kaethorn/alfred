@@ -1,10 +1,11 @@
-import { by, element, protractor, browser, promise, ElementFinder, ElementArrayFinder } from 'protractor';
+import { by, element, protractor, browser, ElementFinder, ElementArrayFinder } from 'protractor';
 
 import { Page } from './page.po';
 
 export class ReaderPage {
 
   public static async openOverlay(offset = 0): Promise<void> {
+    await Page.waitForLoadingGone();
     await Page.waitForElement(element.all(by.css('app-reader img')).get(offset));
     await element.all(by.css('app-reader img')).get(offset).click();
     return Page.waitForElement(element.all(by.css('app-reader .bottom ion-button')).first());
@@ -22,10 +23,13 @@ export class ReaderPage {
     return this.getNavigationButtons().get(1);
   }
 
-  public static exit(): promise.Promise<void> {
-    return browser.actions().mouseMove(element.all(by.css('app-reader img')).last())
+  public static async exit(): Promise<void> {
+    await browser
+      .actions()
       .sendKeys(protractor.Key.ESCAPE)
       .perform();
+    // Wait for Service Worker to figure out that the server is offline
+    return browser.sleep(1000);
   }
 
   public static async getPageNumberFromUrl(): Promise<number> {
@@ -43,6 +47,6 @@ export class ReaderPage {
     if (parts && parts.length > 1) {
       return parts[1];
     }
-    return null;
+    return '';
   }
 }

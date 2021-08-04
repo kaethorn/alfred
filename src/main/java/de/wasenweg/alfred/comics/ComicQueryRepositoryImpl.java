@@ -1,6 +1,9 @@
 package de.wasenweg.alfred.comics;
 
 import de.wasenweg.alfred.progress.ProgressUtil;
+import de.wasenweg.alfred.publishers.Publisher;
+import de.wasenweg.alfred.series.Series;
+import de.wasenweg.alfred.volumes.Volume;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
@@ -31,6 +34,8 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
   private static final String PUBLISHER = "publisher";
   private static final String SERIES = "series";
   private static final String VOLUME = "volume";
+  private static final String ERRORS = "errors";
+  private static final String NAME = "name";
   private static final String POSITION = "position";
   private static final String PATH = "path";
   private static final String LAST_READ = "lastRead";
@@ -50,9 +55,9 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
   }
 
   @Override
-  public List<Comic> findAllWithoutErrors() {
+  public List<Comic> findAllWithoutErrors(final String publisher, final String series, final String volume) {
     return this.mongoTemplate.aggregate(Aggregation.newAggregation(
-        match(where("errors").exists(false)),
+        match(where(PUBLISHER).is(publisher).and(SERIES).is(series).and(VOLUME).is(volume).and("errors").exists(false)),
 
         sort(Sort.Direction.ASC, PATH)
         ), Comic.class, Comic.class).getMappedResults();
@@ -142,5 +147,59 @@ public class ComicQueryRepositoryImpl implements ComicQueryRepository {
 
         sort(Sort.Direction.ASC, POSITION)
         ), Comic.class, Comic.class).getMappedResults();
+  }
+
+  @Override
+  public List<Publisher> findAllPublishers(final String userId) {
+    return this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
+        match(where(ERRORS).exists(false)),
+        group(PUBLISHER, SERIES, VOLUME)
+            .last(PUBLISHER).as(PUBLISHER)
+            .last(SERIES).as(SERIES),
+        group(PUBLISHER, SERIES)
+            .last("_id.series").as(NAME)
+            .last("_id.publisher").as(PUBLISHER)
+            .count().as("volumesCount"),
+        sort(Sort.Direction.ASC, NAME),
+        group(PUBLISHER)
+            .last(PUBLISHER).as(NAME)
+            .push(Aggregation.ROOT).as(SERIES)
+            .count().as("seriesCount"),
+        sort(Sort.Direction.ASC, NAME)
+    ), Comic.class, Publisher.class).getMappedResults();
+  }
+
+  @Override
+  public List<Series> findAllSeries(final String userId, final String publisher) {
+    return this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
+        match(where(PUBLISHER).is(publisher).and(ERRORS).exists(false)),
+        group(SERIES, VOLUME)
+            .last(PUBLISHER).as(PUBLISHER),
+        group(SERIES)
+            .last("_id.series").as(NAME)
+            .last(PUBLISHER).as(PUBLISHER)
+            .count().as("volumesCount"),
+        sort(Sort.Direction.ASC, NAME)
+    ), Comic.class, Series.class).getMappedResults();
+  }
+
+  @Override
+  public List<Volume> findAllVolumes(final String userId, final String publisher, final String series) {
+    return this.mongoTemplate.aggregate(ProgressUtil.aggregateWithProgress(userId,
+        match(where(PUBLISHER).is(publisher).and(SERIES).is(series).and(ERRORS).exists(false)),
+        sort(Sort.Direction.ASC, "position"),
+        group(VOLUME)
+            .last(VOLUME).as(NAME)
+            .last(SERIES).as(SERIES)
+            .last(PUBLISHER).as(PUBLISHER)
+            .count().as("issueCount")
+            .min(READ).as(READ)
+            .sum(ConditionalOperators
+                .when(where(READ).is(true))
+                .then(1).otherwise(0))
+            .as("readCount")
+            .first("_id").as("firstComicId"),
+        sort(Sort.Direction.ASC, NAME)
+    ), Comic.class, Volume.class).getMappedResults();
   }
 }

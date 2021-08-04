@@ -9,6 +9,11 @@ export class SettingsPage {
     return Page.waitForElement(this.getComicsPathInput());
   }
 
+  public static async getComicsPath(): Promise<string> {
+    const path = await element(by.css('.setting#Path')).getText();
+    return path;
+  }
+
   public static getComicsPathInput(): ElementFinder {
     return element(by.css('input[Placeholder="Path"]'));
   }
@@ -18,15 +23,15 @@ export class SettingsPage {
   }
 
   private static get progress(): ElementFinder {
-    return element(by.css('app-scanner .progress'));
+    return element(by.css('app-scanner .progress.scanning'));
   }
 
   public static waitForScanStart(): promise.Promise<void> {
-    return browser.wait(ExpectedConditions.presenceOf(this.progress), 1000);
+    return browser.wait(ExpectedConditions.visibilityOf(this.progress), 1000);
   }
 
   public static waitForScanEnd(): promise.Promise<void> {
-    return browser.wait(ExpectedConditions.textToBePresentInElement(this.getStats().first(), '305'), 20000);
+    return browser.wait(ExpectedConditions.textToBePresentInElement(this.getStats().get(5), '305'), 20000);
   }
 
   public static getScanButton(): ElementFinder {

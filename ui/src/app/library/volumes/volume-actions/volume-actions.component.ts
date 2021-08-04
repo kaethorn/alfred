@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { PopoverController, NavParams } from '@ionic/angular';
 
 import { Volume } from '../../../volume';
@@ -6,8 +7,8 @@ import { VolumesService } from '../../../volumes.service';
 
 @Component({
   selector: 'app-volume-actions',
-  templateUrl: './volume-actions.component.html',
-  styleUrls: ['./volume-actions.component.sass']
+  styleUrls: [ './volume-actions.component.sass' ],
+  templateUrl: './volume-actions.component.html'
 })
 export class VolumeActionsComponent {
 
@@ -16,7 +17,8 @@ export class VolumeActionsComponent {
   constructor(
     private popoverCtrl: PopoverController,
     private volumesService: VolumesService,
-    private navParams: NavParams
+    private navParams: NavParams,
+    private router: Router
   ) {
     this.volume = this.navParams.get('volume');
   }
@@ -31,5 +33,12 @@ export class VolumeActionsComponent {
     this.volumesService.markAsUnread(volume).subscribe(
       () => this.popoverCtrl.dismiss(),
       () => this.popoverCtrl.dismiss());
+  }
+
+  public showCovers(volume: Volume): void {
+    this.router.navigate([
+      '/library/publishers', volume.publisher, 'series', volume.series, 'volumes', volume.name, 'covers'
+    ]);
+    this.popoverCtrl.dismiss();
   }
 }

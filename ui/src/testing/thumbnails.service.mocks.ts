@@ -8,8 +8,8 @@ export class ThumbnailsServiceMocks {
 
   public static get thumbnailsService(): jasmine.SpyObj<ThumbnailsService> {
     return jasmine.createSpyObj('ThumbnailsService', {
-      getFrontCover: of(ThumbnailFixtures.thumbnail),
-      getBackCover: of(ThumbnailFixtures.thumbnail)
+      getBackCover: of(ThumbnailFixtures.thumbnail),
+      getFrontCover: of(ThumbnailFixtures.thumbnail)
     });
   }
 }

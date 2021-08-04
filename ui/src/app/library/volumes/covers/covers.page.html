@@ -1,0 +1,40 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Front- and back covers of your comics
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="comics.length == 0">
+    <ion-card-header>
+      <ion-card-title>No issues</ion-card-title>
+      <ion-card-subtitle>Please scan your library first</ion-card-subtitle>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card *ngFor="let comic of comics">
+    <ion-card-header>
+      <ion-card-title>{{ comic.fileName }}</ion-card-title>
+      <ion-card-subtitle>{{ comic.path }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="thumbnail">
+        <img [attr.src]="(frontCoverThumbnails.get(comic.id) | async)?.url" />
+        <ion-button (click)="deleteFrontCover(comic)">
+          Delete front cover
+        </ion-button>
+      </div>
+      <div class="thumbnail">
+        <img [attr.src]="(backCoverThumbnails.get(comic.id) | async)?.url" />
+        <ion-button (click)="deleteBackCover(comic)">
+          Delete back cover
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

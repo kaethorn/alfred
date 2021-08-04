@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
 import { UserService } from '../app/user.service';
 
@@ -8,10 +8,11 @@ export class UserServiceMocks {
 
   public static get userService(): jasmine.SpyObj<UserService> {
     const userService = jasmine.createSpyObj('UserService', {
+      login: null,
       logout: of(null),
       setupGoogleSignIn: null
     });
-    userService.user = of(UserFixtures.user);
+    userService.user = new BehaviorSubject(UserFixtures.user);
     return userService;
   }
 }

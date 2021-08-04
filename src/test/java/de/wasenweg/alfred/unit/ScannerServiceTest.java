@@ -7,10 +7,14 @@ import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
 import de.wasenweg.alfred.scanner.ApiMetaDataService;
 import de.wasenweg.alfred.scanner.FileMetaDataService;
+import de.wasenweg.alfred.scanner.ScanProgressRepository;
+import de.wasenweg.alfred.scanner.ScanProgressService;
 import de.wasenweg.alfred.scanner.ScannerIssue;
 import de.wasenweg.alfred.scanner.ScannerService;
 import de.wasenweg.alfred.settings.SettingsService;
 import de.wasenweg.alfred.thumbnails.ThumbnailService;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -20,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import reactor.test.StepVerifier;
 
 import java.io.File;
@@ -39,6 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ScannerServiceTest {
 
   @TempDir
@@ -62,47 +68,64 @@ public class ScannerServiceTest {
   @Mock
   private transient SettingsService settingsService;
 
-  @InjectMocks
-  private transient ScannerService scannerService;
+  @Mock
+  private transient ScanProgressRepository scanProgressRepository;
 
   @Captor
   private transient ArgumentCaptor<ArrayList<Comic>> comicsCaptor;
 
+  @InjectMocks
+  private transient ScanProgressService scanProgressService;
+
+  private transient ScannerService scannerService;
+
+  @BeforeEach
+  public void setUp() {
+    this.scannerService = new ScannerService(
+        this.apiMetaDataService,
+        this.fileMetaDataService,
+        this.thumbnailService,
+        this.comicRepository,
+        this.settingsService,
+        this.scanProgressService);
+  }
+
   @Test
   public void scanComics() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/simple");
-    when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
 
+    when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
     when(this.comicRepository.findByPath(any())).thenReturn(Optional.of(new Comic()));
     when(this.comicRepository.save(any())).thenReturn(new Comic());
-    doReturn(new ArrayList<>()).when(this.fileMetaDataService).read(any());
-    doNothing().when(this.thumbnailService).read(any());
+    when(this.scanProgressRepository.save(any())).thenAnswer(a -> a.getArguments()[0]);
     when(this.comicRepository.findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc())
         .thenReturn(new ArrayList<>());
+    doReturn(new ArrayList<>()).when(this.fileMetaDataService).read(any());
+    doNothing().when(this.thumbnailService).read(any());
 
-    StepVerifier.create(this.scannerService.scanComics())
+    StepVerifier.create(this.scannerService.scan())
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("start");
+          assertThat(event.event()).isEqualTo("START");
           assertThat(event.data()).isEqualTo("start");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("total");
+          assertThat(event.event()).isEqualTo("TOTAL");
           assertThat(event.data()).isEqualTo("1");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("current-file");
+          assertThat(event.event()).isEqualTo("CURRENT_FILE");
           assertThat(event.data()).endsWith("Batman 402 (1940).cbz");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("cleanUp");
+          assertThat(event.event()).isEqualTo("CLEAN_UP");
           assertThat(event.data()).isEqualTo("cleanUp");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("association");
+          assertThat(event.event()).isEqualTo("ASSOCIATION");
           assertThat(event.data()).isEqualTo("association");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("done");
+          assertThat(event.event()).isEqualTo("DONE");
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
@@ -112,17 +135,19 @@ public class ScannerServiceTest {
   @Test
   public void scanComicsWithException() throws Exception {
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath() + "/invalid/");
-    StepVerifier.create(this.scannerService.scanComics())
+    when(this.scanProgressRepository.save(any())).thenAnswer(a -> a.getArguments()[0]);
+
+    StepVerifier.create(this.scannerService.scan())
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("start");
+          assertThat(event.event()).isEqualTo("START");
           assertThat(event.data()).isEqualTo("start");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("scan-issue");
+          assertThat(event.event()).isEqualTo("SCAN_ISSUE");
           assertThat(event.data()).contains("ERROR");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("done");
+          assertThat(event.event()).isEqualTo("DONE");
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
@@ -134,38 +159,39 @@ public class ScannerServiceTest {
   @Test
   public void scanWithFileReaderError() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/not_flat");
-    when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
 
+    when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
     when(this.comicRepository.save(any())).thenReturn(new Comic());
+    when(this.scanProgressRepository.save(any())).thenAnswer(a -> a.getArguments()[0]);
     doNothing().when(this.thumbnailService).read(any());
 
-    StepVerifier.create(this.scannerService.scanComics())
+    StepVerifier.create(this.scannerService.scan())
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("start");
+          assertThat(event.event()).isEqualTo("START");
           assertThat(event.data()).isEqualTo("start");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("total");
+          assertThat(event.event()).isEqualTo("TOTAL");
           assertThat(event.data()).isEqualTo("1");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("current-file");
+          assertThat(event.event()).isEqualTo("CURRENT_FILE");
           assertThat(event.data()).endsWith("Batman 402 (1940).cbz");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("scan-issue");
+          assertThat(event.event()).isEqualTo("SCAN_ISSUE");
           assertThat(event.data()).contains("Found directory entries");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("cleanUp");
+          assertThat(event.event()).isEqualTo("CLEAN_UP");
           assertThat(event.data()).isEqualTo("cleanUp");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("association");
+          assertThat(event.event()).isEqualTo("ASSOCIATION");
           assertThat(event.data()).isEqualTo("association");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("done");
+          assertThat(event.event()).isEqualTo("DONE");
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
@@ -177,37 +203,38 @@ public class ScannerServiceTest {
   @Test
   public void scanWithXmlError() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/invalid_xml");
+
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
-
     when(this.comicRepository.save(any())).thenReturn(new Comic());
+    when(this.scanProgressRepository.save(any())).thenAnswer(a -> a.getArguments()[0]);
 
-    StepVerifier.create(this.scannerService.scanComics())
+    StepVerifier.create(this.scannerService.scan())
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("start");
+          assertThat(event.event()).isEqualTo("START");
           assertThat(event.data()).isEqualTo("start");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("total");
+          assertThat(event.event()).isEqualTo("TOTAL");
           assertThat(event.data()).isEqualTo("1");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("current-file");
+          assertThat(event.event()).isEqualTo("CURRENT_FILE");
           assertThat(event.data()).endsWith("Batman 402 (1940).cbz");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("scan-issue");
+          assertThat(event.event()).isEqualTo("SCAN_ISSUE");
           assertThat(event.data()).contains("The end-tag for element type \\\"ComicInfo\\\" must end with a '>'");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("cleanUp");
+          assertThat(event.event()).isEqualTo("CLEAN_UP");
           assertThat(event.data()).isEqualTo("cleanUp");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("association");
+          assertThat(event.event()).isEqualTo("ASSOCIATION");
           assertThat(event.data()).isEqualTo("association");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("done");
+          assertThat(event.event()).isEqualTo("DONE");
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
@@ -219,37 +246,38 @@ public class ScannerServiceTest {
   @Test
   public void scanWithoutImages() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/no_images");
+
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
-
     when(this.comicRepository.save(any())).thenReturn(new Comic());
+    when(this.scanProgressRepository.save(any())).thenAnswer(a -> a.getArguments()[0]);
 
-    StepVerifier.create(this.scannerService.scanComics())
+    StepVerifier.create(this.scannerService.scan())
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("start");
+          assertThat(event.event()).isEqualTo("START");
           assertThat(event.data()).isEqualTo("start");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("total");
+          assertThat(event.event()).isEqualTo("TOTAL");
           assertThat(event.data()).isEqualTo("1");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("current-file");
+          assertThat(event.event()).isEqualTo("CURRENT_FILE");
           assertThat(event.data()).endsWith("Batman 402 (1940).cbz");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("scan-issue");
+          assertThat(event.event()).isEqualTo("SCAN_ISSUE");
           assertThat(event.data()).contains("No images found");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("cleanUp");
+          assertThat(event.event()).isEqualTo("CLEAN_UP");
           assertThat(event.data()).isEqualTo("cleanUp");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("association");
+          assertThat(event.event()).isEqualTo("ASSOCIATION");
           assertThat(event.data()).isEqualTo("association");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("done");
+          assertThat(event.event()).isEqualTo("DONE");
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
@@ -261,8 +289,8 @@ public class ScannerServiceTest {
   @Test
   public void scanWithApiReaderErrors() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/incomplete");
-    when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
 
+    when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
     when(this.comicRepository.save(any())).thenReturn(new Comic());
     when(this.apiMetaDataService.set(any()))
         .thenReturn(Arrays.asList(ScannerIssue.builder()
@@ -270,35 +298,36 @@ public class ScannerServiceTest {
             .type(ScannerIssue.Type.UNKNOWN)
             .severity(ScannerIssue.Severity.ERROR)
             .build()));
+    when(this.scanProgressRepository.save(any())).thenAnswer(a -> a.getArguments()[0]);
     doNothing().when(this.fileMetaDataService).write(any());
 
-    StepVerifier.create(this.scannerService.scanComics())
+    StepVerifier.create(this.scannerService.scan())
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("start");
+          assertThat(event.event()).isEqualTo("START");
           assertThat(event.data()).isEqualTo("start");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("total");
+          assertThat(event.event()).isEqualTo("TOTAL");
           assertThat(event.data()).isEqualTo("1");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("current-file");
+          assertThat(event.event()).isEqualTo("CURRENT_FILE");
           assertThat(event.data()).endsWith("Batman 701 (1940).cbz");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("scan-issue");
+          assertThat(event.event()).isEqualTo("SCAN_ISSUE");
           assertThat(event.data()).contains("Could not reach ComicVine API");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("cleanUp");
+          assertThat(event.event()).isEqualTo("CLEAN_UP");
           assertThat(event.data()).isEqualTo("cleanUp");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("association");
+          assertThat(event.event()).isEqualTo("ASSOCIATION");
           assertThat(event.data()).isEqualTo("association");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("done");
+          assertThat(event.event()).isEqualTo("DONE");
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
@@ -314,14 +343,15 @@ public class ScannerServiceTest {
       private static final long serialVersionUID = -4677056066803637172L; // NOPMD
     }).when(this.objectMapper).writeValueAsString(any());
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath() + "/invalid/");
+    when(this.scanProgressRepository.save(any())).thenAnswer(a -> a.getArguments()[0]);
 
-    StepVerifier.create(this.scannerService.scanComics())
+    StepVerifier.create(this.scannerService.scan())
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("start");
+          assertThat(event.event()).isEqualTo("START");
           assertThat(event.data()).isEqualTo("start");
         })
         .consumeNextWith(event -> {
-          assertThat(event.event()).isEqualTo("done");
+          assertThat(event.event()).isEqualTo("DONE");
           assertThat(event.data()).isEqualTo("done");
         })
         .expectComplete()
@@ -331,7 +361,14 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void cleanOrphans() throws Exception {
+  public void resume() {
+    StepVerifier.create(this.scannerService.resume())
+        .expectComplete()
+        .verify(Duration.ofSeconds(1L));
+  }
+
+  @Test
+  public void cleanOrphans() {
     final Comic comic1 = new Comic();
     comic1.setPath("/a");
     final Comic comic2 = new Comic();

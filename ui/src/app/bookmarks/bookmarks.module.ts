@@ -10,22 +10,18 @@ import { BookmarkActionsComponent } from './bookmark-actions/bookmark-actions.co
 import { BookmarksPage } from './bookmarks.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SecureModule,
-    RouterModule.forChild([{
-      path: '',
-      component: BookmarksPage
-    }])
-  ],
   declarations: [
     BookmarksPage,
     BookmarkActionsComponent
   ],
-  entryComponents: [
-    BookmarkActionsComponent
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild([{
+      component: BookmarksPage, path: ''
+    }]),
+    SecureModule
   ]
 })
 export class BookmarksPageModule {}

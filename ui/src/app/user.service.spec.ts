@@ -1,5 +1,5 @@
 import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { first } from 'rxjs/operators';
 
 import { User } from './user';
@@ -12,6 +12,7 @@ describe('UserService', () => {
 
   beforeEach(() => {
     localStorage.clear();
+
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ]
     });
@@ -30,7 +31,7 @@ describe('UserService', () => {
     describe('with a user', () => {
 
       beforeEach(() => {
-        localStorage.setItem('user', JSON.stringify({ token: 'test-token-1', email: 'a@b.com' }));
+        localStorage.setItem('user', JSON.stringify({ email: 'a@b.com', token: 'test-token-1' }));
         service.verifyCurrentUser();
       });
 
@@ -39,7 +40,7 @@ describe('UserService', () => {
         expect(req.request.method).toBe('GET');
         req.flush('');
 
-        service.user.pipe(first()).subscribe((user: User) => {
+        service.user.pipe(first()).subscribe(user => {
           expect(user.email).toEqual('a@b.com');
           expect(user.token).toEqual('test-token-1');
           done();
@@ -52,7 +53,7 @@ describe('UserService', () => {
         req.flush('', { status: 401, statusText: 'Unauthorized' });
 
         service.user.pipe(first()).subscribe(user => {
-          expect(user).toEqual('You\'ve been logged out.');
+          expect(user.error).toEqual('You\'ve been logged out.');
           done();
         });
       });
@@ -61,6 +62,7 @@ describe('UserService', () => {
     describe('without a user', () => {
 
       beforeEach(() => {
+        localStorage.clear();
         service.verifyCurrentUser();
       });
 
@@ -68,7 +70,7 @@ describe('UserService', () => {
         service.verifyCurrentUser();
 
         service.user.pipe(first()).subscribe(user => {
-          expect(user).toEqual('You\'ve been logged out.');
+          expect(user.error).toEqual('You\'ve been logged out.');
           done();
         });
       });
@@ -77,14 +79,7 @@ describe('UserService', () => {
 
   describe('#setupGoogleSignIn', () => {
 
-    let auth2;
-
-    beforeEach(done => {
-      service.user.pipe(first()).subscribe(user => {
-        expect(user).toEqual('You\'ve been logged out.');
-        done();
-      });
-    });
+    let auth2: any;
 
     describe('without the Google API', () => {
 
@@ -94,12 +89,13 @@ describe('UserService', () => {
 
       it('attempts to authenticate a mock user', done => {
         service.setupGoogleSignIn();
+
         const req = httpMock.expectOne('/api/user/verify/mock-123');
         expect(req.request.method).toBe('GET');
         req.flush('');
 
-        service.user.pipe(first()).subscribe((user: User) => {
-          expect(user.name).toEqual('B.Wayne');
+        service.user.pipe(first()).subscribe((user: User | string) => {
+          expect((user as User).name).toEqual('B.Wayne');
           done();
         });
       });
@@ -109,7 +105,7 @@ describe('UserService', () => {
 
       let req: TestRequest;
 
-      beforeEach(() => {
+      beforeEach(<any>fakeAsync(() => {
         auth2 = {
           attachClickHandler: jasmine.createSpy().and.callFake((id, options, success) => success({
             getAuthResponse: () => ({
@@ -122,15 +118,22 @@ describe('UserService', () => {
           signIn: jasmine.createSpy()
         };
         (window as any).gapi = {
-          load: jasmine.createSpy().and.callFake((api, callback) => callback()),
           auth2: {
             init: (): any => auth2
-          }
+          },
+          load: jasmine.createSpy().and.callFake((api, callback) => callback())
         };
+
         service.setupGoogleSignIn();
+        req = httpMock.expectOne('/api/user/client-id');
+        expect(req.request.method).toBe('GET');
+        req.flush('');
+
+        tick();
+
         req = httpMock.expectOne('/api/user/sign-in/mock-google-token-1');
         expect(req.request.method).toBe('POST');
-      });
+      }));
 
       it('sets up Google Sign-In', () => {
         expect((window as any).gapi.load).toHaveBeenCalled();
@@ -152,7 +155,7 @@ describe('UserService', () => {
         });
 
         it('exchanges the auth token for an app specific JWT', done => {
-          service.user.pipe(first()).subscribe((user: User) => {
+          service.user.pipe(first()).subscribe(user => {
             expect(user.email).toEqual('b@c.com');
             expect(user.token).toEqual('alfred-token-1');
             done();
@@ -170,8 +173,8 @@ describe('UserService', () => {
         });
 
         it('reports an error', done => {
-          service.user.pipe(first()).subscribe((user: string) => {
-            expect(user)
+          service.user.subscribe(user => {
+            expect(user.error)
               .toEqual('Login failure: Http failure response for /api/user/sign-in/mock-google-token-1: 403 User not allowed.');
             done();
           });
@@ -190,9 +193,8 @@ describe('UserService', () => {
         });
 
         it('reports an error', done => {
-          service.user.pipe(first()).subscribe((user: string) => {
-            expect(user)
-              .toEqual('Login failure: Unable to verify user.');
+          service.user.subscribe(user => {
+            expect(user.error).toEqual('Login failure: Unable to verify user.');
             done();
           });
         });
@@ -201,7 +203,7 @@ describe('UserService', () => {
 
     describe('with error in the click handler', () => {
 
-      beforeEach(() => {
+      beforeEach(<any>fakeAsync(() => {
         auth2 = {
           attachClickHandler: jasmine.createSpy().and.callFake((id, options, success, error) => error()),
           isSignedIn: {
@@ -209,19 +211,83 @@ describe('UserService', () => {
           }
         };
         (window as any).gapi = {
-          load: jasmine.createSpy().and.callFake((api, callback) => callback()),
           auth2: {
             init: (): any => auth2
-          }
+          },
+          load: jasmine.createSpy().and.callFake((api, callback) => callback())
         };
         service.setupGoogleSignIn();
-      });
+
+        const req = httpMock.expectOne('/api/user/client-id');
+        expect(req.request.method).toBe('GET');
+        req.flush('');
+        tick();
+      }));
 
       it('reports an error', done => {
-        service.user.pipe(first()).subscribe((user: string) => {
-          expect(user).toEqual('Login failure: Google-SignIn error.');
+        service.user.subscribe(user => {
+          expect(user.error).toEqual('Login failure: Google-SignIn error.');
           done();
         });
+      });
+    });
+  });
+
+  describe('#login', () => {
+
+    it('logs in a valid users', done => {
+      service.login('foo@bar.com', 'foo');
+
+      const req = httpMock.expectOne('/api/user/login');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ password: 'foo', username: 'foo@bar.com' });
+      req.flush({
+        email: 'a@b.com',
+        token: 'alfred-token-1'
+      });
+
+      service.user.pipe(first()).subscribe(user => {
+        expect(user.email).toEqual('a@b.com');
+        expect(user.token).toEqual('alfred-token-1');
+        done();
+      });
+    });
+
+    it('rejects inexistant users', done => {
+      service.login('foo@bar.com', 'foo');
+
+      const req = httpMock.expectOne('/api/user/login');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ password: 'foo', username: 'foo@bar.com' });
+      req.flush({}, {
+        status: 403,
+        statusText: 'User not allowed.'
+      });
+
+      service.user.subscribe(user => {
+        expect(user.error)
+          .toEqual('Login failure: Http failure response for /api/user/login: 403 User not allowed.');
+        done();
+      });
+    });
+
+    it('rejects invalid username/password combination', done => {
+      service.login('foo@bar.com', 'foo');
+
+      const req = httpMock.expectOne('/api/user/login');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ password: 'foo', username: 'foo@bar.com' });
+      req.flush({
+        message: 'Unable to verify user.'
+      }, {
+        status: 401,
+        statusText: 'Unauthorized'
+      });
+
+      service.user.subscribe(user => {
+        expect(user.error)
+          .toEqual('Login failure: Unable to verify user.');
+        done();
       });
     });
   });

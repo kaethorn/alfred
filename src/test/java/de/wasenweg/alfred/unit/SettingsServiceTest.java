@@ -35,19 +35,19 @@ public class SettingsServiceTest {
   private transient ArgumentCaptor<Setting> settingCaptor;
 
   @Test
-  public void setupWithoutExistingSettingsAndWithoutEnvironmentValue() throws Exception {
+  public void setupWithoutExistingSettingsAndWithoutEnvironmentValue() {
     when(this.settingRepository.findByKey("comics.path")).thenReturn(Optional.ofNullable(null));
     when(this.environment.getProperty("comics.path")).thenReturn(null);
 
     this.settingsService.setup();
 
-    verify(this.settingRepository, times(4)).save(this.settingCaptor.capture());
+    verify(this.settingRepository, times(5)).save(this.settingCaptor.capture());
     assertThat(this.settingCaptor.getAllValues().get(0).getKey()).isEqualTo("comics.path");
     assertThat(this.settingCaptor.getAllValues().get(0).getValue()).isEqualTo("/comics");
   }
 
   @Test
-  public void setupWithExistingSettingsAndWithoutEnvironmentValue() throws Exception {
+  public void setupWithExistingSettingsAndWithoutEnvironmentValue() {
     final Setting setting = Setting.builder()
         .key("comics.path")
         .name("Path")
@@ -58,25 +58,25 @@ public class SettingsServiceTest {
 
     this.settingsService.setup();
 
-    verify(this.settingRepository, times(4)).save(this.settingCaptor.capture());
+    verify(this.settingRepository, times(5)).save(this.settingCaptor.capture());
     assertThat(this.settingCaptor.getAllValues().get(0).getKey()).isEqualTo("comics.path");
     assertThat(this.settingCaptor.getAllValues().get(0).getValue()).isEqualTo("/existing/comics");
   }
 
   @Test
-  public void setupWithoutExistingSettingsAndWithEnvironmentValue() throws Exception {
+  public void setupWithoutExistingSettingsAndWithEnvironmentValue() {
     when(this.settingRepository.findByKey("comics.path")).thenReturn(Optional.ofNullable(null));
     when(this.environment.getProperty("comics.path")).thenReturn("/environment/comics");
 
     this.settingsService.setup();
 
-    verify(this.settingRepository, times(4)).save(this.settingCaptor.capture());
+    verify(this.settingRepository, times(5)).save(this.settingCaptor.capture());
     assertThat(this.settingCaptor.getAllValues().get(0).getKey()).isEqualTo("comics.path");
     assertThat(this.settingCaptor.getAllValues().get(0).getValue()).isEqualTo("/environment/comics");
   }
 
   @Test
-  public void setupWithExistingSettingsAndWithEnvironmentValue() throws Exception {
+  public void setupWithExistingSettingsAndWithEnvironmentValue() {
     final Setting setting = Setting.builder()
         .key("comics.path")
         .name("Path")
@@ -88,7 +88,7 @@ public class SettingsServiceTest {
 
     this.settingsService.setup();
 
-    verify(this.settingRepository, times(4)).save(this.settingCaptor.capture());
+    verify(this.settingRepository, times(5)).save(this.settingCaptor.capture());
     assertThat(this.settingCaptor.getAllValues().get(0).getKey()).isEqualTo("comics.path");
     assertThat(this.settingCaptor.getAllValues().get(0).getValue()).isEqualTo("/environment/comics");
   }

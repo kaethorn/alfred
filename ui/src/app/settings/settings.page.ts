@@ -1,27 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 
+import { environment } from '../../environments/environment';
+import { LOCATION_TOKEN } from '../location.token';
 import { Setting } from '../setting';
 import { SettingsService } from '../settings.service';
+import { User } from '../user';
 import { UserSettingsService } from '../user-settings.service';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-settings',
-  templateUrl: './settings.page.html',
-  styleUrls: ['./settings.page.sass']
+  styleUrls: [ './settings.page.sass' ],
+  templateUrl: './settings.page.html'
 })
 export class SettingsPage {
 
   public settings: Setting[] = [];
-  public updateError: any;
+  public user: User = {} as User;
   public userSettings;
+  public version: string;
 
   constructor(
     private settingsService: SettingsService,
     private toastController: ToastController,
-    private userSettingsService: UserSettingsService
+    private userSettingsService: UserSettingsService,
+    private userService: UserService,
+    @Inject(LOCATION_TOKEN) private location: Location
   ) {
+    this.version = environment.version;
     this.userSettings = userSettingsService.get();
+    this.userService.user.subscribe(user => {
+      this.user = user;
+    });
+  }
+
+  public logout(): void {
+    this.userService.logout();
+    this.location.reload();
   }
 
   public ionViewWillEnter(): void {
@@ -45,8 +61,8 @@ export class SettingsPage {
 
   private async showToast(message: string, duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
-      message,
-      duration
+      duration,
+      message
     });
     toast.present();
   }

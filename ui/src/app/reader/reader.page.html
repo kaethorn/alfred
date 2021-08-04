@@ -1,8 +1,6 @@
-<div class="pages-layer" #pagesLayer
-  [ngStyle]="transformation"
-  (click)="onClick($event)"
-  (swipeleft)="onSwipe(1)"
-  (swiperight)="onSwipe(-1)">
+<div class="pages-layer" #pagesLayer [ngStyle]="transformation" (click)="onClick($event)"
+  (swipeleft)="onSwipe(1)" (swiperight)="onSwipe(-1)"
+  (swipeup)="toggleControls()" (swipedown)="toggleControls()">
   <div class="set" *ngFor="let imageSet of imageSets">
     <div *ngFor="let image of imageSet">
       <img *ngIf="image.src" [attr.src]="image.src | secure | async"
@@ -15,6 +13,12 @@
 
 <div class="control-layer" *ngIf="showControls" (click)="toggleControls()">
   <div class="top">
+    <ion-button class="hidden">
+      <ion-icon name="close"></ion-icon>
+    </ion-button>
+    <ion-text color="primary">
+      Page {{ comic.currentPage || 0 + 1 }}
+    </ion-text>
     <ion-button color="secondary" (click)="back()">
       <ion-icon name="close"></ion-icon>
     </ion-button>
@@ -31,16 +35,16 @@
   </div>
   <div class="bottom">
     <ion-button color="secondary" (click)="openPrevious()">
-      <ion-icon name="skip-backward"></ion-icon>
+      <ion-icon name="play-skip-back"></ion-icon>
     </ion-button>
     <ion-button color="secondary" (click)="go(-1)">
-      <ion-icon name="arrow-round-back"></ion-icon>
+      <ion-icon name="arrow-back"></ion-icon>
     </ion-button>
     <ion-button color="secondary" (click)="go(+1)">
-      <ion-icon name="arrow-round-forward"></ion-icon>
+      <ion-icon name="arrow-forward"></ion-icon>
     </ion-button>
     <ion-button color="secondary" (click)="openNext()">
-      <ion-icon name="skip-forward"></ion-icon>
+      <ion-icon name="play-skip-forward"></ion-icon>
     </ion-button>
   </div>
 </div>

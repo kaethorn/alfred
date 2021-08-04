@@ -35,7 +35,7 @@ public final class ZipReaderUtil {
   /**
    * Returns a sorted list of images in the given zip file.
    *
-   * @param path The path to the zip file to search through.
+   * @param fs The file system of the zip file to search through.
    * @return List of image zip entries.
    */
   public static List<Path> getImages(final FileSystem fs) {
@@ -43,6 +43,6 @@ public final class ZipReaderUtil {
   }
 
   public static Boolean isImage(final Path path) {
-    return Files.isRegularFile(path) && path.toString().matches(".*(png|jpg)$");
+    return Files.isRegularFile(path) && path.toString().matches("(?i).*(png|jpg|jpeg)$");
   }
 }

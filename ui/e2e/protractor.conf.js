@@ -6,25 +6,23 @@ const { SpecReporter } = require('jasmine-spec-reporter');
 const testProxy = require('./test-proxy');
 
 exports.config = {
+  SELENIUM_PROMISE_MANAGER: false,
   allScriptsTimeout: 11000,
-  specs            : [
-    './src/**/*.e2e-spec.ts'
-  ],
+  baseUrl                 : 'http://localhost:8090/',
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      args: ['--window-size=3840,2160']
+      args: [ '--window-size=3840,2160' ]
     }
   },
   directConnect           : true,
-  baseUrl                 : 'http://localhost:8090/',
   framework               : 'jasmine',
-  SELENIUM_PROMISE_MANAGER: false,
   jasmineNodeOpts         : {
-    showColors            : true,
     defaultTimeoutInterval: 30000,
-    print() {}
+    print() {},
+    showColors            : true
   },
+  onCleanUp: () => testProxy.stop(),
   onPrepare: async () => {
     await testProxy.start();
 
@@ -51,10 +49,11 @@ exports.config = {
     });
 
     require('ts-node').register({
-      project: require('path').join(__dirname, './tsconfig.e2e.json')
+      project: require('path').join(__dirname, './tsconfig.json')
     });
-    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
+    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: 'raw' } }));
   },
-
-  onCleanUp: () => testProxy.stop()
+  specs            : [
+    './src/**/*.e2e-spec.ts'
+  ]
 };

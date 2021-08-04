@@ -3,6 +3,7 @@ import { browser } from 'protractor';
 import { IssuesPage } from './issues.po';
 import { LibraryPage } from './library.po';
 import { MongoDBTools } from './mongodb.tools';
+import { Page } from './page.po';
 import { SettingsPage } from './settings.po';
 
 describe('IssuesComponent', () => {
@@ -46,8 +47,9 @@ describe('IssuesComponent', () => {
   it('has links back to the library', async () => {
     await IssuesPage.clickIssueMenuItem(0, 'View in library');
     await browser.sleep(500);
+    await Page.waitForLoadingGone();
     await LibraryPage.waitForVolumes();
     expect(await LibraryPage.getVolumeTitles().getText())
-      .toEqual(['Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016']);
+      .toEqual([ 'Vol. 2000', 'Vol. 2008', 'Vol. 2009', 'Vol. 2011', 'Vol. 2016' ]);
   });
 });

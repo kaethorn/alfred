@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
+import { ComicDatabaseServiceMocks } from '../testing/comic-database.service.mocks';
 import { ComicFixtures } from '../testing/comic.fixtures';
+import { ComicsServiceMocks } from '../testing/comics.service.mocks';
 
 import { Comic } from './comic';
 import { ComicDatabaseService } from './comic-database.service';
@@ -9,37 +11,36 @@ import { ComicsService } from './comics.service';
 import { QueueService } from './queue.service';
 
 let service: QueueService;
-let dbService: ComicDatabaseService;
-
-const comicsService = jasmine.createSpyObj('ComicsService', [ 'updateProgress' ]);
-const updateProgressSpy: jasmine.Spy = comicsService.updateProgress;
+let comicDatabaseService: jasmine.SpyObj<ComicDatabaseService>;
+let comicsService: jasmine.SpyObj<ComicsService>;
 
 describe('QueueService', () => {
 
-  beforeEach(async () => {
-    updateProgressSpy.and.returnValue(of(ComicFixtures.comic));
+  beforeEach(() => {
+    comicDatabaseService = ComicDatabaseServiceMocks.comicDatabaseService;
+    comicsService = ComicsServiceMocks.comicsService;
+
     TestBed.configureTestingModule({
       providers: [{
         provide: ComicsService, useValue: comicsService
+      }, {
+        provide: ComicDatabaseService, useValue: comicDatabaseService
       }]
     });
-    dbService = TestBed.inject(ComicDatabaseService);
-    await dbService.ready.toPromise();
     service = TestBed.inject(QueueService);
   });
 
-  afterEach(async done => {
-    updateProgressSpy.calls.reset();
+  afterEach(() => {
     TestBed.resetTestingModule();
-    await dbService.deleteAll();
-    done();
   });
 
   describe('#hasItems', () => {
 
     it('reflects the state of the internal queue', async () => {
       expect(await service.hasItems()).toBe(false);
-      service.add({ id: '123' } as Comic);
+      comicDatabaseService.getComicsBy.and.resolveTo([
+        { id: 'one' } as Comic
+      ]);
       expect(await service.hasItems()).toBe(true);
     });
   });
@@ -63,23 +64,23 @@ describe('QueueService', () => {
 
     describe('with items', () => {
 
-      beforeEach(async done => {
-        await service.add({ id: 'one' } as Comic);
-        await service.add({ id: 'two' } as Comic);
-        done();
+      beforeEach(() => {
+        comicDatabaseService.getComicsBy.and.resolveTo([
+          { id: 'one' } as Comic,
+          { id: 'two' } as Comic
+        ]);
       });
 
       describe('on error', () => {
 
         beforeEach(() => {
-          updateProgressSpy.and.returnValue(throwError(ComicFixtures.comic));
+          comicsService.updateProgress.and.returnValue(throwError(ComicFixtures.comic));
         });
 
         it('does not complete', done => {
           service.process().subscribe(() => {
-          }, async () => {
-            expect(updateProgressSpy.calls.count()).toBe(1);
-            expect(await service.count()).toBe(2);
+          }, () => {
+            expect(comicsService.updateProgress.calls.count()).toBe(1);
             done();
           });
         });
@@ -90,11 +91,10 @@ describe('QueueService', () => {
         it('completes', done => {
           service.process().subscribe(() => {
           }, () => {
-          }, async () => {
-            expect(updateProgressSpy.calls.count()).toBe(2);
-            expect(comicsService.updateProgress).toHaveBeenCalledWith({ id: 'one' });
-            expect(comicsService.updateProgress).toHaveBeenCalledWith({ id: 'two' });
-            expect(await service.count()).toBe(0);
+          }, () => {
+            expect(comicsService.updateProgress.calls.count()).toBe(2);
+            expect(comicsService.updateProgress).toHaveBeenCalledWith({ id: 'one' } as Comic);
+            expect(comicsService.updateProgress).toHaveBeenCalledWith({ id: 'two' } as Comic);
             done();
           });
         });
@@ -104,7 +104,7 @@ describe('QueueService', () => {
 
         beforeEach(() => {
           let index = 0;
-          updateProgressSpy.and.callFake(() => {
+          comicsService.updateProgress.and.callFake(() => {
             if (index > 0) {
               return throwError(ComicFixtures.comic);
             }
@@ -115,13 +115,24 @@ describe('QueueService', () => {
 
         it('does not complete', done => {
           service.process().subscribe(() => {
-          }, async () => {
-            expect(updateProgressSpy.calls.count()).toBe(2);
-            expect(await service.count()).toBe(1);
+          }, () => {
+            expect(comicsService.updateProgress.calls.count()).toBe(2);
             done();
           });
         });
       });
+    });
+  });
+
+  describe('#add', () => {
+
+    it('sets the dirty flag on the comic and attempts to save the latter', async () => {
+      const comic = ComicFixtures.comic;
+      expect(comic.dirty).toBeUndefined();
+      await service.add(comic);
+
+      expect(comic.dirty).toBe(1);
+      expect(comicDatabaseService.save).toHaveBeenCalledWith(comic);
     });
   });
 });
