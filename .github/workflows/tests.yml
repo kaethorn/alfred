@@ -66,6 +66,6 @@ jobs:
       uses: nick-invision/retry@v2
       with:
         timeout_minutes: 15
-        max_attempts: 5
+        max_attempts: 8
         retry_on: error
         command: cd ui && npm run e2eHeadless
