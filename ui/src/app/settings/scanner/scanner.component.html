@@ -107,7 +107,7 @@
               Clear {{ cachedComicsCount }} cached comics in the current browser.
             </ion-col>
             <ion-col size-lg="2" size-md="3" size-sm="4" size-xs="12">
-              <ion-button expand="block" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount == 0" color="warning">
+              <ion-button expand="block" (click)="deleteCachedComics()" size="small" [disabled]="cachedComicsCount === 0" color="warning">
                 <ion-icon slot="start" name="trash"></ion-icon>
                 Clear
               </ion-button>
