@@ -63,5 +63,9 @@ jobs:
         SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
 
     - name: Run end-to-end tests
-      working-directory: ui
-      run: npm run e2eHeadless
+      uses: nick-invision/retry@v2
+      with:
+        timeout_minutes: 15
+        max_attempts: 5
+        retry_on: error
+        command: cd ui && npm run e2eHeadless
