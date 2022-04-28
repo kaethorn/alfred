@@ -1,4 +1,4 @@
-import { browser, by, element, promise, ExpectedConditions, ElementFinder, WebElement } from 'protractor';
+import { browser, by, element, promise, ExpectedConditions, ElementFinder } from 'protractor';
 
 export class Page {
 
@@ -12,7 +12,7 @@ export class Page {
     await menuButton.click();
     const button = element(by.cssContainingText('ion-item', item));
     await this.waitForElement(button);
-    return element(by.cssContainingText('ion-item', item)).click();
+    await button.click();
   }
 
   /**
@@ -55,16 +55,17 @@ export class Page {
   }
 
   public static waitForToastGone(timeout = 6000): promise.Promise<void> {
-    return browser.wait(
-      ExpectedConditions.not(
-        ExpectedConditions.presenceOf(
-          element(by.css('ion-toast')))), timeout);
+    return this.waitForGone(timeout, 'ion-toast');
   }
 
   public static waitForLoadingGone(timeout = 3000): promise.Promise<void> {
+    return this.waitForGone(timeout, 'ion-loading');
+  }
+
+  public static waitForGone(timeout = 6000, selector: string): promise.Promise<void> {
     return browser.wait(
       ExpectedConditions.not(
         ExpectedConditions.presenceOf(
-          element(by.css('ion-loading')))), timeout);
+          element(by.css(selector)))), timeout);
   }
 }
