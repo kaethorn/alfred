@@ -13,7 +13,7 @@
     "testHeadless": "ng test --progress=false --watch=false --code-coverage=true --browsers=ChromeHeadlessDocker",
     "lint": "ng lint && eslint e2e/**/*js *.js",
     "e2e": "ng e2e",
-    "e2eHeadless": "ng e2e --devServerTarget='' --protractorConfig=e2e/protractor.headless.conf.js",
+    "e2eHeadless": "ng e2e --no-webdriver-update --devServerTarget='' --protractorConfig=e2e/protractor.headless.conf.js",
     "protractor": "protractor e2e/protractor.conf.js",
     "protractorHeadless": "protractor e2e/protractor.headless.conf.js"
   },
@@ -83,7 +83,8 @@
     "mongoose": "^5.11.13",
     "protractor": "~7.0.0",
     "ts-node": "^10.7.0",
-    "typescript": "~4.6.3"
+    "typescript": "~4.6.3",
+    "webdriver-manager": "^12.1.8"
   },
   "description": "Manage and read your comics.",
   "cordova": {

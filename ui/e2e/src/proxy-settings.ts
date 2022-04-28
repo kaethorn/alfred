@@ -31,12 +31,12 @@ export class ProxySettings {
               try {
                 resolve(JSON.parse(rawData));
               } catch (e) {
-                reject(e.message);
+                reject((<Error>e).message);
               }
             });
           }
         } catch (e) {
-          reject(e.message);
+          reject((<Error>e).message);
         }
       }).on('error', e => {
         reject(e.message);
