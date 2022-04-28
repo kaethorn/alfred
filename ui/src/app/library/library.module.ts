@@ -15,45 +15,45 @@ import { VolumeActionsComponent } from './volumes/volume-actions/volume-actions.
 import { VolumesPage } from './volumes/volumes.page';
 
 @NgModule({
-    declarations: [
-        CoversPage,
-        EditPage,
-        IssueActionsComponent,
-        IssuesPage,
-        PublishersPage,
-        SeriesPage,
-        VolumeActionsComponent,
-        VolumesPage
-    ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        HttpClientModule,
-        IonicModule,
-        ReactiveFormsModule,
-        RouterModule.forChild([{
-                children: [{
-                        component: PublishersPage, path: 'publishers'
-                    }, {
-                        component: SeriesPage, path: 'publishers/:publisher/series'
-                    }, {
-                        component: VolumesPage, path: 'publishers/:publisher/series/:series/volumes'
-                    }, {
-                        component: IssuesPage,
-                        path: 'publishers/:publisher/series/:series/volumes/:volume/issues'
-                    }, {
-                        component: EditPage,
-                        path: 'publishers/:publisher/series/:series/volumes/:volume/issues/:id/edit'
-                    }, {
-                        component: CoversPage,
-                        path: 'publishers/:publisher/series/:series/volumes/:volume/covers'
-                    }, {
-                        path: '',
-                        pathMatch: 'full',
-                        redirectTo: '/library/publishers'
-                    }],
-                path: ''
-            }])
-    ]
+  declarations: [
+    CoversPage,
+    EditPage,
+    IssueActionsComponent,
+    IssuesPage,
+    PublishersPage,
+    SeriesPage,
+    VolumeActionsComponent,
+    VolumesPage
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    IonicModule,
+    ReactiveFormsModule,
+    RouterModule.forChild([{
+      children: [{
+        component: PublishersPage, path: 'publishers'
+      }, {
+        component: SeriesPage, path: 'publishers/:publisher/series'
+      }, {
+        component: VolumesPage, path: 'publishers/:publisher/series/:series/volumes'
+      }, {
+        component: IssuesPage,
+        path: 'publishers/:publisher/series/:series/volumes/:volume/issues'
+      }, {
+        component: EditPage,
+        path: 'publishers/:publisher/series/:series/volumes/:volume/issues/:id/edit'
+      }, {
+        component: CoversPage,
+        path: 'publishers/:publisher/series/:series/volumes/:volume/covers'
+      }, {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: '/library/publishers'
+      }],
+      path: ''
+    }])
+  ]
 })
 export class LibraryPageModule {}

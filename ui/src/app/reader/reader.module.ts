@@ -9,17 +9,17 @@ import { SecureModule } from '../secure/secure.module';
 import { ReaderPage } from './reader.page';
 
 @NgModule({
-    declarations: [
-        ReaderPage
-    ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        IonicModule,
-        RouterModule.forChild([{
-                component: ReaderPage, path: ''
-            }]),
-        SecureModule
-    ]
+  declarations: [
+    ReaderPage
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild([{
+      component: ReaderPage, path: ''
+    }]),
+    SecureModule
+  ]
 })
 export class ReaderPageModule {}
