@@ -1,16 +1,14 @@
-import * as mongoose from 'mongoose';
+import { connect, connection } from 'mongoose';
 
 export class MongoDBTools {
 
   private static connect: Promise<any> = new Promise((resolve, reject) => {
     const host = process.env.DOCKER_MODE === 'true' ? 'mongo' : 'localhost';
-    mongoose.set('useNewUrlParser', true);
-    mongoose.set('useUnifiedTopology', true);
-    mongoose.connect(`mongodb://${ host }/alfred`);
-    mongoose.connection.on('error', error => {
+    connect(`mongodb://${ host }/alfred`);
+    connection.on('error', error => {
       reject(error);
     });
-    mongoose.connection.once('open', () => {
+    connection.once('open', () => {
       resolve(null);
     });
   });
@@ -19,8 +17,8 @@ export class MongoDBTools {
   public static async prepare(): Promise<any> {
     const comicsPath = process.env.DOCKER_MODE === 'true' ? '/comics' : 'src/test/resources/fixtures/full';
     await this.connect;
-    await mongoose.connection.db.dropDatabase();
-    const collection = await mongoose.connection.db.createCollection('setting');
+    await connection.db.dropDatabase();
+    const collection = await connection.db.createCollection('setting');
     return collection.insertOne({
       comment: 'Path to your comic library',
       key    : 'comics.path',
