@@ -21,6 +21,8 @@ jobs:
 
     - name: Install Chrome
       uses: browser-actions/setup-chrome@latest
+      with:
+        chrome-version: stable
 
     - name: Check backend
       run: ./gradlew --build-cache check jacocoTestReport -x :ui:jar
