@@ -24,32 +24,31 @@ export class HammerConfig extends HammerGestureConfig {
 }
 
 @NgModule({
-  bootstrap: [ AppComponent ],
-  declarations: [
-    AppComponent
-  ],
-  entryComponents: [],
-  imports: [
-    AppRoutingModule,
-    BrowserModule,
-    HttpClientModule,
-    IonicModule.forRoot(),
-    HammerModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      // Register the ServiceWorker as soon as the app is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    })
-  ],
-  providers: [
-    SplashScreen,
-    StatusBar,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    { multi: true, provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor },
-    { provide: LOCATION_TOKEN, useValue: window.location },
-    { provide: CACHES_TOKEN, useValue: window.caches },
-    { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig }
-  ]
+    bootstrap: [AppComponent],
+    declarations: [
+        AppComponent
+    ],
+    imports: [
+        AppRoutingModule,
+        BrowserModule,
+        HttpClientModule,
+        IonicModule.forRoot(),
+        HammerModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+            enabled: environment.production,
+            // Register the ServiceWorker as soon as the app is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000'
+        })
+    ],
+    providers: [
+        SplashScreen,
+        StatusBar,
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+        { multi: true, provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor },
+        { provide: LOCATION_TOKEN, useValue: window.location },
+        { provide: CACHES_TOKEN, useValue: window.caches },
+        { provide: HAMMER_GESTURE_CONFIG, useClass: HammerConfig }
+    ]
 })
 export class AppModule {}
