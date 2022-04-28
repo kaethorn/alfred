@@ -25,9 +25,6 @@ import { VolumesPage } from './volumes/volumes.page';
     VolumeActionsComponent,
     VolumesPage
   ],
-  entryComponents: [
-    VolumeActionsComponent
-  ],
   imports: [
     CommonModule,
     FormsModule,

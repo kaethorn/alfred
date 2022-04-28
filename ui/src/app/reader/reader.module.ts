@@ -12,8 +12,6 @@ import { ReaderPage } from './reader.page';
   declarations: [
     ReaderPage
   ],
-  entryComponents: [
-  ],
   imports: [
     CommonModule,
     FormsModule,

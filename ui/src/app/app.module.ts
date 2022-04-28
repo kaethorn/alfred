@@ -28,7 +28,6 @@ export class HammerConfig extends HammerGestureConfig {
   declarations: [
     AppComponent
   ],
-  entryComponents: [],
   imports: [
     AppRoutingModule,
     BrowserModule,

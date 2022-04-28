@@ -1,4 +1,4 @@
-import { browser, by, element, ElementFinder, promise, ElementArrayFinder } from 'protractor';
+import { browser, by, element, promise, ElementArrayFinder } from 'protractor';
 
 import { Page } from './page.po';
 
@@ -69,12 +69,8 @@ export class LibraryPage {
     return this.getAllVolumes().filter(e => e.element(by.css('ion-badge.read-badge')).isPresent().then(present => !present));
   }
 
-  public static get markVolumeAsReadButton(): ElementFinder {
-    return element(by.cssContainingText('ion-button', 'Mark volume as read'));
-  }
-
-  public static async clickVolumeMenuItem(volume: string, item: string): Promise<void> {
-    await Page.clickActionItem(element(by.cssContainingText(this.selectVolumes, volume)), item);
+  public static clickVolumeMenuItem(volume: string, item: string): promise.Promise<void> {
+    return Page.clickActionItem(element(by.cssContainingText(this.selectVolumes, volume)), item);
   }
 
   public static waitForPublishers(): promise.Promise<void> {

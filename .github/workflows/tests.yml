@@ -21,6 +21,8 @@ jobs:
 
     - name: Install Chrome
       uses: browser-actions/setup-chrome@latest
+      with:
+        chrome-version: stable
 
     - name: Check backend
       run: ./gradlew --build-cache check jacocoTestReport -x :ui:jar
@@ -61,6 +63,17 @@ jobs:
         SPRING_PROFILES_ACTIVE: test
         COMICS_COMICVINE_APIKEY: foo
         SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
+
+    - name: Update webdriver
+      run: |
+        cd ui
+        export PATH="node_modules/webdriver-manager/bin:$PATH"
+        rm node_modules/protractor/bin/webdriver-manager
+        cp node_modules/webdriver-manager/bin/webdriver-manager node_modules/protractor/bin/
+        CHROME_VERSION=$(/usr/bin/google-chrome --version | cut -d ' ' -f 3)
+        echo $CHROME_VERSION
+
+        webdriver-manager update --quiet --standalone=false --gecko=false --versions.chrome="$CHROME_VERSION"
 
     - name: Run end-to-end tests
       uses: nick-invision/retry@v2

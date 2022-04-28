@@ -27,7 +27,7 @@ class Request implements IDBRequest {
   public dispatchEvent: any;
   public readyState: any;
   public source: any;
-  public transaction: null;
+  public transaction: any;
 
   constructor(result: any) {
     setTimeout(() => {
@@ -266,6 +266,8 @@ class Transaction implements IDBTransaction {
   public onabort!: () => {};
   public oncomplete!: () => {};
   public onerror!: () => {};
+  public durability!: IDBTransactionDurability;
+  public commit: any;
 
   constructor(db: IDBDatabase, storeNames: string[]) {
     this.db = db;
@@ -342,12 +344,12 @@ class VersionChangeEvent implements IDBVersionChangeEvent {
   public cancelBubble = false;
   public cancelable = false;
   public composed = false;
-  public currentTarget: null;
+  public currentTarget: any;
   public defaultPrevented = false;
   public eventPhase = 0;
   public isTrusted = false;
   public returnValue = false;
-  public srcElement: null;
+  public srcElement: any;
   public timeStamp = 0;
   public type = '';
   public AT_TARGET = 0;
@@ -377,6 +379,7 @@ export class IndexedDbMocks {
   public static get get(): IDBFactory {
     return {
       cmp: null as any,
+      databases: null as any,
       deleteDatabase: null as any,
       open: (name: string, version?: number): IDBOpenDBRequest => {
         storage[name] = {};

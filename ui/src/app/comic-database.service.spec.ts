@@ -92,13 +92,13 @@ describe('ComicDatabaseService', () => {
       it('caches images', async () => {
         await service.store(ComicFixtures.comic);
         expect(comicsService.getPage).toHaveBeenCalledTimes(5);
-        expect(indexedDbService.save).toHaveBeenCalledTimes(6);
-        expect(indexedDbService.save).toHaveBeenCalledWith('Comics', ComicFixtures.comic);
-        expect(indexedDbService.save).toHaveBeenCalledWith('Images', null, '923/0');
-        expect(indexedDbService.save).toHaveBeenCalledWith('Images', null, '923/1');
-        expect(indexedDbService.save).toHaveBeenCalledWith('Images', null, '923/2');
-        expect(indexedDbService.save).toHaveBeenCalledWith('Images', null, '923/3');
-        expect(indexedDbService.save).toHaveBeenCalledWith('Images', null, '923/4');
+        expect(indexedDbService.save as any).toHaveBeenCalledTimes(6);
+        expect(indexedDbService.save as any).toHaveBeenCalledWith('Comics', ComicFixtures.comic);
+        expect(indexedDbService.save as any).toHaveBeenCalledWith('Images', null, '923/0');
+        expect(indexedDbService.save as any).toHaveBeenCalledWith('Images', null, '923/1');
+        expect(indexedDbService.save as any).toHaveBeenCalledWith('Images', null, '923/2');
+        expect(indexedDbService.save as any).toHaveBeenCalledWith('Images', null, '923/3');
+        expect(indexedDbService.save as any).toHaveBeenCalledWith('Images', null, '923/4');
       });
 
       describe('on image retrieval error', () => {
@@ -181,7 +181,7 @@ describe('ComicDatabaseService', () => {
 
     it('returns a URL of the given BLOB', async () => {
       const url = await service.getImageUrl(ComicFixtures.comic.id, 3);
-      expect(indexedDbService.get).toHaveBeenCalledWith('Images', '923/3');
+      expect(indexedDbService.get as any).toHaveBeenCalledWith('Images', '923/3');
       expect(url).toContain('blob:http');
     });
   });
@@ -215,7 +215,7 @@ describe('ComicDatabaseService', () => {
 
     it('saves the given comic', async () => {
       await service.save(ComicFixtures.comic);
-      expect(indexedDbService.save).toHaveBeenCalledWith('Comics', ComicFixtures.comic);
+      expect(indexedDbService.save as any).toHaveBeenCalledWith('Comics', ComicFixtures.comic);
     });
   });
 });
