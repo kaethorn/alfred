@@ -58,6 +58,10 @@ export class Page {
     return this.waitForGone(timeout, 'ion-toast');
   }
 
+  public static waitForLoading(timeout = 3000): promise.Promise<void> {
+    return browser.wait(ExpectedConditions.presenceOf(element(by.css('ion-loading'))), timeout);
+  }
+
   public static waitForLoadingGone(timeout = 3000): promise.Promise<void> {
     return this.waitForGone(timeout, 'ion-loading');
   }

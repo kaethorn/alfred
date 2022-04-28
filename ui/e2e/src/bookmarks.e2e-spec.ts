@@ -2,6 +2,7 @@ import { BookmarksPage } from './bookmarks.po';
 import { IssuesPage } from './issues.po';
 import { LibraryPage } from './library.po';
 import { MongoDBTools } from './mongodb.tools';
+import { Page } from './page.po';
 import { SettingsPage } from './settings.po';
 
 describe('BookmarksComponent', () => {
@@ -55,6 +56,8 @@ describe('BookmarksComponent', () => {
 
     it('marks the volume as read', async () => {
       await LibraryPage.clickVolumeMenuItem('Vol. 2009', 'Mark volume as read');
+      await Page.waitForLoading();
+      await Page.waitForLoadingGone();
     });
 
     it('updates the read issue counter', async () => {

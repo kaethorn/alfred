@@ -54,6 +54,7 @@ describe('LibraryComponent', () => {
 
     beforeAll(async () => {
       await LibraryPage.clickVolumeMenuItem('Vol. 2000', 'Mark volume as read');
+      await Page.waitForLoading();
       await Page.waitForLoadingGone();
     });
 
@@ -71,6 +72,7 @@ describe('LibraryComponent', () => {
 
     beforeAll(async () => {
       await LibraryPage.clickVolumeMenuItem('Vol. 2000', 'Mark volume as not read');
+      await Page.waitForLoading();
       await Page.waitForLoadingGone();
     });
 
