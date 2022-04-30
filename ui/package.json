@@ -31,7 +31,7 @@
     "@ionic-native/status-bar": "^5.36.0",
     "@ionic/angular": "^6.1.3",
     "@types/gapi": "0.0.39",
-    "@types/gapi.auth2": "0.0.54",
+    "@types/gapi.auth2": "0.0.56",
     "cordova-android": "9.0.0",
     "cordova-plugin-splashscreen": "6.0.0",
     "core-js": "^3.22.3",
