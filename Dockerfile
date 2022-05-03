@@ -11,7 +11,7 @@ RUN gradle build unpack -x test -x check
 WORKDIR /workspace/app/build/dependency
 RUN jar -xf ../libs/*.jar
 
-FROM openjdk:11-jre
+FROM openjdk:19-ea-19-slim-bullseye
 VOLUME /tmp
 EXPOSE 8080
 ARG DEPENDENCY=/workspace/app/build/dependency
