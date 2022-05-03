@@ -66,7 +66,7 @@ public class ApiMetaDataService {
           .message("Missing meta data: " + String.join(", ", missingAttributes))
           .severity(ScannerIssue.Severity.ERROR)
           .build());
-      return this.scannerIssues;
+      return new ArrayList<>(this.scannerIssues);
     }
 
     // Here we can assume to have enough meta data about the comic to make
@@ -81,7 +81,7 @@ public class ApiMetaDataService {
           .build());
     }
 
-    return this.scannerIssues;
+    return new ArrayList<>(this.scannerIssues);
   }
 
   private List<JsonNode> filterVolumeSearchResults(
