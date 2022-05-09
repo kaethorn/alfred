@@ -3,7 +3,7 @@ package de.wasenweg.alfred.integration;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
@@ -31,9 +31,9 @@ public class AlfredApplicationIntegrationTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    mongodExecutable = MONGOD_STARTER.prepare(new MongodConfigBuilder()
+    mongodExecutable = MONGOD_STARTER.prepare(MongodConfig.builder()
         .version(Version.Main.V3_6)
-        .net(new Net("localhost", MONGODB_PORT, Network.localhostIsIPv6()))
+        .net(new Net(MONGODB_PORT, Network.localhostIsIPv6()))
         .build());
     mongodProcess = mongodExecutable.start();
   }
