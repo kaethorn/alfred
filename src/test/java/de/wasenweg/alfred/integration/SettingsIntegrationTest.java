@@ -24,8 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class SettingsIntegrationTest {
 
-  private static final String TEST_APPLICATION_YML = "applicationConfig: [classpath:/application-test.yml]";
-
   private final SettingsService settingsService;
   private final SettingRepository settingRepository;
   private final ConfigurableEnvironment environment;
@@ -104,7 +102,13 @@ public class SettingsIntegrationTest {
   }
 
   private void setComicsPathEnvironment(final String value) {
-    this.environment.getPropertySources().replace(TEST_APPLICATION_YML, new PropertySource(TEST_APPLICATION_YML) {
+    final String applicationTestYml = this.environment.getPropertySources()
+        .stream()
+        .filter(source -> source.getName().contains("application-test.yml"))
+        .findFirst()
+        .get()
+        .getName();
+    this.environment.getPropertySources().replace(applicationTestYml, new PropertySource(applicationTestYml) {
       @Override
       public Object getProperty(final String name) {
         if ("comics.path".equals(name)) {

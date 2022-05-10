@@ -8,3 +8,6 @@ spring:
   config:
     activate:
       on-profile: prod
+  mongodb:
+    embedded:
+      version: 3.6.12
