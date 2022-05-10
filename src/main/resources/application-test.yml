@@ -8,7 +8,6 @@ spring:
   mongodb:
     embedded:
       version: 3.6.12
-      features: NO_HTTP_INTERFACE_ARG
 
 management:
   endpoints:
@@ -19,4 +18,4 @@ management:
 comics:
   path: src/test/resources/fixtures/full
   comicVine:
-    baseUrl: http://localhost:1080
+    baseUrl: http://localhost:1080/
