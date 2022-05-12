@@ -5,9 +5,6 @@ spring:
     mongodb:
       database: alfred
       uri: mongodb://mongo/alfred
-  config:
-    activate:
-      on-profile: prod
   mongodb:
     embedded:
       version: 3.6.12
