@@ -197,7 +197,7 @@ public class FileMetaDataService {
     this.scannerIssues.clear();
     this.parseComicInfoXml(comic);
     this.parseFiles(comic);
-    return this.scannerIssues;
+    return new ArrayList<>(this.scannerIssues);
   }
 
   /**

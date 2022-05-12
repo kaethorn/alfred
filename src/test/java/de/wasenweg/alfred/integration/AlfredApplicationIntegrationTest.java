@@ -3,25 +3,23 @@ package de.wasenweg.alfred.integration;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import de.wasenweg.alfred.AlfredApplication;
-import de.wasenweg.alfred.EnableEmbeddedMongo;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
-@EnableEmbeddedMongo
+@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class AlfredApplicationIntegrationTest {
 
   private static final int MONGODB_PORT = 27_017;
@@ -31,9 +29,9 @@ public class AlfredApplicationIntegrationTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    mongodExecutable = MONGOD_STARTER.prepare(new MongodConfigBuilder()
+    mongodExecutable = MONGOD_STARTER.prepare(MongodConfig.builder()
         .version(Version.Main.V3_6)
-        .net(new Net("localhost", MONGODB_PORT, Network.localhostIsIPv6()))
+        .net(new Net(MONGODB_PORT, Network.localhostIsIPv6()))
         .build());
     mongodProcess = mongodExecutable.start();
   }

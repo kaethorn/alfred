@@ -30,7 +30,7 @@ public class ApiMetaDataService {
 
   private final ComicVineService comicVineService;
 
-  private List<ScannerIssue> scannerIssues = new ArrayList<>();
+  private final List<ScannerIssue> scannerIssues = new ArrayList<>();
 
   /**
    * Scrapes and saves information for the given comic.
@@ -39,7 +39,7 @@ public class ApiMetaDataService {
    * data stored in the embedded XML file.
    *
    * @param comic The comic book entity.
-   * @return
+   * @return A list of scanner issues, if any.
    */
   public List<ScannerIssue> set(final Comic comic) {
     this.scannerIssues.clear();
@@ -66,7 +66,7 @@ public class ApiMetaDataService {
           .message("Missing meta data: " + String.join(", ", missingAttributes))
           .severity(ScannerIssue.Severity.ERROR)
           .build());
-      return this.scannerIssues;
+      return new ArrayList<>(this.scannerIssues);
     }
 
     // Here we can assume to have enough meta data about the comic to make
@@ -81,17 +81,16 @@ public class ApiMetaDataService {
           .build());
     }
 
-    return this.scannerIssues;
+    return new ArrayList<>(this.scannerIssues);
   }
 
   private List<JsonNode> filterVolumeSearchResults(
       final String publisher, final String series, final String volume, final JsonNode results) {
     final Stream<JsonNode> volumes = IntStream.range(0, results.size()).mapToObj(results::get);
-    return volumes.filter(v -> {
-      return publisher.equals(v.get("publisher").get(NAME).asText())
-          && series.equals(v.get(NAME).asText())
-          && volume.equals(v.get("start_year").asText());
-    }).collect(Collectors.toList());
+    return volumes.filter(v ->
+        publisher.equals(v.get("publisher").get(NAME).asText())
+        && series.equals(v.get(NAME).asText())
+        && volume.equals(v.get("start_year").asText())).collect(Collectors.toList());
   }
 
   private String findIssueDetailsUrl(final Comic comic, final List<JsonNode> issues) {
@@ -210,7 +209,7 @@ public class ApiMetaDataService {
   /**
    * Gathers a comma separated list of persons per role.
    * @param details The array of persons
-   * @return
+   * @return A list of persons and their role
    */
   private Map<String, String> getPersons(final JsonNode details) {
     final JsonNode persons = details.get("person_credits");
@@ -233,7 +232,7 @@ public class ApiMetaDataService {
   public void applyIssueDetails(final String url, final Comic comic) {
     final JsonNode response = this.comicVineService.getIssueDetails(url).get(RESULTS);
     comic.setTitle(this.getNodeText(response, NAME));
-    comic.setSummary(this.getNodeText(response, "description").replaceAll("\\<.*?\\>", ""));
+    comic.setSummary(this.getNodeText(response, "description").replaceAll("<.*?>", ""));
     final String[] coverDate = response.get("cover_date").asText().split("-");
     comic.setYear(Integer.valueOf(coverDate[0]));
     comic.setMonth(Integer.valueOf(coverDate[1]));

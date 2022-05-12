@@ -3,9 +3,9 @@ plugins {
   id 'checkstyle'
   id 'pmd'
   id 'jacoco'
-  id 'com.github.spotbugs' version '4.4.4'
+  id 'com.github.spotbugs' version '5.0.6'
   id 'io.freefair.lombok' version '5.1.0'
-  id 'org.springframework.boot' version '2.3.1.RELEASE'
+  id 'org.springframework.boot' version '2.6.7'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 }
 
@@ -23,7 +23,7 @@ repositories {
 }
 
 checkstyle {
-  toolVersion '8.34'
+  toolVersion '10.2'
 }
 
 spotbugs {
@@ -82,20 +82,16 @@ dependencies {
   implementation 'com.google.http-client:google-http-client-apache-v2:1.35.0'
   implementation 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
   implementation 'com.auth0:java-jwt:3.10.3'
-  implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
-  implementation 'org.projectlombok:lombok:1.18.12'
+  implementation 'org.projectlombok:lombok'
 
-  testImplementation('org.springframework.security:spring-security-test') {
-    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-  }
-  testImplementation 'org.glassfish.jersey.media:jersey-media-sse:2.31'
+  testImplementation 'org.springframework.security:spring-security-test'
+  testImplementation 'org.glassfish.jersey.media:jersey-media-sse'
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
   testImplementation 'org.mockito:mockito-junit-jupiter'
-  testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
-  testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
-  testImplementation 'io.projectreactor:reactor-test'
-  testImplementation 'org.mock-server:mockserver-netty:5.10.0'
-  testImplementation 'org.mock-server:mockserver-client-java:5.10.0'
+  testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.5'
+  testImplementation 'io.projectreactor:reactor-test:3.4.17'
+  testImplementation 'org.mock-server:mockserver-netty:5.13.2'
+  testImplementation 'org.mock-server:mockserver-client-java:5.13.2'
 
   implementation(project(':ui'))
 }
