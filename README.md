@@ -31,9 +31,9 @@ A web based comic book reader and library manager.
 
 ## Requirements
 
-**Building** requires either **Java 11 SDK** or **Docker**.
+**Building** requires either **Java 17 SDK** or **Docker**.
 
-**Running** the application requires a **Java 11 JRE** or **Docker**
+**Running** the application requires a **Java 17 JRE** or **Docker**
 
 Recommended: a Client ID for **Google Sign-In**.
 
@@ -116,7 +116,7 @@ The application will now be available at <http://localhost:5000>.
 
 ### Alternative (Gradle)
 
-Running Alfred on the host system directly requires **Java 11 SDK** and a running MongoDB instance, e.g. on `localhost`.
+Running Alfred on the host system directly requires **Java 17 SDK** and a running MongoDB instance, e.g. on `localhost`.
 
 ```sh
 ./gradlew clean build -x check
@@ -205,7 +205,7 @@ docker-compose -f .docker-compose.test.yml up --build --abort-on-container-exit
 
 This will:
 1. Install all dependencies
-   1. Install Java 11
+   1. Install Java 17
    1. Install Chrome
    1. Install Node.js
 1. Build and test the backend
@@ -235,8 +235,8 @@ These steps illustrate how to manually run end-to-end tests.
 Start a test instance
 
 ```sh
-docker pull mongo:3.6
-docker run -d --name mongo mongo:3.6
+docker pull mongo:4.2
+docker run -d --name mongo mongo:4.2
 
 ./gradlew clean build -x check
 java -jar build/libs/alfred.jar --spring.profiles.active=test --spring.data.mongodb.uri=mongodb://localhost/alfred

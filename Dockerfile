@@ -1,4 +1,4 @@
-FROM gradle:7.4.0-jdk11 as builder
+FROM gradle:7.5.1-jdk17 as builder
 WORKDIR /workspace/app
 COPY settings.gradle build.gradle ./
 RUN gradle dependencies > /dev/null
