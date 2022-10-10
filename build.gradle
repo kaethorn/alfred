@@ -4,7 +4,7 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'com.github.spotbugs' version '5.0.6'
-  id 'io.freefair.lombok' version '5.1.0'
+  id 'io.freefair.lombok' version '6.5.1'
   id 'org.springframework.boot' version '2.6.7'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 }

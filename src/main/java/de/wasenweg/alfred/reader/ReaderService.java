@@ -55,7 +55,7 @@ public class ReaderService {
     try {
       // Instantiate FileSystem here without try-with-resource as it's being
       // closed manually in the streaming response body handler.
-      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null); // NOPMD
+      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null); // NOPMD
       final Path path = ZipReaderUtil.getImages(fs).get(page);
       final String fileName = path.toString();
       final long fileSize = FileChannel.open(path).size();

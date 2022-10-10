@@ -171,7 +171,7 @@ public class FileMetaDataService {
   private Document getDocument(final Comic comic)
       throws IOException, SAXException, ParserConfigurationException, NoMetaDataException {
 
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
       try (InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"))) {
         return this.getDocumentBuilder().parse(xmlStream);
       }
@@ -209,7 +209,7 @@ public class FileMetaDataService {
    * @param comic The comic entity
    */
   public void parseFiles(final Comic comic) throws IOException, NoImagesException, InvalidFileException {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
       final List<Path> files = ZipReaderUtil.getEntries(fs);
       comic.setPageCount(0);
       comic.setPageCount((int) files.stream()
@@ -239,7 +239,7 @@ public class FileMetaDataService {
   }
 
   public void write(final Comic comic) {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
       final Path source = fs.getPath("/ComicInfo.xml");
       if (Files.exists(source)) {
         Files.delete(source);

@@ -36,7 +36,7 @@ public class QueueService {
   }
 
   public Comic flatten(final Comic comic) throws IOException {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
       final List<Path> files = ZipReaderUtil.getEntries(fs);
       files.stream()
           .filter(Files::isDirectory)

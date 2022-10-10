@@ -96,7 +96,7 @@ public class ComicService {
     final Optional<Comic> maybeComic = this.comicRepository.findById(comicId);
     if (maybeComic.isPresent()) {
       final Comic comic = maybeComic.get();
-      try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+      try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
         final Path source = fs.getPath(filePath);
         if (Files.exists(source)) {
           Files.delete(source);
