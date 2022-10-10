@@ -48,7 +48,7 @@ This is the recommended way to build and run Alfred.
 
 ```sh
 docker network create alfred-net
-docker start mongo || docker run -d -p 27017:27017 --name mongo mongo:3.6
+docker start mongo || docker run -d -p 27017:27017 --name mongo mongo:4.2
 docker network connect alfred-net mongo
 docker build -t de.wasenweg/alfred .
 docker run --dns 8.8.8.8 -p 5000:8080 --net=alfred-net --rm \
