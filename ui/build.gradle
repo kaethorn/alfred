@@ -18,3 +18,10 @@ jar {
   from 'dist/alfred' into 'static'
 }
 
+configurations {
+  runtime
+}
+
+artifacts {
+  runtime jar
+}
