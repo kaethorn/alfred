@@ -20,7 +20,9 @@ public class ZipReaderUtilTest {
   @Test
   public void getEntries() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/simple");
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz"), (ClassLoader) null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(
+            Paths.get(this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz"),
+            (ClassLoader) null)) {
       assertThat(ZipReaderUtil.getEntries(fs).size()).isEqualTo(4);
     }
   }
@@ -28,7 +30,9 @@ public class ZipReaderUtilTest {
   @Test
   public void getEntriesWithCorruptArchive() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/corrupt_archive");
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz"), (ClassLoader) null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(
+            Paths.get(this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz"),
+            (ClassLoader) null)) {
       assertThat(ZipReaderUtil.getEntries(fs).size()).isEqualTo(0);
     }
   }
