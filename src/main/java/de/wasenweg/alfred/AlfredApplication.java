@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @EnableCaching
 @SpringBootApplication(exclude = EmbeddedMongoAutoConfiguration.class)
-public class AlfredApplication {  // NOPMD
+public class AlfredApplication { // NOPMD
 
   public static void main(final String[] args) {
     SpringApplication.run(AlfredApplication.class, args);

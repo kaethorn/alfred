@@ -31,7 +31,7 @@ class AlfredApplicationIntegrationTest {
   public static void setUp() throws Exception {
     final int mongodPort = Network.freeServerPort(InetAddress.getLocalHost());
     mongodExecutable = MONGOD_STARTER.prepare(MongodConfig.builder()
-        .version(Version.Main.V4_4)
+        .version(Version.Main.V4_2)
         .net(new Net(mongodPort, Network.localhostIsIPv6()))
         .build());
     mongodProcess = mongodExecutable.start();

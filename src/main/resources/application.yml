@@ -7,4 +7,4 @@ spring:
       uri: mongodb://mongo/alfred
   mongodb:
     embedded:
-      version: 3.6.12
+      version: 4.2.22
