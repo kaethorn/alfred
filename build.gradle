@@ -34,7 +34,6 @@ pmd {
   consoleOutput = true
   toolVersion = '6.50.0'
   incrementalAnalysis = true
-  reportsDir = file("pmd")
 }
 
 jacocoTestReport {
