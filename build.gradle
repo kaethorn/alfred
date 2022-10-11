@@ -23,7 +23,7 @@ repositories {
 }
 
 checkstyle {
-  toolVersion '10.2'
+  toolVersion '10.3.4'
 }
 
 spotbugs {
