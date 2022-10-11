@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("prod")
-public class UserIntegrationTest {
+class UserIntegrationTest {
 
   private final MockMvc mockMvc;
 
@@ -54,7 +54,7 @@ public class UserIntegrationTest {
   private transient SettingsService settingsService;
 
   @Test
-  public void verify() throws Exception {
+  void verify() throws Exception {
     final String token = TestHelper.readString("jwt-valid.txt");
     this.mockMvc.perform(get("/api/user/verify/" + token))
         .andExpect(status().isOk())
@@ -63,13 +63,13 @@ public class UserIntegrationTest {
   }
 
   @Test
-  public void verifyUnauthenticated() throws Exception {
+  void verifyUnauthenticated() throws Exception {
     this.mockMvc.perform(get("/api/user/verify/invalid-token-123"))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
-  public void signIn() throws Exception {
+  void signIn() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
     when(this.googleIdTokenVerifier.verify("mock-123")).thenReturn(this.googleIdToken);
     when(this.googleIdTokenVerifierBuilder.build()).thenReturn(this.googleIdTokenVerifier);
@@ -87,7 +87,7 @@ public class UserIntegrationTest {
   }
 
   @Test
-  public void signInWithoutValidUser() throws Exception {
+  void signInWithoutValidUser() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("bar@foo.com");
     when(this.googleIdTokenVerifier.verify("mock-123")).thenReturn(this.googleIdToken);
     when(this.googleIdTokenVerifierBuilder.build()).thenReturn(this.googleIdTokenVerifier);
@@ -102,7 +102,7 @@ public class UserIntegrationTest {
   }
 
   @Test
-  public void signInWithoutValidToken() throws Exception {
+  void signInWithoutValidToken() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("bar@foo.com");
     when(this.googleIdTokenVerifierBuilder.build()).thenReturn(this.googleIdTokenVerifier);
     when(this.googleIdTokenVerifierBuilder.setAudience(any())).thenReturn(this.googleIdTokenVerifierBuilder);
@@ -116,7 +116,7 @@ public class UserIntegrationTest {
   }
 
   @Test
-  public void clientId() throws Exception {
+  void clientId() throws Exception {
     when(this.settingsService.get("auth.client.id")).thenReturn("mock-client-id-123");
 
     this.mockMvc.perform(get("/api/user/client-id"))
@@ -126,7 +126,7 @@ public class UserIntegrationTest {
   }
 
   @Test
-  public void login() throws Exception {
+  void login() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
     when(this.settingsService.get("auth.passwords")).thenReturn("foo,bar");
     when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-token-123");
@@ -144,7 +144,7 @@ public class UserIntegrationTest {
   }
 
   @Test
-  public void loginWithInvalidUser() throws Exception {
+  void loginWithInvalidUser() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
     when(this.settingsService.get("auth.passwords")).thenReturn("foo,bar");
     when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-token-123");
@@ -159,7 +159,7 @@ public class UserIntegrationTest {
   }
 
   @Test
-  public void loginWithoutMatch() throws Exception {
+  void loginWithoutMatch() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
     when(this.settingsService.get("auth.passwords")).thenReturn("foo,bar");
     when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-token-123");

@@ -20,7 +20,7 @@ import java.net.URL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
-public class AlfredApplicationIntegrationTest {
+class AlfredApplicationIntegrationTest {
 
   private static final int MONGODB_PORT = 27_017;
   private static final MongodStarter MONGOD_STARTER = MongodStarter.getDefaultInstance();
@@ -43,7 +43,7 @@ public class AlfredApplicationIntegrationTest {
   }
 
   @Test
-  public void startsAlfred() throws Exception {
+  void startsAlfred() throws Exception {
     AlfredApplication.main(new String[] {"--spring.profiles.active=test"});
     final URL url = new URL("http://localhost:8080/api/stats");
     final HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();

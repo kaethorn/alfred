@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ApiMetaDataReaderTest {
+class ApiMetaDataReaderTest {
 
   @Spy
   @InjectMocks
@@ -39,7 +39,7 @@ public class ApiMetaDataReaderTest {
   private transient ComicVineService comicVineService;
 
   @Test
-  public void findVolume() throws Exception {
+  void findVolume() throws Exception {
     when(this.comicVineService.findVolumesBySeries("Batgirl", 0)).thenReturn(TestHelper.parseJson("search-batgirl.json"));
     final Comic comic = new Comic();
     comic.setSeries("Batgirl");
@@ -51,7 +51,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findVolumeWithOffset() throws Exception {
+  void findVolumeWithOffset() throws Exception {
     when(this.comicVineService.findVolumesBySeries("Batman", 0)).thenReturn(TestHelper.parseJson("search-batman.json"));
     when(this.comicVineService.findVolumesBySeries("Batman", 1)).thenReturn(TestHelper.parseJson("search-batman-page2.json"));
     when(this.comicVineService.findVolumesBySeries("Batman", 2)).thenReturn(TestHelper.parseJson("search-batman-page3.json"));
@@ -72,7 +72,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findVolumeIssues() throws Exception {
+  void findVolumeIssues() throws Exception {
     when(this.comicVineService.findIssuesInVolume("796", 0)).thenReturn(TestHelper.parseJson("issues-batman-page1.json"));
     when(this.comicVineService.findIssuesInVolume("796", 1)).thenReturn(TestHelper.parseJson("issues-batman-page2.json"));
     when(this.comicVineService.findIssuesInVolume("796", 2)).thenReturn(TestHelper.parseJson("issues-batman-page3.json"));
@@ -86,7 +86,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void getIssueDetails() throws Exception {
+  void getIssueDetails() throws Exception {
     when(this.comicVineService.getIssueDetails("https://comicvine.gamespot.com/api/issue/4000-224555/"))
         .thenReturn(TestHelper.parseJson("batman-701.json"));
 
@@ -118,7 +118,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void parseWithInvalidIssueNumber() throws Exception {
+  void parseWithInvalidIssueNumber() throws Exception {
     doReturn("").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
     final Comic comic = new Comic();
     comic.setPath("/c/DC Comics/Batman (1940)/Batman 1/3 (1940).cbz");
@@ -131,7 +131,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void parseWithMissingAttributes() throws Exception {
+  void parseWithMissingAttributes() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/c/Batman 3 (1940).cbz");
 
@@ -143,7 +143,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void parseWithoutVolumeIssues() throws Exception {
+  void parseWithoutVolumeIssues() throws Exception {
     doReturn("456").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
     doReturn(new ArrayList<>()).when(this.apiMetaDataService).findVolumeIssues("456");
     final Comic comic = new Comic();
@@ -157,7 +157,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findIssueDetailsUrlWithEquivalentPaddedNumbers() throws Exception {
+  void findIssueDetailsUrlWithEquivalentPaddedNumbers() throws Exception {
     when(this.comicVineService.getIssueDetails("http://foo2"))
         .thenReturn(TestHelper.parseJson("batman-701.json"));
     doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
@@ -176,7 +176,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findIssueDetailsUrlWithEquivalentRegularNumbers() throws Exception {
+  void findIssueDetailsUrlWithEquivalentRegularNumbers() throws Exception {
     when(this.comicVineService.getIssueDetails("http://foo2"))
         .thenReturn(TestHelper.parseJson("batman-701.json"));
     doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
@@ -195,7 +195,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findIssueDetailsUrlWithEmptyUrls() throws Exception {
+  void findIssueDetailsUrlWithEmptyUrls() throws Exception {
     doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
     final List<JsonNode> issues = Arrays.asList(
         this.createJsonObject(Map.of("issue_number", "1", "api_detail_url", "")),
@@ -213,7 +213,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findIssueDetailsUrlWithoutUrls() throws Exception {
+  void findIssueDetailsUrlWithoutUrls() throws Exception {
     doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
     final List<JsonNode> issues = Arrays.asList(
         this.createJsonObject(Map.of("issue_number", "1")),
@@ -231,7 +231,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findIssueDetailsUrlWithoutMatches() throws Exception {
+  void findIssueDetailsUrlWithoutMatches() throws Exception {
     doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
     final List<JsonNode> issues = Arrays.asList(
         this.createJsonObject(Map.of("issue_number", "1")),
@@ -249,7 +249,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findIssueDetailsUrlWithMoreThanOneMatch() throws Exception {
+  void findIssueDetailsUrlWithMoreThanOneMatch() throws Exception {
     doReturn("111").when(this.apiMetaDataService).findVolumeId("DC Comics", "Batman", "1940");
     final List<JsonNode> issues = Arrays.asList(
         this.createJsonObject(Map.of("issue_number", "4", "api_detail_url", "http://result")),
@@ -267,7 +267,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findVolumeIdWithoutResults() throws Exception {
+  void findVolumeIdWithoutResults() throws Exception {
     when(this.comicVineService.findVolumesBySeries("Batman", 0))
         .thenReturn(this.createJsonObject(
           Map.of("number_of_total_results", 0, "limit", 10, "results", new ObjectMapper().createArrayNode())));
@@ -276,7 +276,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void findVolumeIssuesWithoutResults() throws Exception {
+  void findVolumeIssuesWithoutResults() throws Exception {
     when(this.comicVineService.findIssuesInVolume("123", 0))
         .thenReturn(this.createJsonObject(
           Map.of("number_of_total_results", 0, "limit", 10, "results", new ObjectMapper().createArrayNode())));
@@ -285,7 +285,7 @@ public class ApiMetaDataReaderTest {
   }
 
   @Test
-  public void applyIssueDetailsWithoutDetails() throws Exception {
+  void applyIssueDetailsWithoutDetails() throws Exception {
     final Comic comic = new Comic();
     when(this.comicVineService.getIssueDetails("http://issue.url"))
         .thenReturn(this.createJsonObject(Map.of("results",

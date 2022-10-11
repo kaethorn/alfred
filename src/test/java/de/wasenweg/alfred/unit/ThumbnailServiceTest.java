@@ -22,7 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class ThumbnailServiceTest {
+class ThumbnailServiceTest {
 
   @TempDir
   public transient File testBed;
@@ -34,7 +34,7 @@ public class ThumbnailServiceTest {
   private transient ThumbnailService thumbnailService;
 
   @Test
-  public void read() throws Exception {
+  void read() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/simple");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = ComicFixtures.COMIC_V1_1.toBuilder().path(comicPath).id(ObjectId.get().toString()).build();
@@ -44,7 +44,7 @@ public class ThumbnailServiceTest {
   }
 
   @Test
-  public void readWithoutImages() throws Exception {
+  void readWithoutImages() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/no_images");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = ComicFixtures.COMIC_V1_1.toBuilder().path(comicPath).id(ObjectId.get().toString()).build();
@@ -54,7 +54,7 @@ public class ThumbnailServiceTest {
   }
 
   @Test
-  public void readWithCorruptFiles() {
+  void readWithCorruptFiles() {
     assertThrows(NoThumbnailsException.class, () -> {
       this.thumbnailService.read(
           ComicFixtures.COMIC_V1_1.toBuilder()

@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceOAuthTest {
+class UserServiceOAuthTest {
 
   @Mock
   private transient SettingsService settingsService;
@@ -56,7 +56,7 @@ public class UserServiceOAuthTest {
   }
 
   @Test
-  public void signInWithValidToken() throws Exception {
+  void signInWithValidToken() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
     when(this.googleIdToken.getPayload()).thenReturn(SecurityFixtures.getMockPayload());
     when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-api-token");
@@ -69,13 +69,13 @@ public class UserServiceOAuthTest {
   }
 
   @Test
-  public void signInWithoutValidToken() throws Exception {
+  void signInWithoutValidToken() throws Exception {
     when(this.googleIdTokenVerifier.verify("mock-123")).thenReturn(null);
     assertThrows(GeneralSecurityException.class, () -> this.userService.signIn("mock-123"));
   }
 
   @Test
-  public void signInWithoutValidUser() throws Exception {
+  void signInWithoutValidUser() throws Exception {
     when(this.settingsService.get("auth.users")).thenReturn("foo@bar.com,bar@foo.com");
     when(this.payload.getEmail()).thenReturn("foo@bar.com");
     when(this.googleIdToken.getPayload()).thenReturn(this.payload);

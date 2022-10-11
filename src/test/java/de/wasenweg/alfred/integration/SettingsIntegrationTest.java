@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class SettingsIntegrationTest {
+class SettingsIntegrationTest {
 
   private final SettingsService settingsService;
   private final SettingRepository settingRepository;
@@ -39,7 +39,7 @@ public class SettingsIntegrationTest {
   }
 
   @Test
-  public void settingsByDefault() {
+  void settingsByDefault() {
     assertThat(this.settingRepository.findAll().size()).isEqualTo(0);
     this.setComicsPathEnvironment(null);
 
@@ -52,7 +52,7 @@ public class SettingsIntegrationTest {
   }
 
   @Test
-  public void withExistingSettingsAndWithoutEnvironmentValue() {
+  void withExistingSettingsAndWithoutEnvironmentValue() {
     final Setting setting = Setting.builder()
         .key("comics.path")
         .name("Path")
@@ -71,7 +71,7 @@ public class SettingsIntegrationTest {
   }
 
   @Test
-  public void withoutExistingSettingsAndWithEnvironmentValue() {
+  void withoutExistingSettingsAndWithEnvironmentValue() {
     this.setComicsPathEnvironment("/environment/comics");
 
     this.settingsService.setup();
@@ -83,7 +83,7 @@ public class SettingsIntegrationTest {
   }
 
   @Test
-  public void withExistingSettingsAndWithEnvironmentValue() {
+  void withExistingSettingsAndWithEnvironmentValue() {
     final Setting setting = Setting.builder()
         .key("comics.path")
         .name("Path")

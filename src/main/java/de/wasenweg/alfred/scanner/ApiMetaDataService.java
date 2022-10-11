@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -74,7 +72,7 @@ public class ApiMetaDataService {
     try {
       this.query(comic);
     } catch (final IndexOutOfBoundsException | RestClientException exception) {
-      log.error(format("Error while fetching information for %s.", comic.getPath()), exception);
+      log.error("Error while fetching information for {}.", comic.getPath(), exception);
       this.scannerIssues.add(ScannerIssue.builder()
           .message("Error during Comic Vine API meta data retrieval")
           .severity(ScannerIssue.Severity.ERROR)
@@ -96,7 +94,7 @@ public class ApiMetaDataService {
   private String findIssueDetailsUrl(final Comic comic, final List<JsonNode> issues) {
     final List<JsonNode> filteredIssues = issues.stream()
         .filter(issue -> Comic.issueNumberEquals(issue.get("issue_number").asText(), comic.getNumber()))
-        .collect(Collectors.toList());
+        .toList();
 
     if (filteredIssues.isEmpty()) {
       this.scannerIssues.add(ScannerIssue.builder()
@@ -167,7 +165,7 @@ public class ApiMetaDataService {
       page++;
       results = this.comicVineService.findIssuesInVolume(volumeId, page).get(RESULTS);
       issues.addAll(IntStream.range(0, results.size()).mapToObj(results::get)
-          .collect(Collectors.toList()));
+          .toList());
     }
 
     if (issues.isEmpty()) {

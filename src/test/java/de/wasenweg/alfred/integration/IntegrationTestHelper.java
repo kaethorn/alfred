@@ -11,7 +11,7 @@ import java.io.File;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class IntegrationTestHelper {
+class IntegrationTestHelper {
 
   private final SettingRepository settingsRepository;
 

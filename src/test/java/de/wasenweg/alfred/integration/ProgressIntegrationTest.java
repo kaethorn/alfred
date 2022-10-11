@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class ProgressIntegrationTest {
+class ProgressIntegrationTest {
 
   private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
@@ -42,7 +42,7 @@ public class ProgressIntegrationTest {
   }
 
   @Test
-  public void deleteProgress() throws Exception {
+  void deleteProgress() throws Exception {
     // Given
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
@@ -61,7 +61,7 @@ public class ProgressIntegrationTest {
   }
 
   @Test
-  public void deleteProgressForCurrentUser() throws Exception {
+  void deleteProgressForCurrentUser() throws Exception {
     // Given
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,

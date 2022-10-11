@@ -17,8 +17,6 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 
-import static java.lang.String.format;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -49,10 +47,10 @@ public class QueueService {
               final String filePathInZip = file.toString();
               final Path source = fs.getPath(filePathInZip);
               final Path target = fs.getPath("/", fileName);
-              log.debug(format("Moving %s to %s.", source, target));
+              log.debug("Moving {} to {}.", source, target);
               Files.move(source, target);
             } catch (final IOException exception) {
-              log.error(format("Error while flattening %s", comic.toString()), exception);
+              log.error("Error while flattening {}", comic, exception);
             }
           });
 
@@ -62,15 +60,15 @@ public class QueueService {
           .sorted(Comparator.comparing(directory -> -directory.getNameCount()))
           .forEach(directory -> {
             try {
-              log.debug(format("Removing directory %s.", directory));
+              log.debug("Removing directory {}.", directory);
               Files.delete(directory);
             } catch (final IOException exception) {
-              log.error(format("Directory %s could not be deleted.", directory), exception);
+              log.error("Directory {} could not be deleted.", directory, exception);
             }
           });
     }
 
-    log.info(format("Flattened %s.", comic.getPath()));
+    log.info("Flattened {}.", comic.getPath());
     return this.scannerService.processComic(comic);
   }
 }

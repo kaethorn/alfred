@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class ComicVineIngrationTest {
+class ComicVineIngrationTest {
 
   @TempDir
   public File testBed;
@@ -63,7 +63,7 @@ public class ComicVineIngrationTest {
   }
 
   @Test
-  public void scrapesMetaData() throws Exception {
+  void scrapesMetaData() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
     final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";

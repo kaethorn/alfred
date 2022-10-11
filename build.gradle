@@ -32,7 +32,9 @@ spotbugs {
 
 pmd {
   consoleOutput = true
-  toolVersion = '6.25.0'
+  toolVersion = '6.50.0'
+  incrementalAnalysis = true
+  reportsDir = file("pmd")
 }
 
 jacocoTestReport {
@@ -63,6 +65,9 @@ test {
   useJUnitPlatform()
 }
 
+bootRun.dependsOn ':ui:jar'
+bootJar.dependsOn ':ui:jar'
+
 task unpack(type: Copy) {
   dependsOn bootJar
   from(zipTree(tasks.bootJar.outputs.files.singleFile))
@@ -92,6 +97,4 @@ dependencies {
   testImplementation 'io.projectreactor:reactor-test:3.4.17'
   testImplementation 'org.mock-server:mockserver-netty:5.13.2'
   testImplementation 'org.mock-server:mockserver-client-java:5.13.2'
-
-  runtimeOnly(project(path: ':ui', configuration: 'runtime'))
 }

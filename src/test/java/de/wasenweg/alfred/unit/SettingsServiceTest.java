@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SettingsServiceTest {
+class SettingsServiceTest {
 
   @Mock
   private transient Environment environment;
@@ -35,7 +35,7 @@ public class SettingsServiceTest {
   private transient ArgumentCaptor<Setting> settingCaptor;
 
   @Test
-  public void setupWithoutExistingSettingsAndWithoutEnvironmentValue() {
+  void setupWithoutExistingSettingsAndWithoutEnvironmentValue() {
     when(this.settingRepository.findByKey("comics.path")).thenReturn(Optional.ofNullable(null));
     when(this.environment.getProperty("comics.path")).thenReturn(null);
 
@@ -47,7 +47,7 @@ public class SettingsServiceTest {
   }
 
   @Test
-  public void setupWithExistingSettingsAndWithoutEnvironmentValue() {
+  void setupWithExistingSettingsAndWithoutEnvironmentValue() {
     final Setting setting = Setting.builder()
         .key("comics.path")
         .name("Path")
@@ -64,7 +64,7 @@ public class SettingsServiceTest {
   }
 
   @Test
-  public void setupWithoutExistingSettingsAndWithEnvironmentValue() {
+  void setupWithoutExistingSettingsAndWithEnvironmentValue() {
     when(this.settingRepository.findByKey("comics.path")).thenReturn(Optional.ofNullable(null));
     when(this.environment.getProperty("comics.path")).thenReturn("/environment/comics");
 
@@ -76,7 +76,7 @@ public class SettingsServiceTest {
   }
 
   @Test
-  public void setupWithExistingSettingsAndWithEnvironmentValue() {
+  void setupWithExistingSettingsAndWithEnvironmentValue() {
     final Setting setting = Setting.builder()
         .key("comics.path")
         .name("Path")

@@ -10,5 +10,5 @@ import java.util.Optional;
 @RepositoryRestResource(collectionResourceRel = "thumbnail", path = "thumbnail")
 public interface ThumbnailRepository extends MongoRepository<Thumbnail, String> {
 
-  Optional<Thumbnail> findByComicIdAndType(final ObjectId comicId, final ThumbnailType type);
+  Optional<Thumbnail> findByComicIdAndType(ObjectId comicId, ThumbnailType type);
 }

@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class QueueIntegrationTest {
+class QueueIntegrationTest {
 
   private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
@@ -54,7 +54,7 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  public void getInvalidReturnsInvalid() throws Exception {
+  void getInvalidReturnsInvalid() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
     comic.setErrors(Arrays.asList(
@@ -69,7 +69,7 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  public void getInvalidOmitsValid() throws Exception {
+  void getInvalidOmitsValid() throws Exception {
     // Given / When / Then
     this.mockMvc.perform(get("/api/queue"))
         .andExpect(status().isOk())
@@ -78,7 +78,7 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  public void getValidReturnsValid() throws Exception {
+  void getValidReturnsValid() throws Exception {
     // Given / When / Then
     this.mockMvc.perform(get("/api/queue/valid")
         .param("publisher", "DC Comics")
@@ -90,7 +90,7 @@ public class QueueIntegrationTest {
   }
 
   @Test
-  public void getValidOmitsInvalid() throws Exception {
+  void getValidOmitsInvalid() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
     comic.setErrors(Arrays.asList(

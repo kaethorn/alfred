@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class ScannerAssociationIngrationTest {
+class ScannerAssociationIngrationTest {
 
   @TempDir
   public File testBed;
@@ -48,7 +48,7 @@ public class ScannerAssociationIngrationTest {
   }
 
   @Test
-  public void associatesComics() throws Exception {
+  void associatesComics() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/full", this.testBed);
 

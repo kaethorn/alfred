@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class IndexControllerTest {
+class IndexControllerTest {
 
   private transient MockMvc mockMvc;
 
@@ -28,7 +28,7 @@ public class IndexControllerTest {
   }
 
   @Test
-  public void redirectToIndex() throws Exception {
+  void redirectToIndex() throws Exception {
     this.mockMvc.perform(get("/error"))
         .andExpect(forwardedUrl("/index.html"))
         .andExpect(status().isOk());

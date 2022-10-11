@@ -23,8 +23,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.String.format;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -105,11 +103,11 @@ public class ComicService {
         this.thumbnailService.read(comic);
         this.fileMetaDataService.parseFiles(comic);
         this.comicRepository.save(comic);
-        log.info(format("Deleted file %s in comic %s", filePath, comic.getPath()));
+        log.info("Deleted file {} in comic {}", filePath, comic.getPath());
       } catch (final NoImagesException | InvalidFileException exception) {
-        log.warn(format("Error while deleting page %s of %s: ", filePath, comic.toString()), exception);
+        log.warn("Error while deleting page {} of {}: ", filePath, comic, exception);
       } catch (final IOException exception) {
-        log.error(format("Error while deleting page %s of %s: ", filePath, comic.toString()), exception);
+        log.error("Error while deleting page {} of {}: ", filePath, comic, exception);
       }
     }
     return maybeComic;

@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 
 @Slf4j
@@ -51,11 +50,11 @@ public final class TestUtil {
         try {
           Files.copy(file, temp.toPath().resolve(source.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException exception) {
-          log.error(format("Failed to copy file %s.", file), exception);
+          log.error("Failed to copy file {}.", file, exception);
         }
       });
     } catch (final IOException exception) {
-      log.error(format("Failed to copy directory %s.", resourcePath), exception);
+      log.error("Failed to copy directory {}.", resourcePath, exception);
     }
   }
 

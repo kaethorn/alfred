@@ -26,8 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.lang.String.format;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -55,7 +53,7 @@ public class ScannerService {
     } catch (final NoImagesException | NoThumbnailsException | ProviderNotFoundException | InvalidFileException exception) {
       this.scanProgressService.reportIssue(comic, exception);
     } catch (final NoMetaDataException exception) {
-      log.info(format("No metadata found for %s, querying ComicVine API.", comic.getPath()));
+      log.info("No metadata found for {}, querying ComicVine API.", comic.getPath());
       final List<ScannerIssue> issues = this.apiMetaDataService.set(comic);
       this.fileMetaDataService.write(comic);
       issues.forEach(issue -> {

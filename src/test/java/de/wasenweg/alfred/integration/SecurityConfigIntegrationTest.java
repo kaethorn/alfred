@@ -20,19 +20,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("prod")
-public class SecurityConfigIntegrationTest {
+class SecurityConfigIntegrationTest {
 
   private final MockMvc mockMvc;
 
   @Test
-  public void rejectsUnauthenticatedUsers() throws Exception {
+  void rejectsUnauthenticatedUsers() throws Exception {
     this.mockMvc.perform(get("/api/stats")
           .contentType(MediaType.APPLICATION_JSON))
           .andExpect(status().isUnauthorized());
   }
 
   @Test
-  public void rejectsUserWithInvalidClaims() throws Exception {
+  void rejectsUserWithInvalidClaims() throws Exception {
     this.mockMvc.perform(get("/api/stats")
           .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestHelper.readString("jwt-invalid-claim.txt"))
           .contentType(MediaType.APPLICATION_JSON))
@@ -40,7 +40,7 @@ public class SecurityConfigIntegrationTest {
   }
 
   @Test
-  public void admitsValidUser() throws Exception {
+  void admitsValidUser() throws Exception {
     this.mockMvc.perform(get("/api/stats")
           .header(HttpHeaders.AUTHORIZATION, "Bearer " + TestHelper.readString("jwt-valid.txt"))
           .contentType(MediaType.APPLICATION_JSON))

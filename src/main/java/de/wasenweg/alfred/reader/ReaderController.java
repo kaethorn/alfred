@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.security.Principal;
-
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -23,9 +21,8 @@ public class ReaderController {
   @GetMapping("/read/{id}")
   @ResponseBody
   public ResponseEntity<StreamingResponseBody> read(
-      @PathVariable("id") final String id,
-      final Principal principal) {
-    return this.readerService.read(id, 0, principal.getName());
+      @PathVariable("id") final String id) {
+    return this.readerService.read(id, 0);
   }
 
   @Transactional
@@ -33,9 +30,8 @@ public class ReaderController {
   @ResponseBody
   public ResponseEntity<StreamingResponseBody> readPage(
       @PathVariable("id") final String id,
-      @PathVariable("page") final Integer page,
-      final Principal principal) {
-    return this.readerService.read(id, page, principal.getName());
+      @PathVariable("page") final Integer page) {
+    return this.readerService.read(id, page);
   }
 
   @Transactional

@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class FileMetaDataServiceTest {
+class FileMetaDataServiceTest {
 
   @TempDir
   public transient File testBed;
@@ -31,7 +31,7 @@ public class FileMetaDataServiceTest {
   private transient FileMetaDataService fileMetaDataService;
 
   @Test
-  public void readWithInvalidMonth() throws Exception {
+  void readWithInvalidMonth() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/invalid_month");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
@@ -43,7 +43,7 @@ public class FileMetaDataServiceTest {
   }
 
   @Test
-  public void readWithInvalidNumber() throws Exception {
+  void readWithInvalidNumber() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/invalid_number");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
@@ -55,7 +55,7 @@ public class FileMetaDataServiceTest {
   }
 
   @Test
-  public void writeWithInvalidNumber() throws Exception {
+  void writeWithInvalidNumber() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/simple");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
@@ -68,7 +68,7 @@ public class FileMetaDataServiceTest {
   }
 
   @Test
-  public void writeWithManga() throws Exception {
+  void writeWithManga() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/simple");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
@@ -82,7 +82,7 @@ public class FileMetaDataServiceTest {
   }
 
   @Test
-  public void writeWithInvalidXml() throws Exception {
+  void writeWithInvalidXml() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/invalid_xml");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
@@ -96,7 +96,7 @@ public class FileMetaDataServiceTest {
   }
 
   @Test
-  public void writeWithInvalidContent() throws Exception {
+  void writeWithInvalidContent() throws Exception {
     final String comicPath = this.testBed.getAbsolutePath() + "/invalid-path/invalid.cbz";
     final Comic comic = new Comic();
     comic.setPath(comicPath);
@@ -106,7 +106,7 @@ public class FileMetaDataServiceTest {
   }
 
   @Test
-  public void parseFilesWithDirectories() throws Exception {
+  void parseFilesWithDirectories() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/containing_directory");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
@@ -121,7 +121,7 @@ public class FileMetaDataServiceTest {
   }
 
   @Test
-  public void parseFilesWithInvalidFile() throws Exception {
+  void parseFilesWithInvalidFile() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/containing_invalid_file");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
@@ -131,7 +131,7 @@ public class FileMetaDataServiceTest {
   }
 
   @Test
-  public void parseFilesWithoutImages() throws Exception {
+  void parseFilesWithoutImages() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/no_images");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
