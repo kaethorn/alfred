@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@v1
@@ -17,7 +17,7 @@ jobs:
     - name: Install Java
       uses: actions/setup-java@v1
       with:
-        java-version: 11
+        java-version: 17
 
     - name: Install Chrome
       uses: browser-actions/setup-chrome@latest
@@ -47,7 +47,7 @@ jobs:
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.1.0
       with:
-        mongodb-version: 3.6
+        mongodb-version: 4.2
 
     - name: Start Alfred
       run: |
