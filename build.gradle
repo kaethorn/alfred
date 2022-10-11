@@ -3,7 +3,7 @@ plugins {
   id 'checkstyle'
   id 'pmd'
   id 'jacoco'
-  id 'com.github.spotbugs' version '5.0.6'
+  id 'com.github.spotbugs' version '5.0.12'
   id 'io.freefair.lombok' version '6.5.1'
   id 'org.springframework.boot' version '2.6.7'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
@@ -88,6 +88,8 @@ dependencies {
   implementation 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
   implementation 'com.auth0:java-jwt:3.10.3'
   implementation 'org.projectlombok:lombok'
+
+  spotbugsSlf4j  'org.slf4j:slf4j-simple:1.7.36'
 
   testImplementation 'org.springframework.security:spring-security-test'
   testImplementation 'org.glassfish.jersey.media:jersey-media-sse'
