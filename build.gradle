@@ -88,7 +88,7 @@ dependencies {
   testImplementation 'org.glassfish.jersey.media:jersey-media-sse'
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
   testImplementation 'org.mockito:mockito-junit-jupiter'
-  testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.5'
+  testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.4.11'
   testImplementation 'io.projectreactor:reactor-test:3.4.17'
   testImplementation 'org.mock-server:mockserver-netty:5.13.2'
   testImplementation 'org.mock-server:mockserver-client-java:5.13.2'

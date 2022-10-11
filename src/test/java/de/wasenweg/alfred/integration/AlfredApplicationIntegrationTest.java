@@ -30,7 +30,7 @@ public class AlfredApplicationIntegrationTest {
   @BeforeAll
   public static void setUp() throws Exception {
     mongodExecutable = MONGOD_STARTER.prepare(MongodConfig.builder()
-        .version(Version.Main.V3_6)
+        .version(Version.Main.V4_2)
         .net(new Net(MONGODB_PORT, Network.localhostIsIPv6()))
         .build());
     mongodProcess = mongodExecutable.start();
