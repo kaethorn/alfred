@@ -3,82 +3,92 @@ name: Tests
 on: [push]
 
 jobs:
-  tests:
+
+  backend-unit-tests:
     runs-on: ubuntu-20.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Check backend
+        run: ./gradlew --build-cache check jacocoTestReport
+      - name: Upload backend coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./build/reports/jacoco/test/jacocoTestReport.xml
 
-    - name: Install Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14.x
+  frontend-unit-tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
+      - name: Check frontend
+        working-directory: ui
+        run: |
+          npm ci --loglevel error
+          npm run lint
+          npm run testHeadless
+      - name: Upload frontend coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./ui/coverage/coverage-final.json
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.1.0
+        with:
+          mongodb-version: 4.2
 
-    - name: Install Java
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
+  e2e-tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
+      - name: Start Alfred
+        run: |
+          ./gradlew --build-cache bootRun &> output &
+          echo -n "Waiting for boot to complete "
+          seconds=0
+          while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
+            if [ $seconds -gt 160 ]; then echo -e " timeout reached!\n\n" && cat output && exit 1; fi
+            ((seconds++)) && echo -n "." && sleep 2
+          done
+          echo " done!"
+        env:
+          SPRING_PROFILES_ACTIVE: test
+          COMICS_COMICVINE_APIKEY: foo
+          SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
+      - name: Update webdriver
+        run: |
+          cd ui
+          export PATH="node_modules/webdriver-manager/bin:$PATH"
+          rm node_modules/protractor/bin/webdriver-manager
+          cp node_modules/webdriver-manager/bin/webdriver-manager node_modules/protractor/bin/
+          CHROME_VERSION=$(/usr/bin/google-chrome --version | cut -d ' ' -f 3)
+          echo $CHROME_VERSION
 
-    - name: Install Chrome
-      uses: browser-actions/setup-chrome@latest
-      with:
-        chrome-version: stable
-
-    - name: Check backend
-      run: ./gradlew --build-cache check jacocoTestReport
-
-    - name: Upload backend coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        file: ./build/reports/jacoco/test/jacocoTestReport.xml
-
-    - name: Check frontend
-      working-directory: ui
-      run: |
-        npm ci --loglevel error
-        npm run lint
-        npm run testHeadless
-
-    - name: Upload frontend coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        file: ./ui/coverage/coverage-final.json
-
-    - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.1.0
-      with:
-        mongodb-version: 4.2
-
-    - name: Start Alfred
-      run: |
-        ./gradlew --build-cache bootRun &> output &
-        echo -n "Waiting for boot to complete "
-        seconds=0
-        while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
-          if [ $seconds -gt 160 ]; then echo -e " timeout reached!\n\n" && cat output && exit 1; fi
-          ((seconds++)) && echo -n "." && sleep 2
-        done
-        echo " done!"
-      env:
-        SPRING_PROFILES_ACTIVE: test
-        COMICS_COMICVINE_APIKEY: foo
-        SPRING_DATA_MONGODB_URI: mongodb://localhost/alfred
-
-    - name: Update webdriver
-      run: |
-        cd ui
-        export PATH="node_modules/webdriver-manager/bin:$PATH"
-        rm node_modules/protractor/bin/webdriver-manager
-        cp node_modules/webdriver-manager/bin/webdriver-manager node_modules/protractor/bin/
-        CHROME_VERSION=$(/usr/bin/google-chrome --version | cut -d ' ' -f 3)
-        echo $CHROME_VERSION
-
-        webdriver-manager update --quiet --standalone=false --gecko=false --versions.chrome="$CHROME_VERSION"
-
-    - name: Run end-to-end tests
-      uses: nick-invision/retry@v2
-      with:
-        timeout_minutes: 15
-        max_attempts: 8
-        retry_on: error
-        command: cd ui && npm run e2eHeadless
+          webdriver-manager update --quiet --standalone=false --gecko=false --versions.chrome="$CHROME_VERSION"
+      - name: Run end-to-end tests
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 15
+          max_attempts: 8
+          retry_on: error
+          command: cd ui && npm run e2eHeadless
