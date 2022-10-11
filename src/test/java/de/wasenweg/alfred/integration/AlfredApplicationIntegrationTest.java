@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoCo
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,16 +23,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 class AlfredApplicationIntegrationTest {
 
-  private static final int MONGODB_PORT = 27_017;
   private static final MongodStarter MONGOD_STARTER = MongodStarter.getDefaultInstance();
   private static MongodExecutable mongodExecutable;
   private static MongodProcess mongodProcess;
 
   @BeforeAll
   public static void setUp() throws Exception {
+    final int mongodPort = Network.freeServerPort(InetAddress.getLocalHost());
     mongodExecutable = MONGOD_STARTER.prepare(MongodConfig.builder()
-        .version(Version.Main.V4_2)
-        .net(new Net(MONGODB_PORT, Network.localhostIsIPv6()))
+        .version(Version.Main.V4_4)
+        .net(new Net(mongodPort, Network.localhostIsIPv6()))
         .build());
     mongodProcess = mongodExecutable.start();
   }
