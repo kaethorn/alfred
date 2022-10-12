@@ -31,29 +31,6 @@ spotbugs {
   omitVisitors = ['FindReturnRef']
 }
 
-pmd {
-  consoleOutput = true
-  toolVersion = '6.50.0'
-  incrementalAnalysis = true
-}
-
-jacocoTestReport {
-  reports {
-    xml.required = true
-    html.required = true
-  }
-}
-
-tasks.pmdMain {
-  ruleSets = []
-  ruleSetConfig = resources.text.fromFile("config/pmd/pmd-main.xml")
-}
-
-tasks.pmdTest {
-  ruleSets = []
-  ruleSetConfig = resources.text.fromFile("config/pmd/pmd-test.xml")
-}
-
 spotbugsMain {
   reports {
     xml.enabled = false
@@ -68,6 +45,29 @@ spotbugsTest {
   }
 }
 
+pmd {
+  consoleOutput = true
+  toolVersion = '6.50.0'
+  incrementalAnalysis = true
+}
+
+pmdMain {
+  ruleSets = []
+  ruleSetConfig = resources.text.fromFile("config/pmd/pmd-main.xml")
+}
+
+pmdTest {
+  ruleSets = []
+  ruleSetConfig = resources.text.fromFile("config/pmd/pmd-test.xml")
+}
+
+jacocoTestReport {
+  reports {
+    xml.required = true
+    html.required = true
+  }
+}
+
 test {
   useJUnitPlatform()
 }
@@ -79,7 +79,12 @@ bootJar {
   }
 }
 
-bootRun.dependsOn 'ui:jar'
+bootRun.dependsOn 'copyUi'
+
+task copyUi(type: Copy) {
+  from "${project(':ui').projectDir}/dist/alfred"
+  into 'src/main/resources/static'
+}
 
 task unpack(type: Copy) {
   dependsOn bootJar
