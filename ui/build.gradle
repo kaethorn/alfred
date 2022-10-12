@@ -12,16 +12,8 @@ npmInstall {
   args = ['--loglevel', 'error']
 }
 
-jar.dependsOn 'npm_run_buildProd'
+assemble.dependsOn 'npm_run_buildProd'
 
 jar {
   from 'dist/alfred' into 'static'
-}
-
-configurations {
-  runtime
-}
-
-artifacts {
-  runtime jar
 }

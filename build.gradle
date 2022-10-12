@@ -64,8 +64,14 @@ test {
   useJUnitPlatform()
 }
 
-bootRun.dependsOn ':ui:jar'
-bootJar.dependsOn ':ui:jar'
+bootJar {
+  dependsOn ':ui:assemble'
+  into('BOOT-INF/classes/static') {
+    from "${project(':ui').projectDir}/dist/alfred"
+  }
+}
+
+bootRun.dependsOn 'ui:jar'
 
 task unpack(type: Copy) {
   dependsOn bootJar
