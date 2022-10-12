@@ -20,6 +20,13 @@ jobs:
           mongodb-port: 27017
       - name: Check backend
         run: ./gradlew --build-cache check jacocoTestReport
+      - name: Archive error reports
+        uses: actions/upload-artifact@v3
+        if: ${{ failure() }}
+        with:
+          name: reports
+          path: |
+            build/reports
       - name: Upload backend coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
