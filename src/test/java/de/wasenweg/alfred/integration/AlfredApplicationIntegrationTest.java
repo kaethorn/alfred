@@ -9,7 +9,6 @@ import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.mongo.packageresolver.Command;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
-import de.flapdoodle.embed.process.config.process.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.Network;
 import de.wasenweg.alfred.AlfredApplication;
 import org.junit.jupiter.api.AfterAll;
@@ -31,10 +30,8 @@ class AlfredApplicationIntegrationTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    // Log to /dev/null
     final Logger logger = LoggerFactory.getLogger(AlfredApplicationIntegrationTest.class.getName());
     final RuntimeConfig runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, logger)
-        .processOutput(ProcessOutput.silent())
         .build();
     final MongodStarter mongodStarter = MongodStarter.getInstance(runtimeConfig);
 
