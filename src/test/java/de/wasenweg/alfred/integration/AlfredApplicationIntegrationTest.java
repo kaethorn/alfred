@@ -1,5 +1,9 @@
 package de.wasenweg.alfred.integration;
 
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -11,6 +15,8 @@ import de.flapdoodle.embed.mongo.packageresolver.Command;
 import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.runtime.Network;
 import de.wasenweg.alfred.AlfredApplication;
+import org.bson.BsonDocument;
+import org.bson.BsonInt64;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,23 +36,27 @@ class AlfredApplicationIntegrationTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    final Logger logger = LoggerFactory.getLogger(AlfredApplicationIntegrationTest.class.getName());
-    final RuntimeConfig runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, logger)
-        .build();
-    final MongodStarter mongodStarter = MongodStarter.getInstance(runtimeConfig);
-
-    final int mongodPort = Network.freeServerPort(InetAddress.getLocalHost());
-    mongodExecutable = mongodStarter.prepare(MongodConfig.builder()
-        .version(Version.Main.V4_2)
-        .net(new Net(mongodPort, Network.localhostIsIPv6()))
-        .build());
-    mongodProcess = mongodExecutable.start();
+    if (!isMongoDbRunning()) {
+      final Logger logger = LoggerFactory.getLogger(AlfredApplicationIntegrationTest.class.getName());
+      final RuntimeConfig runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, logger).build();
+      final MongodStarter mongodStarter = MongodStarter.getInstance(runtimeConfig);
+      final int mongodPort = Network.freeServerPort(InetAddress.getLocalHost());
+      mongodExecutable = mongodStarter.prepare(MongodConfig.builder()
+          .version(Version.Main.V4_2)
+          .net(new Net(mongodPort, Network.localhostIsIPv6()))
+          .build());
+      mongodProcess = mongodExecutable.start();
+    }
   }
 
   @AfterAll
   public static void tearDown() {
-    mongodProcess.stop();
-    mongodExecutable.stop();
+    if (null != mongodProcess) {
+      mongodProcess.stop();
+    }
+    if (null != mongodExecutable) {
+      mongodExecutable.stop();
+    }
   }
 
   @Test
@@ -57,5 +67,17 @@ class AlfredApplicationIntegrationTest {
     httpUrlConnection.connect();
 
     assertThat(httpUrlConnection.getResponseCode()).isEqualTo(HttpURLConnection.HTTP_OK);
+  }
+
+  private static boolean isMongoDbRunning() {
+    try (MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017")) {
+      final MongoDatabase database = mongoClient.getDatabase("admin");
+      try {
+        database.runCommand(new BsonDocument("ping", new BsonInt64(1)));
+        return true;
+      } catch (final MongoException me) {
+        return false;
+      }
+    }
   }
 }

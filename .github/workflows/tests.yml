@@ -13,6 +13,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.1.0
+        with:
+          mongodb-version: 4.2
+          mongodb-port: 27017
       - name: Check backend
         run: ./gradlew --build-cache check jacocoTestReport
       - name: Upload backend coverage to Codecov
@@ -71,7 +76,7 @@ jobs:
           echo -n "Waiting for boot to complete "
           seconds=0
           while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
-            if [ $seconds -gt 450 ]; then echo -e " timeout reached!\n\n" && cat output && exit 1; fi
+            if [ $seconds -gt 300 ]; then echo -e " timeout reached!\n\n" && cat output && exit 1; fi
             ((seconds++)) && echo -n "." && sleep 2
           done
           echo " done!"
