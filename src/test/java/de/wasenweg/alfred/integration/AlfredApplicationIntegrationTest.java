@@ -3,14 +3,20 @@ package de.wasenweg.alfred.integration;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.Defaults;
 import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.mongo.packageresolver.Command;
+import de.flapdoodle.embed.process.config.RuntimeConfig;
+import de.flapdoodle.embed.process.config.process.ProcessOutput;
 import de.flapdoodle.embed.process.runtime.Network;
 import de.wasenweg.alfred.AlfredApplication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
@@ -23,14 +29,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 class AlfredApplicationIntegrationTest {
 
-  private static final MongodStarter MONGOD_STARTER = MongodStarter.getDefaultInstance();
   private static MongodExecutable mongodExecutable;
   private static MongodProcess mongodProcess;
 
   @BeforeAll
   public static void setUp() throws Exception {
+    final Logger logger = LoggerFactory.getLogger(AlfredApplicationIntegrationTest.class.getName());
+
+    final RuntimeConfig runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, logger)
+        .processOutput(ProcessOutput.silent())
+        .build();
+
+    final MongodStarter mongodStarter = MongodStarter.getInstance(runtimeConfig);
+
     final int mongodPort = Network.freeServerPort(InetAddress.getLocalHost());
-    mongodExecutable = MONGOD_STARTER.prepare(MongodConfig.builder()
+    mongodExecutable = mongodStarter.prepare(MongodConfig.builder()
         .version(Version.Main.V4_2)
         .net(new Net(mongodPort, Network.localhostIsIPv6()))
         .build());
