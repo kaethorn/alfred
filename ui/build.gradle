@@ -12,7 +12,7 @@ npmInstall {
   args = ['--loglevel', 'error']
 }
 
-assemble.dependsOn 'npm_run_buildProd'
+jar.dependsOn 'npm_run_buildProd'
 
 jar {
   from 'dist/alfred' into 'static'

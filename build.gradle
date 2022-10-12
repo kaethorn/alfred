@@ -72,25 +72,6 @@ test {
   useJUnitPlatform()
 }
 
-bootJar {
-  dependsOn ':ui:assemble'
-  into('BOOT-INF/classes/static') {
-    from "${project(':ui').projectDir}/dist/alfred"
-  }
-}
-
-clean.doFirst {
-  delete "${rootDir}/src/main/resources/static"
-}
-
-bootRun.dependsOn 'copyUi'
-
-task copyUi(type: Copy) {
-  dependsOn ':ui:assemble'
-  from "${project(':ui').projectDir}/dist/alfred"
-  into "${rootDir}/src/main/resources/static"
-}
-
 task unpack(type: Copy) {
   dependsOn bootJar
   from(zipTree(tasks.bootJar.outputs.files.singleFile))
@@ -122,4 +103,6 @@ dependencies {
   testImplementation 'io.projectreactor:reactor-test:3.4.17'
   testImplementation 'org.mock-server:mockserver-netty:5.13.2'
   testImplementation 'org.mock-server:mockserver-client-java:5.13.2'
+
+  runtimeOnly(project(':ui'))
 }
