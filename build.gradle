@@ -28,6 +28,7 @@ checkstyle {
 
 spotbugs {
   effort = 'max'
+  omitVisitors = ['FindReturnRef']
 }
 
 pmd {
@@ -54,6 +55,13 @@ tasks.pmdTest {
 }
 
 spotbugsMain {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
+spotbugsTest {
   reports {
     xml.enabled = false
     html.enabled = true
