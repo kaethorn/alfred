@@ -82,6 +82,7 @@ bootJar {
 bootRun.dependsOn 'copyUi'
 
 task copyUi(type: Copy) {
+  dependsOn ':ui:assemble'
   from "${project(':ui').projectDir}/dist/alfred"
   into 'src/main/resources/static'
 }
