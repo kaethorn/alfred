@@ -83,13 +83,15 @@ jobs:
           echo -n "Waiting for boot to complete "
           seconds=0
           while ! curl --output /dev/null --silent --head --fail http://localhost:8080; do
-            if [ $seconds -gt 300 ]; then
+            if [ $seconds -gt 120 ]; then
               echo -e " timeout reached!\n\n"
               cat output
-              echo -e "\n\nRequest on root:\n\n"
+              echo -e "\n\n * Request on root:\n\n"
               curl http://localhost:8080
-              echo -e "\n\nRequest on actuator:\n\n"
+              echo -e "\n\n * Request on actuator:\n\n"
               curl http://localhost:8080/actuator/health
+              echo -e "\n\n * static resources:\n\n"
+              find src/main/resources/static
               exit 1
             fi
             ((seconds++)) && echo -n "." && sleep 2
