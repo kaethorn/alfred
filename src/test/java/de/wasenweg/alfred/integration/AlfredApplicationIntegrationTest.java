@@ -17,8 +17,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -26,7 +24,6 @@ import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 class AlfredApplicationIntegrationTest {
 
   private static MongodExecutable mongodExecutable;
@@ -34,12 +31,11 @@ class AlfredApplicationIntegrationTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
+    // Log to /dev/null
     final Logger logger = LoggerFactory.getLogger(AlfredApplicationIntegrationTest.class.getName());
-
     final RuntimeConfig runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, logger)
         .processOutput(ProcessOutput.silent())
         .build();
-
     final MongodStarter mongodStarter = MongodStarter.getInstance(runtimeConfig);
 
     final int mongodPort = Network.freeServerPort(InetAddress.getLocalHost());
