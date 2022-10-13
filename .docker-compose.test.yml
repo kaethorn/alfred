@@ -17,6 +17,6 @@ services:
       SPRING_DATA_MONGODB_URI: mongodb://mongo/alfred
 
   mongo:
-    image: 'mongo:4.2'
+    image: 'mongo:6.0'
     logging:
       driver: none

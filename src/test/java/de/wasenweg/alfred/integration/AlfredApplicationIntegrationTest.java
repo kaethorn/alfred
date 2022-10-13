@@ -42,7 +42,7 @@ class AlfredApplicationIntegrationTest {
       final MongodStarter mongodStarter = MongodStarter.getInstance(runtimeConfig);
       final int mongodPort = Network.freeServerPort(InetAddress.getLocalHost());
       mongodExecutable = mongodStarter.prepare(MongodConfig.builder()
-          .version(Version.Main.V4_2)
+          .version(Version.Main.V6_0)
           .net(new Net(mongodPort, Network.localhostIsIPv6()))
           .build());
       mongodProcess = mongodExecutable.start();

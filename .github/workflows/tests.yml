@@ -16,7 +16,7 @@ jobs:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.1.0
         with:
-          mongodb-version: 4.2
+          mongodb-version: 6.0
           mongodb-port: 27017
       - name: Check backend
         run: ./gradlew --build-cache check jacocoTestReport
@@ -76,7 +76,7 @@ jobs:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.1.0
         with:
-          mongodb-version: 4.2
+          mongodb-version: 6.0
       - name: Start Alfred
         run: |
           ./gradlew --build-cache bootRun &> output &
