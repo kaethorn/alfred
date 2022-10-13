@@ -39,7 +39,7 @@ public class ThumbnailService {
    */
   @Transactional
   public void read(final Comic comic) throws NoImagesException, IOException {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
       final List<Path> sortedEntries = ZipReaderUtil.getImages(fs);
 
       if (!sortedEntries.isEmpty()) {

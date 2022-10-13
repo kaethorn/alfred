@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ComicTest {
+class ComicTest {
 
   @Test
-  public void setPathPartsMatchesPath() throws Exception {
+  void setPathPartsMatchesPath() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (1940)/Batman 400 (1940) bar.cbz");
     comic.setPathParts();
@@ -20,7 +20,7 @@ public class ComicTest {
   }
 
   @Test
-  public void setPathPartsMatchesWithoutSuffix() throws Exception {
+  void setPathPartsMatchesWithoutSuffix() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/home/foo/src/alfred/src/test/resources/fixtures/incomplete/DC Comics/Batman (1940)/Batman 701 (1940).cbz");
     comic.setPathParts();
@@ -31,7 +31,7 @@ public class ComicTest {
   }
 
   @Test
-  public void setPathPartsMatchesFractionalIssueNumbers() throws Exception {
+  void setPathPartsMatchesFractionalIssueNumbers() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (1940)/Batman 102a (1940) bar.cbz");
     comic.setPathParts();
@@ -59,7 +59,7 @@ public class ComicTest {
   }
 
   @Test
-  public void setPathPartsRejectsNonMatchingVolumes() throws Exception {
+  void setPathPartsRejectsNonMatchingVolumes() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (2001)/Batman 400 (1940) bar.cbz");
     comic.setPathParts();
@@ -71,7 +71,7 @@ public class ComicTest {
   }
 
   @Test
-  public void setPathPartsRejectsNonMatchingSeries() throws Exception {
+  void setPathPartsRejectsNonMatchingSeries() throws Exception {
     final Comic comic = new Comic();
     comic.setPath("/foo/DC Comics/Batman (1940)/Batwoman 400 (1940) bar.cbz");
     comic.setPathParts();
@@ -83,7 +83,7 @@ public class ComicTest {
   }
 
   @Test
-  public void issueNumberEquals() throws Exception {
+  void issueNumberEquals() throws Exception {
     assertThat(Comic.issueNumberEquals("001", "001")).isTrue();
     assertThat(Comic.issueNumberEquals("1", "001")).isTrue();
     assertThat(Comic.issueNumberEquals("1", "foo")).isFalse();

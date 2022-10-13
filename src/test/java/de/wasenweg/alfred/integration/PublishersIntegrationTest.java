@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class PublishersIntegrationTest {
+class PublishersIntegrationTest {
 
   private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
@@ -55,7 +55,7 @@ public class PublishersIntegrationTest {
   }
 
   @Test
-  public void findAllPublishers() throws Exception {
+  void findAllPublishers() throws Exception {
     this.mockMvc.perform(get("/api/publishers"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))
@@ -68,7 +68,7 @@ public class PublishersIntegrationTest {
   }
 
   @Test
-  public void findAllPublishersWithMoreThanOne() throws Exception {
+  void findAllPublishersWithMoreThanOne() throws Exception {
     // When there are two publishers, each of which have the exact same
     // series name and volume name.
     final Comic pivotal = this.comicRepository.findByPath("/a1.cbz").get();
@@ -96,7 +96,7 @@ public class PublishersIntegrationTest {
   }
 
   @Test
-  public void findAllPublishersWithErrors() throws Exception {
+  void findAllPublishersWithErrors() throws Exception {
     final Comic pivotal = this.comicRepository.findByPath("/a1.cbz").get();
     pivotal.setPublisher("Pub B");
     pivotal.setErrors(Arrays.asList(

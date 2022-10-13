@@ -8,7 +8,6 @@
 /sample*
 /.gradletasknamecache
 /.vscode
-/lombok.config
 /GH_TOKEN
 
 ### STS ###

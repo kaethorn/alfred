@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class CoverIntegrationTest {
+class CoverIntegrationTest {
 
   @TempDir
   public File testBed;
@@ -50,7 +50,7 @@ public class CoverIntegrationTest {
   private final IntegrationTestHelper helper;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
 
     StepVerifier.create(TestUtil.triggerScan(this.port))
@@ -70,7 +70,7 @@ public class CoverIntegrationTest {
   }
 
   @Test
-  public void deletesFirstPage() throws Exception {
+  void deletesFirstPage() throws Exception {
     // Given
     Comic comic = this.comicRepository.findAll().get(0);
     assertEquals(comic.getPageCount(), 3);
@@ -95,7 +95,7 @@ public class CoverIntegrationTest {
   }
 
   @Test
-  public void deletesLastPage() throws Exception {
+  void deletesLastPage() throws Exception {
     // Given
     Comic comic = this.comicRepository.findAll().get(0);
     assertEquals(comic.getPageCount(), 3);

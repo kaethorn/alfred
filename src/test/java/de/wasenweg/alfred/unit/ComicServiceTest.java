@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ComicServiceTest {
+class ComicServiceTest {
 
   @TempDir
   public transient File testBed;
@@ -63,7 +63,7 @@ public class ComicServiceTest {
   private transient ComicService comicService;
 
   @Test
-  public void findById() throws Exception {
+  void findById() throws Exception {
     final Comic comic = new Comic();
     when(this.queryRepository.findById("foo@bar.com", "239"))
         .thenReturn(Optional.of(comic));
@@ -73,7 +73,7 @@ public class ComicServiceTest {
   }
 
   @Test
-  public void updateProgress() throws Exception {
+  void updateProgress() throws Exception {
     final Comic comic = new Comic();
     when(this.progressService.updateComic("foo@bar.com", comic, false)).thenReturn(comic);
     doReturn(Optional.of(comic)).when(this.comicService).findById(eq("foo@bar.com"), any());
@@ -83,7 +83,7 @@ public class ComicServiceTest {
   }
 
   @Test
-  public void markAsRead() throws Exception {
+  void markAsRead() throws Exception {
     final Comic comic = new Comic();
     when(this.progressService.updateComic("foo@bar.com", comic, true)).thenReturn(comic);
     doReturn(Optional.of(comic)).when(this.comicService).findById(eq("foo@bar.com"), any());
@@ -93,7 +93,7 @@ public class ComicServiceTest {
   }
 
   @Test
-  public void markAsUnread() throws Exception {
+  void markAsUnread() throws Exception {
     final Comic comic = new Comic();
     when(this.progressService.updateComic("foo@bar.com", comic, false)).thenReturn(comic);
     doReturn(Optional.of(comic)).when(this.comicService).findById(eq("foo@bar.com"), any());
@@ -103,7 +103,7 @@ public class ComicServiceTest {
   }
 
   @Test
-  public void deleteComics() throws Exception {
+  void deleteComics() throws Exception {
     this.comicService.deleteComics();
 
     verify(this.comicRepository).deleteAll();
@@ -111,21 +111,21 @@ public class ComicServiceTest {
   }
 
   @Test
-  public void bundle() throws Exception {
+  void bundle() throws Exception {
     this.comicService.bundle();
 
     verify(this.scannerService).associateVolumes();
   }
 
   @Test
-  public void deletePageWithoutAComic() throws Exception {
+  void deletePageWithoutAComic() throws Exception {
     when(this.comicRepository.findById("5")).thenReturn(Optional.ofNullable(null));
 
     assertThat(this.comicService.deletePage("5", "/2.png")).isNotPresent();
   }
 
   @Test
-  public void deletePageWithInexistantPage() throws Exception {
+  void deletePageWithInexistantPage() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/simple");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();
@@ -139,7 +139,7 @@ public class ComicServiceTest {
   }
 
   @Test
-  public void deletePageWithNoImagesLeft() throws Exception {
+  void deletePageWithNoImagesLeft() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/full");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batgirl 000 (2011).cbz";
     final Comic comic = new Comic();
@@ -154,7 +154,7 @@ public class ComicServiceTest {
   }
 
   @Test
-  public void deletePageInvalidTarget() throws Exception {
+  void deletePageInvalidTarget() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/simple");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = new Comic();

@@ -9,25 +9,25 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class JwtServiceTest {
+class JwtServiceTest {
 
   @InjectMocks
   private transient JwtService jwtService;
 
   @Test
-  public void verifyValidToken() throws Exception {
+  void verifyValidToken() throws Exception {
     assertThat(this.jwtService.verifyToken(
       TestHelper.readString("jwt-valid.txt"),
       "secret")).isTrue();
   }
 
   @Test
-  public void verifyInvalidToken() throws Exception {
+  void verifyInvalidToken() throws Exception {
     assertThat(this.jwtService.verifyToken("invalid", "")).isFalse();
   }
 
   @Test
-  public void verifyInvalidClaim() throws Exception {
+  void verifyInvalidClaim() throws Exception {
     assertThat(this.jwtService.verifyToken(
       TestHelper.readString("jwt-invalid-claim.txt"),
       "secret")).isFalse();

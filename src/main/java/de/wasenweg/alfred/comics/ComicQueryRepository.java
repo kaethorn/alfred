@@ -9,29 +9,29 @@ import java.util.Optional;
 
 public interface ComicQueryRepository {
 
-  Optional<Comic> findById(final String userId, final String comicId);
+  Optional<Comic> findById(String userId, String comicId);
 
   Optional<Comic> findLastReadForVolume(
-      final String userId,
-      final String publisher,
-      final String series,
-      final String volume);
+      String userId,
+      String publisher,
+      String series,
+      String volume);
 
-  List<Comic> findAllLastReadPerVolume(final String userId);
+  List<Comic> findAllLastReadPerVolume(String userId);
 
   List<Comic> findAllByPublisherAndSeriesAndVolumeOrderByPosition(
-      final String userId,
-      final String publisher,
-      final String series,
-      final String volume);
+      String userId,
+      String publisher,
+      String series,
+      String volume);
 
   List<Comic> findAllWithErrors();
 
-  List<Comic> findAllWithoutErrors(final String publisher, final String series, final String volume);
+  List<Comic> findAllWithoutErrors(String publisher, String series, String volume);
 
-  List<Publisher> findAllPublishers(final String userId);
+  List<Publisher> findAllPublishers(String userId);
 
-  List<Series> findAllSeries(final String userId, final String publisher);
+  List<Series> findAllSeries(String userId, String publisher);
 
-  List<Volume> findAllVolumes(final String userId, final String publisher, final String series);
+  List<Volume> findAllVolumes(String userId, String publisher, String series);
 }

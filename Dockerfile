@@ -1,11 +1,11 @@
-FROM gradle:6.5.0-jdk11 as builder
+FROM gradle:7.5.1-jdk17 as builder
 WORKDIR /workspace/app
 COPY settings.gradle build.gradle ./
 RUN gradle dependencies > /dev/null
 COPY src src
 COPY ui ui
 COPY config config
-RUN curl -sL https://deb.nodesource.com/setup_12.x  | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x  | bash -
 RUN apt-get install -y --no-install-recommends nodejs
 RUN gradle build unpack -x test -x check
 WORKDIR /workspace/app/build/dependency

@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ComicVineServiceTest {
+class ComicVineServiceTest {
 
   @Mock
   private transient RestTemplate restTemplate;
@@ -47,7 +47,7 @@ public class ComicVineServiceTest {
   }
 
   @Test
-  public void throttlesRequests() throws Exception {
+  void throttlesRequests() throws Exception {
     when(this.restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
         .thenReturn(new ResponseEntity<String>("{}", HttpStatus.ACCEPTED));
 
@@ -60,7 +60,7 @@ public class ComicVineServiceTest {
   }
 
   @Test
-  public void handlesInvalidResponses() throws Exception {
+  void handlesInvalidResponses() throws Exception {
     when(this.restTemplate.exchange(any(String.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
         .thenReturn(new ResponseEntity<String>("<html />", HttpStatus.ACCEPTED));
 

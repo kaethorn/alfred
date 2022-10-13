@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class SeriesIntegrationTest {
+class SeriesIntegrationTest {
 
   private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
@@ -53,7 +53,7 @@ public class SeriesIntegrationTest {
   }
 
   @Test
-  public void findAllSeries() throws Exception {
+  void findAllSeries() throws Exception {
     this.mockMvc.perform(get("/api/series")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher()))
         .andExpect(status().isOk())

@@ -5,4 +5,5 @@
     <logger name="reactor.Flux.ReplayProcessor" level="WARN"/>
     <logger name="de.wasenweg.alfred" level="DEBUG"/>
     <logger name="de.wasenweg.alfred.security" level="INFO"/>
+    <logger name="org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongo" level="WARN"/>
 </configuration>

@@ -2,7 +2,6 @@ package de.wasenweg.alfred.reader;
 
 import de.wasenweg.alfred.comics.Comic;
 import de.wasenweg.alfred.comics.ComicRepository;
-import de.wasenweg.alfred.progress.ProgressRepository;
 import de.wasenweg.alfred.util.ZipReaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,33 +33,31 @@ import static java.lang.String.format;
 public class ReaderService {
 
   private final ComicRepository comicRepository;
-  private final ProgressRepository progressRepository;
 
   /**
    * Returns the page of the given comic.
    *
    * @param comicId    The ID of the comic to open.
    * @param page       The page number from which to start.
-   * @param userId     The current user's ID.
    * @return The extracted page.
    */
-  public ResponseEntity<StreamingResponseBody> read(final String comicId, final Integer page, final String userId) {
+  public ResponseEntity<StreamingResponseBody> read(final String comicId, final Integer page) {
 
     final Optional<Comic> comicQuery = this.comicRepository.findById(comicId);
     final Comic comic = comicQuery.orElseThrow(ResourceNotFoundException::new);
 
-    log.debug(format("Reading page %s (page count %s) of %s, files: [%s]", page, comic.getPageCount(), comic.getFiles(),
-        String.join(",", comic.getFiles())));
+    log.debug("Reading page {} (page count {}) of {}, files: [{}]", page, comic.getPageCount(), comic.getFiles(),
+        String.join(",", comic.getFiles()));
 
     try {
       // Instantiate FileSystem here without try-with-resource as it's being
       // closed manually in the streaming response body handler.
-      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null); // NOPMD
+      final FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null); // NOPMD
       final Path path = ZipReaderUtil.getImages(fs).get(page);
       final String fileName = path.toString();
       final long fileSize = FileChannel.open(path).size();
       final String fileType = URLConnection.guessContentTypeFromName(fileName);
-      log.debug(format("Extracting page %s of type %s with size %s.", fileName, fileType, fileSize));
+      log.debug("Extracting page {} of type {} with size {}.", fileName, fileType, fileSize);
 
       final MediaType mediaType = MediaType.parseMediaType(fileType);
       return ResponseEntity.ok()
@@ -68,7 +65,7 @@ public class ReaderService {
           .contentLength(fileSize)
           .contentType(mediaType)
           .body(outputStream -> {
-            try (InputStream fileStream = Files.newInputStream(path)) {
+            try (InputStream fileStream = Files.newInputStream(path)) { // NOPMD
               fileStream.transferTo(outputStream);
             } finally {
               fs.close();
@@ -96,7 +93,7 @@ public class ReaderService {
           try (InputStream inputStream = Files.newInputStream(Paths.get(comic.getPath()))) {
             inputStream.transferTo(outputStream);
           } catch (final NoSuchFileException exception) {
-            throw new ResourceNotFoundException(format("Error while downloading %s", comic.toString()), exception);
+            throw new ResourceNotFoundException(format("Error while downloading %s", comic), exception);
           }
         });
   }

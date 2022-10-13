@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class StatsIntegrationTest {
+class StatsIntegrationTest {
 
   private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
@@ -59,7 +59,7 @@ public class StatsIntegrationTest {
   }
 
   @Test
-  public void getStats() throws Exception {
+  void getStats() throws Exception {
     this.mockMvc.perform(get("/api/stats"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE))

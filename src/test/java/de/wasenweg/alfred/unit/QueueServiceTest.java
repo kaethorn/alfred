@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class QueueServiceTest {
+class QueueServiceTest {
 
   @TempDir
   public transient File testBed;
@@ -31,7 +31,7 @@ public class QueueServiceTest {
   private transient QueueService queueService;
 
   @Test
-  public void flattenWithError() throws Exception {
+  void flattenWithError() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/not_flat_with_duplicate");
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
     final Comic comic = ComicFixtures.COMIC_V1_1.toBuilder().path(comicPath).build();

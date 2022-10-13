@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class ComicsIntegrationTest {
+class ComicsIntegrationTest {
 
   @TempDir
   public File testBed;
@@ -73,7 +73,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void getAllComics() throws Exception {
+  void getAllComics() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2));
@@ -87,7 +87,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findById() throws Exception {
+  void findById() throws Exception {
     // Given
     final Comic comic = this.comicRepository.save(ComicFixtures.COMIC_V1_1);
     this.progressRepository.save(ProgressFixtures.comicStarted(ComicFixtures.COMIC_V1_1));
@@ -101,7 +101,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void updateProgress() throws Exception {
+  void updateProgress() throws Exception {
     final Comic comic = this.comicRepository.save(Comic.builder()
         .path("/701.cbz")
         .fileName("Batman 701 (1940).cbz")
@@ -128,7 +128,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findLastReadForVolumeWithReadIssue() throws Exception {
+  void findLastReadForVolumeWithReadIssue() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1, // read
         ComicFixtures.COMIC_V1_2,
@@ -146,7 +146,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findLastReadForVolumeWithStartedIssue() throws Exception {
+  void findLastReadForVolumeWithStartedIssue() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1, // started
         ComicFixtures.COMIC_V1_2,
@@ -164,7 +164,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findLastReadForUnstartedVolume() throws Exception {
+  void findLastReadForUnstartedVolume() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
         ComicFixtures.COMIC_V1_2,
@@ -180,7 +180,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findLastReadForVolumeWithMixedState() throws Exception {
+  void findLastReadForVolumeWithMixedState() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,   // read
         ComicFixtures.COMIC_V1_2,
@@ -200,7 +200,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findLastReadForCompletedVolume() throws Exception {
+  void findLastReadForCompletedVolume() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,   // read
         ComicFixtures.COMIC_V1_2,   // read
@@ -221,7 +221,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findBookmarksMultipleVolumes() throws Exception {
+  void findBookmarksMultipleVolumes() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         // Partly read volume at second issue
         ComicFixtures.COMIC_V1_1, // read
@@ -252,7 +252,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findBookmarksFirstrunnerStarted() throws Exception {
+  void findBookmarksFirstrunnerStarted() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         // Partly read volume at first issue
         ComicFixtures.COMIC_V1_1, // started
@@ -269,7 +269,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findBookmarksAllRead() throws Exception {
+  void findBookmarksAllRead() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         // Completely read volume
         ComicFixtures.COMIC_V3_1,   // read
@@ -288,7 +288,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findBookmarksNoneRead() throws Exception {
+  void findBookmarksNoneRead() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         // Completely unread volume
         ComicFixtures.COMIC_V3_1,
@@ -302,7 +302,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findBookmarksLastStarted() throws Exception {
+  void findBookmarksLastStarted() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         // Almost read volume
         ComicFixtures.COMIC_V3_1, // read
@@ -321,7 +321,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findBookmarksWithGaps() throws Exception {
+  void findBookmarksWithGaps() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         // A volume with unread first issue
         ComicFixtures.COMIC_V3_1,
@@ -338,7 +338,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void updateIncompleteComic() throws Exception {
+  void updateIncompleteComic() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
     final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
@@ -402,7 +402,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void updateComic() throws Exception {
+  void updateComic() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/simple", this.testBed);
     final String comicPath = this.testBed.getAbsolutePath() + "/Batman 402 (1940).cbz";
@@ -460,7 +460,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void scrape() throws Exception {
+  void scrape() throws Exception {
     // Given
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
     final String comicPath = this.testBed.getAbsolutePath() + "/DC Comics/Batman (1940)/Batman 701 (1940).cbz";
@@ -524,7 +524,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void scrapeWithError() throws Exception {
+  void scrapeWithError() throws Exception {
     // Given
     MockServerUtil.stop();
     this.helper.setComicsPath("src/test/resources/fixtures/incomplete", this.testBed);
@@ -555,7 +555,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void markAsRead() throws Exception {
+  void markAsRead() throws Exception {
     // Given
     final Comic comic = this.comicRepository.save(ComicFixtures.COMIC_V1_1);
 
@@ -574,7 +574,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void markAsUnread() throws Exception {
+  void markAsUnread() throws Exception {
     // Given
     final Comic comic = this.comicRepository.save(ComicFixtures.COMIC_V1_1);
     this.progressRepository.save(ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1));
@@ -594,7 +594,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void deleteComics() throws Exception {
+  void deleteComics() throws Exception {
     // Given
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
@@ -611,7 +611,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void bundle() throws Exception {
+  void bundle() throws Exception {
     // Given
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V1_1,
@@ -633,7 +633,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc() throws Exception {
+  void findAllByOrderByPublisherAscSeriesAscVolumeAscPositionAsc() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
         ComicFixtures.COMIC_V3_2,
         ComicFixtures.COMIC_V1_1,
@@ -651,7 +651,7 @@ public class ComicsIntegrationTest {
   }
 
   @Test
-  public void findAllByPublisherAndSeriesAndVolumeOrderByPosition() throws Exception {
+  void findAllByPublisherAndSeriesAndVolumeOrderByPosition() throws Exception {
     this.comicRepository.saveAll(Arrays.asList(
             ComicFixtures.COMIC_V1_1,
             ComicFixtures.COMIC_V1_2,

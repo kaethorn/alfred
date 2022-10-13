@@ -5,17 +5,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ComicConstructionTest {
+class ComicConstructionTest {
 
   @Test
-  public void constructWithNew() throws Exception {
+  void constructWithNew() throws Exception {
     final Comic comic = new Comic();
     assertThat(comic.getCurrentPage()).isEqualTo(0);
     assertThat(comic.isRead()).isFalse();
   }
 
   @Test
-  public void constructWithBuilder() throws Exception {
+  void constructWithBuilder() throws Exception {
     final Comic comic = Comic.builder()
         .path("")
         .fileName("")
@@ -33,7 +33,7 @@ public class ComicConstructionTest {
   }
 
   @Test
-  public void updatePosition() throws Exception {
+  void updatePosition() throws Exception {
     final Comic comic = new Comic();
     comic.setNumber("1/2");
     assertThat(comic.getPosition()).isEqualTo("0000.5");

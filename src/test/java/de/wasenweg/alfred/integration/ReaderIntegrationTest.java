@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class ReaderIntegrationTest {
+class ReaderIntegrationTest {
 
   @TempDir
   public File testBed;
@@ -68,7 +68,7 @@ public class ReaderIntegrationTest {
   }
 
   @Test
-  public void read() throws Exception {
+  void read() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
 
@@ -82,7 +82,7 @@ public class ReaderIntegrationTest {
   }
 
   @Test
-  public void readPage() throws Exception {
+  void readPage() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
 
@@ -96,7 +96,7 @@ public class ReaderIntegrationTest {
   }
 
   @Test
-  public void download() throws Exception {
+  void download() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
 

@@ -19,7 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class JwtFilterTest {
+class JwtFilterTest {
 
   @Mock
   private transient JwtService jwtService;
@@ -42,7 +42,7 @@ public class JwtFilterTest {
   }
 
   @Test
-  public void withValidToken() throws Exception {
+  void withValidToken() throws Exception {
     when(this.servletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Bearer valid-token");
     when(this.jwtService.verifyToken("valid-token", "secret")).thenReturn(true);
     this.jwtFilter.doFilter(this.servletRequest, this.servletResponse, this.filterChain);
@@ -51,7 +51,7 @@ public class JwtFilterTest {
   }
 
   @Test
-  public void withInvalidToken() throws Exception {
+  void withInvalidToken() throws Exception {
     when(this.servletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Bearer invalid-token");
     when(this.jwtService.verifyToken("invalid-token", "secret")).thenReturn(false);
     this.jwtFilter.doFilter(this.servletRequest, this.servletResponse, this.filterChain);
@@ -60,14 +60,14 @@ public class JwtFilterTest {
   }
 
   @Test
-  public void withoutAuthorizatioHeader() throws Exception {
+  void withoutAuthorizatioHeader() throws Exception {
     this.jwtFilter.doFilter(this.servletRequest, this.servletResponse, this.filterChain);
     verify(this.servletResponse).reset();
     verify(this.servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
   }
 
   @Test
-  public void withInvalidAuthorizationHeader() throws Exception {
+  void withInvalidAuthorizationHeader() throws Exception {
     when(this.servletRequest.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("valid-token-without-bearer");
     this.jwtFilter.doFilter(this.servletRequest, this.servletResponse, this.filterChain);
     verify(this.servletResponse).reset();

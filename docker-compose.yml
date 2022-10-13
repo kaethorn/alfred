@@ -10,4 +10,4 @@ services:
       SPRING_PROFILES_ACTIVE: test
       SPRING_DATA_MONGODB_URI: mongodb://mongo/alfred
   mongo:
-    image: "mongo:3.6"
+    image: "mongo:4.2"

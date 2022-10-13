@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class QueueFixIntegrationTest {
+class QueueFixIntegrationTest {
 
   @TempDir
   public File testBed;
@@ -64,7 +64,7 @@ public class QueueFixIntegrationTest {
   }
 
   @Test
-  public void flatten() throws Exception {
+  void flatten() throws Exception {
     // When / Then
     this.mockMvc.perform(put("/api/queue/fix/NOT_FLAT")
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -82,7 +82,7 @@ public class QueueFixIntegrationTest {
   }
 
   @Test
-  public void unknownIssue() throws Exception {
+  void unknownIssue() throws Exception {
     // When / Then
     this.mockMvc.perform(put("/api/queue/fix/UNKNOWN")
         .contentType(MediaType.APPLICATION_JSON_VALUE)

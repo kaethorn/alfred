@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceLoginTest {
+class UserServiceLoginTest {
 
   @Mock
   private transient SettingsService settingsService;
@@ -38,7 +38,7 @@ public class UserServiceLoginTest {
   }
 
   @Test
-  public void loginWithValidUser() throws Exception {
+  void loginWithValidUser() throws Exception {
     when(this.jwtCreator.issueToken(any(), any(), any())).thenReturn("mock-api-token");
 
     assertThat(this.userService.login("foo@bar.com", "foo")).isPresent();
@@ -48,26 +48,26 @@ public class UserServiceLoginTest {
   }
 
   @Test
-  public void loginWithoutPasswords() {
+  void loginWithoutPasswords() {
     when(this.settingsService.get("auth.passwords")).thenReturn("");
 
     assertThrows(GeneralSecurityException.class, () -> this.userService.login("foo@bar.com", "foo"));
   }
 
   @Test
-  public void loginWithoutUsers() {
+  void loginWithoutUsers() {
     when(this.settingsService.get("auth.users")).thenReturn("");
 
     assertThrows(GeneralSecurityException.class, () -> this.userService.login("foo@bar.com", "foo"));
   }
 
   @Test
-  public void loginWithUnknownUser() throws Exception {
+  void loginWithUnknownUser() throws Exception {
     assertThat(this.userService.login("none@bar.com", "foo")).isNotPresent();
   }
 
   @Test
-  public void loginWithoutMatchingPassword() {
+  void loginWithoutMatchingPassword() {
     assertThrows(GeneralSecurityException.class, () -> this.userService.login("foo@bar.com", "bar"));
   }
 }

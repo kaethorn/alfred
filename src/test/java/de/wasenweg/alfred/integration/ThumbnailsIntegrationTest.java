@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class ThumbnailsIntegrationTest {
+class ThumbnailsIntegrationTest {
 
   @TempDir
   public File testBed;
@@ -67,7 +67,7 @@ public class ThumbnailsIntegrationTest {
   }
 
   @Test
-  public void savesFrontCoverThumbnail() throws Exception {
+  void savesFrontCoverThumbnail() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
 
@@ -81,7 +81,7 @@ public class ThumbnailsIntegrationTest {
   }
 
   @Test
-  public void savesBackCoverThumbnail() throws Exception {
+  void savesBackCoverThumbnail() throws Exception {
     // Given
     final Comic comic = this.comicRepository.findAll().get(0);
 

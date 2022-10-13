@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 
 @Slf4j
@@ -40,7 +39,7 @@ public final class TestUtil {
   public static Flux<String> triggerScan(final int port) {
     return WebClient.create("http://localhost:" + port + "/api")
         .get().uri("/scan/start").accept(TEXT_EVENT_STREAM)
-        .retrieve().bodyToFlux(new ParameterizedTypeReference<String>() {
+        .retrieve().bodyToFlux(new ParameterizedTypeReference<>() {
         });
   }
 
@@ -51,17 +50,17 @@ public final class TestUtil {
         try {
           Files.copy(file, temp.toPath().resolve(source.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException exception) {
-          log.error(format("Failed to copy file %s.", file), exception);
+          log.error("Failed to copy file {}.", file, exception);
         }
       });
     } catch (final IOException exception) {
-      log.error(format("Failed to copy directory %s.", resourcePath), exception);
+      log.error("Failed to copy directory {}.", resourcePath, exception);
     }
   }
 
   public static Boolean zipContainsFile(final String zipPath, final String filePath) {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
-      return Files.exists(fs.getPath(filePath)) ? true : false;
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), (ClassLoader) null)) {
+      return Files.exists(fs.getPath(filePath));
     } catch (final IOException | SecurityException exception) {
       log.error("Failed to check zip file.", exception);
       return false;
@@ -69,7 +68,7 @@ public final class TestUtil {
   }
 
   public static List<String> listFiles(final String zipPath) {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), (ClassLoader) null)) {
       return ZipReaderUtil.getEntries(fs).stream().map(Path::toString).collect(Collectors.toList());
     } catch (final IOException | SecurityException exception) {
       log.error("Failed to read zip file.", exception);
@@ -78,7 +77,7 @@ public final class TestUtil {
   }
 
   public static Document parseComicInfo(final String zipPath) {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(zipPath), (ClassLoader) null)) {
       final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       try (InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"))) {
         return docBuilder.parse(xmlStream);

@@ -1,4 +1,4 @@
-FROM gradle:6.5.0-jdk11 as builder
+FROM gradle:7.5.1-jdk17 as builder
 
 # Install Chrome
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,7 +20,7 @@ COPY settings.gradle build.gradle ./
 COPY src src
 COPY ui ui
 COPY config config
-RUN gradle build jacocoTestReport -x :ui:jar
+RUN gradle build jacocoTestReport
 
 # Start the application and run tests
 CMD bash -c 'gradle bootRun &> /dev/null & \

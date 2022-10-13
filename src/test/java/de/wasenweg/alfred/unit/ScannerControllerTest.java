@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class ScannerControllerTest {
+class ScannerControllerTest {
 
   private transient MockMvc mockMvc;
 
@@ -33,7 +33,7 @@ public class ScannerControllerTest {
   }
 
   @Test
-  public void startScan() throws Exception {
+  void startScan() throws Exception {
     // when
     this.mockMvc.perform(get("/api/scan/start"))
         .andExpect(status().isOk())
@@ -46,7 +46,7 @@ public class ScannerControllerTest {
   }
 
   @Test
-  public void resumeScan() throws Exception {
+  void resumeScan() throws Exception {
     // when
     this.mockMvc.perform(get("/api/scan/resume"))
         .andExpect(status().isOk())

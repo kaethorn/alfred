@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
-
 @Slf4j
 @Service
 public class FileMetaDataService {
@@ -162,7 +160,7 @@ public class FileMetaDataService {
     comic.setCoverArtist(this.readStringElement(document, "CoverArtist"));
     comic.setEditor(this.readStringElement(document, "Editor"));
     comic.setWeb(this.readStringElement(document, "Web"));
-    comic.setManga(this.readStringElement(document, "Manga").equals("Yes"));
+    comic.setManga("Yes".equals(this.readStringElement(document, "Manga")));
     comic.setCharacters(this.readStringElement(document, "Characters"));
     comic.setTeams(this.readStringElement(document, "Teams"));
     comic.setLocations(this.readStringElement(document, "Locations"));
@@ -171,7 +169,7 @@ public class FileMetaDataService {
   private Document getDocument(final Comic comic)
       throws IOException, SAXException, ParserConfigurationException, NoMetaDataException {
 
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
       try (InputStream xmlStream = Files.newInputStream(fs.getPath("/ComicInfo.xml"))) {
         return this.getDocumentBuilder().parse(xmlStream);
       }
@@ -209,7 +207,7 @@ public class FileMetaDataService {
    * @param comic The comic entity
    */
   public void parseFiles(final Comic comic) throws IOException, NoImagesException, InvalidFileException {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
       final List<Path> files = ZipReaderUtil.getEntries(fs);
       comic.setPageCount(0);
       comic.setPageCount((int) files.stream()
@@ -239,18 +237,18 @@ public class FileMetaDataService {
   }
 
   public void write(final Comic comic) {
-    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), null)) {
+    try (FileSystem fs = FileSystems.newFileSystem(Paths.get(comic.getPath()), (ClassLoader) null)) {
       final Path source = fs.getPath("/ComicInfo.xml");
       if (Files.exists(source)) {
         Files.delete(source);
       }
       try (Writer writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
         writer.write(this.marshal(comic));
-        log.info(format("Finished writing ComicInfo.xml to %s", comic.getPath()));
+        log.info("Finished writing ComicInfo.xml to {}", comic.getPath());
       }
     } catch (final FileSystemNotFoundException | IOException | SAXException
         | TransformerException | ParserConfigurationException exception) {
-      log.error(format("Failed to write ComicInfo.xml to %s", comic.getPath()));
+      log.error("Failed to write ComicInfo.xml to {}", comic.getPath());
     }
   }
 }

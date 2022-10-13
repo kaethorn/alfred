@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -53,7 +51,7 @@ public class UserService {
 
     final GoogleIdToken idToken = verifier.verify(token);
     if (idToken == null) {
-      log.info(format("Invalid ID token: %s.", token));
+      log.info("Invalid ID token: {}.", token);
     } else {
       final Payload payload = idToken.getPayload();
       final String email = payload.getEmail();
@@ -63,7 +61,7 @@ public class UserService {
       if (Arrays.asList(this.settingsService.get("auth.users").split(",")).contains(email)) {
         claims.add("API_ALLOWED");
       } else {
-        log.debug(format("User %s is not present in the white list. Rejecting.", email));
+        log.debug("User {} is not present in the white list. Rejecting.", email);
         return Optional.empty();
       }
 
@@ -96,10 +94,10 @@ public class UserService {
 
     final int userIndex = users.indexOf(username);
     if (userIndex < 0) {
-      log.debug(format("User %s is not present in the white list. Rejecting.", username));
+      log.debug("User {} is not present in the white list. Rejecting.", username);
       return Optional.empty();
     } else if (!passwords.get(userIndex).equals(password)) {
-      log.info(format("Password does not match for user ID : %s.", username));
+      log.info("Password does not match for user ID : {}.", username);
       throw new GeneralSecurityException("Unable to login user.");
     }
 

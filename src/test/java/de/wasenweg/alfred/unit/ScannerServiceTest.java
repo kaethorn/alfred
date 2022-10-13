@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class ScannerServiceTest {
+class ScannerServiceTest {
 
   @TempDir
   public transient File testBed;
@@ -91,7 +91,7 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void scanComics() throws Exception {
+  void scanComics() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/simple");
 
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
@@ -133,7 +133,7 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void scanComicsWithException() throws Exception {
+  void scanComicsWithException() throws Exception {
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath() + "/invalid/");
     when(this.scanProgressRepository.save(any())).thenAnswer(a -> a.getArguments()[0]);
 
@@ -157,7 +157,7 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void scanWithFileReaderError() throws Exception {
+  void scanWithFileReaderError() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/not_flat");
 
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
@@ -201,7 +201,7 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void scanWithXmlError() throws Exception {
+  void scanWithXmlError() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/invalid_xml");
 
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
@@ -244,7 +244,7 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void scanWithoutImages() throws Exception {
+  void scanWithoutImages() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/special_cases/no_images");
 
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
@@ -287,7 +287,7 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void scanWithApiReaderErrors() throws Exception {
+  void scanWithApiReaderErrors() throws Exception {
     TestUtil.copyResources(this.testBed, "src/test/resources/fixtures/incomplete");
 
     when(this.settingsService.get("comics.path")).thenReturn(this.testBed.getAbsolutePath());
@@ -338,7 +338,7 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void scanWithJacksonError() throws Exception {
+  void scanWithJacksonError() throws Exception {
     doThrow(new JsonProcessingException("") {
       private static final long serialVersionUID = -4677056066803637172L; // NOPMD
     }).when(this.objectMapper).writeValueAsString(any());
@@ -361,14 +361,14 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void resume() {
+  void resume() {
     StepVerifier.create(this.scannerService.resume())
         .expectComplete()
         .verify(Duration.ofSeconds(1L));
   }
 
   @Test
-  public void cleanOrphans() {
+  void cleanOrphans() {
     final Comic comic1 = new Comic();
     comic1.setPath("/a");
     final Comic comic2 = new Comic();
@@ -385,7 +385,7 @@ public class ScannerServiceTest {
   }
 
   @Test
-  public void cleanOrphansWithoutFiles() throws Exception {
+  void cleanOrphansWithoutFiles() throws Exception {
     this.scannerService.cleanOrphans(new ArrayList<>());
     verify(this.comicRepository, times(0)).deleteAll(any());
   }

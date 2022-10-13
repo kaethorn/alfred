@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableEmbeddedMongo
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ActiveProfiles("test")
-public class VolumesIntegrationTest {
+class VolumesIntegrationTest {
 
   private final MockMvc mockMvc;
   private final ComicRepository comicRepository;
@@ -63,7 +63,7 @@ public class VolumesIntegrationTest {
   }
 
   @Test
-  public void findAllVolumes() throws Exception {
+  void findAllVolumes() throws Exception {
     this.mockMvc.perform(get("/api/volumes")
         .param("publisher", ComicFixtures.COMIC_V1_1.getPublisher())
         .param("series", ComicFixtures.COMIC_V1_1.getSeries()))
@@ -106,7 +106,7 @@ public class VolumesIntegrationTest {
   }
 
   @Test
-  public void markAsRead() throws Exception {
+  void markAsRead() throws Exception {
     assertThat(this.progressRepository.findAll().size()).isEqualTo(0);
 
     this.mockMvc.perform(put("/api/volumes/markAsRead")
@@ -125,7 +125,7 @@ public class VolumesIntegrationTest {
   }
 
   @Test
-  public void markAsUnread() throws Exception {
+  void markAsUnread() throws Exception {
     this.progressRepository.saveAll(Arrays.asList(
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_1),
         ProgressFixtures.comicRead(ComicFixtures.COMIC_V1_2),
@@ -146,7 +146,7 @@ public class VolumesIntegrationTest {
   }
 
   @Test
-  public void markAllAsReadUntil() throws Exception {
+  void markAllAsReadUntil() throws Exception {
     assertThat(this.progressRepository.findAll().size()).isEqualTo(0);
 
     this.mockMvc.perform(put("/api/volumes/markAllAsReadUntil")

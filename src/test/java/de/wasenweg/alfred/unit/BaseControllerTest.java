@@ -14,10 +14,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BaseControllerTest {
+class BaseControllerTest {
 
   @Test
-  public void wrapEntity() throws Exception {
+  void wrapEntity() throws Exception {
     final class TestController extends BaseController<Comic> {
       public EntityModel<Comic> get() {
         return this.wrap(ComicFixtures.COMIC_V1_1.toBuilder()
@@ -33,7 +33,7 @@ public class BaseControllerTest {
   }
 
   @Test
-  public void wrapCollection() throws Exception {
+  void wrapCollection() throws Exception {
     final class TestController extends BaseController<Comic> {
       public CollectionModel<EntityModel<Comic>> get() {
         return this.wrap(Arrays.asList(
@@ -57,7 +57,7 @@ public class BaseControllerTest {
   }
 
   @Test
-  public void wrapWithMissingEntity() throws Exception {
+  void wrapWithMissingEntity() throws Exception {
     final class TestController extends BaseController<Object> {
       public EntityModel<Object> get() {
         return this.wrap(Optional.ofNullable(null));
@@ -70,7 +70,7 @@ public class BaseControllerTest {
   }
 
   @Test
-  public void wrapWithNonEntity() throws Exception {
+  void wrapWithNonEntity() throws Exception {
     final class NonEntity {
     }
 

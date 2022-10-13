@@ -14,13 +14,13 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class JwtCreatorTest {
+class JwtCreatorTest {
 
   @InjectMocks
   private transient JwtCreator jwtCreator;
 
   @Test
-  public void issueToken() throws Exception {
+  void issueToken() throws Exception {
     final String[] claims = { "API_ALLOWED" };
     final String token = this.jwtCreator.issueToken(claims, "foo@bar.com", "secret");
     final DecodedJWT jwt = JWT.decode(token);

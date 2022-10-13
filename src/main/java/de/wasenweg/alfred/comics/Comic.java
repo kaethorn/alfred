@@ -105,7 +105,7 @@ public class Comic {
   private List<String> files;
 
   @Builder.Default
-  private Integer currentPage = 0;
+  private Integer currentPage = 0; // NOPMD
   private boolean read;
   private Date lastRead;
 
