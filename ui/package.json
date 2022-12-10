@@ -71,7 +71,7 @@
     "eslint": "^8.14.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsdoc": "^39.2.9",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "http-proxy-middleware": "^1.0.6",
     "jasmine-core": "~4.1.0",
     "jasmine-spec-reporter": "~7.0.0",
